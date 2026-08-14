@@ -1,4 +1,5 @@
 ignore:
-  - "lib/l10n/**/*"
+  - "**/lib/l10n/**"
+  - "lib/l10n/**"
   - "**/*.g.dart"
   - "**/*.freezed.dart"
