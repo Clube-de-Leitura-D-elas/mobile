@@ -1,0 +1,21 @@
+image: ghcr.io/cirrusci/flutter:latest
+
+stages:
+  - test
+
+test_and_coverage:
+  stage: test
+  before_script:
+    - flutter pub get
+  script:
+    - flutter analyze
+    - flutter test --coverage
+  coverage: '/lines\.*: \d+\.\d+\%/'
+  artifacts:
+    name: coverage-report
+    paths:
+      - coverage/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/lcov.info
