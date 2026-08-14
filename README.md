@@ -1,12 +1,11 @@
 # Clube de Leitura D'Elas — App Mobile
 
 [![Flutter CI & Coverage](https://github.com/Clube-de-Leitura-D-elas/mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/Clube-de-Leitura-D-elas/mobile/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Clube-de-Leitura-D-elas/mobile/branch/main/graph/badge.svg)](https://codecov.io/gh/Clube-de-Leitura-D-elas/mobile)
+[![codecov](https://codecov.io/gh/Clube-de-Leitura-D-elas/mobile/branch/develop/graph/badge.svg)](https://codecov.io/gh/Clube-de-Leitura-D-elas/mobile)
 
 Plataforma mobile/web responsiva para gestão e organização do Clube de Leitura D'Elas.
 
 ---
-
 
 ## 🛠️ Tecnologias
 
@@ -56,11 +55,13 @@ Para converter o arquivo `lcov.info` em um relatório visual HTML interativo no 
 #### **Pré-requisito (Instalar `lcov`):**
 
 - **macOS (Homebrew):**
+
   ```bash
   brew install lcov
   ```
 
 - **Linux (Ubuntu/Debian):**
+
   ```bash
   sudo apt-get install lcov
   ```
