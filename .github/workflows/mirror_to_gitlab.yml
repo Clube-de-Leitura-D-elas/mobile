@@ -20,6 +20,7 @@ jobs:
           # 1. Clone the GitHub repo as a bare repository
           git clone --mirror https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git repo.git
 
-          # 2. Push to your specific GitLab instance
+          # 2. Push all branches and tags to your specific GitLab instance
           cd repo.git
-          git push --mirror https://oauth2:${GITLAB_TOKEN}@${TARGET_URL}
+          git push --force --all https://oauth2:${GITLAB_TOKEN}@${TARGET_URL}
+          git push --force --tags https://oauth2:${GITLAB_TOKEN}@${TARGET_URL}
