@@ -6,6 +6,7 @@ stages:
 test_and_coverage:
   stage: test
   before_script:
+    - cp .env.example .env
     - flutter pub get
   script:
     - flutter analyze

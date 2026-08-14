@@ -27,6 +27,14 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Create .env file
+        run: |
+          if [ -n "${{ secrets.ENV_FILE }}" ]; then
+            echo "${{ secrets.ENV_FILE }}" > .env
+          else
+            cp .env.example .env
+          fi
+
       - name: Install dependencies
         run: flutter pub get
 
