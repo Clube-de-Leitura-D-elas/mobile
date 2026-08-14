@@ -1,7 +1,7 @@
 # Clube de Leitura D'Elas — App Mobile
 
 [![Flutter CI & Coverage](https://github.com/Clube-de-Leitura-D-elas/mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/Clube-de-Leitura-D-elas/mobile/actions/workflows/ci.yml)
-[![Coverage Status](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/Clube-de-Leitura-D-elas/mobile)
+[![codecov](https://codecov.io/gh/Clube-de-Leitura-D-elas/mobile/branch/main/graph/badge.svg)](https://codecov.io/gh/Clube-de-Leitura-D-elas/mobile)
 
 Plataforma mobile/web responsiva para gestão e organização do Clube de Leitura D'Elas.
 
