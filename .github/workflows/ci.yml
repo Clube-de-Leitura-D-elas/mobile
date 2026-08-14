@@ -44,6 +44,12 @@ jobs:
       - name: Run tests with coverage
         run: flutter test --coverage
 
+      - name: Remove generated l10n files from coverage
+        run: |
+          dart pub global activate remove_from_coverage
+          dart pub global run remove_from_coverage:remove_from_coverage -f coverage/lcov.info -r 'lib/l10n/'
+
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         with:
