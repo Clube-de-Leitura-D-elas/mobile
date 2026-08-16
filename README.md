@@ -13,8 +13,56 @@ Plataforma mobile/web responsiva para gestão e organização do Clube de Leitur
 - **Clean Architecture** com organização Feature-First
 - **GetIt** (Injeção de dependências)
 - **Dio** (HTTP Client)
+- **Supabase Flutter** (Banco de dados e autenticação)
 - **Mocktail** (Testes unitários e Mocks)
 - **l10n / intl** (Internacionalização pt_BR)
+
+---
+
+## 🌐 Internacionalização e Geração de Strings (`l10n`)
+
+O projeto utiliza o pacote oficial do Flutter para localização e internacionalização (`flutter_localizations` / `intl`).
+
+### 1. Estrutura dos Arquivos ARB
+
+As strings traduzidas ficam localizadas em `lib/l10n/`:
+- `lib/l10n/app_pt.arb` (Arquivo template principal)
+- `lib/l10n/app_pt_BR.arb` (Especificidades de pt_BR)
+
+Para adicionar uma nova string, insira a chave no arquivo ARB desejado:
+
+```json
+{
+  "welcomeMessage": "Bem-vinda ao Clube de Leitura D'Elas!",
+  "@welcomeMessage": {
+    "description": "Mensagem de boas-vindas exibida na Home"
+  }
+}
+```
+
+---
+
+### 2. Gerando as Strings de Localização
+
+Sempre que adicionar ou modificar uma string em um arquivo `.arb`, execute o comando:
+
+```bash
+flutter gen-l10n
+```
+
+> **Nota:** Se a opção `generate: true` estiver habilitada no `pubspec.yaml` (já configurada), o Flutter gerará as traduções automaticamente ao rodar `flutter pub get`, `flutter test` ou `flutter run`.
+
+---
+
+### 3. Como Utilizar no Código
+
+As strings geradas ficam disponíveis via extensão de contexto [`BuildContext`](file:///Users/natandias/workspace/ages/mobile/lib/core/extensions/build_context_l10n.dart):
+
+```dart
+import 'package:mobile/core/extensions/build_context_l10n.dart';
+
+Text(context.l10n.welcomeMessage)
+```
 
 ---
 
