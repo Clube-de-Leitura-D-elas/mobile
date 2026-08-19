@@ -2,25 +2,92 @@ name: Mirror to GitLab
 
 on:
   push:
-    branches:
-      - "**"
-    tags:
-      - "**"
+    branches: ["**"]
+    tags: ["**"]
+
+concurrency:
+  group: mirror-to-gitlab
+  cancel-in-progress: false
+
+env:
+  TARGET_URL: tools.ages.pucrs.br/2026-2/3jk-5jk/clube-de-leitura-d-elas/app.git
+  MAX_ATTEMPTS: "3"
 
 jobs:
   mirror:
+    name: Espelhar para o GitLab
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'Clube-de-Leitura-D-elas'
     steps:
-      - name: Mirror to GitLab
+      - name: Validar configuração
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-          # Using your specific instance URL
-          TARGET_URL: "tools.ages.pucrs.br/2026-2/3jk-5jk/clube-de-leitura-d-elas/app.git"
         run: |
-          # 1. Clone the GitHub repo as a bare repository
-          git clone --mirror https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git repo.git
+          if [ -z "$GITLAB_TOKEN" ]; then
+            echo "::error::Secret GITLAB_TOKEN não configurado. Defina em Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
 
-          # 2. Push all branches and tags to your specific GitLab instance
+      - name: Espelhar com retry
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+
+          retry() {
+            local label="$1"; shift
+            local attempt=1
+            local delay=15
+            until "$@"; do
+              if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+                echo "::error::$label falhou após $MAX_ATTEMPTS tentativas."
+                return 1
+              fi
+              echo "::warning::$label falhou na tentativa $attempt. Nova tentativa em ${delay}s."
+              sleep "$delay"
+              attempt=$((attempt + 1))
+              delay=$((delay * 2))
+            done
+            echo "$label concluído na tentativa $attempt."
+          }
+
+          source_url="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          target_url="https://oauth2:${GITLAB_TOKEN}@${TARGET_URL}"
+
+          clone_source() {
+            rm -rf repo.git
+            git clone --quiet --mirror "$source_url" repo.git
+          }
+
+          retry "Clone do GitHub" clone_source
           cd repo.git
-          git push --force --all https://oauth2:${GITLAB_TOKEN}@${TARGET_URL}
-          git push --force --tags https://oauth2:${GITLAB_TOKEN}@${TARGET_URL}
+          retry "Push das branches" git push --quiet --force --all "$target_url"
+          retry "Push das tags" git push --quiet --force --tags "$target_url"
+
+          echo "Espelhado para ${TARGET_URL}"
+
+      - name: Avisar no Discord se falhou
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "::warning::Espelhamento falhou e o secret DISCORD_WEBHOOK_URL não está configurado, então não houve aviso no Discord."
+            exit 0
+          fi
+
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          text="**Espelhamento para o GitLab falhou**
+          Repositório: \`${GITHUB_REPOSITORY}\`
+          Ref: \`${GITHUB_REF_NAME}\`
+          Commit: \`${GITHUB_SHA:0:7}\`
+
+          O código está no GitHub mas **não chegou ao GitLab**, que é onde a AGES avalia.
+          Reexecutar o job: ${run_url}"
+
+          jq -n --arg content "$text" '{content: $content}' \
+            | curl --silent --show-error --fail --max-time 30 \
+                   -H "Content-Type: application/json" \
+                   -d @- "$DISCORD_WEBHOOK_URL" \
+            || echo "::warning::Não foi possível enviar o aviso ao Discord."
