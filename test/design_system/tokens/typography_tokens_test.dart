@@ -5,7 +5,7 @@ import 'package:mobile/design_system/tokens/typography_tokens.dart';
 void main() {
   group('AppTypographyTokens', () {
     test('standard tokens match exact Figma typography specs', () {
-      final tokens = AppTypographyTokens.standard;
+      const tokens = AppTypographyTokens.standard;
 
       // Display & Headings
       expect(tokens.display.fontSize, equals(40.0));
@@ -65,15 +65,15 @@ void main() {
     });
 
     test('supports value equality and hashCode', () {
-      final tokens1 = AppTypographyTokens.standard;
-      final tokens2 = AppTypographyTokens.standard;
+      const tokens1 = AppTypographyTokens.standard;
+      const tokens2 = AppTypographyTokens.standard;
 
       expect(tokens1, equals(tokens2));
       expect(tokens1.hashCode, equals(tokens2.hashCode));
     });
 
     test('copyWith produces updated typography values', () {
-      final tokens = AppTypographyTokens.standard;
+      const tokens = AppTypographyTokens.standard;
       const customStyle = TextStyle(fontSize: 50.0);
       final updated = tokens.copyWith(display: customStyle);
 
@@ -83,7 +83,7 @@ void main() {
     });
 
     test('lerp handles identical, null, and other instances', () {
-      final tokens = AppTypographyTokens.standard;
+      const tokens = AppTypographyTokens.standard;
 
       expect(tokens.lerp(null, 0.5), equals(tokens));
       expect(tokens.lerp(tokens, 0.0), equals(tokens));
@@ -95,47 +95,49 @@ void main() {
       expect(lerped.display.fontSize, equals(45.0));
     });
 
-    testWidgets('context.text and context.typography read AppTypographyTokens from Theme', (tester) async {
-      late AppTypographyTokens textTokens;
-      late AppTypographyTokens typographyTokens;
+    testWidgets(
+      'context.text and context.typography read AppTypographyTokens from Theme',
+      (tester) async {
+        late AppTypographyTokens textTokens;
+        late AppTypographyTokens typographyTokens;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(
-            extensions: [AppTypographyTokens.standard],
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData(extensions: const [AppTypographyTokens.standard]),
+            home: Builder(
+              builder: (context) {
+                textTokens = context.text;
+                typographyTokens = context.typography;
+                return const SizedBox();
+              },
+            ),
           ),
-          home: Builder(
-            builder: (context) {
-              textTokens = context.text;
-              typographyTokens = context.typography;
-              return const SizedBox();
-            },
+        );
+
+        expect(textTokens, equals(AppTypographyTokens.standard));
+        expect(typographyTokens, equals(AppTypographyTokens.standard));
+      },
+    );
+
+    testWidgets(
+      'context.text falls back to AppTypographyTokens.standard if extension is missing',
+      (tester) async {
+        late AppTypographyTokens retrievedTokens;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData(extensions: const []),
+            home: Builder(
+              builder: (context) {
+                retrievedTokens = context.text;
+                return const SizedBox();
+              },
+            ),
           ),
-        ),
-      );
+        );
 
-      expect(textTokens, equals(AppTypographyTokens.standard));
-      expect(typographyTokens, equals(AppTypographyTokens.standard));
-    });
-
-    testWidgets('context.text falls back to AppTypographyTokens.standard if extension is missing', (tester) async {
-      late AppTypographyTokens retrievedTokens;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(
-            extensions: const [],
-          ),
-          home: Builder(
-            builder: (context) {
-              retrievedTokens = context.text;
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-
-      expect(retrievedTokens, equals(AppTypographyTokens.standard));
-    });
+        expect(retrievedTokens, equals(AppTypographyTokens.standard));
+      },
+    );
   });
 }

@@ -31,15 +31,54 @@ class MainApp extends StatelessWidget {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt', 'BR'),
-      home: Column(
-        children: [
-          Text(
-            'Hello, World!',
-            style: context.text.display.copyWith(
-              color: context.colors.actionDanger,
-            ),
+      home: const HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final text = context.text;
+    final spacing = context.spacing;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          context.l10n.appTitle,
+          style: text.headingH3.copyWith(color: colors.textBrand),
+        ),
+      ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(spacing.s24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                context.l10n.welcomeMessage,
+                style: text.display.copyWith(color: colors.textDefault),
+                textAlign: TextAlign.center,
+              ),
+              const Gap12(),
+              Text(
+                'Design system initialized',
+                style: text.bodyDefaultEmphasis.copyWith(
+                  color: colors.textMuted,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const Gap24(),
+              AppButton.primary(
+                label: 'Confirmar',
+                onPressed: () {},
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
