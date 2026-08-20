@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobile/core/environment/environment.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/dependencies.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 void main() async {
@@ -19,6 +20,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       onGenerateTitle: (context) => context.l10n.appTitle,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -27,19 +31,16 @@ class MainApp extends StatelessWidget {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt', 'BR'),
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.appTitle)),
-      body: Center(child: Text(context.l10n.welcomeMessage)),
+      home: Column(
+        children: [
+          Text(
+            'Hello, World!',
+            style: context.text.display.copyWith(
+              color: context.colors.actionDanger,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
