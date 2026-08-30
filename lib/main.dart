@@ -4,10 +4,23 @@ import 'package:mobile/core/environment/environment.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Environment.load();
+
+  if (Environment.hasSupabaseConfig) {
+    await Supabase.initialize(
+      url: Environment.supabaseUrl,
+      anonKey: Environment.supabaseAnonKey,
+    );
+  } else {
+    debugPrint(
+      'Supabase não configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no .env.',
+    );
+  }
+
   DependenciesContainer();
   runApp(const MainApp());
 }
