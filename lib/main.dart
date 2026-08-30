@@ -17,7 +17,7 @@ void main() async {
     );
   } else {
     debugPrint(
-      'Supabase não configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no .env.',
+      'Supabase não configurado. Defina SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY no .env.',
     );
   }
 
