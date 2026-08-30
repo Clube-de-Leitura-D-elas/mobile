@@ -12,7 +12,7 @@ abstract class Environment {
       dotenv.env['SUPABASE_URL'] ?? '';
 
   static String get supabaseAnonKey =>
-      dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+      dotenv.env['SUPABASE_PUBLISHABLE_KEY'] ?? '';
 
   static bool get hasSupabaseConfig =>
       supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
