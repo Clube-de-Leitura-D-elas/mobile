@@ -6,7 +6,7 @@ void main() {
   group('Environment', () {
     test('returns correct baseUrl when dotenv is populated', () {
       dotenv.testLoad(
-        fileInput: 'BASE_URL=http://api.example.com\nSUPABASE_URL=https://example.supabase.co\nSUPABASE_ANON_KEY=anon-key',
+        fileInput: 'BASE_URL=http://api.example.com\nSUPABASE_URL=https://example.supabase.co\nSUPABASE_PUBLISHABLE_KEY=anon-key',
       );
 
       expect(Environment.baseUrl, equals('http://api.example.com'));
@@ -20,7 +20,7 @@ void main() {
 
     test('returns Supabase URL and anon key when dotenv is populated', () {
       dotenv.testLoad(
-        fileInput: 'SUPABASE_URL=https://example.supabase.co\nSUPABASE_ANON_KEY=anon-key',
+        fileInput: 'SUPABASE_URL=https://example.supabase.co\nSUPABASE_PUBLISHABLE_KEY=anon-key',
       );
 
       expect(Environment.supabaseUrl, equals('https://example.supabase.co'));
