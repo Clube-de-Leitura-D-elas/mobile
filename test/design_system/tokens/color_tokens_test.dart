@@ -102,6 +102,7 @@ void main() {
 
     test('copyWith produces updated values', () {
       const tokens = AppColorTokens.light;
+      expect(tokens.copyWith(), equals(tokens));
       final updated = tokens.copyWith(bgDefault: const Color(0xFF000000));
 
       expect(updated.bgDefault, equals(const Color(0xFF000000)));

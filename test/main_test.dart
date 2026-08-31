@@ -10,5 +10,8 @@ void main() {
     expect(find.byType(MainApp), findsOneWidget);
     expect(find.byType(HomePage), findsOneWidget);
     expect(find.byType(AppButton), findsOneWidget);
+
+    await tester.tap(find.byType(AppButton));
+    await tester.pumpAndSettle();
   });
 }

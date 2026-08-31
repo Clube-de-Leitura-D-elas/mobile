@@ -11,7 +11,7 @@ void main() {
         MaterialApp(
           theme: AppTheme.light,
           home: Scaffold(
-            body: AppButton.primary(
+            body: AppButton(
               label: 'Confirmar',
               onPressed: () {
                 pressed = true;
@@ -104,17 +104,29 @@ void main() {
         MaterialApp(
           theme: AppTheme.light,
           home: Scaffold(
-            body: AppButton.primary(
-              label: 'With Icon',
-              icon: const Icon(Icons.add),
-              onPressed: () {},
+            body: Column(
+              children: [
+                AppButton.primary(
+                  label: 'Leading Icon',
+                  icon: const Icon(Icons.add),
+                  onPressed: () {},
+                ),
+                AppButton.primary(
+                  label: 'Trailing Icon',
+                  icon: const Icon(Icons.arrow_forward),
+                  iconAlignment: IconAlignment.end,
+                  onPressed: () {},
+                ),
+              ],
             ),
           ),
         ),
       );
 
       expect(find.byIcon(Icons.add), findsOneWidget);
-      expect(find.text('With Icon'), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
+      expect(find.text('Leading Icon'), findsOneWidget);
+      expect(find.text('Trailing Icon'), findsOneWidget);
     });
 
     testWidgets('Renders loading indicator when isLoading is true', (tester) async {

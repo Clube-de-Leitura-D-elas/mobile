@@ -74,6 +74,7 @@ void main() {
 
     test('copyWith produces updated typography values', () {
       const tokens = AppTypographyTokens.standard;
+      expect(tokens.copyWith(), equals(tokens));
       const customStyle = TextStyle(fontSize: 50.0);
       final updated = tokens.copyWith(display: customStyle);
 

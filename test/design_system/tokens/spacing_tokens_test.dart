@@ -29,6 +29,7 @@ void main() {
 
     test('copyWith produces updated spacing values', () {
       const tokens = AppSpacingTokens.standard;
+      expect(tokens.copyWith(), equals(tokens));
       final updated = tokens.copyWith(s16: 20.0);
 
       expect(updated.s16, equals(20.0));
