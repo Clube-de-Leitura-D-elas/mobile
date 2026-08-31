@@ -7,6 +7,10 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 void main() async {
+  await mainAsync();
+}
+
+Future<void> mainAsync() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Environment.load();
   DependenciesContainer();
@@ -72,10 +76,7 @@ class HomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const Gap24(),
-              AppButton.primary(
-                label: 'Confirmar',
-                onPressed: () {},
-              ),
+              AppButton.primary(label: 'Confirmar', onPressed: () {}),
             ],
           ),
         ),
