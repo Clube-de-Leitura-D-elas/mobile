@@ -19,6 +19,56 @@ Plataforma mobile/web responsiva para gestão e organização do Clube de Leitur
 
 ---
 
+## 🚀 Como Executar o Projeto
+
+### 1. Pré-requisitos
+
+Certifique-se de ter o [Flutter SDK](https://docs.flutter.dev/get-started/install) instalado e configurado no seu ambiente.
+
+### 2. Baixar as dependências
+
+Na raiz do projeto, execute:
+
+```bash
+flutter pub get
+```
+
+### 3. Configurar variáveis de ambiente
+
+Copie o arquivo `.env.example` para `.env`:
+
+```bash
+cp .env.example .env
+```
+
+### 4. Executar a aplicação
+
+Para rodar no dispositivo ou emulador ativo:
+
+```bash
+flutter run
+```
+
+Para escolher um dispositivo específico (ex: Chrome, iOS, Android):
+
+```bash
+# Executar na Web (Chrome)
+flutter run -d chrome
+
+# Executar no simulador iOS / emulador Android
+flutter run -d ios
+flutter run -d android
+```
+
+### 5. Executando pelo VS Code
+
+Foi disponibilizado o arquivo `.vscode/launch.json`. Para iniciar a depuração pelo VS Code:
+1. Pressione `F5` ou abra a aba **Run and Debug** (`Ctrl+Shift+D` / `Cmd+Shift+D`).
+2. Selecione a configuração desejada (`Mobile (Debug)`, `Mobile (Release)`, ou `Mobile (Profile)`).
+3. Clique em **Start Debugging**.
+
+---
+
 ## 🌐 Internacionalização e Geração de Strings (`l10n`)
 
 O projeto utiliza o pacote oficial do Flutter para localização e internacionalização (`flutter_localizations` / `intl`).
