@@ -1,10 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobile/core/environment/environment.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/routes/app_routes.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/auth/presentation/pages/claim_token_screen.dart';
+import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
+import 'package:mobile/features/home/presentation/pages/home_screen.dart';
+import 'package:mobile/firebase_options.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -12,13 +23,16 @@ void main() async {
 }
 
 Future<void> mainAsync() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Environment.load();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  if (Environment.hasSupabaseConfig) {
+  final environment = Environment.instance;
+  await environment.load();
+
+  if (environment.hasSupabaseConfig) {
     await Supabase.initialize(
-      url: Environment.supabaseUrl,
-      publishableKey: Environment.supabaseAnonKey,
+      url: environment.supabaseUrl,
+      publishableKey: environment.supabaseAnonKey,
     );
   } else {
     debugPrint(
@@ -26,7 +40,10 @@ Future<void> mainAsync() async {
     );
   }
 
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   DependenciesContainer();
+  FlutterNativeSplash.remove();
   runApp(const MainApp());
 }
 
@@ -35,64 +52,29 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      onGenerateTitle: (context) => context.l10n.appTitle,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      locale: const Locale('pt', 'BR'),
-      home: const HomePage(),
-    );
-  }
-}
+    return BlocProvider<SessionCubit>(
+      create: (_) => serviceLocator<SessionCubit>(),
+      child: Builder(
+        builder: (context) {
+          final sessionCubit = context.read<SessionCubit>();
+          final router = AppRoutes.createRouter(sessionCubit);
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final text = context.text;
-    final spacing = context.spacing;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.l10n.appTitle,
-          style: text.headingH3.copyWith(color: colors.textBrand),
-        ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(spacing.s24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                context.l10n.welcomeMessage,
-                style: text.display.copyWith(color: colors.textDefault),
-                textAlign: TextAlign.center,
-              ),
-              const Gap12(),
-              Text(
-                'Design system initialized',
-                style: text.bodyDefaultEmphasis.copyWith(
-                  color: colors.textMuted,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const Gap24(),
-              AppButton.primary(label: 'Confirmar', onPressed: () {}),
+          return MaterialApp.router(
+            onGenerateTitle: (context) => context.l10n.appTitle,
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            themeMode: ThemeMode.system,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
             ],
-          ),
-        ),
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('pt', 'BR'),
+            routerConfig: router,
+          );
+        },
       ),
     );
   }
