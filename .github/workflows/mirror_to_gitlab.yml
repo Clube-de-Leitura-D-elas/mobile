@@ -62,8 +62,7 @@ jobs:
 
           retry "Clone do GitHub" clone_source
           cd repo.git
-          retry "Push das branches" git push --quiet --force --all "$target_url"
-          retry "Push das tags" git push --quiet --force --tags "$target_url"
+          retry "Push do ref atual" git push --quiet --force "$target_url" "${GITHUB_REF}:${GITHUB_REF}"
 
           echo "Espelhado para ${TARGET_URL}"
 
