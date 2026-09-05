@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:mobile/core/environment/environment.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/routes/app_routes.dart';
@@ -9,13 +10,8 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
-import 'package:mobile/features/auth/presentation/pages/claim_token_screen.dart';
-import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
-import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:mobile/firebase_options.dart';
 import 'package:mobile/l10n/app_localizations.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
