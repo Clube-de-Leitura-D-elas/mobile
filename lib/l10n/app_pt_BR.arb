@@ -20,5 +20,15 @@
   "errorForbidden": "Você não tem permissão para realizar esta ação.",
   "errorNotFound": "O recurso solicitado não foi encontrado.",
   "errorBadRequest": "Requisição inválida. Verifique os dados e tente novamente.",
-  "errorInternalServer": "Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde."
+  "errorInternalServer": "Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.",
+  "loginTitle": "Faça o seu login",
+  "emailLabel": "E-mail",
+  "emailHint": "seu@email.com",
+  "passwordLabel": "Senha",
+  "forgotPasswordLink": "Esqueci minha senha",
+  "signInWithGoogle": "Entrar com Google",
+  "createAccountLink": "Primeiro acesso? Crie sua conta aqui",
+  "emailRequiredError": "Por favor, informe seu e-mail",
+  "emailInvalidError": "Informe um e-mail válido",
+  "passwordRequiredError": "Por favor, informe sua senha"
 }
