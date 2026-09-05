@@ -222,6 +222,66 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.'**
   String get errorInternalServer;
+
+  /// Título principal da tela de login
+  ///
+  /// In pt, this message translates to:
+  /// **'Faça o seu login'**
+  String get loginTitle;
+
+  /// Rótulo para campo de e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get emailLabel;
+
+  /// Texto de dica para campo de e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'seu@email.com'**
+  String get emailHint;
+
+  /// Rótulo para campo de senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha'**
+  String get passwordLabel;
+
+  /// Link de esqueci minha senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Esqueci minha senha'**
+  String get forgotPasswordLink;
+
+  /// Botão de login social com Google
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar com Google'**
+  String get signInWithGoogle;
+
+  /// Link para criação de nova conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Primeiro acesso? Crie sua conta aqui'**
+  String get createAccountLink;
+
+  /// Mensagem de validação de e-mail obrigatório
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, informe seu e-mail'**
+  String get emailRequiredError;
+
+  /// Mensagem de validação de formato de e-mail inválido
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe um e-mail válido'**
+  String get emailInvalidError;
+
+  /// Mensagem de validação de senha obrigatória
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, informe sua senha'**
+  String get passwordRequiredError;
 }
 
 class _AppLocalizationsDelegate
