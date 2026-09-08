@@ -51,7 +51,7 @@ void main() {
     isActive: true,
   );
 
-  final mockSupabaseUser = User(
+  const mockSupabaseUser = User(
     id: 'user-123',
     appMetadata: {},
     userMetadata: {},

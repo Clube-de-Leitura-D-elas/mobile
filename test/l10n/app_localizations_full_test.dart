@@ -43,7 +43,7 @@ void main() {
     });
 
     test('delegate props and isSupported test', () {
-      final delegate = AppLocalizations.delegate;
+      const delegate = AppLocalizations.delegate;
 
       expect(delegate.isSupported(const Locale('pt')), isTrue);
       expect(delegate.isSupported(const Locale('pt', 'BR')), isTrue);

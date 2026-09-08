@@ -5,6 +5,7 @@ import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
+import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mocktail/mocktail.dart';
@@ -30,8 +31,8 @@ void main() {
 
   final testSupabaseUser = User(
     id: 'user-123',
-    appMetadata: {},
-    userMetadata: {'full_name': 'Test User'},
+    appMetadata: const {},
+    userMetadata: const {'full_name': 'Test User'},
     aud: 'authenticated',
     createdAt: DateTime.now().toIso8601String(),
     email: 'test@example.com',
@@ -84,7 +85,7 @@ void main() {
 
       final result = await repository.signIn();
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<UserEntity, UserFailure>>());
       expect(result.unwrap().mail, 'test@example.com');
     });
 
@@ -97,7 +98,7 @@ void main() {
 
       final result = await repository.signIn();
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<UserEntity, UserFailure>>());
       if (result case Failure(:final failure)) {
         expect(failure, isA<MissingGoogleIdTokenFailure>());
       }
@@ -121,7 +122,7 @@ void main() {
 
       final result = await repository.signIn();
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<UserEntity, UserFailure>>());
       if (result case Failure(:final failure)) {
         expect(failure.message, 'OAuth Error');
       }
@@ -140,7 +141,7 @@ void main() {
         password: 'password123',
       );
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<UserEntity, UserFailure>>());
       expect(result.unwrap().mail, equals('test@example.com'));
     });
 
@@ -159,18 +160,18 @@ void main() {
         password: 'wrongpassword',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<UserEntity, UserFailure>>());
     });
 
     test('logOut signs out from Supabase and GoogleSignIn', () async {
       when(() => mockSupabaseService.signOut())
           .thenAnswer((_) async => const Success(null));
       when(() => mockGoogleSignIn.signOut())
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async => mockGoogleAccount);
 
       final result = await repository.logOut();
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<void, UserFailure>>());
       verify(() => mockSupabaseService.signOut()).called(1);
       verify(() => mockGoogleSignIn.signOut()).called(1);
     });
@@ -189,7 +190,7 @@ void main() {
 
       final result = await repository.getUserProfile('user-123');
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<UserProfileEntity?, UserFailure>>());
       expect(result.unwrap(), equals(testProfile));
     });
 
@@ -207,7 +208,7 @@ void main() {
 
       final result = await repository.getUserProfile('user-123');
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<UserProfileEntity?, UserFailure>>());
       if (result case Failure(:final failure)) {
         expect(failure.message, 'Server error');
       }
@@ -217,7 +218,7 @@ void main() {
       when(
         () => mockSupabaseService.invokeFunction<dynamic>(
           functionName: 'claim-user-profile',
-          body: {'claim_token': 'TOKEN123'},
+          body: const {'claim_token': 'TOKEN123'},
         ),
       ).thenAnswer(
         (_) async => const Success(
@@ -227,14 +228,14 @@ void main() {
 
       final result = await repository.claimProfile('TOKEN123');
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<void, UserFailure>>());
     });
 
     test('claimProfile returns Failure when function invoke fails', () async {
       when(
         () => mockSupabaseService.invokeFunction<dynamic>(
           functionName: 'claim-user-profile',
-          body: {'claim_token': 'TOKEN123'},
+          body: const {'claim_token': 'TOKEN123'},
         ),
       ).thenAnswer(
         (_) async => const Failure(
@@ -244,7 +245,7 @@ void main() {
 
       final result = await repository.claimProfile('TOKEN123');
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<void, UserFailure>>());
     });
   });
 }
