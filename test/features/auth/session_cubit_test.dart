@@ -6,23 +6,17 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_with_email_use_case.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class MockUserSignInUseCase extends Mock implements UserSignInUseCase {}
-class MockUserSignInWithEmailUseCase extends Mock implements UserSignInWithEmailUseCase {}
-class MockGetUserProfileUseCase extends Mock implements GetUserProfileUseCase {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 class MockSupabaseService extends Mock implements SupabaseService {}
 
 void main() {
-  late MockUserSignInUseCase mockUserSignInUseCase;
-  late MockUserSignInWithEmailUseCase mockUserSignInWithEmailUseCase;
-  late MockGetUserProfileUseCase mockGetUserProfileUseCase;
+  late MockAuthRepository mockAuthRepository;
   late MockSupabaseService mockSupabaseService;
   late SessionCubit sessionCubit;
 
@@ -60,9 +54,7 @@ void main() {
   );
 
   setUp(() {
-    mockUserSignInUseCase = MockUserSignInUseCase();
-    mockUserSignInWithEmailUseCase = MockUserSignInWithEmailUseCase();
-    mockGetUserProfileUseCase = MockGetUserProfileUseCase();
+    mockAuthRepository = MockAuthRepository();
     mockSupabaseService = MockSupabaseService();
 
     when(() => mockSupabaseService.currentUser).thenReturn(null);
@@ -70,9 +62,7 @@ void main() {
         .thenAnswer((_) => const Stream.empty());
 
     sessionCubit = SessionCubit(
-      userSignInUseCase: mockUserSignInUseCase,
-      userSignInWithEmailUseCase: mockUserSignInWithEmailUseCase,
-      getUserProfileUseCase: mockGetUserProfileUseCase,
+      authRepository: mockAuthRepository,
       supabaseService: mockSupabaseService,
     );
   });
@@ -87,9 +77,9 @@ void main() {
     });
 
     blocTest<SessionCubit, SessionState>(
-      'emits [LoadingSession, SessionError, GuestSession] when userSignInUseCase fails',
+      'emits [LoadingSession, SessionError, GuestSession] when authRepository.signIn fails',
       build: () {
-        when(() => mockUserSignInUseCase())
+        when(() => mockAuthRepository.signIn())
             .thenAnswer((_) async => const Failure(UserFailure(message: 'Sign in failed')));
         return sessionCubit;
       },
@@ -104,7 +94,7 @@ void main() {
     blocTest<SessionCubit, SessionState>(
       'emits [LoadingSession, GuestSession] when authenticate succeeds but currentUser is null',
       build: () {
-        when(() => mockUserSignInUseCase())
+        when(() => mockAuthRepository.signIn())
             .thenAnswer((_) async => const Success(testUserEntity));
         when(() => mockSupabaseService.currentUser).thenReturn(null);
         return sessionCubit;
@@ -119,10 +109,10 @@ void main() {
     blocTest<SessionCubit, SessionState>(
       'emits [LoadingSession, AuthenticatedSession] when authenticate succeeds and profile exists',
       build: () {
-        when(() => mockUserSignInUseCase())
+        when(() => mockAuthRepository.signIn())
             .thenAnswer((_) async => const Success(testUserEntity));
         when(() => mockSupabaseService.currentUser).thenReturn(mockSupabaseUser);
-        when(() => mockGetUserProfileUseCase('user-123'))
+        when(() => mockAuthRepository.getUserProfile('user-123'))
             .thenAnswer((_) async => const Success(testProfile));
         return sessionCubit;
       },
@@ -134,10 +124,10 @@ void main() {
     );
 
     blocTest<SessionCubit, SessionState>(
-      'emits [LoadingSession, SessionError, GuestSession] when userSignInWithEmailUseCase fails',
+      'emits [LoadingSession, SessionError, GuestSession] when authRepository.signInWithEmailAndPassword fails',
       build: () {
         when(
-          () => mockUserSignInWithEmailUseCase(
+          () => mockAuthRepository.signInWithEmailAndPassword(
             email: 'test@example.com',
             password: 'password123',
           ),
@@ -161,7 +151,7 @@ void main() {
       'emits [LoadingSession, GuestSession] when authenticateWithEmail succeeds but currentUser is null',
       build: () {
         when(
-          () => mockUserSignInWithEmailUseCase(
+          () => mockAuthRepository.signInWithEmailAndPassword(
             email: 'test@example.com',
             password: 'password123',
           ),
@@ -182,7 +172,7 @@ void main() {
     blocTest<SessionCubit, SessionState>(
       'emits [LoadingSession, NeedsClaimSession] when getUserProfile fails',
       build: () {
-        when(() => mockGetUserProfileUseCase('user-123'))
+        when(() => mockAuthRepository.getUserProfile('user-123'))
             .thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
         return sessionCubit;
       },
@@ -196,7 +186,7 @@ void main() {
     blocTest<SessionCubit, SessionState>(
       'emits [LoadingSession, NeedsClaimSession] when getUserProfile returns null',
       build: () {
-        when(() => mockGetUserProfileUseCase('user-123'))
+        when(() => mockAuthRepository.getUserProfile('user-123'))
             .thenAnswer((_) async => const Success(null));
         return sessionCubit;
       },
@@ -210,7 +200,7 @@ void main() {
     blocTest<SessionCubit, SessionState>(
       'emits [LoadingSession, AuthenticatedSession] when getUserProfile returns profile data',
       build: () {
-        when(() => mockGetUserProfileUseCase('user-123'))
+        when(() => mockAuthRepository.getUserProfile('user-123'))
             .thenAnswer((_) async => const Success(testProfile));
         return sessionCubit;
       },
@@ -256,9 +246,7 @@ void main() {
           .thenAnswer((_) => controller.stream);
 
       final newCubit = SessionCubit(
-        userSignInUseCase: mockUserSignInUseCase,
-        userSignInWithEmailUseCase: mockUserSignInWithEmailUseCase,
-        getUserProfileUseCase: mockGetUserProfileUseCase,
+        authRepository: mockAuthRepository,
         supabaseService: mockSupabaseService,
       );
 

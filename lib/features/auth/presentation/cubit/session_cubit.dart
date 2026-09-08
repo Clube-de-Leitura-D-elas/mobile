@@ -4,24 +4,18 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_with_email_use_case.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionCubit extends Cubit<SessionState> {
-  final UserSignInUseCase userSignInUseCase;
-  final UserSignInWithEmailUseCase userSignInWithEmailUseCase;
-  final GetUserProfileUseCase getUserProfileUseCase;
+  final AuthRepository authRepository;
   final SupabaseService supabaseService;
 
   StreamSubscription<AuthState>? _authStateSubscription;
 
   SessionCubit({
-    required this.userSignInUseCase,
-    required this.userSignInWithEmailUseCase,
-    required this.getUserProfileUseCase,
+    required this.authRepository,
     required this.supabaseService,
   }) : super(const GuestSession()) {
     _listenToAuthState();
@@ -60,7 +54,7 @@ class SessionCubit extends Cubit<SessionState> {
     debugPrint('[SessionCubit] Triggering Google Sign-In authentication');
     emit(const LoadingSession());
 
-    final result = await userSignInUseCase.call();
+    final result = await authRepository.signIn();
 
     if (result case Failure(:final failure)) {
       debugPrint('[SessionCubit] Sign-In failed: ${failure.message}');
@@ -87,7 +81,7 @@ class SessionCubit extends Cubit<SessionState> {
     debugPrint('[SessionCubit] Triggering Email+Password authentication for email: $email');
     emit(const LoadingSession());
 
-    final result = await userSignInWithEmailUseCase.call(
+    final result = await authRepository.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -114,7 +108,7 @@ class SessionCubit extends Cubit<SessionState> {
     debugPrint('[SessionCubit] Checking user profile for userId: $userId');
     emit(const LoadingSession());
 
-    final profileResult = await getUserProfileUseCase(userId);
+    final profileResult = await authRepository.getUserProfile(userId);
 
     if (profileResult case Failure(:final failure)) {
       debugPrint('[SessionCubit] getUserProfile failure: ${failure.message}');

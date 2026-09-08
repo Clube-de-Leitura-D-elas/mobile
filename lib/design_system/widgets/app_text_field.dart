@@ -89,7 +89,6 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final typography = context.text;
-    final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
 
     final baseBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.0),
@@ -124,67 +123,81 @@ class _AppTextFieldState extends State<AppTextField> {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.label != null) ...[
-          Text(
-            widget.label!,
-            style: typography.bodyDefaultEmphasis.copyWith(
-              color: colors.textDefault,
-            ),
-          ),
-          const Gap4(),
-        ],
-        SizedBox(
-          height: widget.errorText == null ? _height : null,
-          child: TextFormField(
-            controller: widget.controller,
-            onChanged: widget.onChanged,
-            onFieldSubmitted: widget.onSubmitted,
-            obscureText: _isObscured,
-            keyboardType: widget.keyboardType,
-            textInputAction: widget.textInputAction,
-            enabled: widget.enabled,
-            autofocus: widget.autofocus,
-            validator: widget.validator,
-            style: typography.bodyDefault.copyWith(
-              color: widget.enabled ? colors.textDefault : colors.actionDisabledFg,
-            ),
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              hintStyle: typography.bodyDefault.copyWith(
-                color: colors.textMuted,
+    return FormField<String>(
+      enabled: widget.enabled,
+      initialValue: widget.controller?.text,
+      validator: widget.validator,
+      builder: (field) {
+        final effectiveError = widget.errorText ?? field.errorText;
+        final hasError = effectiveError != null && effectiveError.isNotEmpty;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.label != null) ...[
+              Text(
+                widget.label!,
+                style: typography.bodyDefaultEmphasis.copyWith(
+                  color: colors.textDefault,
+                ),
               ),
-              filled: true,
-              fillColor: widget.enabled ? colors.bgDefault : colors.surfaceSunken,
-              contentPadding: _contentPadding,
-              border: baseBorder,
-              enabledBorder: baseBorder,
-              focusedBorder: focusedBorder,
-              errorBorder: errorBorder,
-              focusedErrorBorder: errorBorder,
-              disabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                borderSide: BorderSide(color: colors.actionDisabledBg, width: 1.0),
+              const Gap4(),
+            ],
+            SizedBox(
+              height: _height,
+              child: TextField(
+                controller: widget.controller,
+                onChanged: (value) {
+                  field.didChange(value);
+                  widget.onChanged?.call(value);
+                },
+                onSubmitted: widget.onSubmitted,
+                obscureText: _isObscured,
+                keyboardType: widget.keyboardType,
+                textInputAction: widget.textInputAction,
+                enabled: widget.enabled,
+                autofocus: widget.autofocus,
+                style: typography.bodyDefault.copyWith(
+                  color: widget.enabled
+                      ? colors.textDefault
+                      : colors.actionDisabledFg,
+                ),
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  hintStyle: typography.bodyDefault.copyWith(
+                    color: colors.textMuted,
+                  ),
+                  filled: true,
+                  fillColor:
+                      widget.enabled ? colors.bgDefault : colors.surfaceSunken,
+                  contentPadding: _contentPadding,
+                  border: baseBorder,
+                  enabledBorder: hasError ? errorBorder : baseBorder,
+                  focusedBorder: hasError ? errorBorder : focusedBorder,
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide:
+                        BorderSide(color: colors.actionDisabledBg, width: 1.0),
+                  ),
+                  isDense: true,
+                  prefixIcon: widget.prefixIcon,
+                  suffixIcon: effectiveSuffixIcon,
+                ),
               ),
-              isDense: true,
-              prefixIcon: widget.prefixIcon,
-              suffixIcon: effectiveSuffixIcon,
             ),
-          ),
-        ),
-        if (hasError || widget.helperText != null) ...[
-          const Gap4(),
-          Text(
-            widget.errorText ?? widget.helperText!,
-            style: typography.caption.copyWith(
-              color: hasError ? colors.feedbackError : colors.textMuted,
-            ),
-          ),
-        ],
-      ],
+            if (hasError || widget.helperText != null) ...[
+              const Gap4(),
+              Text(
+                effectiveError ?? widget.helperText!,
+                style: typography.caption.copyWith(
+                  color: hasError ? colors.feedbackError : colors.textMuted,
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }
