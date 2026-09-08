@@ -15,6 +15,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DependenciesContainer {
   DependenciesContainer() {
+    serviceLocator.allowReassignment = true;
     final environment = Environment.instance;
 
     ApiDependencies(baseUrl: environment.baseUrl);
