@@ -1,24 +1,23 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_routes.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_with_email_use_case.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockUserSignInUseCase extends Mock implements UserSignInUseCase {}
-class MockUserSignInWithEmailUseCase extends Mock implements UserSignInWithEmailUseCase {}
-class MockGetUserProfileUseCase extends Mock implements GetUserProfileUseCase {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 class MockSupabaseService extends Mock implements SupabaseService {}
 class MockBuildContext extends Mock implements BuildContext {}
 class MockGoRouterState extends Mock implements GoRouterState {}
@@ -26,9 +25,7 @@ class MockGoRouterState extends Mock implements GoRouterState {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late MockUserSignInUseCase mockUserSignInUseCase;
-  late MockUserSignInWithEmailUseCase mockUserSignInWithEmailUseCase;
-  late MockGetUserProfileUseCase mockGetUserProfileUseCase;
+  late MockAuthRepository mockAuthRepository;
   late MockSupabaseService mockSupabaseService;
   late SessionCubit sessionCubit;
   late MockBuildContext mockContext;
@@ -60,9 +57,7 @@ void main() {
   );
 
   setUp(() {
-    mockUserSignInUseCase = MockUserSignInUseCase();
-    mockUserSignInWithEmailUseCase = MockUserSignInWithEmailUseCase();
-    mockGetUserProfileUseCase = MockGetUserProfileUseCase();
+    mockAuthRepository = MockAuthRepository();
     mockSupabaseService = MockSupabaseService();
     mockContext = MockBuildContext();
     mockState = MockGoRouterState();
@@ -72,9 +67,7 @@ void main() {
         .thenAnswer((_) => const Stream.empty());
 
     sessionCubit = SessionCubit(
-      userSignInUseCase: mockUserSignInUseCase,
-      userSignInWithEmailUseCase: mockUserSignInWithEmailUseCase,
-      getUserProfileUseCase: mockGetUserProfileUseCase,
+      authRepository: mockAuthRepository,
       supabaseService: mockSupabaseService,
     );
   });
@@ -107,6 +100,33 @@ void main() {
     test('createRouter builds router successfully', () {
       final router = AppRoutes.createRouter(sessionCubit);
       expect(router, isA<GoRouter>());
+    });
+
+    testWidgets('executes builders for splash, login, claimToken, and home routes', (tester) async {
+      serviceLocator.allowReassignment = true;
+      serviceLocator.registerFactory<AuthRepository>(() => mockAuthRepository);
+
+      final router = AppRoutes.createRouter(sessionCubit);
+      await tester.pumpWidget(
+        BlocProvider<SessionCubit>.value(
+          value: sessionCubit,
+          child: MaterialApp.router(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: router,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      router.go(AuthRoutes.login);
+      await tester.pumpAndSettle();
+
+      router.go(AuthRoutes.claimToken, extra: 'user-123');
+      await tester.pumpAndSettle();
+
+      router.go(HomeRoutes.home);
+      await tester.pumpAndSettle();
     });
   });
 

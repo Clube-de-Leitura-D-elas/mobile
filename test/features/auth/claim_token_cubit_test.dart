@@ -3,18 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
-import 'package:mobile/features/auth/domain/usecases/claim_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_state.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockClaimProfileUseCase extends Mock implements ClaimProfileUseCase {}
-class MockGetUserProfileUseCase extends Mock implements GetUserProfileUseCase {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 
 void main() {
-  late MockClaimProfileUseCase mockClaimProfileUseCase;
-  late MockGetUserProfileUseCase mockGetUserProfileUseCase;
+  late MockAuthRepository mockAuthRepository;
   late ClaimTokenCubit claimTokenCubit;
 
   const testProfile = UserProfileEntity(
@@ -32,11 +29,9 @@ void main() {
   );
 
   setUp(() {
-    mockClaimProfileUseCase = MockClaimProfileUseCase();
-    mockGetUserProfileUseCase = MockGetUserProfileUseCase();
+    mockAuthRepository = MockAuthRepository();
     claimTokenCubit = ClaimTokenCubit(
-      claimProfileUseCase: mockClaimProfileUseCase,
-      getUserProfileUseCase: mockGetUserProfileUseCase,
+      authRepository: mockAuthRepository,
     );
   });
 
@@ -61,7 +56,7 @@ void main() {
     blocTest<ClaimTokenCubit, ClaimTokenState>(
       'emits [ClaimTokenLoading, ClaimTokenFailure] when claim profile fails',
       build: () {
-        when(() => mockClaimProfileUseCase('INVALID_TOKEN'))
+        when(() => mockAuthRepository.claimProfile('INVALID_TOKEN'))
             .thenAnswer((_) async => const Failure(UserFailure(message: 'Token inválido')));
         return claimTokenCubit;
       },
@@ -75,9 +70,9 @@ void main() {
     blocTest<ClaimTokenCubit, ClaimTokenState>(
       'emits [ClaimTokenLoading, ClaimTokenSuccess] when claim profile succeeds',
       build: () {
-        when(() => mockClaimProfileUseCase('VALID_TOKEN'))
+        when(() => mockAuthRepository.claimProfile('VALID_TOKEN'))
             .thenAnswer((_) async => const Success(null));
-        when(() => mockGetUserProfileUseCase('user-1'))
+        when(() => mockAuthRepository.getUserProfile('user-1'))
             .thenAnswer((_) async => const Success(testProfile));
         return claimTokenCubit;
       },
