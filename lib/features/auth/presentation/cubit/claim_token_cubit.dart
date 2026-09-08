@@ -1,17 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/tools/result.dart';
-import 'package:mobile/features/auth/domain/usecases/claim_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_state.dart';
 
 class ClaimTokenCubit extends Cubit<ClaimTokenState> {
-  final ClaimProfileUseCase claimProfileUseCase;
-  final GetUserProfileUseCase getUserProfileUseCase;
+  final AuthRepository authRepository;
 
   ClaimTokenCubit({
-    required this.claimProfileUseCase,
-    required this.getUserProfileUseCase,
+    required this.authRepository,
   }) : super(const ClaimTokenInitial());
 
   Future<void> submitToken({
@@ -29,7 +26,7 @@ class ClaimTokenCubit extends Cubit<ClaimTokenState> {
 
     emit(const ClaimTokenLoading());
 
-    final claimResult = await claimProfileUseCase(cleanToken);
+    final claimResult = await authRepository.claimProfile(cleanToken);
 
     if (claimResult case Failure(:final failure)) {
       debugPrint('[ClaimTokenCubit] claimProfile failed: ${failure.message}');
@@ -38,7 +35,7 @@ class ClaimTokenCubit extends Cubit<ClaimTokenState> {
     }
 
     debugPrint('[ClaimTokenCubit] claimProfile succeeded! Re-fetching profile for userId: $userId');
-    final profileResult = await getUserProfileUseCase(userId);
+    final profileResult = await authRepository.getUserProfile(userId);
 
     if (profileResult case Failure(:final failure)) {
       debugPrint('[ClaimTokenCubit] Profile re-fetch failed: ${failure.message}');

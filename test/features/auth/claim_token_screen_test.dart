@@ -6,34 +6,31 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
-import 'package:mobile/features/auth/domain/usecases/claim_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
+import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/claim_token_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockClaimProfileUseCase extends Mock implements ClaimProfileUseCase {}
-class MockGetUserProfileUseCase extends Mock implements GetUserProfileUseCase {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 class MockSessionCubit extends Mock implements SessionCubit {}
 
 void main() {
-  late MockClaimProfileUseCase mockClaimProfileUseCase;
-  late MockGetUserProfileUseCase mockGetUserProfileUseCase;
+  late MockAuthRepository mockAuthRepository;
   late MockSessionCubit mockSessionCubit;
 
   setUp(() {
-    mockClaimProfileUseCase = MockClaimProfileUseCase();
-    mockGetUserProfileUseCase = MockGetUserProfileUseCase();
+    mockAuthRepository = MockAuthRepository();
     mockSessionCubit = MockSessionCubit();
     when(() => mockSessionCubit.stream).thenAnswer((_) => const Stream.empty());
     when(() => mockSessionCubit.state).thenReturn(const GuestSession());
     when(() => mockSessionCubit.checkUserProfile(any())).thenAnswer((_) async {});
 
-    when(() => mockClaimProfileUseCase.call(any()))
+    when(() => mockAuthRepository.claimProfile(any()))
         .thenAnswer((_) async => const Success(null));
-    when(() => mockGetUserProfileUseCase.call(any()))
+    when(() => mockAuthRepository.getUserProfile(any()))
         .thenAnswer((_) async => const Success(UserProfileEntity(
           id: '1',
           name: 'Test User',
@@ -49,11 +46,8 @@ void main() {
         )));
 
     serviceLocator.allowReassignment = true;
-    serviceLocator.registerFactory<ClaimProfileUseCase>(
-      () => mockClaimProfileUseCase,
-    );
-    serviceLocator.registerFactory<GetUserProfileUseCase>(
-      () => mockGetUserProfileUseCase,
+    serviceLocator.registerFactory<AuthRepository>(
+      () => mockAuthRepository,
     );
   });
 
@@ -67,8 +61,13 @@ void main() {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: BlocProvider<SessionCubit>.value(
-        value: mockSessionCubit,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<SessionCubit>.value(value: mockSessionCubit),
+          BlocProvider<ClaimTokenCubit>(
+            create: (_) => ClaimTokenCubit(authRepository: mockAuthRepository),
+          ),
+        ],
         child: const ClaimTokenScreen(userId: 'user-123'),
       ),
     );
@@ -99,7 +98,7 @@ void main() {
       await tester.tap(confirmButton);
       await tester.pump();
 
-      expect(find.byType(ClaimTokenView), findsOneWidget);
+      expect(find.byType(ClaimTokenScreen), findsOneWidget);
     });
   });
 }

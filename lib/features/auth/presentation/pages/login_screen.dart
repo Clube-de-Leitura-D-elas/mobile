@@ -28,9 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  String? _emailError;
-  String? _passwordError;
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -39,32 +36,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submitEmailPassword(BuildContext context) {
-    setState(() {
-      _emailError = null;
-      _passwordError = null;
-    });
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
 
     final email = _emailController.text.trim();
     final password = _passwordController.text;
-
-    bool isValid = true;
-    if (email.isEmpty) {
-      _emailError = context.l10n.emailRequiredError;
-      isValid = false;
-    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      _emailError = context.l10n.emailInvalidError;
-      isValid = false;
-    }
-
-    if (password.isEmpty) {
-      _passwordError = context.l10n.passwordRequiredError;
-      isValid = false;
-    }
-
-    if (!isValid) {
-      setState(() {});
-      return;
-    }
 
     context.read<SessionCubit>().authenticateWithEmail(
           email: email,
@@ -120,8 +97,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
-                                errorText: _emailError,
                                 enabled: !isLoading,
+                                validator: (value) {
+                                  final email = value?.trim() ?? '';
+                                  if (email.isEmpty) {
+                                    return l10n.emailRequiredError;
+                                  }
+                                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                      .hasMatch(email)) {
+                                    return l10n.emailInvalidError;
+                                  }
+                                  return null;
+                                },
                               ),
                               const Gap16(),
                               Column(
@@ -133,8 +120,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     obscureText: true,
                                     textInputAction: TextInputAction.done,
                                     onSubmitted: (_) => _submitEmailPassword(context),
-                                    errorText: _passwordError,
                                     enabled: !isLoading,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return l10n.passwordRequiredError;
+                                      }
+                                      return null;
+                                    },
                                   ),
                                   const Gap4(),
                                   GestureDetector(
