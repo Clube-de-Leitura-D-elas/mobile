@@ -103,7 +103,7 @@ void main() {
       final useCase = ClaimProfileUseCaseImpl(repository: mockRepository);
       final result = await useCase('TOKEN123');
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<void, UserFailure>>());
       verify(() => mockRepository.claimProfile('TOKEN123')).called(1);
     });
   });
