@@ -8,8 +8,6 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/domain/usecases/claim_profile_use_case.dart';
 import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
-import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
-import 'package:mobile/features/auth/presentation/cubit/claim_token_state.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/claim_token_screen.dart';

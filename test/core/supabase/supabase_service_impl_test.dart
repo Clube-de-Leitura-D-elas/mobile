@@ -44,7 +44,7 @@ void main() {
 
       final result = await supabaseService.signOut();
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<void, SupabaseFailure>>());
       verify(() => mockGoTrueClient.signOut()).called(1);
     });
 
@@ -53,14 +53,14 @@ void main() {
 
       final result = await supabaseService.signOut();
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<void, SupabaseFailure>>());
       if (result case Failure(:final failure)) {
         expect(failure, isA<UnknownSupabaseFailure>());
       }
     });
 
     test('signInWithPassword returns Success when user is returned', () async {
-      final mockUser = User(
+      const mockUser = User(
         id: 'user-1',
         appMetadata: {},
         userMetadata: {},
@@ -81,7 +81,7 @@ void main() {
         password: 'password123',
       );
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<User, SupabaseFailure>>());
       if (result case Success(:final data)) {
         expect(data.id, 'user-1');
       }
@@ -102,7 +102,7 @@ void main() {
         password: 'password123',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<User, SupabaseFailure>>());
     });
 
     test('signInWithPassword handles AuthException', () async {
@@ -118,7 +118,7 @@ void main() {
         password: 'wrong',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<User, SupabaseFailure>>());
       if (result case Failure(:final failure)) {
         expect(failure.message, equals('Invalid login credentials'));
       }
@@ -137,11 +137,11 @@ void main() {
         password: 'wrong',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<User, SupabaseFailure>>());
     });
 
     test('signInWithIdToken returns Success when user is returned', () async {
-      final mockUser = User(
+      const mockUser = User(
         id: 'user-1',
         appMetadata: {},
         userMetadata: {},
@@ -164,7 +164,7 @@ void main() {
         accessToken: 'access123',
       );
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<User, SupabaseFailure>>());
     });
 
     test('signInWithIdToken returns Failure when user is null', () async {
@@ -183,7 +183,7 @@ void main() {
         idToken: 'token123',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<User, SupabaseFailure>>());
     });
 
     test('signInWithIdToken handles AuthException', () async {
@@ -200,7 +200,7 @@ void main() {
         idToken: 'token123',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<User, SupabaseFailure>>());
       if (result case Failure(:final failure)) {
         expect(failure.message, equals('Invalid ID Token'));
       }
@@ -220,7 +220,7 @@ void main() {
         idToken: 'token123',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<User, SupabaseFailure>>());
     });
 
     test('invokeFunction returns Success with decoded data', () async {
@@ -230,7 +230,7 @@ void main() {
           body: any(named: 'body'),
         ),
       ).thenAnswer(
-        (_) async => FunctionResponse(
+        (_) async => const FunctionResponse(
           status: 200,
           data: {'name': 'Test'},
         ),
@@ -241,7 +241,7 @@ void main() {
         decoder: (json) => json['name'] as String,
       );
 
-      expect(result, isA<Success>());
+      expect(result, isA<Success<SupabaseResponse<String>, SupabaseFailure>>());
       if (result case Success(:final data)) {
         expect(data.data, 'Test');
         expect(data.statusCode, 200);
@@ -255,7 +255,7 @@ void main() {
           body: any(named: 'body'),
         ),
       ).thenAnswer(
-        (_) async => FunctionResponse(
+        (_) async => const FunctionResponse(
           status: 404,
           data: 'Not found',
         ),
@@ -265,7 +265,7 @@ void main() {
         functionName: 'test-func',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
       if (result case Failure(:final failure)) {
         expect(failure.message, equals('Erro ao executar a função test-func'));
       }
@@ -288,7 +288,7 @@ void main() {
         functionName: 'test-func',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
     });
 
     test('invokeFunction handles generic Exception', () async {
@@ -303,35 +303,35 @@ void main() {
         functionName: 'test-func',
       );
 
-      expect(result, isA<Failure>());
+      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
     });
   });
 
   group('SupabaseResponse and SupabaseFailure models', () {
     test('SupabaseResponse props and getter', () {
-      final resp = SupabaseResponse<String>(data: 'hello', statusCode: 200);
+      const resp = SupabaseResponse<String>(data: 'hello', statusCode: 200);
       expect(resp.data, 'hello');
       expect(resp.statusCode, 200);
       expect(resp.isSuccess, isTrue);
-      expect(resp.props, equals(['hello', 200, null]));
+      expect(resp.props, equals(const ['hello', 200, null]));
     });
 
     test('SupabaseFailure subclasses props', () {
-      final funcFail = FunctionSupabaseFailure(
+      const funcFail = FunctionSupabaseFailure(
         message: 'msg',
         code: '500',
         details: {'key': 'val'},
       );
-      expect(funcFail.props, equals(['msg', '500', {'key': 'val'}]));
+      expect(funcFail.props, equals(const ['msg', '500', {'key': 'val'}]));
 
-      final authFail = AuthSupabaseFailure(message: 'auth msg', code: '401');
-      expect(authFail.props, equals(['auth msg', '401', null]));
+      const authFail = AuthSupabaseFailure(message: 'auth msg', code: '401');
+      expect(authFail.props, equals(const ['auth msg', '401', null]));
 
-      final unkFail = UnknownSupabaseFailure(message: 'unk msg');
-      expect(unkFail.props, equals(['unk msg', null, null]));
+      const unkFail = UnknownSupabaseFailure(message: 'unk msg');
+      expect(unkFail.props, equals(const ['unk msg', null, null]));
 
-      final notFoundFail = NotFoundSupabaseFailure();
-      expect(notFoundFail.props, equals(['Registro não encontrado', null, null]));
+      const notFoundFail = NotFoundSupabaseFailure();
+      expect(notFoundFail.props, equals(const ['Registro não encontrado', null, null]));
     });
   });
 }
