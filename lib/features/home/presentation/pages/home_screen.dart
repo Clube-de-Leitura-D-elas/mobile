@@ -5,6 +5,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/home/presentation/widgets/profile_detail_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserEntity user;
@@ -116,54 +117,54 @@ class HomeScreen extends StatelessWidget {
               style: text.headingH3.copyWith(color: colors.textDefault),
             ),
             const Gap16(),
-            _ProfileDetailTile(
+            ProfileDetailTile(
               icon: Icons.badge_outlined,
               label: 'Nome Completo',
               value: name,
             ),
-            _ProfileDetailTile(
+            ProfileDetailTile(
               icon: Icons.email_outlined,
               label: 'E-mail',
               value: email,
             ),
             if (phone.isNotEmpty)
-              _ProfileDetailTile(
+              ProfileDetailTile(
                 icon: Icons.phone_outlined,
                 label: 'Telefone',
                 value: phone,
               ),
             if (address != null && address.isNotEmpty)
-              _ProfileDetailTile(
+              ProfileDetailTile(
                 icon: Icons.location_on_outlined,
                 label: 'Endereço',
                 value: address,
               ),
             if (birthday.isNotEmpty)
-              _ProfileDetailTile(
+              ProfileDetailTile(
                 icon: Icons.cake_outlined,
                 label: 'Data de Nascimento',
                 value: birthday,
               ),
             if (instagram.isNotEmpty)
-              _ProfileDetailTile(
+              ProfileDetailTile(
                 icon: Icons.camera_alt_outlined,
                 label: 'Instagram',
                 value: instagram,
               ),
             if (education.isNotEmpty)
-              _ProfileDetailTile(
+              ProfileDetailTile(
                 icon: Icons.school_outlined,
                 label: 'Escolaridade',
                 value: education,
               ),
             if (job.isNotEmpty)
-              _ProfileDetailTile(
+              ProfileDetailTile(
                 icon: Icons.work_outline,
                 label: 'Cargo / Profissão',
                 value: job,
               ),
             if (userId.isNotEmpty)
-              _ProfileDetailTile(
+              ProfileDetailTile(
                 icon: Icons.fingerprint,
                 label: 'ID Auth (Supabase User ID)',
                 value: userId,
@@ -172,58 +173,6 @@ class HomeScreen extends StatelessWidget {
             AppButton.secondary(
               label: 'Sair da Conta',
               onPressed: () => context.read<SessionCubit>().logOut(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProfileDetailTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const _ProfileDetailTile({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final text = context.text;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Container(
-        padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: colors.bgSubtle,
-          borderRadius: BorderRadius.circular(12.0),
-          border: Border.all(color: colors.borderDefault),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: colors.actionPrimary, size: 24),
-            const Gap12(),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: text.caption.copyWith(color: colors.textMuted),
-                  ),
-                  const Gap2(),
-                  Text(
-                    value.isNotEmpty ? value : 'Não informado',
-                    style: text.bodyDefaultEmphasis.copyWith(color: colors.textDefault),
-                  ),
-                ],
-              ),
             ),
           ],
         ),
