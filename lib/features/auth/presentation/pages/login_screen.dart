@@ -5,6 +5,7 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/auth/presentation/widgets/google_sign_in_button.dart';
 
 /// Login screen matching Figma spec (node-id: 771-1625) for Clube de Leitura D'Elas.
 ///
@@ -160,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onPressed: isLoading ? null : () => _submitEmailPassword(context),
                               ),
                               const Gap16(),
-                              _GoogleSignInButton(
+                              GoogleSignInButton(
                                 isLoading: isLoading,
                                 onPressed: isLoading ? null : () => _submitGoogleAuth(context),
                               ),
@@ -190,73 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _GoogleSignInButton extends StatelessWidget {
-  const _GoogleSignInButton({
-    required this.onPressed,
-    this.isLoading = false,
-  });
-
-  final VoidCallback? onPressed;
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final typography = context.text;
-    final l10n = context.l10n;
-    final borderRadius = BorderRadius.circular(999.0);
-
-    return Container(
-      height: 48.0,
-      decoration: BoxDecoration(
-        color: colors.bgDefault,
-        borderRadius: borderRadius,
-        border: Border.all(color: colors.borderDefault, width: 1.0),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: borderRadius,
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          borderRadius: borderRadius,
-          onTap: onPressed,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (isLoading)
-                  SizedBox(
-                    width: 16.0,
-                    height: 16.0,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(colors.textDefault),
-                    ),
-                  )
-                else ...[
-                  SvgPicture.asset(
-                    'assets/icons/google_icon.svg',
-                    width: 14.0,
-                    height: 14.0,
-                  ),
-                  const Gap12(),
-                  Text(
-                    l10n.signInWithGoogle,
-                    style: typography.labelButton.copyWith(
-                      color: colors.textDefault,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
         ),
       ),
     );
