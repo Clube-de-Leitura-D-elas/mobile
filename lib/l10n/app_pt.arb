@@ -124,4 +124,9 @@
   "@passwordRequiredError": {
     "description": "Mensagem de validação de senha obrigatória"
   }
+  "nextMeeting": "Próximo encontro",
+  "@nextMeeting": {
+    "description": "Mensagem de próximo encontro"
+  }
+
 }

@@ -106,6 +106,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get passwordRequiredError => 'Por favor, informe sua senha';
+
+  @override
+  String get nextMeeting => 'Próximo encontro';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

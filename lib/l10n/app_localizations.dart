@@ -282,6 +282,9 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Por favor, informe sua senha'**
   String get passwordRequiredError;
+
+
+  String get nextMeeting;
 }
 
 class _AppLocalizationsDelegate
