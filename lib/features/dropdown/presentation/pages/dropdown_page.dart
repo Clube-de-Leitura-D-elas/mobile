@@ -4,6 +4,7 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/dropdown/presentation/cubit/dropdown_cubit.dart';
 import 'package:mobile/features/dropdown/presentation/cubit/dropdown_state.dart';
+import 'package:mobile/design_system/widgets/app_dropdown.dart';
 
 class DropdownPreviewPage extends StatelessWidget {
   const DropdownPreviewPage({super.key});
