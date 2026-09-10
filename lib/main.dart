@@ -16,13 +16,9 @@ class DropdownTestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
-      // Design System
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-
-      // Localização
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -31,7 +27,6 @@ class DropdownTestApp extends StatelessWidget {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt', 'BR'),
-
       home: const DropdownTestScreen(),
     );
   }
@@ -77,13 +72,6 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Teste do Dropdown',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-
-            const SizedBox(height: 24),
-
             AppDropdown<String>(
               label: 'Gênero',
               initialSelection: selectedGenre,
@@ -94,9 +82,7 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
                 });
               },
             ),
-
             const SizedBox(height: 32),
-
             AppDropdown<String>(
               label: 'Desabilitado',
               initialSelection: l10n.genreRomance,
@@ -104,9 +90,7 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
               enabled: false,
               onSelected: (_) {},
             ),
-
             const SizedBox(height: 32),
-
             Text(
               'Selecionado: ${selectedGenre ?? '-'}',
             ),
