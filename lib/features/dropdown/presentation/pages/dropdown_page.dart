@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/design_system/widgets/app_dropdown.dart';
 import 'package:mobile/features/dropdown/presentation/cubit/dropdown_cubit.dart';
 import 'package:mobile/features/dropdown/presentation/cubit/dropdown_state.dart';
-import 'package:mobile/design_system/widgets/app_dropdown.dart';
 
 class DropdownPreviewPage extends StatelessWidget {
   const DropdownPreviewPage({super.key});
@@ -26,11 +26,27 @@ class _DropdownPreviewView extends StatelessWidget {
     final colors = context.colors;
     final text = context.text;
     final spacing = context.spacing;
+    final l10n = context.l10n;
+
+    final genreEntries = [
+      DropdownMenuEntry<String>(
+        value: l10n.genreRomance,
+        label: l10n.genreRomance,
+      ),
+      DropdownMenuEntry<String>(
+        value: l10n.genreFantasy,
+        label: l10n.genreFantasy,
+      ),
+      DropdownMenuEntry<String>(
+        value: l10n.genreSuspense,
+        label: l10n.genreSuspense,
+      ),
+    ];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context.l10n.nextMeeting,
+          l10n.nextMeeting,
           style: text.headingH3.copyWith(
             color: colors.textBrand,
           ),
@@ -49,40 +65,37 @@ class _DropdownPreviewView extends StatelessWidget {
                     color: colors.textDefault,
                   ),
                 ),
-                const Gap8(),
+                SizedBox(height: spacing.s8),
                 Text(
                   'Teste do componente',
                   style: text.bodyDefault.copyWith(
                     color: colors.textMuted,
                   ),
                 ),
-                const Gap24(),
+                SizedBox(height: spacing.s24),
                 AppDropdown<String>(
-                  label: 'Status',
-                  items: const [
-                    'Todos',
-                    'Ativos',
-                    'Inativos',
-                  ],
-                  value: state.selectedValue,
-                  onChanged: (value) {
+                  label: 'Gênero',
+                  initialSelection: state.selectedValue,
+                  items: genreEntries,
+                  onSelected: (value) {
+                    if (value == null) {
+                      return;
+                    }
+
                     context
                         .read<DropdownPreviewCubit>()
                         .selectValue(value);
                   },
                 ),
-                const Gap32(),
+                SizedBox(height: spacing.s32),
                 AppDropdown<String>(
                   label: 'Desabilitado',
-                  items: const [
-                    'Opção 1',
-                    'Opção 2',
-                  ],
-                  value: 'Opção 1',
+                  initialSelection: l10n.genreRomance,
+                  items: genreEntries,
                   enabled: false,
-                  onChanged: (_) {},
+                  onSelected: (_) {},
                 ),
-                const Gap32(),
+                SizedBox(height: spacing.s32),
                 Text(
                   'Selecionado: ${state.selectedValue ?? '-'}',
                   style: text.bodyDefaultEmphasis.copyWith(

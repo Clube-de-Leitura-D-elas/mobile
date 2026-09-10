@@ -109,6 +109,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get nextMeeting => 'Próximo encontro';
+
+  @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -216,4 +225,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get nextMeeting => 'Próximo encontro';
+
+  @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
 }
