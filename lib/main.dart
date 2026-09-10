@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/widgets/app_dropdown.dart';
 
 void main() {
@@ -31,7 +32,7 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(context.l10n.nextMeeting),
+        title: Text(context.l10n.nextMeeting),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),

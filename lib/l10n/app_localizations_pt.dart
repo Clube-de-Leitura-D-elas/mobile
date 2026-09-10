@@ -213,4 +213,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get passwordRequiredError => 'Por favor, informe sua senha';
+
+  @override
+  String get nextMeeting => 'Próximo encontro';
 }
