@@ -27,10 +27,7 @@ class AppDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.size = AppDropdownSize.md,
     this.itemLabelBuilder,
-  }) : assert(
-          value == null || items.length == 0 || items.contains(value),
-          'value must be null or one of the provided items',
-        );
+  });
 
   final List<T> items;
   final T? value;
@@ -40,6 +37,10 @@ class AppDropdown<T> extends StatefulWidget {
   final bool enabled;
   final AppDropdownSize size;
   final String Function(T item)? itemLabelBuilder;
+
+  bool get hasValidValue {
+    return value == null || items.contains(value);
+  }
 
   @override
   State<AppDropdown<T>> createState() => _AppDropdownState<T>();
@@ -166,6 +167,11 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
+    assert(
+    widget.hasValidValue,
+    'value must be null or one of the provided items',
+  );
+
     final colors = context.colors;
     final typography = context.text;
     final spacing = context.spacing;
