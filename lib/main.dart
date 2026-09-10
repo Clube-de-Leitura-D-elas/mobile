@@ -16,9 +16,13 @@ class DropdownTestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
+      // Design System
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
+
+      // Localização
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -27,6 +31,7 @@ class DropdownTestApp extends StatelessWidget {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt', 'BR'),
+
       home: const DropdownTestScreen(),
     );
   }
@@ -40,47 +45,70 @@ class DropdownTestScreen extends StatefulWidget {
 }
 
 class _DropdownTestScreenState extends State<DropdownTestScreen> {
-  String? selectedValue = 'Todos';
+  String? selectedGenre;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    final genreEntries = [
+      DropdownMenuEntry<String>(
+        value: l10n.genreRomance,
+        label: l10n.genreRomance,
+      ),
+      DropdownMenuEntry<String>(
+        value: l10n.genreFantasy,
+        label: l10n.genreFantasy,
+      ),
+      DropdownMenuEntry<String>(
+        value: l10n.genreSuspense,
+        label: l10n.genreSuspense,
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('proximo encontro'),
+        title: Text(
+          l10n.nextMeeting,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'Teste do Dropdown',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+
+            const SizedBox(height: 24),
+
             AppDropdown<String>(
-              label: 'Status',
-              items: const [
-                'Todos',
-                'Ativos',
-                'Inativos',
-              ],
-              value: selectedValue,
-              onChanged: (value) {
+              label: 'Gênero',
+              initialSelection: selectedGenre,
+              items: genreEntries,
+              onSelected: (value) {
                 setState(() {
-                  selectedValue = value;
+                  selectedGenre = value;
                 });
               },
             ),
+
             const SizedBox(height: 32),
+
             AppDropdown<String>(
               label: 'Desabilitado',
-              items: const [
-                'Opção 1',
-                'Opção 2',
-              ],
-              value: 'Opção 1',
+              initialSelection: l10n.genreRomance,
+              items: genreEntries,
               enabled: false,
-              onChanged: (_) {},
+              onSelected: (_) {},
             ),
+
             const SizedBox(height: 32),
+
             Text(
-              'Selecionado: ${selectedValue ?? '-'}',
+              'Selecionado: ${selectedGenre ?? '-'}',
             ),
           ],
         ),
