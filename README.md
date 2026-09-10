@@ -191,6 +191,29 @@ genhtml coverage/lcov.info -o coverage/html
 
 ---
 
+## 🌿 Branches e commits
+
+Branch padrão: **`develop`**. `main` fica reservada para versões apresentadas aos stakeholders.
+
+Nomeie a branch com o identificador da issue do Linear — assim o Linear vincula branch, PR e issue
+automaticamente:
+
+```
+<type>/CLU-<numero>-<descricao-curta>
+```
+
+Commits seguem [Conventional Commits](https://www.conventionalcommits.org/), em inglês e no
+imperativo:
+
+```
+feat(group): add reading group table with RLS policies
+fix(auth): correct member lookup policy
+```
+
+Types: `feat`, `fix`, `refactor`, `test`, `chore`, `docs`, `ci`.
+
+---
+
 ## 📚 Documentação do Projeto
 
 Para acessar a documentação completa no Wiki, [clique aqui](https://tools.ages.pucrs.br/clube-de-leitura-d-elas/wiki/-/wikis/home).
