@@ -282,6 +282,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Por favor, informe sua senha'**
   String get passwordRequiredError;
+
+  /// Mensagem de feedback de sucesso ao confirmar presença
+  ///
+  /// In pt, this message translates to:
+  /// **'Presença confirmada!'**
+  String get toastSuccessAttendance;
+
+  /// Mensagem de feedback de erro ao salvar
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar. Tente de novo.'**
+  String get toastErrorSave;
+
+  /// Mensagem de alerta quando o encontro não possui local
+  ///
+  /// In pt, this message translates to:
+  /// **'O encontro ainda está sem local.'**
+  String get toastWarningLocation;
+
+  /// Mensagem informativa após avisar as participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'As participantes foram avisadas.'**
+  String get toastInfoNotified;
 }
 
 class _AppLocalizationsDelegate
