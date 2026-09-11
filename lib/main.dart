@@ -43,7 +43,7 @@ class ToastTestPage extends StatelessWidget {
   void _showSuccess(BuildContext context) {
     AppToast.show(
       context,
-      message: context.l10n.confirm,
+      message: context.l10n.toastSuccessAttendance,
       type: AppToastType.success,
     );
   }
@@ -51,7 +51,7 @@ class ToastTestPage extends StatelessWidget {
   void _showError(BuildContext context) {
     AppToast.show(
       context,
-      message: 'Não foi possível salvar. Tente de novo.',
+      message: context.l10n.toastErrorSave,
       type: AppToastType.error,
     );
   }
@@ -59,7 +59,7 @@ class ToastTestPage extends StatelessWidget {
   void _showWarning(BuildContext context) {
     AppToast.show(
       context,
-      message: 'O encontro ainda está sem local.',
+      message: context.l10n.toastWarningLocation,
       type: AppToastType.warning,
     );
   }
@@ -67,7 +67,7 @@ class ToastTestPage extends StatelessWidget {
   void _showInfo(BuildContext context) {
     AppToast.show(
       context,
-      message: 'As participantes foram avisadas.',
+      message: context.l10n.toastInfoNotified,
       type: AppToastType.info,
     );
   }
