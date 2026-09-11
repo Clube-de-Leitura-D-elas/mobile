@@ -25,6 +25,7 @@ dependencies:
   google_sign_in: ^7.2.0
   image_picker: ^1.1.2
   intl: ^0.20.2
+  jovial_svg: ^1.1.30
   shared_preferences: ^2.5.2
   shimmer: ^3.0.0
   sign_in_button: ^3.2.0
@@ -51,3 +52,10 @@ flutter_native_splash:
   android_12:
     image: assets/images/logo.png
     icon_background_color: "#FFFFFF"
+
+flutter:
+  uses-material-design: true
+  generate: true         
+  assets:
+    - assets/icons/si/
+
