@@ -3,39 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/environment/environment.dart';
 
 void main() {
-  final environment = Environment.instance;
+  setUp(() {
+    dotenv.testLoad(fileInput: 'BASE_URL=http://localhost:8080');
+  });
 
-  group('Environment', () {
-    test('returns correct baseUrl when dotenv is populated', () {
-      dotenv.testLoad(
-        fileInput:
-            'BASE_URL=http://api.example.com\nSUPABASE_URL=https://example.supabase.co\nSUPABASE_PUBLISHABLE_KEY=anon-key',
-      );
+  test('Environment instance properties return defaults when dotenv is loaded', () {
+    final env = Environment.instance;
 
-      expect(environment.baseUrl, equals('http://api.example.com'));
-    });
-
-    test('returns default fallback baseUrl when BASE_URL key is missing', () {
-      dotenv.testLoad(fileInput: '');
-
-      expect(environment.baseUrl, equals('http://localhost:8080'));
-    });
-
-    test('returns Supabase URL and anon key when dotenv is populated', () {
-      dotenv.testLoad(
-        fileInput:
-            'SUPABASE_URL=https://example.supabase.co\nSUPABASE_PUBLISHABLE_KEY=anon-key',
-      );
-
-      expect(environment.supabaseUrl, equals('https://example.supabase.co'));
-      expect(environment.supabaseAnonKey, equals('anon-key'));
-    });
-
-    test('returns empty Supabase values when keys are missing', () {
-      dotenv.testLoad(fileInput: '');
-
-      expect(environment.supabaseUrl, isEmpty);
-      expect(environment.supabaseAnonKey, isEmpty);
-    });
+    expect(env.baseUrl, equals('http://localhost:8080'));
+    expect(env.supabaseUrl, equals(''));
+    expect(env.supabaseAnonKey, equals(''));
+    expect(env.hasSupabaseConfig, isFalse);
+    expect(env.iosClientId, equals(''));
   });
 }

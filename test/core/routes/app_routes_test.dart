@@ -4,9 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_with_email_use_case.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
@@ -14,9 +12,7 @@ import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockUserSignInUseCase extends Mock implements UserSignInUseCase {}
-class MockUserSignInWithEmailUseCase extends Mock implements UserSignInWithEmailUseCase {}
-class MockGetUserProfileUseCase extends Mock implements GetUserProfileUseCase {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 class MockSupabaseService extends Mock implements SupabaseService {}
 
 void main() {
@@ -48,9 +44,7 @@ void main() {
   );
 
   setUp(() {
-    final mockSignIn = MockUserSignInUseCase();
-    final mockSignInEmail = MockUserSignInWithEmailUseCase();
-    final mockGetProfile = MockGetUserProfileUseCase();
+    final mockAuthRepo = MockAuthRepository();
     final mockSupabase = MockSupabaseService();
 
     when(() => mockSupabase.currentUser).thenReturn(null);
@@ -58,9 +52,7 @@ void main() {
         .thenAnswer((_) => const Stream.empty());
 
     sessionCubit = SessionCubit(
-      userSignInUseCase: mockSignIn,
-      userSignInWithEmailUseCase: mockSignInEmail,
-      getUserProfileUseCase: mockGetProfile,
+      authRepository: mockAuthRepo,
       supabaseService: mockSupabase,
     );
   });
