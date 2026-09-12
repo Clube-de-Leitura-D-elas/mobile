@@ -147,6 +147,50 @@ void main() {
     });
 
     testWidgets(
+      'Toggles from highlighted back to normal when the initial variant is highlighted',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: AppCard(
+                variant: CardVariant.highlighted,
+                onTap: () {},
+                child: const Text('Conteúdo'),
+              ),
+            ),
+          ),
+        );
+
+        Border borderOf(WidgetTester t) {
+          final ink = t.widget<Ink>(find.byType(Ink));
+          final decoration = ink.decoration as BoxDecoration;
+          return decoration.border as Border;
+        }
+
+        // Estado inicial: já é highlighted.
+        expect(borderOf(tester).top.color, AppColorTokens.light.borderBrand);
+        expect(borderOf(tester).top.width, 1.5);
+
+        // Primeiro clique: alterna para normal (regressão: antes ficava
+        // preso em highlighted, já que ambas as branches retornavam o
+        // mesmo valor quando a variante inicial já era highlighted).
+        await tester.tap(find.byType(InkWell));
+        await tester.pump();
+
+        expect(borderOf(tester).top.color, AppColorTokens.light.borderDefault);
+        expect(borderOf(tester).top.width, 1);
+
+        // Segundo clique: volta pra highlighted.
+        await tester.tap(find.byType(InkWell));
+        await tester.pump();
+
+        expect(borderOf(tester).top.color, AppColorTokens.light.borderBrand);
+        expect(borderOf(tester).top.width, 1.5);
+      },
+    );
+
+    testWidgets(
       'AppCard.titled renders title and support text with the right styles',
       (tester) async {
         await tester.pumpWidget(
