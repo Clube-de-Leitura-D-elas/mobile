@@ -30,9 +30,5 @@
   "createAccountLink": "Primeiro acesso? Crie sua conta aqui",
   "emailRequiredError": "Por favor, informe seu e-mail",
   "emailInvalidError": "Informe um e-mail válido",
-  "passwordRequiredError": "Por favor, informe sua senha",
-  "nextMeeting": "Próximo encontro",
-  "genreRomance": "Romance",
-  "genreFantasy": "Fantasia",
-  "genreSuspense": "Suspense"
+  "passwordRequiredError": "Por favor, informe sua senha"
 }

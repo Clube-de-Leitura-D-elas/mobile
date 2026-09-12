@@ -123,24 +123,5 @@
   "passwordRequiredError": "Por favor, informe sua senha",
   "@passwordRequiredError": {
     "description": "Mensagem de validação de senha obrigatória"
-  },
-  "nextMeeting": "Próximo encontro",
-  "@nextMeeting": {
-  "description": "Mensagem de próximo encontro"
-},
-  "genreRomance": "Romance",
-  "@genreRomance": {
-    "description": "Opção de gênero literário romance"
-  },
-
-  "genreFantasy": "Fantasia",
-  "@genreFantasy": {
-    "description": "Opção de gênero literário fantasia"
-  },
-
-  "genreSuspense": "Suspense",
-  "@genreSuspense": {
-    "description": "Opção de gênero literário suspense"
   }
-
 }

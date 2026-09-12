@@ -31,7 +31,7 @@ You enforce strict boundary separations. Dependencies must always point inward t
 1. **Domain Layer (Core Business Logic):**
     * **Entities:** Pure business objects. Completely isolated from external packages, database schemas, and annotations (except basic data structures or value objects).
     * **Repositories (Interfaces):** Abstract definitions establishing contracts for data operations.
-    * **Use Cases:** Single-responsibility classes that encapsulate specific business rules.
+    * **Use Cases (Optional / By-Necessity):** Single-responsibility classes encapsulating complex business logic, multi-repository orchestration, or cross-feature reusability. For 1:1 pass-through operations, Blocs/Cubits can call Repository interfaces directly. When created, UseCases should be concrete classes utilizing the `call()` callable method pattern.
 2. **Data Layer (Infrastructure & Data Fetching):**
     * **Repository Implementations:** Concrete classes implementing domain repository contracts. Acts as the orchestrator between local and remote data sources.
     * **Data Sources:** Low-level network (Remote) and database/cache (Local) clients.
@@ -74,7 +74,7 @@ lib/
 * **Bloc vs. Cubit:** Prefer `Bloc` for complex, event-driven processes, asynchronous pipelines, or multi-step form sequences. Use `Cubit` for simpler, localized, or strictly linear operations (e.g., toggling UI state, basic fetches).
 * **Granularity:** Build specialized, focused Blocs for specific UI scopes rather than monolithic controllers governing entire features.
 * **States & Events:** Explicitly capture loading, error, success, and empty states. Keep UI layer clean by ensuring no business logic or raw conditional checks leak into widget rendering tree.
-* **DI Integration:** Always manage lifecycle and injection of Blocs via `BlocProvider`. Integrate a global or local `BlocObserver` to log and trace transitions and errors during debugging.
+* **DI Integration & Route Provisioning:** Always manage lifecycle and injection of Blocs via `BlocProvider`. `BlocProvider`s for feature screens must be instantiated inside the route definition builder (`*_routes.dart`) using `serviceLocator`. Screen widgets (`*_screen.dart`) must remain pure presentation components that consume state via `context.read()`, `BlocBuilder`, or `BlocListener` without embedding or wrapping `BlocProvider` internally. **PROHIBITED PATTERN:** Creating duplicate `Screen` + `View` class wrappers in the same file (e.g. `XScreen` wrapping `BlocProvider` around `XView`) is strictly forbidden. Routing files (`*_routes.dart`) are 100% responsible for injecting providers into screens. Integrate a global or local `BlocObserver` to log and trace transitions and errors during debugging.
 
 ### Dependency Injection (DI)
 

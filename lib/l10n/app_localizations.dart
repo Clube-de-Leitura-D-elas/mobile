@@ -282,30 +282,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Por favor, informe sua senha'**
   String get passwordRequiredError;
-
-  /// Mensagem de próximo encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Próximo encontro'**
-  String get nextMeeting;
-
-  /// Opção de gênero literário romance
-  ///
-  /// In pt, this message translates to:
-  /// **'Romance'**
-  String get genreRomance;
-
-  /// Opção de gênero literário fantasia
-  ///
-  /// In pt, this message translates to:
-  /// **'Fantasia'**
-  String get genreFantasy;
-
-  /// Opção de gênero literário suspense
-  ///
-  /// In pt, this message translates to:
-  /// **'Suspense'**
-  String get genreSuspense;
 }
 
 class _AppLocalizationsDelegate
