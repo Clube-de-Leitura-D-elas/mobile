@@ -6,6 +6,19 @@
 
 <!-- Descreva a mudança em uma ou duas frases. -->
 
+## Resultado Visual
+
+<table>
+  <tr>
+    <th>Código</th>
+    <th>Figma</th>
+  </tr>
+  <tr>
+    <td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJ4YDOSORy2THlyJF4oFMwPEfkZYzPmrdGenK3VNHTuw&s=10" width=300 /></td>
+    <td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJ4YDOSORy2THlyJF4oFMwPEfkZYzPmrdGenK3VNHTuw&s=10" width=300 /></td>
+  </tr>
+</table>
+
 ## Por quê?
 
 <!-- Contexto e motivação. Se a issue já explica, pode só referenciar. -->

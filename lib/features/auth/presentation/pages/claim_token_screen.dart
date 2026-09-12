@@ -1,40 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/auth/domain/usecases/claim_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_state.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 
-class ClaimTokenScreen extends StatelessWidget {
+class ClaimTokenScreen extends StatefulWidget {
   final String userId;
 
   const ClaimTokenScreen({super.key, required this.userId});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ClaimTokenCubit(
-        claimProfileUseCase: serviceLocator<ClaimProfileUseCase>(),
-        getUserProfileUseCase: serviceLocator<GetUserProfileUseCase>(),
-      ),
-      child: ClaimTokenView(userId: userId),
-    );
-  }
+  State<ClaimTokenScreen> createState() => _ClaimTokenScreenState();
 }
 
-class ClaimTokenView extends StatefulWidget {
-  final String userId;
-
-  const ClaimTokenView({super.key, required this.userId});
-
-  @override
-  State<ClaimTokenView> createState() => _ClaimTokenViewState();
-}
-
-class _ClaimTokenViewState extends State<ClaimTokenView> {
+class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
   final _tokenController = TextEditingController();
 
   @override
