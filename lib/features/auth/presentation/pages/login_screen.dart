@@ -63,7 +63,26 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: colors.bgDefault,
       body: SafeArea(
-        child: BlocBuilder<SessionCubit, SessionState>(
+        child: BlocConsumer<SessionCubit, SessionState>(
+          listener: (context, state) {
+            if (state is SessionError) {
+              if (state.message.toLowerCase().contains('email not confirmed')) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Por favor, confirme seu e-mail antes de logar.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            }
+          },
           builder: (context, state) {
             final isLoading = state is LoadingSession;
 
