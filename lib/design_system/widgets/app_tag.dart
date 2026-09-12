@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/design_system/design_system.dart';
+
+import '../tokens/color_tokens.dart';
+import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 
 enum TagVariant { primary, neutral }
 
