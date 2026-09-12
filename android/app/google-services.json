@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "86038929253",
+    "project_id": "clube-de-leitura-delas-ee197",
+    "storage_bucket": "clube-de-leitura-delas-ee197.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86038929253:android:8e84d1f500d62f384ccb8c",
+        "android_client_info": {
+          "package_name": "com.clubedeleituradelas.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWrsUfD_36qY22MHqcRr8KyaSTXShtlLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

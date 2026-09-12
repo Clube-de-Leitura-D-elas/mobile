@@ -83,5 +83,45 @@
   "errorInternalServer": "Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.",
   "@errorInternalServer": {
     "description": "Mensagem de erro para erro interno no servidor (HTTP 500)"
+  },
+  "loginTitle": "Faça o seu login",
+  "@loginTitle": {
+    "description": "Título principal da tela de login"
+  },
+  "emailLabel": "E-mail",
+  "@emailLabel": {
+    "description": "Rótulo para campo de e-mail"
+  },
+  "emailHint": "seu@email.com",
+  "@emailHint": {
+    "description": "Texto de dica para campo de e-mail"
+  },
+  "passwordLabel": "Senha",
+  "@passwordLabel": {
+    "description": "Rótulo para campo de senha"
+  },
+  "forgotPasswordLink": "Esqueci minha senha",
+  "@forgotPasswordLink": {
+    "description": "Link de esqueci minha senha"
+  },
+  "signInWithGoogle": "Entrar com Google",
+  "@signInWithGoogle": {
+    "description": "Botão de login social com Google"
+  },
+  "createAccountLink": "Primeiro acesso? Crie sua conta aqui",
+  "@createAccountLink": {
+    "description": "Link para criação de nova conta"
+  },
+  "emailRequiredError": "Por favor, informe seu e-mail",
+  "@emailRequiredError": {
+    "description": "Mensagem de validação de e-mail obrigatório"
+  },
+  "emailInvalidError": "Informe um e-mail válido",
+  "@emailInvalidError": {
+    "description": "Mensagem de validação de formato de e-mail inválido"
+  },
+  "passwordRequiredError": "Por favor, informe sua senha",
+  "@passwordRequiredError": {
+    "description": "Mensagem de validação de senha obrigatória"
   }
 }
