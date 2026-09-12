@@ -66,8 +66,11 @@ class AppCard extends StatefulWidget {
 class _AppCardState extends State<AppCard> {
   bool _isToggled = false;
 
-  CardVariant get _effectiveVariant =>
-      _isToggled ? CardVariant.highlighted : widget.variant;
+  CardVariant get _effectiveVariant => _isToggled
+      ? (widget.variant == CardVariant.normal
+            ? CardVariant.highlighted
+            : CardVariant.normal)
+      : widget.variant;
 
   Color _getBorderColor(AppColorTokens colors) {
     switch (_effectiveVariant) {
