@@ -4,4 +4,6 @@ export 'tokens/spacing_tokens.dart';
 export 'tokens/typography_tokens.dart';
 export 'widgets/app_button.dart';
 export 'widgets/app_card.dart';
+export 'widgets/app_tag.dart';
+export 'widgets/app_text_field.dart';
 export 'widgets/gap.dart';
