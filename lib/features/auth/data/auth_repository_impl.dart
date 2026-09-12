@@ -72,6 +72,26 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Result<UserEntity, UserFailure>> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    final response = await supabaseService.signUpWithPassword(
+      email: email,
+      password: password,
+    );
+
+    if (response case Failure(:final failure)) {
+      return Failure(UserFailure(message: failure.message));
+    }
+
+    final supabaseUser = response.unwrap();
+    final userEntity = UserModel.fromSupabase(supabaseUser);
+
+    return Success(userEntity);
+  }
+
+  @override
   Future<Result<void, UserFailure>> logOut() async {
     await supabaseService.signOut();
     await googleSignInClient.signOut();
