@@ -123,24 +123,5 @@
   "passwordRequiredError": "Por favor, informe sua senha",
   "@passwordRequiredError": {
     "description": "Mensagem de validação de senha obrigatória"
-  },
-  "toastSuccessAttendance": "Presença confirmada!",
-"@toastSuccessAttendance": {
-  "description": "Mensagem de feedback de sucesso ao confirmar presença"
-},
-
-"toastErrorSave": "Não foi possível salvar. Tente de novo.",
-"@toastErrorSave": {
-  "description": "Mensagem de feedback de erro ao salvar"
-},
-
-"toastWarningLocation": "O encontro ainda está sem local.",
-"@toastWarningLocation": {
-  "description": "Mensagem de alerta quando o encontro não possui local"
-},
-
-"toastInfoNotified": "As participantes foram avisadas.",
-"@toastInfoNotified": {
-  "description": "Mensagem informativa após avisar as participantes"
-}
+  }
 }

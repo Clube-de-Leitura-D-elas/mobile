@@ -30,9 +30,5 @@
   "createAccountLink": "Primeiro acesso? Crie sua conta aqui",
   "emailRequiredError": "Por favor, informe seu e-mail",
   "emailInvalidError": "Informe um e-mail válido",
-  "passwordRequiredError": "Por favor, informe sua senha",
-  "toastSuccessAttendance": "Presença confirmada!",
-  "toastErrorSave": "Não foi possível salvar. Tente de novo.",
-  "toastWarningLocation": "O encontro ainda está sem local.",
-  "toastInfoNotified": "As participantes foram avisadas."
+  "passwordRequiredError": "Por favor, informe sua senha"
 }

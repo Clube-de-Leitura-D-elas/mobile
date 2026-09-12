@@ -106,18 +106,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get passwordRequiredError => 'Por favor, informe sua senha';
-
-  @override
-  String get toastSuccessAttendance => 'Presença confirmada!';
-
-  @override
-  String get toastErrorSave => 'Não foi possível salvar. Tente de novo.';
-
-  @override
-  String get toastWarningLocation => 'O encontro ainda está sem local.';
-
-  @override
-  String get toastInfoNotified => 'As participantes foram avisadas.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -222,16 +210,4 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get passwordRequiredError => 'Por favor, informe sua senha';
-
-  @override
-  String get toastSuccessAttendance => 'Presença confirmada!';
-
-  @override
-  String get toastErrorSave => 'Não foi possível salvar. Tente de novo.';
-
-  @override
-  String get toastWarningLocation => 'O encontro ainda está sem local.';
-
-  @override
-  String get toastInfoNotified => 'As participantes foram avisadas.';
 }
