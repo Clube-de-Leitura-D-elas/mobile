@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/design_system/widgets/app_tag.dart';
 
 void main() {
   group('AppTag', () {
