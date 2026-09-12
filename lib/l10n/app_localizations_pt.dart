@@ -76,6 +76,36 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get errorInternalServer =>
       'Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.';
+
+  @override
+  String get loginTitle => 'Faça o seu login';
+
+  @override
+  String get emailLabel => 'E-mail';
+
+  @override
+  String get emailHint => 'seu@email.com';
+
+  @override
+  String get passwordLabel => 'Senha';
+
+  @override
+  String get forgotPasswordLink => 'Esqueci minha senha';
+
+  @override
+  String get signInWithGoogle => 'Entrar com Google';
+
+  @override
+  String get createAccountLink => 'Primeiro acesso? Crie sua conta aqui';
+
+  @override
+  String get emailRequiredError => 'Por favor, informe seu e-mail';
+
+  @override
+  String get emailInvalidError => 'Informe um e-mail válido';
+
+  @override
+  String get passwordRequiredError => 'Por favor, informe sua senha';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -150,4 +180,34 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get errorInternalServer =>
       'Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.';
+
+  @override
+  String get loginTitle => 'Faça o seu login';
+
+  @override
+  String get emailLabel => 'E-mail';
+
+  @override
+  String get emailHint => 'seu@email.com';
+
+  @override
+  String get passwordLabel => 'Senha';
+
+  @override
+  String get forgotPasswordLink => 'Esqueci minha senha';
+
+  @override
+  String get signInWithGoogle => 'Entrar com Google';
+
+  @override
+  String get createAccountLink => 'Primeiro acesso? Crie sua conta aqui';
+
+  @override
+  String get emailRequiredError => 'Por favor, informe seu e-mail';
+
+  @override
+  String get emailInvalidError => 'Informe um e-mail válido';
+
+  @override
+  String get passwordRequiredError => 'Por favor, informe sua senha';
 }
