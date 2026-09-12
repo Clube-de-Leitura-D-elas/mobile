@@ -158,6 +158,44 @@ class SupabaseServiceImpl implements SupabaseService {
   }
 
   @override
+  Future<Result<User, SupabaseFailure>> signUpWithPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      debugPrint('[SupabaseService] Signing up with password for email: $email');
+      final response = await _client.auth.signUp(
+        email: email,
+        password: password,
+      );
+
+      final user = response.user;
+      if (user == null) {
+        return const Failure(
+          AuthSupabaseFailure(message: 'Usuário nulo após registro'),
+        );
+      }
+
+      return Success(user);
+    } on AuthException catch (e) {
+      debugPrint('[SupabaseService] AuthException during sign up: ${e.message}');
+      return Failure(
+        AuthSupabaseFailure(
+          message: e.message,
+          code: e.statusCode,
+        ),
+      );
+    } catch (e) {
+      debugPrint('[SupabaseService] Unexpected error during sign up: $e');
+      return Failure(
+        UnknownSupabaseFailure(
+          message: 'Erro inesperado ao realizar registro: $e',
+        ),
+      );
+    }
+  }
+
+  @override
   Future<Result<void, SupabaseFailure>> signOut() async {
     try {
       debugPrint('[SupabaseService] Signing out user');

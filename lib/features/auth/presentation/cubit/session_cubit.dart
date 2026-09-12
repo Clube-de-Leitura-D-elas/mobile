@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -102,6 +103,37 @@ class SessionCubit extends Cubit<SessionState> {
     }
 
     await checkUserProfile(currentUser.id, userEntity);
+  }
+
+  Future<Result<void, UserFailure>> signUpWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    debugPrint('[SessionCubit] Triggering Email+Password sign up for email: $email');
+    emit(const LoadingSession());
+
+    final result = await authRepository.signUpWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    if (result case Failure(:final failure)) {
+      debugPrint('[SessionCubit] Email Sign-Up failed: ${failure.message}');
+      emit(SessionError(message: failure.message));
+      emit(const GuestSession());
+      return Failure(failure);
+    }
+
+    final userEntity = result.unwrap();
+    final currentUser = supabaseService.currentUser;
+    debugPrint('[SessionCubit] Email Sign-Up success for user: ${currentUser?.id}');
+    if (currentUser == null) {
+      emit(const GuestSession());
+      return const Failure(UserFailure(message: 'Usuário nulo após registro'));
+    }
+
+    await checkUserProfile(currentUser.id, userEntity);
+    return const Success(null);
   }
 
   Future<void> checkUserProfile(String userId, [UserEntity? userEntity]) async {
