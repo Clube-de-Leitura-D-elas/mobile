@@ -72,19 +72,27 @@ void main() {
       expect(cubit.state.isValid, isFalse);
     });
 
-    test('copyWith copies state with updated values', () {
-      const state = PasswordValidationState();
+    test('copyWith copies state with updated values and preserves unset values', () {
+      const state = PasswordValidationState(hasMinLength: true);
       final updated = state.copyWith(
-        hasMinLength: true,
         hasUpperCase: true,
+      );
+
+      expect(updated.hasMinLength, isTrue);
+      expect(updated.hasUpperCase, isTrue);
+      expect(updated.hasLowerCase, isFalse);
+      expect(updated.hasNumber, isFalse);
+      expect(updated.passwordsMatch, isFalse);
+      expect(updated.isConfirmEmpty, isTrue);
+
+      final updatedAll = updated.copyWith(
         hasLowerCase: true,
         hasNumber: true,
         passwordsMatch: true,
         isConfirmEmpty: false,
       );
-
-      expect(updated.isValid, isTrue);
-      expect(updated.props.length, equals(6));
+      expect(updatedAll.isValid, isTrue);
+      expect(updatedAll.props.length, equals(6));
     });
   });
 }

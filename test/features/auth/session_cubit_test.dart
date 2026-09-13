@@ -240,6 +240,142 @@ void main() {
       verify(() => mockSupabaseService.signOut()).called(1);
     });
 
+    blocTest<SessionCubit, SessionState>(
+      'emits [LoadingSession, AuthenticatedSession] when authenticateWithEmail succeeds and currentUser is present',
+      build: () {
+        when(
+          () => mockAuthRepository.signInWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          ),
+        ).thenAnswer((_) async => const Success(testUserEntity));
+        when(() => mockSupabaseService.currentUser).thenReturn(mockSupabaseUser);
+        when(() => mockAuthRepository.getUserProfile('user-123'))
+            .thenAnswer((_) async => const Success(testProfile));
+        return sessionCubit;
+      },
+      act: (cubit) => cubit.authenticateWithEmail(
+        email: 'test@example.com',
+        password: 'password123',
+      ),
+      expect: () => [
+        const LoadingSession(),
+        const AuthenticatedSession(user: testUserEntity, profile: testProfile),
+      ],
+    );
+
+    blocTest<SessionCubit, SessionState>(
+      'emits [LoadingSession, SessionError, GuestSession] when signUpWithEmail fails',
+      build: () {
+        when(
+          () => mockAuthRepository.signUpWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(UserFailure(message: 'Sign up failed')),
+        );
+        return sessionCubit;
+      },
+      act: (cubit) => cubit.signUpWithEmail(
+        email: 'test@example.com',
+        password: 'password123',
+      ),
+      expect: () => [
+        const LoadingSession(),
+        const SessionError(message: 'Sign up failed'),
+        const GuestSession(),
+      ],
+    );
+
+    blocTest<SessionCubit, SessionState>(
+      'emits [LoadingSession, GuestSession] when signUpWithEmail succeeds but currentUser is null',
+      build: () {
+        when(
+          () => mockAuthRepository.signUpWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          ),
+        ).thenAnswer((_) async => const Success(testUserEntity));
+        when(() => mockSupabaseService.currentUser).thenReturn(null);
+        return sessionCubit;
+      },
+      act: (cubit) => cubit.signUpWithEmail(
+        email: 'test@example.com',
+        password: 'password123',
+      ),
+      expect: () => [
+        const LoadingSession(),
+        const GuestSession(),
+      ],
+    );
+
+    blocTest<SessionCubit, SessionState>(
+      'emits [LoadingSession, AuthenticatedSession] when signUpWithEmail succeeds with currentUser',
+      build: () {
+        when(
+          () => mockAuthRepository.signUpWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          ),
+        ).thenAnswer((_) async => const Success(testUserEntity));
+        when(() => mockSupabaseService.currentUser).thenReturn(mockSupabaseUser);
+        when(() => mockAuthRepository.getUserProfile('user-123'))
+            .thenAnswer((_) async => const Success(testProfile));
+        return sessionCubit;
+      },
+      act: (cubit) => cubit.signUpWithEmail(
+        email: 'test@example.com',
+        password: 'password123',
+      ),
+      expect: () => [
+        const LoadingSession(),
+        const AuthenticatedSession(user: testUserEntity, profile: testProfile),
+      ],
+    );
+
+    test('initial currentUser check triggers checkUserProfile when currentUser is present', () async {
+      when(() => mockSupabaseService.currentUser).thenReturn(mockSupabaseUser);
+      when(() => mockAuthRepository.getUserProfile('user-123'))
+          .thenAnswer((_) async => const Success(testProfile));
+
+      final activeCubit = SessionCubit(
+        authRepository: mockAuthRepository,
+        supabaseService: mockSupabaseService,
+      );
+
+      await pumpEventQueue();
+
+      verify(() => mockAuthRepository.getUserProfile('user-123')).called(1);
+      await activeCubit.close();
+    });
+
+    test('listens to authStateChanges signedIn event and triggers checkUserProfile', () async {
+      final controller = StreamController<AuthState>();
+      when(() => mockSupabaseService.authStateChanges)
+          .thenAnswer((_) => controller.stream);
+      when(() => mockAuthRepository.getUserProfile('user-123'))
+          .thenAnswer((_) async => const Success(testProfile));
+
+      final newCubit = SessionCubit(
+        authRepository: mockAuthRepository,
+        supabaseService: mockSupabaseService,
+      );
+
+      final mockSession = Session(
+        accessToken: 'token',
+        tokenType: 'bearer',
+        user: mockSupabaseUser,
+      );
+
+      controller.add(AuthState(AuthChangeEvent.signedIn, mockSession));
+      await pumpEventQueue();
+
+      verify(() => mockAuthRepository.getUserProfile('user-123')).called(1);
+      await newCubit.close();
+      await controller.close();
+    });
+
     test('listens to authStateChanges signedOut event and emits GuestSession', () async {
       final controller = StreamController<AuthState>();
       when(() => mockSupabaseService.authStateChanges)
