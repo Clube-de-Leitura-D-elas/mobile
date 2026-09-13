@@ -3,9 +3,16 @@
 // tela é só um harness de visualização com setState local, não faz parte
 // da árvore de features do app.
 //
+// Todas as strings vêm de context.l10n (AppLocalizations), igual uma
+// tela real faria — nada hardcoded aqui além dos textos que descrevem
+// cada variante de demonstração.
+//
 // Rodar com: flutter run -t lib/dropdown_preview_main.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 
 void main() => runApp(const DropdownPreviewApp());
 
@@ -20,6 +27,14 @@ class DropdownPreviewApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: const _DropdownPreviewPage(),
     );
   }
@@ -34,12 +49,20 @@ class _DropdownPreviewPage extends StatefulWidget {
 
 class _DropdownPreviewPageState extends State<_DropdownPreviewPage> {
   String? _genero;
-  String? _generoComItem = 'Romance';
-
-  static const _generos = ['Romance', 'Fantasia', 'Suspense', 'Não-ficção'];
+  String? _generoComItem;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final generos = [
+      l10n.genreRomance,
+      l10n.genreFantasy,
+      l10n.genreSuspense,
+      l10n.genreNonFiction,
+    ];
+
+    _generoComItem ??= l10n.genreRomance;
+
     return Scaffold(
       appBar: AppBar(title: const Text('AppDropdown - Preview')),
       body: SingleChildScrollView(
@@ -48,35 +71,35 @@ class _DropdownPreviewPageState extends State<_DropdownPreviewPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppDropdown<String>(
-              label: 'Gênero (vazio)',
-              hintText: 'Selecione um gênero',
-              items: _generos,
+              label: l10n.genreFieldLabel,
+              hintText: l10n.genreFieldHint,
+              items: generos,
               value: _genero,
               onChanged: (value) => setState(() => _genero = value),
             ),
             const SizedBox(height: 24.0),
             AppDropdown<String>(
-              label: 'Gênero (com item selecionado)',
-              hintText: 'Selecione um gênero',
-              items: _generos,
+              label: l10n.genreFieldLabel,
+              hintText: l10n.genreFieldHint,
+              items: generos,
               value: _generoComItem,
               onChanged: (value) => setState(() => _generoComItem = value),
             ),
             const SizedBox(height: 24.0),
             AppDropdown<String>(
-              label: 'Gênero (desabilitado)',
-              hintText: 'Selecione um gênero',
-              items: _generos,
-              value: 'Romance',
+              label: l10n.genreFieldLabel,
+              hintText: l10n.genreFieldHint,
+              items: generos,
+              value: l10n.genreRomance,
               enabled: false,
               onChanged: (_) {},
             ),
             const SizedBox(height: 24.0),
             AppDropdown<String>(
-              label: 'Gênero (tamanho Lg)',
-              hintText: 'Selecione um gênero',
+              label: l10n.genreFieldLabel,
+              hintText: l10n.genreFieldHint,
               size: AppDropdownSize.lg,
-              items: _generos,
+              items: generos,
               value: _generoComItem,
               onChanged: (value) => setState(() => _generoComItem = value),
             ),
