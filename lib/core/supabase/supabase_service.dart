@@ -24,5 +24,10 @@ abstract class SupabaseService {
     required String password,
   });
 
+  Future<Result<User, SupabaseFailure>> signUpWithPassword({
+    required String email,
+    required String password,
+  });
+
   Future<Result<void, SupabaseFailure>> signOut();
 }
