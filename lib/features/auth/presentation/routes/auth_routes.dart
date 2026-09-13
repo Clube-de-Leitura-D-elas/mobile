@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
@@ -15,17 +16,23 @@ abstract class AuthRoutes {
   static List<RouteBase> get routes => [
         GoRoute(
           path: login,
-          builder: (context, state) => const LoginScreen(),
+          pageBuilder: (context, state) => AppPageTransitions.createFadePage(
+            state: state,
+            child: const LoginScreen(),
+          ),
         ),
         GoRoute(
           path: claimToken,
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final userId = state.extra as String? ?? '';
-            return BlocProvider(
-              create: (context) => ClaimTokenCubit(
-                authRepository: serviceLocator<AuthRepository>(),
+            return AppPageTransitions.createPushPage(
+              state: state,
+              child: BlocProvider(
+                create: (context) => ClaimTokenCubit(
+                  authRepository: serviceLocator<AuthRepository>(),
+                ),
+                child: ClaimTokenScreen(userId: userId),
               ),
-              child: ClaimTokenScreen(userId: userId),
             );
           },
         ),
@@ -41,6 +48,10 @@ abstract class AuthRoutes {
     final isClaim = state.matchedLocation == claimToken;
 
     if (sessionState is LoadingSession) {
+      // Avoid white screen redirect when performing auth loading on an active auth screen
+      if (isLogin || isClaim) {
+        return null;
+      }
       return '/splash';
     }
 
@@ -65,3 +76,4 @@ abstract class AuthRoutes {
     return null;
   }
 }
+

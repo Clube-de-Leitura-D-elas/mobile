@@ -223,15 +223,18 @@ class AppButton extends StatelessWidget {
 
   Widget _buildChild(BuildContext context, Color foregroundColor) {
     if (isLoading) {
-      return SizedBox(
-        width: 16.0,
-        height: 16.0,
-        child: CircularProgressIndicator(
-          strokeWidth: 2.0,
-          valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+      return Center(
+        child: SizedBox(
+          width: 16.0,
+          height: 16.0,
+          child: CircularProgressIndicator(
+            strokeWidth: 2.0,
+            valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+          ),
         ),
       );
     }
+
 
     final labelWidget = Text(
       label,

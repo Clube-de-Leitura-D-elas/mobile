@@ -67,139 +67,153 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (context, state) {
             final isLoading = state is LoadingSession;
 
-            return CustomScrollView(
-              slivers: [
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Gap(104),
-                        // Title & Form Block (#879:1799)
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: spacing.s16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                l10n.loginTitle,
-                                textAlign: TextAlign.center,
-                                style: typography.headingH1.copyWith(
-                                  color: colors.textDefault,
-                                ),
+            return Stack(
+              children: [
+                CustomScrollView(
+                  slivers: [
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Gap(104),
+                            // Title & Form Block (#879:1799)
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: spacing.s16,
                               ),
-                              const Gap32(),
-                              AppTextField(
-                                label: l10n.emailLabel,
-                                hintText: l10n.emailHint,
-                                controller: _emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                enabled: !isLoading,
-                                validator: (value) {
-                                  final email = value?.trim() ?? '';
-                                  if (email.isEmpty) {
-                                    return l10n.emailRequiredError;
-                                  }
-                                  if (!RegExp(
-                                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                  ).hasMatch(email)) {
-                                    return l10n.emailInvalidError;
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const Gap16(),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
+                                  Text(
+                                    l10n.loginTitle,
+                                    textAlign: TextAlign.center,
+                                    style: typography.headingH1.copyWith(
+                                      color: colors.textDefault,
+                                    ),
+                                  ),
+                                  const Gap32(),
                                   AppTextField(
-                                    label: l10n.passwordLabel,
-                                    controller: _passwordController,
-                                    obscureText: true,
-                                    textInputAction: TextInputAction.done,
-                                    onSubmitted: (_) =>
-                                        _submitEmailPassword(context),
+                                    label: l10n.emailLabel,
+                                    hintText: l10n.emailHint,
+                                    controller: _emailController,
+                                    keyboardType: TextInputType.emailAddress,
+                                    textInputAction: TextInputAction.next,
                                     enabled: !isLoading,
                                     validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return l10n.passwordRequiredError;
+                                      final email = value?.trim() ?? '';
+                                      if (email.isEmpty) {
+                                        return l10n.emailRequiredError;
+                                      }
+                                      if (!RegExp(
+                                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                      ).hasMatch(email)) {
+                                        return l10n.emailInvalidError;
                                       }
                                       return null;
                                     },
                                   ),
-                                  const Gap4(),
-                                  GestureDetector(
-                                    onTap: isLoading
+                                  const Gap16(),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      AppTextField(
+                                        label: l10n.passwordLabel,
+                                        controller: _passwordController,
+                                        obscureText: true,
+                                        textInputAction: TextInputAction.done,
+                                        onSubmitted: (_) =>
+                                            _submitEmailPassword(context),
+                                        enabled: !isLoading,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return l10n.passwordRequiredError;
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      const Gap4(),
+                                      GestureDetector(
+                                        onTap: isLoading
+                                            ? null
+                                            : widget.onForgotPasswordPressed,
+                                        child: Text(
+                                          l10n.forgotPasswordLink,
+                                          style: typography.labelTag.copyWith(
+                                            color: colors.textBrand,
+                                            height: 24.0 / 12.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Flexible space pushing actions block down towards bottom
+                            const Spacer(),
+
+                            // Actions Block (#879:1797) - 35px horizontal padding (320px width on 390px frame)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 35.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  AppButton.primary(
+                                    label: l10n.continueAction,
+                                    onPressed: isLoading
                                         ? null
-                                        : widget.onForgotPasswordPressed,
-                                    child: Text(
-                                      l10n.forgotPasswordLink,
-                                      style: typography.labelTag.copyWith(
-                                        color: colors.textBrand,
-                                        height: 24.0 / 12.0,
+                                        : () => _submitEmailPassword(context),
+                                  ),
+                                  const Gap16(),
+                                  GoogleSignInButton(
+                                    onPressed: isLoading
+                                        ? null
+                                        : () => _submitGoogleAuth(context),
+                                  ),
+                                  const Gap16(),
+                                  Center(
+                                    child: GestureDetector(
+                                      onTap: isLoading
+                                          ? null
+                                          : widget.onCreateAccountPressed,
+                                      child: Text(
+                                        l10n.createAccountLink,
+                                        textAlign: TextAlign.center,
+                                        style: typography.bodySmallEmphasis
+                                            .copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: colors.textBrand,
+                                              height: 24.0 / 14.0,
+                                            ),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            const Gap(48),
+                          ],
                         ),
-
-                        // Flexible space pushing actions block down towards bottom
-                        const Spacer(),
-
-                        // Actions Block (#879:1797) - 35px horizontal padding (320px width on 390px frame)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 35.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              AppButton.primary(
-                                label: l10n.continueAction,
-                                isLoading: isLoading,
-                                onPressed: isLoading
-                                    ? null
-                                    : () => _submitEmailPassword(context),
-                              ),
-                              const Gap16(),
-                              GoogleSignInButton(
-                                isLoading: isLoading,
-                                onPressed: isLoading
-                                    ? null
-                                    : () => _submitGoogleAuth(context),
-                              ),
-                              const Gap16(),
-                              Center(
-                                child: GestureDetector(
-                                  onTap: isLoading
-                                      ? null
-                                      : widget.onCreateAccountPressed,
-                                  child: Text(
-                                    l10n.createAccountLink,
-                                    textAlign: TextAlign.center,
-                                    style: typography.bodySmallEmphasis
-                                        .copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: colors.textBrand,
-                                          height: 24.0 / 14.0,
-                                        ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (isLoading)
+                  Positioned.fill(
+                    child: Container(
+                      color: colors.bgDefault.withValues(alpha: 0.6),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(colors.actionPrimary),
                         ),
-                        const Gap(48),
-                      ],
+                      ),
                     ),
                   ),
-                ),
               ],
             );
           },
@@ -208,3 +222,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
