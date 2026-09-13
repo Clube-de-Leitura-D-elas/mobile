@@ -2,31 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/auth/domain/usecases/get_user_profile_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_use_case.dart';
-import 'package:mobile/features/auth/domain/usecases/user_sign_in_with_email_use_case.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockUserSignInUseCase extends Mock implements UserSignInUseCase {}
-class MockUserSignInWithEmailUseCase extends Mock implements UserSignInWithEmailUseCase {}
-class MockGetUserProfileUseCase extends Mock implements GetUserProfileUseCase {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 class MockSupabaseService extends Mock implements SupabaseService {}
 
 void main() {
-  late MockUserSignInUseCase mockUserSignInUseCase;
-  late MockUserSignInWithEmailUseCase mockUserSignInWithEmailUseCase;
-  late MockGetUserProfileUseCase mockGetUserProfileUseCase;
+  late MockAuthRepository mockAuthRepository;
   late MockSupabaseService mockSupabaseService;
   late SessionCubit sessionCubit;
 
   setUp(() {
-    mockUserSignInUseCase = MockUserSignInUseCase();
-    mockUserSignInWithEmailUseCase = MockUserSignInWithEmailUseCase();
-    mockGetUserProfileUseCase = MockGetUserProfileUseCase();
+    mockAuthRepository = MockAuthRepository();
     mockSupabaseService = MockSupabaseService();
 
     when(() => mockSupabaseService.currentUser).thenReturn(null);
@@ -34,9 +28,7 @@ void main() {
         .thenAnswer((_) => const Stream.empty());
 
     sessionCubit = SessionCubit(
-      userSignInUseCase: mockUserSignInUseCase,
-      userSignInWithEmailUseCase: mockUserSignInWithEmailUseCase,
-      getUserProfileUseCase: mockGetUserProfileUseCase,
+      authRepository: mockAuthRepository,
       supabaseService: mockSupabaseService,
     );
   });
@@ -81,6 +73,69 @@ void main() {
 
       expect(find.text('Por favor, informe seu e-mail'), findsOneWidget);
       expect(find.text('Por favor, informe sua senha'), findsOneWidget);
+    });
+
+    testWidgets('shows invalid email error when email format is invalid', (tester) async {
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      await tester.enterText(find.byType(TextField).at(0), 'invalid-email');
+      await tester.tap(find.text('Continuar'));
+      await tester.pump();
+
+      expect(find.text('Informe um e-mail válido'), findsOneWidget);
+    });
+
+    testWidgets('submits email and password when fields are valid', (tester) async {
+      when(() => mockAuthRepository.signInWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          )).thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
+
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      await tester.enterText(find.byType(TextField).at(0), 'test@example.com');
+      await tester.enterText(find.byType(TextField).at(1), 'password123');
+      await tester.tap(find.text('Continuar'));
+      await tester.pump();
+
+      verify(() => mockAuthRepository.signInWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          )).called(1);
+    });
+
+    testWidgets('triggers Google Sign-In when Entrar com Google is pressed', (tester) async {
+      when(() => mockAuthRepository.signIn())
+          .thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
+
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      await tester.tap(find.text('Entrar com Google'));
+      await tester.pump();
+
+      verify(() => mockAuthRepository.signIn()).called(1);
+    });
+
+    testWidgets('triggers onForgotPasswordPressed and onCreateAccountPressed callbacks', (tester) async {
+      bool forgotPressed = false;
+      bool createPressed = false;
+
+      await tester.pumpWidget(
+        buildTestableWidget(
+          LoginScreen(
+            onForgotPasswordPressed: () => forgotPressed = true,
+            onCreateAccountPressed: () => createPressed = true,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Esqueci minha senha'));
+      await tester.pump();
+      expect(forgotPressed, isTrue);
+
+      await tester.tap(find.text('Primeiro acesso? Crie sua conta aqui'));
+      await tester.pump();
+      expect(createPressed, isTrue);
     });
   });
 }
