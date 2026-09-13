@@ -1,89 +1,25 @@
 {
   "@@locale": "pt",
+
+  "@@Common": "--- Common ---",
   "appTitle": "Clube de Leitura D'elas",
   "@appTitle": {
     "description": "Nome principal do aplicativo"
-  },
-  "welcomeMessage": "Bem-vinda!",
-  "@welcomeMessage": {
-    "description": "Mensagem de boas-vindas na tela inicial"
-  },
-  "ok": "OK",
-  "@ok": {
-    "description": "Texto padrão para botão de confirmação simples"
-  },
-  "cancel": "Cancelar",
-  "@cancel": {
-    "description": "Texto padrão para botão de cancelamento"
-  },
-  "save": "Salvar",
-  "@save": {
-    "description": "Texto padrão para ação de salvar"
-  },
-  "delete": "Excluir",
-  "@delete": {
-    "description": "Texto padrão para ação de exclusão"
-  },
-  "edit": "Editar",
-  "@edit": {
-    "description": "Texto padrão para ação de edição"
-  },
-  "confirm": "Confirmar",
-  "@confirm": {
-    "description": "Texto padrão para confirmação de ação"
-  },
-  "back": "Voltar",
-  "@back": {
-    "description": "Texto padrão para ação de retornar"
-  },
-  "close": "Fechar",
-  "@close": {
-    "description": "Texto padrão para ação de fechar modal ou tela"
-  },
-  "retry": "Tentar novamente",
-  "@retry": {
-    "description": "Texto para tentar executar uma ação novamente"
-  },
-  "search": "Buscar",
-  "@search": {
-    "description": "Texto padrão para campo ou botão de busca"
   },
   "continueAction": "Continuar",
   "@continueAction": {
     "description": "Texto para botão de prosseguir em fluxos"
   },
-  "errorGeneric": "Ocorreu um erro inesperado. Tente novamente.",
-  "@errorGeneric": {
-    "description": "Mensagem genérica para erros desconhecidos"
+  "confirm": "Confirmar",
+  "@confirm": {
+    "description": "Texto padrão para confirmação de ação"
   },
-  "errorNetwork": "Sem conexão com a internet. Verifique sua rede e tente novamente.",
-  "@errorNetwork": {
-    "description": "Mensagem de erro de conexão com a internet"
+  "notProvided": "Não informado",
+  "@notProvided": {
+    "description": "Valor padrão quando uma informação não foi preenchida"
   },
-  "errorTimeout": "O tempo de resposta da requisição esgotou. Tente novamente.",
-  "@errorTimeout": {
-    "description": "Mensagem para timeout de rede ou servidor"
-  },
-  "errorUnauthorized": "Sessão expirada ou não autorizada. Por favor, faça login novamente.",
-  "@errorUnauthorized": {
-    "description": "Mensagem de erro para acesso não autorizado (HTTP 401)"
-  },
-  "errorForbidden": "Você não tem permissão para realizar esta ação.",
-  "@errorForbidden": {
-    "description": "Mensagem de erro para ação proibida (HTTP 403)"
-  },
-  "errorNotFound": "O recurso solicitado não foi encontrado.",
-  "@errorNotFound": {
-    "description": "Mensagem de erro para recurso não encontrado (HTTP 404)"
-  },
-  "errorBadRequest": "Requisição inválida. Verifique os dados e tente novamente.",
-  "@errorBadRequest": {
-    "description": "Mensagem de erro para requisição malformada (HTTP 400)"
-  },
-  "errorInternalServer": "Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.",
-  "@errorInternalServer": {
-    "description": "Mensagem de erro para erro interno no servidor (HTTP 500)"
-  },
+
+  "@@Auth": "--- Auth ---",
   "loginTitle": "Faça o seu login",
   "@loginTitle": {
     "description": "Título principal da tela de login"
@@ -123,5 +59,127 @@
   "passwordRequiredError": "Por favor, informe sua senha",
   "@passwordRequiredError": {
     "description": "Mensagem de validação de senha obrigatória"
+  },
+  "confirmEmailBeforeLoginError": "Por favor, confirme seu e-mail antes de logar.",
+  "@confirmEmailBeforeLoginError": {
+    "description": "Mensagem de aviso para confirmar e-mail antes de fazer login"
+  },
+  "registerTitle": "Criar Conta",
+  "@registerTitle": {
+    "description": "Título da tela de cadastro de usuário"
+  },
+  "confirmPasswordLabel": "Confirmar Senha",
+  "@confirmPasswordLabel": {
+    "description": "Rótulo para campo de confirmação de senha"
+  },
+  "passwordMinLengthRequirement": "Pelo menos 8 caracteres",
+  "@passwordMinLengthRequirement": {
+    "description": "Requisito de validação de tamanho mínimo de senha"
+  },
+  "passwordUppercaseRequirement": "Pelo menos 1 letra maiúscula",
+  "@passwordUppercaseRequirement": {
+    "description": "Requisito de validação de letra maiúscula na senha"
+  },
+  "passwordLowercaseRequirement": "Pelo menos 1 letra minúscula",
+  "@passwordLowercaseRequirement": {
+    "description": "Requisito de validação de letra minúscula na senha"
+  },
+  "passwordNumberRequirement": "Pelo menos 1 número",
+  "@passwordNumberRequirement": {
+    "description": "Requisito de validação de número na senha"
+  },
+  "passwordsMatchRequirement": "Senhas conferem",
+  "@passwordsMatchRequirement": {
+    "description": "Indicador de que as senhas digitadas são iguais"
+  },
+  "registerButton": "Cadastrar",
+  "@registerButton": {
+    "description": "Botão para submeter o cadastro"
+  },
+  "alreadyHaveAccountLink": "Já tenho uma conta",
+  "@alreadyHaveAccountLink": {
+    "description": "Link para quem já possui conta e quer ir para o login"
+  },
+  "claimTokenTitle": "Vincular Perfil",
+  "@claimTokenTitle": {
+    "description": "Título da tela de vinculação de perfil por token"
+  },
+  "claimTokenSuccessMessage": "Perfil vinculado com sucesso!",
+  "@claimTokenSuccessMessage": {
+    "description": "Mensagem de sucesso após vincular perfil com token"
+  },
+  "claimTokenInputHeader": "Informe o seu Token de Acesso",
+  "@claimTokenInputHeader": {
+    "description": "Cabeçalho de instrução para digitação do token de acesso"
+  },
+  "claimTokenInputDescription": "Digite o token fornecido após a aprovação para vincular sua conta.",
+  "@claimTokenInputDescription": {
+    "description": "Descrição detalhada sobre a digitação do token de acesso"
+  },
+  "claimTokenFieldLabel": "Claim Token",
+  "@claimTokenFieldLabel": {
+    "description": "Rótulo do campo de entrada de token"
+  },
+  "claimTokenFieldHint": "Ex: 1A2B3C4D",
+  "@claimTokenFieldHint": {
+    "description": "Exemplo/Dica para preenchimento do token de acesso"
+  },
+  "claimTokenRequiredError": "Por favor, informe o token de acesso.",
+  "@claimTokenRequiredError": {
+    "description": "Erro exibido ao tentar enviar o token em branco"
+  },
+
+  "@@Home": "--- Home ---",
+  "logoutTooltip": "Sair",
+  "@logoutTooltip": {
+    "description": "Tooltip do botão de logout no app bar"
+  },
+  "logoutButton": "Sair da Conta",
+  "@logoutButton": {
+    "description": "Texto do botão principal de sair da conta"
+  },
+  "defaultUserName": "Usuária",
+  "@defaultUserName": {
+    "description": "Nome genérico exibido quando o usuário não possui nome cadastrado"
+  },
+  "profileStatusActive": "Perfil Vinculado & Ativo",
+  "@profileStatusActive": {
+    "description": "Badge de status de perfil ativado"
+  },
+  "profileDataSectionTitle": "Dados do Perfil Cadastrado",
+  "@profileDataSectionTitle": {
+    "description": "Título da seção de dados do perfil na home"
+  },
+  "fullNameLabel": "Nome Completo",
+  "@fullNameLabel": {
+    "description": "Rótulo do item de perfil para o nome completo"
+  },
+  "phoneLabel": "Telefone",
+  "@phoneLabel": {
+    "description": "Rótulo do item de perfil para número de telefone"
+  },
+  "addressLabel": "Endereço",
+  "@addressLabel": {
+    "description": "Rótulo do item de perfil para endereço"
+  },
+  "birthdayLabel": "Data de Nascimento",
+  "@birthdayLabel": {
+    "description": "Rótulo do item de perfil para data de nascimento"
+  },
+  "instagramLabel": "Instagram",
+  "@instagramLabel": {
+    "description": "Rótulo do item de perfil para conta do instagram"
+  },
+  "educationLabel": "Escolaridade",
+  "@educationLabel": {
+    "description": "Rótulo do item de perfil para grau de escolaridade"
+  },
+  "jobPositionLabel": "Cargo / Profissão",
+  "@jobPositionLabel": {
+    "description": "Rótulo do item de perfil para cargo ou profissão"
+  },
+  "authUserIdLabel": "ID Auth (Supabase User ID)",
+  "@authUserIdLabel": {
+    "description": "Rótulo do item de perfil para ID do usuário no Supabase"
   }
 }

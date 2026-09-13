@@ -103,41 +103,11 @@ abstract class AppLocalizations {
   /// **'Clube de Leitura D\'elas'**
   String get appTitle;
 
-  /// Mensagem de boas-vindas na tela inicial
+  /// Texto para botão de prosseguir em fluxos
   ///
   /// In pt, this message translates to:
-  /// **'Bem-vinda!'**
-  String get welcomeMessage;
-
-  /// Texto padrão para botão de confirmação simples
-  ///
-  /// In pt, this message translates to:
-  /// **'OK'**
-  String get ok;
-
-  /// Texto padrão para botão de cancelamento
-  ///
-  /// In pt, this message translates to:
-  /// **'Cancelar'**
-  String get cancel;
-
-  /// Texto padrão para ação de salvar
-  ///
-  /// In pt, this message translates to:
-  /// **'Salvar'**
-  String get save;
-
-  /// Texto padrão para ação de exclusão
-  ///
-  /// In pt, this message translates to:
-  /// **'Excluir'**
-  String get delete;
-
-  /// Texto padrão para ação de edição
-  ///
-  /// In pt, this message translates to:
-  /// **'Editar'**
-  String get edit;
+  /// **'Continuar'**
+  String get continueAction;
 
   /// Texto padrão para confirmação de ação
   ///
@@ -145,83 +115,11 @@ abstract class AppLocalizations {
   /// **'Confirmar'**
   String get confirm;
 
-  /// Texto padrão para ação de retornar
+  /// Valor padrão quando uma informação não foi preenchida
   ///
   /// In pt, this message translates to:
-  /// **'Voltar'**
-  String get back;
-
-  /// Texto padrão para ação de fechar modal ou tela
-  ///
-  /// In pt, this message translates to:
-  /// **'Fechar'**
-  String get close;
-
-  /// Texto para tentar executar uma ação novamente
-  ///
-  /// In pt, this message translates to:
-  /// **'Tentar novamente'**
-  String get retry;
-
-  /// Texto padrão para campo ou botão de busca
-  ///
-  /// In pt, this message translates to:
-  /// **'Buscar'**
-  String get search;
-
-  /// Texto para botão de prosseguir em fluxos
-  ///
-  /// In pt, this message translates to:
-  /// **'Continuar'**
-  String get continueAction;
-
-  /// Mensagem genérica para erros desconhecidos
-  ///
-  /// In pt, this message translates to:
-  /// **'Ocorreu um erro inesperado. Tente novamente.'**
-  String get errorGeneric;
-
-  /// Mensagem de erro de conexão com a internet
-  ///
-  /// In pt, this message translates to:
-  /// **'Sem conexão com a internet. Verifique sua rede e tente novamente.'**
-  String get errorNetwork;
-
-  /// Mensagem para timeout de rede ou servidor
-  ///
-  /// In pt, this message translates to:
-  /// **'O tempo de resposta da requisição esgotou. Tente novamente.'**
-  String get errorTimeout;
-
-  /// Mensagem de erro para acesso não autorizado (HTTP 401)
-  ///
-  /// In pt, this message translates to:
-  /// **'Sessão expirada ou não autorizada. Por favor, faça login novamente.'**
-  String get errorUnauthorized;
-
-  /// Mensagem de erro para ação proibida (HTTP 403)
-  ///
-  /// In pt, this message translates to:
-  /// **'Você não tem permissão para realizar esta ação.'**
-  String get errorForbidden;
-
-  /// Mensagem de erro para recurso não encontrado (HTTP 404)
-  ///
-  /// In pt, this message translates to:
-  /// **'O recurso solicitado não foi encontrado.'**
-  String get errorNotFound;
-
-  /// Mensagem de erro para requisição malformada (HTTP 400)
-  ///
-  /// In pt, this message translates to:
-  /// **'Requisição inválida. Verifique os dados e tente novamente.'**
-  String get errorBadRequest;
-
-  /// Mensagem de erro para erro interno no servidor (HTTP 500)
-  ///
-  /// In pt, this message translates to:
-  /// **'Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.'**
-  String get errorInternalServer;
+  /// **'Não informado'**
+  String get notProvided;
 
   /// Título principal da tela de login
   ///
@@ -282,6 +180,186 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Por favor, informe sua senha'**
   String get passwordRequiredError;
+
+  /// Mensagem de aviso para confirmar e-mail antes de fazer login
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, confirme seu e-mail antes de logar.'**
+  String get confirmEmailBeforeLoginError;
+
+  /// Título da tela de cadastro de usuário
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar Conta'**
+  String get registerTitle;
+
+  /// Rótulo para campo de confirmação de senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar Senha'**
+  String get confirmPasswordLabel;
+
+  /// Requisito de validação de tamanho mínimo de senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Pelo menos 8 caracteres'**
+  String get passwordMinLengthRequirement;
+
+  /// Requisito de validação de letra maiúscula na senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Pelo menos 1 letra maiúscula'**
+  String get passwordUppercaseRequirement;
+
+  /// Requisito de validação de letra minúscula na senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Pelo menos 1 letra minúscula'**
+  String get passwordLowercaseRequirement;
+
+  /// Requisito de validação de número na senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Pelo menos 1 número'**
+  String get passwordNumberRequirement;
+
+  /// Indicador de que as senhas digitadas são iguais
+  ///
+  /// In pt, this message translates to:
+  /// **'Senhas conferem'**
+  String get passwordsMatchRequirement;
+
+  /// Botão para submeter o cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Cadastrar'**
+  String get registerButton;
+
+  /// Link para quem já possui conta e quer ir para o login
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tenho uma conta'**
+  String get alreadyHaveAccountLink;
+
+  /// Título da tela de vinculação de perfil por token
+  ///
+  /// In pt, this message translates to:
+  /// **'Vincular Perfil'**
+  String get claimTokenTitle;
+
+  /// Mensagem de sucesso após vincular perfil com token
+  ///
+  /// In pt, this message translates to:
+  /// **'Perfil vinculado com sucesso!'**
+  String get claimTokenSuccessMessage;
+
+  /// Cabeçalho de instrução para digitação do token de acesso
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe o seu Token de Acesso'**
+  String get claimTokenInputHeader;
+
+  /// Descrição detalhada sobre a digitação do token de acesso
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite o token fornecido após a aprovação para vincular sua conta.'**
+  String get claimTokenInputDescription;
+
+  /// Rótulo do campo de entrada de token
+  ///
+  /// In pt, this message translates to:
+  /// **'Claim Token'**
+  String get claimTokenFieldLabel;
+
+  /// Exemplo/Dica para preenchimento do token de acesso
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex: 1A2B3C4D'**
+  String get claimTokenFieldHint;
+
+  /// Erro exibido ao tentar enviar o token em branco
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, informe o token de acesso.'**
+  String get claimTokenRequiredError;
+
+  /// Tooltip do botão de logout no app bar
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair'**
+  String get logoutTooltip;
+
+  /// Texto do botão principal de sair da conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair da Conta'**
+  String get logoutButton;
+
+  /// Nome genérico exibido quando o usuário não possui nome cadastrado
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuária'**
+  String get defaultUserName;
+
+  /// Badge de status de perfil ativado
+  ///
+  /// In pt, this message translates to:
+  /// **'Perfil Vinculado & Ativo'**
+  String get profileStatusActive;
+
+  /// Título da seção de dados do perfil na home
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados do Perfil Cadastrado'**
+  String get profileDataSectionTitle;
+
+  /// Rótulo do item de perfil para o nome completo
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome Completo'**
+  String get fullNameLabel;
+
+  /// Rótulo do item de perfil para número de telefone
+  ///
+  /// In pt, this message translates to:
+  /// **'Telefone'**
+  String get phoneLabel;
+
+  /// Rótulo do item de perfil para endereço
+  ///
+  /// In pt, this message translates to:
+  /// **'Endereço'**
+  String get addressLabel;
+
+  /// Rótulo do item de perfil para data de nascimento
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de Nascimento'**
+  String get birthdayLabel;
+
+  /// Rótulo do item de perfil para conta do instagram
+  ///
+  /// In pt, this message translates to:
+  /// **'Instagram'**
+  String get instagramLabel;
+
+  /// Rótulo do item de perfil para grau de escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolaridade'**
+  String get educationLabel;
+
+  /// Rótulo do item de perfil para cargo ou profissão
+  ///
+  /// In pt, this message translates to:
+  /// **'Cargo / Profissão'**
+  String get jobPositionLabel;
+
+  /// Rótulo do item de perfil para ID do usuário no Supabase
+  ///
+  /// In pt, this message translates to:
+  /// **'ID Auth (Supabase User ID)'**
+  String get authUserIdLabel;
 }
 
 class _AppLocalizationsDelegate

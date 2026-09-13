@@ -7,6 +7,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -104,6 +105,25 @@ void main() {
           )).called(1);
     });
 
+    testWidgets('submits email and password on password field onSubmitted', (tester) async {
+      when(() => mockAuthRepository.signInWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          )).thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
+
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      await tester.enterText(find.byType(TextField).at(0), 'test@example.com');
+      await tester.enterText(find.byType(TextField).at(1), 'password123');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+
+      verify(() => mockAuthRepository.signInWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          )).called(1);
+    });
+
     testWidgets('triggers Google Sign-In when Entrar com Google is pressed', (tester) async {
       when(() => mockAuthRepository.signIn())
           .thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
@@ -136,6 +156,24 @@ void main() {
       await tester.tap(find.text('Primeiro acesso? Crie sua conta aqui'));
       await tester.pump();
       expect(createPressed, isTrue);
+    });
+
+    testWidgets('displays email confirmation SnackBar on SessionError', (tester) async {
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      sessionCubit.emit(const SessionError(message: 'email not confirmed'));
+      await tester.pump();
+
+      expect(find.text('Por favor, confirme seu e-mail antes de logar.'), findsOneWidget);
+    });
+
+    testWidgets('displays generic error SnackBar on SessionError', (tester) async {
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      sessionCubit.emit(const SessionError(message: 'Credenciais inválidas'));
+      await tester.pump();
+
+      expect(find.text('Credenciais inválidas'), findsOneWidget);
     });
   });
 }

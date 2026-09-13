@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_state.dart';
@@ -26,9 +27,9 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
   void _onConfirm(BuildContext context) {
     final token = _tokenController.text;
     context.read<ClaimTokenCubit>().submitToken(
-          claimToken: token,
-          userId: widget.userId,
-        );
+      claimToken: token,
+      userId: widget.userId,
+    );
   }
 
   @override
@@ -36,11 +37,12 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
     final colors = context.colors;
     final text = context.text;
     final spacing = context.spacing;
+    final l10n = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Vincular Perfil',
+          l10n.claimTokenTitle,
           style: text.headingH3.copyWith(color: colors.textBrand),
         ),
       ),
@@ -59,7 +61,7 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
           if (state is ClaimTokenSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: const Text('Perfil vinculado com sucesso!'),
+                content: Text(l10n.claimTokenSuccessMessage),
                 backgroundColor: colors.actionPrimary,
               ),
             );
@@ -73,13 +75,13 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Informe o seu Token de Acesso',
+                l10n.claimTokenInputHeader,
                 style: text.headingH2.copyWith(color: colors.textDefault),
                 textAlign: TextAlign.center,
               ),
               const Gap16(),
               Text(
-                'Digite o token fornecido após a aprovação para vincular sua conta.',
+                l10n.claimTokenInputDescription,
                 style: text.bodyDefault.copyWith(color: colors.textMuted),
                 textAlign: TextAlign.center,
               ),
@@ -88,8 +90,8 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
                 controller: _tokenController,
                 textCapitalization: TextCapitalization.characters,
                 decoration: InputDecoration(
-                  labelText: 'Claim Token',
-                  hintText: 'Ex: 1A2B3C4D',
+                  labelText: l10n.claimTokenFieldLabel,
+                  hintText: l10n.claimTokenFieldHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
@@ -100,7 +102,7 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
                 builder: (context, state) {
                   final isLoading = state is ClaimTokenLoading;
                   return AppButton.primary(
-                    label: 'Confirmar',
+                    label: context.l10n.confirm,
                     isLoading: isLoading,
                     onPressed: isLoading ? null : () => _onConfirm(context),
                   );

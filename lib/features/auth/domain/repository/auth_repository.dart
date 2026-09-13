@@ -9,6 +9,10 @@ abstract interface class AuthRepository {
     required String email,
     required String password,
   });
+  Future<Result<UserEntity, UserFailure>> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+  });
   Future<Result<void, UserFailure>> logOut();
   Future<Result<UserProfileEntity?, UserFailure>> getUserProfile(String userId);
   Future<Result<void, UserFailure>> claimProfile(String claimToken);
