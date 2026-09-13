@@ -15,6 +15,17 @@ void main() {
     await tester.pump();
   }
 
+  // AppToast.show agenda um Timer(duration, ...) para se remover
+  // sozinho. Em testes, o "relógio" só avança quando pumpamos essa
+  // duração explicitamente — sem isso, o Timer fica pendente e o
+  // flutter_test falha o teste no teardown ("A Timer is still pending
+  // even after the widget tree was disposed"). Testes que não verificam
+  // o desaparecimento do toast em si ainda precisam "descartar" esse
+  // timer antes de terminar.
+  Future<void> flushToastTimer(WidgetTester tester) {
+    return tester.pump(const Duration(seconds: 4));
+  }
+
   testWidgets('context.showToast exibe a mensagem e usa o type informado', (tester) async {
     await tester.pumpWidget(wrap((context) {
       return ElevatedButton(
@@ -27,6 +38,8 @@ void main() {
 
     expect(find.text('Mensagem genérica'), findsOneWidget);
     expect(find.byIcon(Icons.warning_amber_outlined), findsOneWidget);
+
+    await flushToastTimer(tester);
   });
 
   testWidgets('context.showToast usa AppToastType.info como padrão quando type não é informado', (tester) async {
@@ -40,6 +53,8 @@ void main() {
     await tapAndPump(tester);
 
     expect(find.byIcon(Icons.info_outline), findsOneWidget);
+
+    await flushToastTimer(tester);
   });
 
   testWidgets('context.showSuccessToast usa AppToastType.success', (tester) async {
@@ -54,6 +69,8 @@ void main() {
 
     expect(find.text('Salvo com sucesso'), findsOneWidget);
     expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
+
+    await flushToastTimer(tester);
   });
 
   testWidgets('context.showErrorToast usa AppToastType.error', (tester) async {
@@ -68,6 +85,8 @@ void main() {
 
     expect(find.text('Não foi possível salvar os dados.'), findsOneWidget);
     expect(find.byIcon(Icons.cancel_outlined), findsOneWidget);
+
+    await flushToastTimer(tester);
   });
 
   testWidgets('context.showWarningToast usa AppToastType.warning', (tester) async {
@@ -82,6 +101,8 @@ void main() {
 
     expect(find.text('Atenção'), findsOneWidget);
     expect(find.byIcon(Icons.warning_amber_outlined), findsOneWidget);
+
+    await flushToastTimer(tester);
   });
 
   testWidgets('context.showInfoToast usa AppToastType.info', (tester) async {
@@ -96,6 +117,8 @@ void main() {
 
     expect(find.text('Só um aviso'), findsOneWidget);
     expect(find.byIcon(Icons.info_outline), findsOneWidget);
+
+    await flushToastTimer(tester);
   });
 
   testWidgets('respeita a duration customizada e remove o toast depois dela', (tester) async {
