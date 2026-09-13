@@ -5,14 +5,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockSessionCubit extends MockCubit<SessionState> implements SessionCubit {}
+class MockSessionCubit extends MockCubit<SessionState>
+    implements SessionCubit {}
 
 void main() {
   late MockSessionCubit mockSessionCubit;
@@ -59,35 +59,42 @@ void main() {
       expect(find.text('Já tenho uma conta'), findsOneWidget);
     });
 
-    testWidgets('shows validation errors when fields are empty or email is invalid', (tester) async {
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'shows validation errors when fields are empty or email is invalid',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
 
-      // Enter valid password to enable button submit attempt
-      final textFields = find.byType(TextField);
-      await tester.enterText(textFields.at(1), 'Pass1234');
-      await tester.enterText(textFields.at(2), 'Pass1234');
-      await tester.pumpAndSettle();
+        // Enter valid password to enable button submit attempt
+        final textFields = find.byType(TextField);
+        await tester.enterText(textFields.at(1), 'Pass1234');
+        await tester.enterText(textFields.at(2), 'Pass1234');
+        await tester.pumpAndSettle();
 
-      final registerButton = find.byType(AppButton);
-      await tester.ensureVisible(registerButton);
-      await tester.tap(registerButton);
-      await tester.pumpAndSettle();
+        final registerButton = find.byType(AppButton);
+        await tester.ensureVisible(registerButton);
+        await tester.tap(registerButton);
+        await tester.pumpAndSettle();
 
-      expect(find.text('Por favor, informe seu e-mail'), findsOneWidget);
+        expect(find.text('Por favor, informe seu e-mail'), findsOneWidget);
 
-      await tester.enterText(textFields.at(0), 'invalid-email');
-      await tester.tap(registerButton);
-      await tester.pumpAndSettle();
+        await tester.enterText(textFields.at(0), 'invalid-email');
+        await tester.tap(registerButton);
+        await tester.pumpAndSettle();
 
-      expect(find.text('Informe um e-mail válido'), findsOneWidget);
-    });
+        expect(find.text('Informe um e-mail válido'), findsOneWidget);
+      },
+    );
 
-    testWidgets('submits email and password when form is valid', (tester) async {
-      when(() => mockSessionCubit.signUpWithEmail(
-            email: 'test@example.com',
-            password: 'Password1',
-          )).thenAnswer((_) async => const Success(null));
+    testWidgets('submits email and password when form is valid', (
+      tester,
+    ) async {
+      when(
+        () => mockSessionCubit.signUpWithEmail(
+          email: 'test@example.com',
+          password: 'Password1',
+        ),
+      ).thenAnswer((_) async => const Success(null));
 
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -103,17 +110,25 @@ void main() {
       await tester.tap(registerButton);
       await tester.pump();
 
-      verify(() => mockSessionCubit.signUpWithEmail(
-            email: 'test@example.com',
-            password: 'Password1',
-          )).called(1);
+      verify(
+        () => mockSessionCubit.signUpWithEmail(
+          email: 'test@example.com',
+          password: 'Password1',
+        ),
+      ).called(1);
     });
 
-    testWidgets('triggers onLoginPressed callback when link is tapped', (tester) async {
+    testWidgets('triggers onLoginPressed callback when link is tapped', (
+      tester,
+    ) async {
       bool loginPressed = false;
-      await tester.pumpWidget(buildSubject(onLoginPressed: () {
-        loginPressed = true;
-      }));
+      await tester.pumpWidget(
+        buildSubject(
+          onLoginPressed: () {
+            loginPressed = true;
+          },
+        ),
+      );
       await tester.pumpAndSettle();
 
       final loginLink = find.text('Já tenho uma conta');
@@ -125,11 +140,15 @@ void main() {
       expect(loginPressed, isTrue);
     });
 
-    testWidgets('displays error SnackBar on SessionError state', (tester) async {
+    testWidgets('displays error SnackBar on SessionError state', (
+      tester,
+    ) async {
       whenListen(
         mockSessionCubit,
         Stream.fromIterable([
-          const SessionError(message: 'Por favor, confirme seu e-mail antes de logar.'),
+          const SessionError(
+            message: 'Por favor, confirme seu e-mail antes de logar.',
+          ),
         ]),
         initialState: const GuestSession(),
       );
@@ -137,10 +156,15 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pump();
 
-      expect(find.text('Por favor, confirme seu e-mail antes de logar.'), findsOneWidget);
+      expect(
+        find.text('Por favor, confirme seu e-mail antes de logar.'),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('displays generic error SnackBar on SessionError state', (tester) async {
+    testWidgets('displays generic error SnackBar on SessionError state', (
+      tester,
+    ) async {
       whenListen(
         mockSessionCubit,
         Stream.fromIterable([
@@ -151,7 +175,6 @@ void main() {
 
       await tester.pumpWidget(buildSubject());
       await tester.pump();
-
     });
   });
 }
