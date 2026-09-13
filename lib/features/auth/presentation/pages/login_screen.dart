@@ -68,8 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
             if (state is SessionError) {
               if (state.message.toLowerCase().contains('email not confirmed')) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Por favor, confirme seu e-mail antes de logar.'),
+                  SnackBar(
+                    content: Text(l10n.confirmEmailBeforeLoginError),
                     backgroundColor: Colors.red,
                   ),
                 );

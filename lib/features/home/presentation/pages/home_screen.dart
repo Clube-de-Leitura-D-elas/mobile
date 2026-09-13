@@ -22,6 +22,7 @@ class HomeScreen extends StatelessWidget {
     final colors = context.colors;
     final text = context.text;
     final spacing = context.spacing;
+    final l10n = context.l10n;
 
     final name = profile?.name.isNotEmpty == true ? profile!.name : user.name;
     final email = profile?.email.isNotEmpty == true ? profile!.email : user.mail;
@@ -37,14 +38,14 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context.l10n.appTitle,
+          l10n.appTitle,
           style: text.headingH3.copyWith(color: colors.textBrand),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => context.read<SessionCubit>().logOut(),
-            tooltip: 'Sair',
+            tooltip: l10n.logoutTooltip,
           ),
         ],
       ),
@@ -73,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const Gap16(),
                   Text(
-                    name.isNotEmpty ? name : 'Usuária',
+                    name.isNotEmpty ? name : l10n.defaultUserName,
                     style: text.headingH2.copyWith(color: colors.textDefault),
                     textAlign: TextAlign.center,
                   ),
@@ -100,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const Gap4(),
                         Text(
-                          'Perfil Vinculado & Ativo',
+                          l10n.profileStatusActive,
                           style: text.labelTag.copyWith(
                             color: isActive ? colors.feedbackSuccessDark : colors.actionPrimary,
                           ),
@@ -113,65 +114,65 @@ class HomeScreen extends StatelessWidget {
             ),
             const Gap24(),
             Text(
-              'Dados do Perfil Cadastrado',
+              l10n.profileDataSectionTitle,
               style: text.headingH3.copyWith(color: colors.textDefault),
             ),
             const Gap16(),
             ProfileDetailTile(
               icon: Icons.badge_outlined,
-              label: 'Nome Completo',
+              label: l10n.fullNameLabel,
               value: name,
             ),
             ProfileDetailTile(
               icon: Icons.email_outlined,
-              label: 'E-mail',
+              label: l10n.emailLabel,
               value: email,
             ),
             if (phone.isNotEmpty)
               ProfileDetailTile(
                 icon: Icons.phone_outlined,
-                label: 'Telefone',
+                label: l10n.phoneLabel,
                 value: phone,
               ),
             if (address != null && address.isNotEmpty)
               ProfileDetailTile(
                 icon: Icons.location_on_outlined,
-                label: 'Endereço',
+                label: l10n.addressLabel,
                 value: address,
               ),
             if (birthday.isNotEmpty)
               ProfileDetailTile(
                 icon: Icons.cake_outlined,
-                label: 'Data de Nascimento',
+                label: l10n.birthdayLabel,
                 value: birthday,
               ),
             if (instagram.isNotEmpty)
               ProfileDetailTile(
                 icon: Icons.camera_alt_outlined,
-                label: 'Instagram',
+                label: l10n.instagramLabel,
                 value: instagram,
               ),
             if (education.isNotEmpty)
               ProfileDetailTile(
                 icon: Icons.school_outlined,
-                label: 'Escolaridade',
+                label: l10n.educationLabel,
                 value: education,
               ),
             if (job.isNotEmpty)
               ProfileDetailTile(
                 icon: Icons.work_outline,
-                label: 'Cargo / Profissão',
+                label: l10n.jobPositionLabel,
                 value: job,
               ),
             if (userId.isNotEmpty)
               ProfileDetailTile(
                 icon: Icons.fingerprint,
-                label: 'ID Auth (Supabase User ID)',
+                label: l10n.authUserIdLabel,
                 value: userId,
               ),
             const Gap32(),
             AppButton.secondary(
-              label: 'Sair da Conta',
+              label: l10n.logoutButton,
               onPressed: () => context.read<SessionCubit>().logOut(),
             ),
           ],
