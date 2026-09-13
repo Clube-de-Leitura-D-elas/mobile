@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:marionette_flutter/marionette_flutter.dart';
 import 'package:mobile/core/environment/environment.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/routes/app_routes.dart';
@@ -19,7 +21,9 @@ void main() async {
 }
 
 Future<void> mainAsync() async {
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = kDebugMode
+      ? MarionetteBinding.ensureInitialized()
+      : WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   final environment = Environment.instance;

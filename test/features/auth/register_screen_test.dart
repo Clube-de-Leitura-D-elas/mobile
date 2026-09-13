@@ -140,15 +140,35 @@ void main() {
       expect(loginPressed, isTrue);
     });
 
-    testWidgets('displays error SnackBar on SessionError state', (
-      tester,
-    ) async {
+    testWidgets('submits email and password on password field onSubmitted', (tester) async {
+      when(() => mockSessionCubit.signUpWithEmail(
+            email: 'test@example.com',
+            password: 'Password1',
+          )).thenAnswer((_) async => const Success(null));
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final textFields = find.byType(TextField);
+      await tester.enterText(textFields.at(0), 'test@example.com');
+      await tester.enterText(textFields.at(1), 'Password1');
+      await tester.enterText(textFields.at(2), 'Password1');
+      await tester.pumpAndSettle();
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+
+      verify(() => mockSessionCubit.signUpWithEmail(
+            email: 'test@example.com',
+            password: 'Password1',
+          )).called(1);
+    });
+
+    testWidgets('displays error SnackBar on SessionError state', (tester) async {
       whenListen(
         mockSessionCubit,
         Stream.fromIterable([
-          const SessionError(
-            message: 'Por favor, confirme seu e-mail antes de logar.',
-          ),
+          const SessionError(message: 'email not confirmed'),
         ]),
         initialState: const GuestSession(),
       );
@@ -156,10 +176,7 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pump();
 
-      expect(
-        find.text('Por favor, confirme seu e-mail antes de logar.'),
-        findsOneWidget,
-      );
+      expect(find.text('Por favor, confirme seu e-mail antes de logar.'), findsOneWidget);
     });
 
     testWidgets('displays generic error SnackBar on SessionError state', (

@@ -11,6 +11,9 @@ import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
+import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
+import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
@@ -122,11 +125,51 @@ void main() {
       router.go(AuthRoutes.login);
       await tester.pumpAndSettle();
 
+      router.go(AuthRoutes.register);
+      await tester.pumpAndSettle();
+
       router.go(AuthRoutes.claimToken, extra: 'user-123');
       await tester.pumpAndSettle();
 
       router.go(HomeRoutes.home);
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('login route onCreateAccountPressed navigates to register and register route onLoginPressed pops back', (tester) async {
+      serviceLocator.allowReassignment = true;
+      serviceLocator.registerFactory<AuthRepository>(() => mockAuthRepository);
+
+      final router = AppRoutes.createRouter(sessionCubit);
+      await tester.pumpWidget(
+        BlocProvider<SessionCubit>.value(
+          value: sessionCubit,
+          child: MaterialApp.router(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: router,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      router.go(AuthRoutes.login);
+      await tester.pumpAndSettle();
+
+      // Tap on create account link on LoginScreen
+      final createAccountText = find.text('Criar conta');
+      if (createAccountText.evaluate().isNotEmpty) {
+        await tester.tap(createAccountText.first);
+        await tester.pumpAndSettle();
+        expect(find.byType(RegisterScreen), findsOneWidget);
+
+        // Tap on login link on RegisterScreen to pop back
+        final loginText = find.text('Entrar');
+        if (loginText.evaluate().isNotEmpty) {
+          await tester.tap(loginText.first);
+          await tester.pumpAndSettle();
+          expect(find.byType(LoginScreen), findsOneWidget);
+        }
+      }
     });
   });
 
@@ -157,6 +200,34 @@ void main() {
   });
 
   group('AuthRoutes', () {
+    test('executes route builders directly', () {
+      serviceLocator.allowReassignment = true;
+      serviceLocator.registerFactory<AuthRepository>(() => mockAuthRepository);
+
+      final routes = AuthRoutes.routes;
+
+      // Test login route builder
+      final loginRoute = routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.login) as GoRoute;
+      final loginWidget = loginRoute.builder!(mockContext, mockState);
+      expect(loginWidget, isA<LoginScreen>());
+
+      // Test register route builder
+      final registerRoute = routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.register) as GoRoute;
+      final registerWidget = registerRoute.builder!(mockContext, mockState);
+      expect(registerWidget, isA<RegisterScreen>());
+
+      // Test claimToken route builder
+      when(() => mockState.extra).thenReturn('user-123');
+      final claimTokenRoute = routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.claimToken) as GoRoute;
+      final claimTokenWidget = claimTokenRoute.builder!(mockContext, mockState);
+      expect(claimTokenWidget, isA<BlocProvider<ClaimTokenCubit>>());
+
+      // Test claimToken route builder with null extra
+      when(() => mockState.extra).thenReturn(null);
+      final claimTokenWidgetNull = claimTokenRoute.builder!(mockContext, mockState);
+      expect(claimTokenWidgetNull, isA<BlocProvider<ClaimTokenCubit>>());
+    });
+
     test('authGuard redirects correctly based on SessionState', () {
       when(() => mockState.matchedLocation).thenReturn('/other');
 

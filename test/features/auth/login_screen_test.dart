@@ -105,6 +105,25 @@ void main() {
           )).called(1);
     });
 
+    testWidgets('submits email and password on password field onSubmitted', (tester) async {
+      when(() => mockAuthRepository.signInWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          )).thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
+
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      await tester.enterText(find.byType(TextField).at(0), 'test@example.com');
+      await tester.enterText(find.byType(TextField).at(1), 'password123');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+
+      verify(() => mockAuthRepository.signInWithEmailAndPassword(
+            email: 'test@example.com',
+            password: 'password123',
+          )).called(1);
+    });
+
     testWidgets('triggers Google Sign-In when Entrar com Google is pressed', (tester) async {
       when(() => mockAuthRepository.signIn())
           .thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
