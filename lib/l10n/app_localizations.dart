@@ -282,6 +282,42 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Por favor, informe sua senha'**
   String get passwordRequiredError;
+
+  /// Rótulo do campo de seleção de gênero literário
+  ///
+  /// In pt, this message translates to:
+  /// **'Gênero'**
+  String get genreFieldLabel;
+
+  /// Texto de dica do campo de seleção de gênero literário
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um gênero'**
+  String get genreFieldHint;
+
+  /// Nome do gênero literário Romance
+  ///
+  /// In pt, this message translates to:
+  /// **'Romance'**
+  String get genreRomance;
+
+  /// Nome do gênero literário Fantasia
+  ///
+  /// In pt, this message translates to:
+  /// **'Fantasia'**
+  String get genreFantasy;
+
+  /// Nome do gênero literário Suspense
+  ///
+  /// In pt, this message translates to:
+  /// **'Suspense'**
+  String get genreSuspense;
+
+  /// Nome do gênero literário Não-ficção
+  ///
+  /// In pt, this message translates to:
+  /// **'Não-ficção'**
+  String get genreNonFiction;
 }
 
 class _AppLocalizationsDelegate

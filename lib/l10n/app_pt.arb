@@ -123,5 +123,29 @@
   "passwordRequiredError": "Por favor, informe sua senha",
   "@passwordRequiredError": {
     "description": "Mensagem de validação de senha obrigatória"
+  },
+    "genreFieldLabel": "Gênero",
+  "@genreFieldLabel": {
+    "description": "Rótulo do campo de seleção de gênero literário"
+  },
+  "genreFieldHint": "Selecione um gênero",
+  "@genreFieldHint": {
+    "description": "Texto de dica do campo de seleção de gênero literário"
+  },
+  "genreRomance": "Romance",
+  "@genreRomance": {
+    "description": "Nome do gênero literário Romance"
+  },
+  "genreFantasy": "Fantasia",
+  "@genreFantasy": {
+    "description": "Nome do gênero literário Fantasia"
+  },
+  "genreSuspense": "Suspense",
+  "@genreSuspense": {
+    "description": "Nome do gênero literário Suspense"
+  },
+  "genreNonFiction": "Não-ficção",
+  "@genreNonFiction": {
+    "description": "Nome do gênero literário Não-ficção"
   }
 }

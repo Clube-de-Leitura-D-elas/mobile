@@ -30,5 +30,11 @@
   "createAccountLink": "Primeiro acesso? Crie sua conta aqui",
   "emailRequiredError": "Por favor, informe seu e-mail",
   "emailInvalidError": "Informe um e-mail válido",
-  "passwordRequiredError": "Por favor, informe sua senha"
+  "passwordRequiredError": "Por favor, informe sua senha",
+  "genreFieldLabel": "Gênero",
+  "genreFieldHint": "Selecione um gênero",
+  "genreRomance": "Romance",
+  "genreFantasy": "Fantasia",
+  "genreSuspense": "Suspense",
+  "genreNonFiction": "Não-ficção"
 }

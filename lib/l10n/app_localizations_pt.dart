@@ -106,6 +106,24 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get passwordRequiredError => 'Por favor, informe sua senha';
+
+  @override
+  String get genreFieldLabel => 'Gênero';
+
+  @override
+  String get genreFieldHint => 'Selecione um gênero';
+
+  @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
+
+  @override
+  String get genreNonFiction => 'Não-ficção';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -210,4 +228,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get passwordRequiredError => 'Por favor, informe sua senha';
+
+  @override
+  String get genreFieldLabel => 'Gênero';
+
+  @override
+  String get genreFieldHint => 'Selecione um gênero';
+
+  @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
+
+  @override
+  String get genreNonFiction => 'Não-ficção';
 }
