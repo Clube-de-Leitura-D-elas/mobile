@@ -103,8 +103,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             if (state is SessionError) {
               if (state.message.toLowerCase().contains('email not confirmed')) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Por favor, confirme seu e-mail antes de logar.'),
+                  SnackBar(
+                    content: Text(l10n.confirmEmailBeforeLoginError),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -140,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                'Criar Conta',
+                                l10n.registerTitle,
                                 textAlign: TextAlign.center,
                                 style: typography.headingH1.copyWith(
                                   color: colors.textDefault,
@@ -177,7 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               const Gap16(),
                               AppTextField(
-                                label: 'Confirmar Senha',
+                                label: l10n.confirmPasswordLabel,
                                 controller: _confirmPasswordController,
                                 obscureText: true,
                                 textInputAction: TextInputAction.done,
@@ -192,15 +192,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      _buildCheckItem(passState.hasMinLength, 'Pelo menos 8 caracteres'),
+                                      _buildCheckItem(passState.hasMinLength, l10n.passwordMinLengthRequirement),
                                       const Gap4(),
-                                      _buildCheckItem(passState.hasUpperCase, 'Pelo menos 1 letra maiúscula'),
+                                      _buildCheckItem(passState.hasUpperCase, l10n.passwordUppercaseRequirement),
                                       const Gap4(),
-                                      _buildCheckItem(passState.hasLowerCase, 'Pelo menos 1 letra minúscula'),
+                                      _buildCheckItem(passState.hasLowerCase, l10n.passwordLowercaseRequirement),
                                       const Gap4(),
-                                      _buildCheckItem(passState.hasNumber, 'Pelo menos 1 número'),
+                                      _buildCheckItem(passState.hasNumber, l10n.passwordNumberRequirement),
                                       const Gap4(),
-                                      _buildCheckItem(passState.passwordsMatch && !passState.isConfirmEmpty, 'Senhas conferem'),
+                                      _buildCheckItem(passState.passwordsMatch && !passState.isConfirmEmpty, l10n.passwordsMatchRequirement),
                                     ],
                                   );
                                 },
@@ -222,7 +222,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 bloc: _passwordCubit,
                                 builder: (context, passState) {
                                   return AppButton.primary(
-                                    label: 'Cadastrar',
+                                    label: l10n.registerButton,
                                     isLoading: isLoading,
                                     onPressed: isLoading || !passState.isValid
                                         ? null
@@ -237,7 +237,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ? null
                                       : widget.onLoginPressed,
                                   child: Text(
-                                    'Já tenho uma conta',
+                                    l10n.alreadyHaveAccountLink,
                                     textAlign: TextAlign.center,
                                     style: typography.bodySmallEmphasis
                                         .copyWith(
