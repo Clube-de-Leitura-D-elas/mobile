@@ -18,7 +18,7 @@ class SessionCubit extends Cubit<SessionState> {
   SessionCubit({
     required this.authRepository,
     required this.supabaseService,
-  }) : super(const GuestSession()) {
+  }) : super(const LoadingSession()) {
     _listenToAuthState();
     _checkCurrentSession();
   }
@@ -26,10 +26,16 @@ class SessionCubit extends Cubit<SessionState> {
   void _checkCurrentSession() {
     final user = supabaseService.currentUser;
     debugPrint('[SessionCubit] Initial currentUser check: ${user?.id}');
-    if (user == null) return;
+    if (user == null) {
+      emit(const GuestSession());
+      return;
+    }
 
     checkUserProfile(user.id);
   }
+
+
+
 
   void _listenToAuthState() {
     _authStateSubscription = supabaseService.authStateChanges.listen((data) {

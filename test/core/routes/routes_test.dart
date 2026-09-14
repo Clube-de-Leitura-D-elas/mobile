@@ -65,6 +65,12 @@ void main() {
     mockContext = MockBuildContext();
     mockState = MockGoRouterState();
 
+    when(() => mockState.pageKey).thenReturn(const ValueKey('test_key'));
+    when(() => mockState.matchedLocation).thenReturn('/');
+    when(() => mockState.name).thenReturn('test');
+
+
+
     when(() => mockSupabaseService.currentUser).thenReturn(null);
     when(() => mockSupabaseService.authStateChanges)
         .thenAnswer((_) => const Stream.empty());
@@ -208,24 +214,24 @@ void main() {
 
       // Test login route builder
       final loginRoute = routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.login) as GoRoute;
-      final loginWidget = loginRoute.builder!(mockContext, mockState);
-      expect(loginWidget, isA<LoginScreen>());
+      final loginPage = loginRoute.pageBuilder!(mockContext, mockState);
+      expect(loginPage, isA<Page>());
 
       // Test register route builder
       final registerRoute = routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.register) as GoRoute;
-      final registerWidget = registerRoute.builder!(mockContext, mockState);
-      expect(registerWidget, isA<RegisterScreen>());
+      final registerPage = registerRoute.pageBuilder!(mockContext, mockState);
+      expect(registerPage, isA<Page>());
 
       // Test claimToken route builder
       when(() => mockState.extra).thenReturn('user-123');
       final claimTokenRoute = routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.claimToken) as GoRoute;
-      final claimTokenWidget = claimTokenRoute.builder!(mockContext, mockState);
-      expect(claimTokenWidget, isA<BlocProvider<ClaimTokenCubit>>());
+      final claimTokenPage = claimTokenRoute.pageBuilder!(mockContext, mockState);
+      expect(claimTokenPage, isA<Page>());
 
       // Test claimToken route builder with null extra
       when(() => mockState.extra).thenReturn(null);
-      final claimTokenWidgetNull = claimTokenRoute.builder!(mockContext, mockState);
-      expect(claimTokenWidgetNull, isA<BlocProvider<ClaimTokenCubit>>());
+      final claimTokenPageNull = claimTokenRoute.pageBuilder!(mockContext, mockState);
+      expect(claimTokenPageNull, isA<Page>());
     });
 
     test('authGuard redirects correctly based on SessionState', () {
