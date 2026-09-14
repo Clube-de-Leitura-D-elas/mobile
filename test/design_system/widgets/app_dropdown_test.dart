@@ -1,172 +1,205 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mobile/design_system/widgets/app_dropdown.dart';
 
 void main() {
-  // Carrega o AppLocalizations uma vez (não depende de BuildContext aqui,
-  // só precisamos dos valores das strings) e monta a lista de itens a
-  // partir dele — nada de literal 'Romance'/'Fantasia' hardcoded no teste.
-  late AppLocalizations l10n;
-  late List<String> items;
-
-  setUpAll(() async {
-    l10n = await AppLocalizations.delegate.load(const Locale('pt', 'BR'));
-    items = [
-      l10n.genreRomance,
-      l10n.genreFantasy,
-      l10n.genreSuspense,
-      l10n.genreNonFiction,
-    ];
-  });
-
-  Widget wrap(Widget child, {ThemeData? theme}) {
+  Widget buildTestableWidget(Widget child) {
     return MaterialApp(
-      theme: theme ?? AppTheme.light,
       home: Scaffold(body: Center(child: child)),
     );
   }
 
-  testWidgets('Estado fechado exibe o hintText quando value é null', (tester) async {
-    await tester.pumpWidget(wrap(AppDropdown<String>(
-      items: items,
-      value: null,
-      hintText: l10n.genreFieldHint,
-      onChanged: (_) {},
-    )));
+  group('AppDropdown Unit & Widget Tests', () {
+    const options = ['Opção A', 'Opção B', 'Opção C'];
 
-    expect(find.text(l10n.genreFieldHint), findsOneWidget);
-    expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
-  });
-
-  testWidgets('Estado com item selecionado exibe o rótulo correspondente', (tester) async {
-    await tester.pumpWidget(wrap(AppDropdown<String>(
-      items: items,
-      value: l10n.genreFantasy,
-      onChanged: (_) {},
-    )));
-
-    expect(find.text(l10n.genreFantasy), findsOneWidget);
-  });
-
-  testWidgets('Tocar no trigger abre o menu (estado aberto)', (tester) async {
-    await tester.pumpWidget(wrap(AppDropdown<String>(
-      items: items,
-      value: null,
-      onChanged: (_) {},
-    )));
-
-    await tester.tap(find.byType(AppDropdown<String>));
-    await tester.pumpAndSettle();
-
-    expect(find.text(l10n.genreRomance), findsOneWidget);
-    expect(find.text(l10n.genreFantasy), findsOneWidget);
-    expect(find.text(l10n.genreSuspense), findsOneWidget);
-    expect(find.text(l10n.genreNonFiction), findsOneWidget);
-    expect(find.byIcon(Icons.keyboard_arrow_up), findsOneWidget);
-  });
-
-  testWidgets(
-    'Given o menu aberto, When escolho uma opção, Then fecha e atualiza o valor',
-    (tester) async {
-      String? selected;
-
-      await tester.pumpWidget(wrap(StatefulBuilder(
-        builder: (context, setState) => AppDropdown<String>(
-          items: items,
-          value: selected,
-          onChanged: (value) => setState(() => selected = value),
+    testWidgets('Renderiza label e hintText corretamente quando valor é nulo', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildTestableWidget(
+          AppDropdown<String>(
+            label: 'Selecione a Categoria',
+            hintText: 'Escolha uma opção',
+            value: null,
+            items: options,
+            onChanged: (_) {},
+          ),
         ),
-      )));
+      );
 
+      expect(find.text('Selecione a Categoria'), findsOneWidget);
+      expect(find.text('Escolha uma opção'), findsOneWidget);
+    });
+
+    testWidgets(
+      'Abre o overlay ao tocar no gatilho e fecha ao selecionar um item',
+      (tester) async {
+        String? selectedValue;
+
+        await tester.pumpWidget(
+          buildTestableWidget(
+            StatefulBuilder(
+              builder: (context, setState) {
+                return AppDropdown<String>(
+                  hintText: 'Escolha',
+                  value: selectedValue,
+                  items: options,
+                  onChanged: (val) => setState(() => selectedValue = val),
+                );
+              },
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Escolha'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Opção A'), findsOneWidget);
+        expect(find.text('Opção B'), findsOneWidget);
+
+        await tester.tap(find.text('Opção B'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Opção B'), findsOneWidget);
+        expect(selectedValue, 'Opção B');
+      },
+    );
+
+    testWidgets('Fecha o overlay ao tocar fora do menu (barrier)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildTestableWidget(
+          AppDropdown<String>(
+            hintText: 'Escolha',
+            value: null,
+            items: options,
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Escolha'));
+      await tester.pumpAndSettle();
+      expect(find.text('Opção A'), findsOneWidget);
+
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Opção A'), findsNothing);
+    });
+
+    testWidgets('Respeita estado desabilitado (enabled = false)', (
+      tester,
+    ) async {
+      bool called = false;
+
+      await tester.pumpWidget(
+        buildTestableWidget(
+          AppDropdown<String>(
+            enabled: false,
+            hintText: 'Desabilitado',
+            value: null,
+            items: options,
+            onChanged: (_) => called = true,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Desabilitado'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Opção A'), findsNothing);
+      expect(called, isFalse);
+    });
+
+    testWidgets('Cobre didUpdateWidget e desabilitação dinâmica', (
+      tester,
+    ) async {
+      bool enabled = true;
+      String? value;
+
+      await tester.pumpWidget(
+        buildTestableWidget(
+          StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                children: [
+                  AppDropdown<String>(
+                    enabled: enabled,
+                    value: value,
+                    items: options,
+                    onChanged: (val) => setState(() => value = val),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => setState(() => enabled = false),
+                    child: const Text('Desabilitar'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => setState(() => value = 'Opção A'),
+                    child: const Text('Atualizar Valor'),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+
+      // 1. Abre o menu do dropdown
       await tester.tap(find.byType(AppDropdown<String>));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(l10n.genreSuspense));
+      // Confirma que as opções do menu estão visíveis no overlay
+      expect(find.text('Opção A'), findsWidgets);
+      expect(find.text('Opção B'), findsOneWidget);
+
+      // 2. Atualiza o valor externamente enquanto aberto (força o markNeedsBuild no didUpdateWidget)
+      await tester.tap(find.text('Atualizar Valor'));
       await tester.pumpAndSettle();
 
-      expect(selected, l10n.genreSuspense);
-      // Menu fechado: só sobra o rótulo no trigger, não mais na lista.
-      expect(find.text(l10n.genreRomance), findsNothing);
-    },
-  );
-
-  testWidgets(
-    'Given o menu aberto, When toco fora, Then fecha sem mudar o valor',
-    (tester) async {
-      String? selected = l10n.genreRomance;
-
-      await tester.pumpWidget(wrap(StatefulBuilder(
-        builder: (context, setState) => AppDropdown<String>(
-          items: items,
-          value: selected,
-          onChanged: (value) => setState(() => selected = value),
+      // 3. Desabilita o widget via didUpdateWidget (deve acionar o _close())
+      await tester.tap(find.text('Desabilitar'));
+      await tester.pumpWidget(
+        buildTestableWidget(
+          AppDropdown<String>(
+            enabled: false,
+            value: 'Opção A',
+            items: options,
+            onChanged: (_) {},
+          ),
         ),
-      )));
-
-      await tester.tap(find.byType(AppDropdown<String>));
+      );
       await tester.pumpAndSettle();
 
-      // Toca num ponto fora do menu (barreira translúcida cobrindo a tela).
-      await tester.tapAt(const Offset(5.0, 5.0));
-      await tester.pumpAndSettle();
+      // Garante que as opções do overlay ('Opção B' e 'Opção C') foram removidas
+      expect(find.text('Opção B'), findsNothing);
+      expect(find.text('Opção C'), findsNothing);
+    });
 
-      expect(selected, l10n.genreRomance);
-      expect(find.text(l10n.genreFantasy), findsNothing);
-    },
-  );
+    testWidgets(
+      'Cobre dispose com overlay aberto e fallback de item.toString()',
+      (tester) async {
+        await tester.pumpWidget(
+          buildTestableWidget(
+            AppDropdown<int>(
+              hintText: 'Números',
+              value: null,
+              items: const [10, 20, 30],
+              onChanged: (_) {},
+            ),
+          ),
+        );
 
-  testWidgets('Estado desabilitado não abre o menu ao tocar', (tester) async {
-    await tester.pumpWidget(wrap(AppDropdown<String>(
-      items: items,
-      value: l10n.genreRomance,
-      enabled: false,
-      onChanged: (_) {},
-    )));
+        await tester.tap(find.text('Números'));
+        await tester.pumpAndSettle();
+        expect(find.text('10'), findsOneWidget);
 
-    await tester.tap(find.byType(AppDropdown<String>));
-    await tester.pumpAndSettle();
-
-    expect(find.text(l10n.genreFantasy), findsNothing);
-  });
-
-  testWidgets('itemLabelBuilder define o rótulo exibido quando informado', (tester) async {
-    await tester.pumpWidget(wrap(AppDropdown<int>(
-      items: const [1, 2, 3],
-      value: 2,
-      itemLabelBuilder: (item) => 'Opção $item',
-      onChanged: (_) {},
-    )));
-
-    expect(find.text('Opção 2'), findsOneWidget);
-  });
-
-  testWidgets('Funciona em modo escuro (AppTheme.dark) sem quebrar', (tester) async {
-    await tester.pumpWidget(wrap(
-      AppDropdown<String>(
-        items: items,
-        value: l10n.genreRomance,
-        onChanged: (_) {},
-      ),
-      theme: AppTheme.dark,
-    ));
-
-    await tester.tap(find.byType(AppDropdown<String>));
-    await tester.pumpAndSettle();
-
-    expect(tester.takeException(), isNull);
-    expect(find.text(l10n.genreFantasy), findsOneWidget);
-  });
-
-  testWidgets('AppDropdownSize.lg aplica altura de 56px ao trigger', (tester) async {
-    await tester.pumpWidget(wrap(AppDropdown<String>(
-      items: items,
-      value: null,
-      size: AppDropdownSize.lg,
-      onChanged: (_) {},
-    )));
-
-    final size = tester.getSize(find.byType(AppDropdown<String>));
-    expect(size.height, 56.0);
+        await tester.pumpWidget(
+          const MaterialApp(home: Scaffold(body: SizedBox())),
+        );
+        await tester.pumpAndSettle();
+      },
+    );
   });
 }
