@@ -360,6 +360,36 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
+
+  /// Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Romance'**
+  String get genreRomance;
+
+  /// Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Fantasia'**
+  String get genreFantasy;
+
+  /// Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Suspense'**
+  String get genreSuspense;
+
+  /// Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Não Ficção'**
+  String get genreNonFiction;
+
+  /// Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um gênero'**
+  String get genreFieldHint;
 }
 
 class _AppLocalizationsDelegate

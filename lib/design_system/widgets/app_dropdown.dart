@@ -47,6 +47,8 @@ class AppDropdown<T> extends StatefulWidget {
 }
 
 class _AppDropdownState<T> extends State<AppDropdown<T>> {
+  final GlobalKey _triggerKey = GlobalKey();
+
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _barrierEntry;
   OverlayEntry? _menuEntry;
@@ -90,7 +92,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
 
   void _open() {
     final overlay = Overlay.of(context);
-    final renderBox = context.findRenderObject() as RenderBox?;
+    final renderBox = _triggerKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null || !renderBox.hasSize) return;
 
     _triggerSize = renderBox.size;
@@ -110,7 +112,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
       builder: (context) => CompositedTransformFollower(
         link: _layerLink,
         showWhenUnlinked: false,
-        offset: Offset(0, _triggerSize!.height + 4.0),
+        offset: const Offset(0, 4.0),
         targetAnchor: Alignment.bottomLeft,
         followerAnchor: Alignment.topLeft,
         child: _DropdownMenu<T>(
@@ -184,6 +186,8 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         : colors.surfaceSunken;
 
     final trigger = CompositedTransformTarget(
+
+      key: _triggerKey,
       link: _layerLink,
       child: Semantics(
         button: true,
@@ -286,7 +290,7 @@ class _DropdownMenu<T> extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: spacing.s4),
             shrinkWrap: true,
             itemCount: items.length,
-            separatorBuilder: (_, __) => Divider(
+            separatorBuilder: (_, _) => Divider(
               height: 1.0,
               color: colors.borderDefault,
             ),

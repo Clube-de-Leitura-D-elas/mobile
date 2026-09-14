@@ -181,5 +181,25 @@
   "authUserIdLabel": "ID Auth (Supabase User ID)",
   "@authUserIdLabel": {
     "description": "Rótulo do item de perfil para ID do usuário no Supabase"
+  },
+  "genreRomance": "Romance",
+  "@genreRomance": {
+    "description": "Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown"
+  },
+  "genreFantasy": "Fantasia",
+  "@genreFantasy": {
+    "description": "Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown"
+  },
+  "genreSuspense": "Suspense",
+  "@genreSuspense": {
+    "description": "Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown"
+  },
+  "genreNonFiction": "Não Ficção",
+  "@genreNonFiction": {
+    "description": "Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown"
+  },
+  "genreFieldHint": "Selecione um gênero",
+  "@genreFieldHint": {
+    "description": "Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown"
   }
 }
