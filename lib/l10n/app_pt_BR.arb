@@ -27,7 +27,9 @@
   "passwordNumberRequirement": "Pelo menos 1 número",
   "passwordsMatchRequirement": "Senhas conferem",
   "registerButton": "Cadastrar",
+  "accountCreatedSuccessMessage": "Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.",
   "alreadyHaveAccountLink": "Já tenho uma conta",
+
   "claimTokenTitle": "Vincular Perfil",
   "claimTokenSuccessMessage": "Perfil vinculado com sucesso!",
   "claimTokenInputHeader": "Informe o seu Token de Acesso",

@@ -133,14 +133,12 @@ class SessionCubit extends Cubit<SessionState> {
     final userEntity = result.unwrap();
     final currentUser = supabaseService.currentUser;
     debugPrint('[SessionCubit] Email Sign-Up success for user: ${currentUser?.id}');
-    if (currentUser == null) {
-      emit(const GuestSession());
-      return const Failure(UserFailure(message: 'Usuário nulo após registro'));
-    }
-
-    await checkUserProfile(currentUser.id, userEntity);
+    
+    // Reset session state to GuestSession so user returns to LoginScreen and completes email verification/login
+    emit(const GuestSession());
     return const Success(null);
   }
+
 
   Future<void> checkUserProfile(String userId, [UserEntity? userEntity]) async {
     debugPrint('[SessionCubit] Checking user profile for userId: $userId');

@@ -311,7 +311,7 @@ void main() {
     );
 
     blocTest<SessionCubit, SessionState>(
-      'emits [LoadingSession, AuthenticatedSession] when signUpWithEmail succeeds with currentUser',
+      'emits [LoadingSession, GuestSession] when signUpWithEmail succeeds with currentUser',
       build: () {
         when(
           () => mockAuthRepository.signUpWithEmailAndPassword(
@@ -330,9 +330,10 @@ void main() {
       ),
       expect: () => [
         const LoadingSession(),
-        const AuthenticatedSession(user: testUserEntity, profile: testProfile),
+        const GuestSession(),
       ],
     );
+
 
     test('initial currentUser check triggers checkUserProfile when currentUser is present', () async {
       when(() => mockSupabaseService.currentUser).thenReturn(mockSupabaseUser);

@@ -96,6 +96,10 @@
   "@registerButton": {
     "description": "Botão para submeter o cadastro"
   },
+  "accountCreatedSuccessMessage": "Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.",
+  "@accountCreatedSuccessMessage": {
+    "description": "Mensagem exibida após o cadastro bem-sucedido"
+  },
   "alreadyHaveAccountLink": "Já tenho uma conta",
   "@alreadyHaveAccountLink": {
     "description": "Link para quem já possui conta e quer ir para o login"

@@ -79,6 +79,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get registerButton => 'Cadastrar';
 
   @override
+  String get accountCreatedSuccessMessage =>
+      'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.';
+
+  @override
   String get alreadyHaveAccountLink => 'Já tenho uma conta';
 
   @override
@@ -216,6 +220,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get registerButton => 'Cadastrar';
+
+  @override
+  String get accountCreatedSuccessMessage =>
+      'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.';
 
   @override
   String get alreadyHaveAccountLink => 'Já tenho uma conta';

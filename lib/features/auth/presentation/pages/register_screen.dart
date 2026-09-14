@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
@@ -49,23 +51,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void _submitEmailPassword(BuildContext context) {
+  Future<void> _submitEmailPassword(BuildContext context) async {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
-    
+
     if (!_passwordCubit.state.isValid) {
       return;
     }
 
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
 
-    context.read<SessionCubit>().signUpWithEmail(
+    final result = await context.read<SessionCubit>().signUpWithEmail(
       email: email,
       password: password,
     );
+
+    if (result is Success && mounted) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.accountCreatedSuccessMessage,
+          ),
+        ),
+      );
+      if (widget.onLoginPressed != null) {
+        widget.onLoginPressed!();
+      } else if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    }
   }
+
   
   Widget _buildCheckItem(bool isValid, String text) {
     final colors = context.colors;
@@ -105,19 +125,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(l10n.confirmEmailBeforeLoginError),
-                    backgroundColor: Colors.red,
                   ),
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(state.message),
-                    backgroundColor: Colors.red,
                   ),
                 );
               }
             }
           },
+
           builder: (context, state) {
             final isLoading = state is LoadingSession;
 

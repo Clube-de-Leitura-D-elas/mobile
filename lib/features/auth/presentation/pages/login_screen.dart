@@ -70,19 +70,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(l10n.confirmEmailBeforeLoginError),
-                    backgroundColor: Colors.red,
                   ),
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(state.message),
-                    backgroundColor: Colors.red,
                   ),
                 );
               }
             }
           },
+
           builder: (context, state) {
             final isLoading = state is LoadingSession;
 

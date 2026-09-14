@@ -235,6 +235,12 @@ abstract class AppLocalizations {
   /// **'Cadastrar'**
   String get registerButton;
 
+  /// Mensagem exibida após o cadastro bem-sucedido
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.'**
+  String get accountCreatedSuccessMessage;
+
   /// Link para quem já possui conta e quer ir para o login
   ///
   /// In pt, this message translates to:

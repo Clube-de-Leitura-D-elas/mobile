@@ -52,7 +52,6 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: colors.actionDanger,
               ),
             );
             return;
@@ -62,12 +61,12 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(l10n.claimTokenSuccessMessage),
-                backgroundColor: colors.actionPrimary,
               ),
             );
             context.read<SessionCubit>().checkUserProfile(widget.userId);
           }
         },
+
         child: Padding(
           padding: EdgeInsets.all(spacing.s24),
           child: Column(
