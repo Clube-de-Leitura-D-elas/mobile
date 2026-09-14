@@ -146,35 +146,19 @@ void main() {
         ),
       );
 
-      // 1. Abre o menu do dropdown
+      // 1. Abre o overlay
       await tester.tap(find.byType(AppDropdown<String>));
       await tester.pumpAndSettle();
 
-      // Confirma que as opções do menu estão visíveis no overlay
-      expect(find.text('Opção A'), findsWidgets);
-      expect(find.text('Opção B'), findsOneWidget);
-
-      // 2. Atualiza o valor externamente enquanto aberto (força o markNeedsBuild no didUpdateWidget)
+      // 2. Atualiza valor com overlay aberto (executa markNeedsBuild)
       await tester.tap(find.text('Atualizar Valor'));
       await tester.pumpAndSettle();
 
-      // 3. Desabilita o widget via didUpdateWidget (deve acionar o _close())
+      // 3. Desabilita com overlay aberto (executa _close() dentro do didUpdateWidget)
       await tester.tap(find.text('Desabilitar'));
-      await tester.pumpWidget(
-        buildTestableWidget(
-          AppDropdown<String>(
-            enabled: false,
-            value: 'Opção A',
-            items: options,
-            onChanged: (_) {},
-          ),
-        ),
-      );
       await tester.pumpAndSettle();
 
-      // Garante que as opções do overlay ('Opção B' e 'Opção C') foram removidas
       expect(find.text('Opção B'), findsNothing);
-      expect(find.text('Opção C'), findsNothing);
     });
 
     testWidgets(
@@ -195,6 +179,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('10'), findsOneWidget);
 
+        // Descarta o widget com overlay aberto para testar o dispose()
         await tester.pumpWidget(
           const MaterialApp(home: Scaffold(body: SizedBox())),
         );

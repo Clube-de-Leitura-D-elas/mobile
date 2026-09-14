@@ -5,10 +5,7 @@ import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
 /// Size variants for the dropdown trigger.
-enum AppDropdownSize {
-  md,
-  lg,
-}
+enum AppDropdownSize { md, lg }
 
 /// A theme-aware dropdown component with controlled selection.
 ///
@@ -92,7 +89,8 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
 
   void _open() {
     final overlay = Overlay.of(context);
-    final renderBox = _triggerKey.currentContext?.findRenderObject() as RenderBox?;
+    final renderBox =
+        _triggerKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null || !renderBox.hasSize) return;
 
     _triggerSize = renderBox.size;
@@ -162,22 +160,23 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
 
   @override
   void dispose() {
-    _menuEntry?.remove();
-    _barrierEntry?.remove();
+    _close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     assert(
-    widget.hasValidValue,
-    'value must be null or one of the provided items',
-  );
+      widget.hasValidValue,
+      'value must be null or one of the provided items',
+    );
 
     final colors = context.colors;
     final typography = context.text;
     final spacing = context.spacing;
-    final textColor = widget.enabled ? colors.textDefault : colors.actionDisabledFg;
+    final textColor = widget.enabled
+        ? colors.textDefault
+        : colors.actionDisabledFg;
     final borderColor = widget.enabled
         ? (_isOpen ? colors.actionFocusRing : colors.borderDefault)
         : colors.actionDisabledBg;
@@ -186,7 +185,6 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         : colors.surfaceSunken;
 
     final trigger = CompositedTransformTarget(
-
       key: _triggerKey,
       link: _layerLink,
       child: Semantics(
@@ -206,7 +204,10 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
               padding: _horizontalPadding,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: borderColor, width: _isOpen ? 2.0 : 1.0),
+                border: Border.all(
+                  color: borderColor,
+                  width: _isOpen ? 2.0 : 1.0,
+                ),
               ),
               child: Row(
                 children: [
@@ -218,13 +219,17 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: _triggerTextStyle(typography).copyWith(
-                        color: widget.value == null ? colors.textMuted : textColor,
+                        color: widget.value == null
+                            ? colors.textMuted
+                            : textColor,
                       ),
                     ),
                   ),
                   SizedBox(width: spacing.s8),
                   Icon(
-                    _isOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    _isOpen
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
                     size: 20.0,
                     color: textColor,
                   ),
@@ -245,7 +250,9 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         Text(
           widget.label!,
           style: typography.bodyDefaultEmphasis.copyWith(
-            color: widget.enabled ? colors.textDefault : colors.actionDisabledFg,
+            color: widget.enabled
+                ? colors.textDefault
+                : colors.actionDisabledFg,
           ),
         ),
         SizedBox(height: spacing.s4),
@@ -290,10 +297,8 @@ class _DropdownMenu<T> extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: spacing.s4),
             shrinkWrap: true,
             itemCount: items.length,
-            separatorBuilder: (_, _) => Divider(
-              height: 1.0,
-              color: colors.borderDefault,
-            ),
+            separatorBuilder: (_, _) =>
+                Divider(height: 1.0, color: colors.borderDefault),
             itemBuilder: (context, index) {
               final item = items[index];
               final selected = item == selectedValue;
@@ -311,8 +316,12 @@ class _DropdownMenu<T> extends StatelessWidget {
                         child: Text(
                           itemLabelBuilder(item),
                           style: typography.bodyDefault.copyWith(
-                            color: selected ? colors.textBrand : colors.textDefault,
-                            fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                            color: selected
+                                ? colors.textBrand
+                                : colors.textDefault,
+                            fontWeight: selected
+                                ? FontWeight.w600
+                                : FontWeight.w400,
                           ),
                         ),
                       ),
