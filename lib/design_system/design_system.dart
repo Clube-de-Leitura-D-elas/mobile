@@ -4,6 +4,7 @@ export 'tokens/color_tokens.dart';
 export 'tokens/spacing_tokens.dart';
 export 'tokens/typography_tokens.dart';
 export 'widgets/app_button.dart';
+export 'widgets/app_checkbox.dart';
 export 'widgets/app_card.dart';
 export 'widgets/app_icon.dart';
 export 'widgets/app_tag.dart';
