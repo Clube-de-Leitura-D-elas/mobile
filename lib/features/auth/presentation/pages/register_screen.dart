@@ -7,12 +7,8 @@ import 'package:mobile/features/auth/presentation/cubit/password_validation_cubi
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 
-
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({
-    super.key,
-    this.onLoginPressed,
-  });
+  const RegisterScreen({super.key, this.onLoginPressed});
 
   final VoidCallback? onLoginPressed;
 
@@ -63,14 +59,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final l10n = context.l10n;
-    final messenger = ScaffoldMessenger.of(context);
 
     final result = await context.read<SessionCubit>().signUpWithEmail(
       email: email,
       password: password,
     );
 
-    if (result is Success && mounted) {
+    if (result is Success && context.mounted) {
       context.showAppToast(l10n.accountCreatedSuccessMessage);
       if (widget.onLoginPressed != null) {
         widget.onLoginPressed!();
@@ -80,7 +75,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  
   Widget _buildCheckItem(bool isValid, String text) {
     final colors = context.colors;
     final typography = context.text;
@@ -122,7 +116,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               }
             }
           },
-
 
           builder: (context, state) {
             final isLoading = state is LoadingSession;
@@ -192,21 +185,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 enabled: !isLoading,
                               ),
                               const Gap16(),
-                              BlocBuilder<PasswordValidationCubit, PasswordValidationState>(
+                              BlocBuilder<
+                                PasswordValidationCubit,
+                                PasswordValidationState
+                              >(
                                 bloc: _passwordCubit,
                                 builder: (context, passState) {
                                   return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      _buildCheckItem(passState.hasMinLength, l10n.passwordMinLengthRequirement),
+                                      _buildCheckItem(
+                                        passState.hasMinLength,
+                                        l10n.passwordMinLengthRequirement,
+                                      ),
                                       const Gap4(),
-                                      _buildCheckItem(passState.hasUpperCase, l10n.passwordUppercaseRequirement),
+                                      _buildCheckItem(
+                                        passState.hasUpperCase,
+                                        l10n.passwordUppercaseRequirement,
+                                      ),
                                       const Gap4(),
-                                      _buildCheckItem(passState.hasLowerCase, l10n.passwordLowercaseRequirement),
+                                      _buildCheckItem(
+                                        passState.hasLowerCase,
+                                        l10n.passwordLowercaseRequirement,
+                                      ),
                                       const Gap4(),
-                                      _buildCheckItem(passState.hasNumber, l10n.passwordNumberRequirement),
+                                      _buildCheckItem(
+                                        passState.hasNumber,
+                                        l10n.passwordNumberRequirement,
+                                      ),
                                       const Gap4(),
-                                      _buildCheckItem(passState.passwordsMatch && !passState.isConfirmEmpty, l10n.passwordsMatchRequirement),
+                                      _buildCheckItem(
+                                        passState.passwordsMatch &&
+                                            !passState.isConfirmEmpty,
+                                        l10n.passwordsMatchRequirement,
+                                      ),
                                     ],
                                   );
                                 },
@@ -220,11 +233,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Actions Block
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 35.0, vertical: 32.0),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 35.0,
+                            vertical: 32.0,
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              BlocBuilder<PasswordValidationCubit, PasswordValidationState>(
+                              BlocBuilder<
+                                PasswordValidationCubit,
+                                PasswordValidationState
+                              >(
                                 bloc: _passwordCubit,
                                 builder: (context, passState) {
                                   return AppButton.primary(
@@ -234,7 +253,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ? null
                                         : () => _submitEmailPassword(context),
                                   );
-                                }
+                                },
                               ),
                               const Gap16(),
                               Center(
