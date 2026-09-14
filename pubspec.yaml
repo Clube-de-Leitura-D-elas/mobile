@@ -25,6 +25,7 @@ dependencies:
   google_sign_in: ^7.2.0
   image_picker: ^1.1.2
   intl: ^0.20.2
+  jovial_svg: ^1.1.28
   shared_preferences: ^2.5.2
   shimmer: ^3.0.0
   sign_in_button: ^3.2.0
@@ -44,6 +45,7 @@ flutter:
     - .env
     - assets/icons/
     - assets/images/
+    - assets/si/
 
 flutter_native_splash:
   color: "#FFFFFF"
