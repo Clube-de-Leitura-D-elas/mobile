@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
+
 import '../tokens/color_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'gap.dart';
 
 /// Variants for [AppButton].
-enum AppButtonVariant {
-  primary,
-  secondary,
-  ghost,
-  danger,
-}
+enum AppButtonVariant { primary, secondary, ghost, danger }
 
 /// Sizes for [AppButton].
-enum AppButtonSize {
-  sm,
-  md,
-  lg,
-}
+enum AppButtonSize { sm, md, lg }
 
 /// Mobile-first button component for Clube de Leitura D'Elas.
 ///
@@ -190,10 +182,7 @@ class AppButton extends StatelessWidget {
 
     return Container(
       height: _height,
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        border: border,
-      ),
+      decoration: BoxDecoration(borderRadius: borderRadius, border: border),
       child: Material(
         color: backgroundColor,
         borderRadius: borderRadius,
@@ -223,20 +212,19 @@ class AppButton extends StatelessWidget {
 
   Widget _buildChild(BuildContext context, Color foregroundColor) {
     if (isLoading) {
-      return SizedBox(
-        width: 16.0,
-        height: 16.0,
-        child: CircularProgressIndicator(
-          strokeWidth: 2.0,
-          valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+      return Center(
+        child: SizedBox(
+          width: 16.0,
+          height: 16.0,
+          child: CircularProgressIndicator(
+            strokeWidth: 2.0,
+            valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+          ),
         ),
       );
     }
 
-    final labelWidget = Text(
-      label,
-      textAlign: TextAlign.center,
-    );
+    final labelWidget = Text(label, textAlign: TextAlign.center);
 
     if (icon == null) {
       return labelWidget;
