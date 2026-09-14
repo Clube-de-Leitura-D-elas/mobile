@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/extensions/build_context_l10n.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -42,49 +43,61 @@ class ScreenHeader extends StatelessWidget implements PreferredSizeWidget {
 
     return Container(
       color: colors.bgDefault,
-      height: preferredSize.height,
-      padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-      child: Row(
-        children: [
-          if (_variant == ScreenHeaderVariant.back) ...[
-            IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              icon: Icon(Icons.arrow_back, color: colors.textDefault),
-              onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
-              tooltip: 'Voltar',
-            ),
-            const Gap8(),
-          ],
-          Expanded(
-            child: Text(
-              title,
-              style: text.headingH3.copyWith(color: colors.textDefault),
-              overflow: TextOverflow.ellipsis,
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: _height,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+            child: Row(
+              children: [
+                if (_variant == ScreenHeaderVariant.back) ...[
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(
+                      minWidth: 48,
+                      minHeight: 48,
+                    ),
+                    icon: Icon(Icons.arrow_back, color: colors.textDefault),
+                    onPressed:
+                        onBackPressed ?? () => Navigator.of(context).pop(),
+                    tooltip: context.l10n.back,
+                  ),
+                  const Gap8(),
+                ],
+                Expanded(
+                  child: Text(
+                    title,
+                    style: text.headingH3.copyWith(color: colors.textDefault),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (_variant == ScreenHeaderVariant.action) ...[
+                  const Gap8(),
+                  action!,
+                ],
+              ],
             ),
           ),
-          if (_variant == ScreenHeaderVariant.action) ...[
-            const Gap8(),
-            action!,
-          ],
-        ],
+        ),
       ),
     );
   }
 }
 
 /* Exemplo de uso:
- 
+
  Scaffold(
    appBar: ScreenHeader.simple(title: 'Início'),
    body: ...,
  ),
- 
+
  Scaffold(
    appBar: ScreenHeader.back(title: 'Detalhe do livro'),
    body: ...,
  ),
- 
+
  Scaffold(
    appBar: ScreenHeader.action(
      title: 'Meu clube',

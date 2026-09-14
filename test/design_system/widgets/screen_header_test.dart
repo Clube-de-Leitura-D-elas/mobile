@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/l10n/app_localizations.dart';
+
+Widget _wrap(Widget home, {MediaQueryData? mediaQuery}) {
+  final app = MaterialApp(
+    theme: AppTheme.light,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: home,
+  );
+
+  if (mediaQuery == null) return app;
+
+  return MediaQuery(data: mediaQuery, child: app);
+}
 
 void main() {
   group('ScreenHeader', () {
     testWidgets('Simple variant renders the given title', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: const Scaffold(appBar: ScreenHeader.simple(title: 'Início')),
-        ),
+        _wrap(const Scaffold(appBar: ScreenHeader.simple(title: 'Início'))),
       );
 
       expect(find.text('Início'), findsOneWidget);
@@ -19,10 +30,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: const Scaffold(appBar: ScreenHeader.simple(title: 'Início')),
-        ),
+        _wrap(const Scaffold(appBar: ScreenHeader.simple(title: 'Início'))),
       );
 
       expect(find.byType(IconButton), findsNothing);
@@ -30,9 +38,8 @@ void main() {
 
     testWidgets('Back variant shows a back button', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: Scaffold(
+        _wrap(
+          Scaffold(
             appBar: ScreenHeader.back(title: 'Detalhe', onBackPressed: () {}),
           ),
         ),
@@ -47,9 +54,8 @@ void main() {
       var tapped = false;
 
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: Scaffold(
+        _wrap(
+          Scaffold(
             appBar: ScreenHeader.back(
               title: 'Detalhe',
               onBackPressed: () => tapped = true,
@@ -68,9 +74,8 @@ void main() {
       'Back variant pops the navigator when onBackPressed is not provided',
       (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: Scaffold(
+          _wrap(
+            Scaffold(
               body: Builder(
                 builder: (context) => ElevatedButton(
                   onPressed: () => Navigator.of(context).push(
@@ -104,9 +109,8 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: Scaffold(
+        _wrap(
+          Scaffold(
             appBar: ScreenHeader.action(
               title: 'Meu clube',
               action: IconButton(
@@ -128,9 +132,8 @@ void main() {
       var tapped = false;
 
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: Scaffold(
+        _wrap(
+          Scaffold(
             appBar: ScreenHeader.action(
               title: 'Meu clube',
               action: IconButton(
@@ -170,10 +173,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: const Scaffold(appBar: ScreenHeader.simple(title: 'Início')),
-        ),
+        _wrap(const Scaffold(appBar: ScreenHeader.simple(title: 'Início'))),
       );
 
       final titleText = tester.widget<Text>(find.text('Início'));
@@ -191,15 +191,67 @@ void main() {
 
     testWidgets('Uses bgDefault as the background color', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: const Scaffold(appBar: ScreenHeader.simple(title: 'Início')),
-        ),
+        _wrap(const Scaffold(appBar: ScreenHeader.simple(title: 'Início'))),
       );
 
       final container = tester.widget<Container>(find.byType(Container));
 
       expect(container.color, AppColorTokens.light.bgDefault);
+    });
+
+    testWidgets(
+      'Pushes content below the top inset instead of rendering under it',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const Scaffold(appBar: ScreenHeader.simple(title: 'Início')),
+            mediaQuery: const MediaQueryData(padding: EdgeInsets.only(top: 47)),
+          ),
+        );
+
+        final titleTopLeft = tester.getTopLeft(find.text('Início'));
+
+        expect(titleTopLeft.dy, greaterThanOrEqualTo(47));
+      },
+    );
+
+    testWidgets(
+      'Keeps a 48x48 minimum tap target on the back button even with zero padding',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            Scaffold(
+              appBar: ScreenHeader.back(title: 'Detalhe', onBackPressed: () {}),
+            ),
+          ),
+        );
+
+        final size = tester.getSize(find.byType(IconButton));
+
+        expect(size.width, greaterThanOrEqualTo(48));
+        expect(size.height, greaterThanOrEqualTo(48));
+      },
+    );
+
+    testWidgets('Truncates a long title to a single line instead of wrapping', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const Scaffold(
+            appBar: ScreenHeader.simple(
+              title:
+                  'Um título bem comprido que certamente não cabe em uma '
+                  'única linha na largura de tela padrão de teste',
+            ),
+          ),
+        ),
+      );
+
+      final text = tester.widget<Text>(find.textContaining('Um título'));
+
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
     });
   });
 }
