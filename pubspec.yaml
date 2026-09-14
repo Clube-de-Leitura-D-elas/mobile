@@ -45,6 +45,7 @@ flutter:
   assets:
     - .env
     - assets/icons/
+    - assets/icons/si/
     - assets/images/
 
 flutter_native_splash:
@@ -54,9 +55,5 @@ flutter_native_splash:
     image: assets/images/logo.png
     icon_background_color: "#FFFFFF"
 
-flutter:
-  uses-material-design: true
-  generate: true         
-  assets:
-    - assets/icons/si/
+
 
