@@ -8,14 +8,25 @@ import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/claim_token_screen.dart';
 import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
 
+import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
+
 abstract class AuthRoutes {
   static const String login = '/login';
+  static const String register = '/register';
   static const String claimToken = '/claim-token';
 
   static List<RouteBase> get routes => [
         GoRoute(
           path: login,
-          builder: (context, state) => const LoginScreen(),
+          builder: (context, state) => LoginScreen(
+            onCreateAccountPressed: () => context.push(register),
+          ),
+        ),
+        GoRoute(
+          path: register,
+          builder: (context, state) => RegisterScreen(
+            onLoginPressed: () => context.pop(),
+          ),
         ),
         GoRoute(
           path: claimToken,
@@ -38,6 +49,7 @@ abstract class AuthRoutes {
     SessionState sessionState,
   ) {
     final isLogin = state.matchedLocation == login;
+    final isRegister = state.matchedLocation == register;
     final isClaim = state.matchedLocation == claimToken;
 
     if (sessionState is LoadingSession) {
@@ -45,7 +57,7 @@ abstract class AuthRoutes {
     }
 
     if (sessionState is AuthenticatedSession) {
-      if (isLogin || isClaim) {
+      if (isLogin || isRegister || isClaim) {
         return '/home';
       }
     }

@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/home/presentation/widgets/profile_detail_tile.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 
 void main() {
   Widget buildWidget(Widget child) {
     return MaterialApp(
       theme: AppTheme.light,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('pt', 'BR'),
       home: Scaffold(body: child),
     );
   }

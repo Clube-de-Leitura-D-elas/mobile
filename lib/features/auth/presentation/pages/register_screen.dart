@@ -2,36 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
-import 'package:mobile/features/auth/presentation/widgets/google_sign_in_button.dart';
 
-/// Login screen matching Figma spec (node-id: 771-1625) for Clube de Leitura D'Elas.
-///
-/// Supports email + password authentication with Supabase and Google OAuth.
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({
     super.key,
-    this.onForgotPasswordPressed,
-    this.onCreateAccountPressed,
+    this.onLoginPressed,
   });
 
-  final VoidCallback? onForgotPasswordPressed;
-  final VoidCallback? onCreateAccountPressed;
+  final VoidCallback? onLoginPressed;
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  late PasswordValidationCubit _passwordCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordCubit = PasswordValidationCubit();
+    _passwordController.addListener(_onPasswordChanged);
+    _confirmPasswordController.addListener(_onPasswordChanged);
+  }
+
+  void _onPasswordChanged() {
+    _passwordCubit.validate(
+      _passwordController.text,
+      _confirmPasswordController.text,
+    );
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _passwordCubit.close();
     super.dispose();
   }
 
@@ -39,18 +53,39 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
+    
+    if (!_passwordCubit.state.isValid) {
+      return;
+    }
 
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    context.read<SessionCubit>().authenticateWithEmail(
+    context.read<SessionCubit>().signUpWithEmail(
       email: email,
       password: password,
     );
   }
-
-  void _submitGoogleAuth(BuildContext context) {
-    context.read<SessionCubit>().authenticate();
+  
+  Widget _buildCheckItem(bool isValid, String text) {
+    final colors = context.colors;
+    final typography = context.text;
+    return Row(
+      children: [
+        Icon(
+          isValid ? Icons.check_circle : Icons.cancel,
+          color: isValid ? colors.feedbackSuccess : colors.feedbackError,
+          size: 16,
+        ),
+        const Gap4(),
+        Text(
+          text,
+          style: typography.bodySmall.copyWith(
+            color: isValid ? colors.feedbackSuccess : colors.feedbackError,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -95,8 +130,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Gap(104),
-                        // Title & Form Block (#879:1799)
+                        const Gap(64),
+                        // Title & Form Block
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: spacing.s16,
@@ -105,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                l10n.loginTitle,
+                                l10n.registerTitle,
                                 textAlign: TextAlign.center,
                                 style: typography.headingH1.copyWith(
                                   color: colors.textDefault,
@@ -133,38 +168,42 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                               ),
                               const Gap16(),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  AppTextField(
-                                    label: l10n.passwordLabel,
-                                    controller: _passwordController,
-                                    obscureText: true,
-                                    textInputAction: TextInputAction.done,
-                                    onSubmitted: (_) =>
-                                        _submitEmailPassword(context),
-                                    enabled: !isLoading,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return l10n.passwordRequiredError;
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const Gap4(),
-                                  GestureDetector(
-                                    onTap: isLoading
-                                        ? null
-                                        : widget.onForgotPasswordPressed,
-                                    child: Text(
-                                      l10n.forgotPasswordLink,
-                                      style: typography.labelTag.copyWith(
-                                        color: colors.textBrand,
-                                        height: 24.0 / 12.0,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              AppTextField(
+                                label: l10n.passwordLabel,
+                                controller: _passwordController,
+                                obscureText: true,
+                                textInputAction: TextInputAction.next,
+                                enabled: !isLoading,
+                              ),
+                              const Gap16(),
+                              AppTextField(
+                                label: l10n.confirmPasswordLabel,
+                                controller: _confirmPasswordController,
+                                obscureText: true,
+                                textInputAction: TextInputAction.done,
+                                onSubmitted: (_) =>
+                                    _submitEmailPassword(context),
+                                enabled: !isLoading,
+                              ),
+                              const Gap16(),
+                              BlocBuilder<PasswordValidationCubit, PasswordValidationState>(
+                                bloc: _passwordCubit,
+                                builder: (context, passState) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _buildCheckItem(passState.hasMinLength, l10n.passwordMinLengthRequirement),
+                                      const Gap4(),
+                                      _buildCheckItem(passState.hasUpperCase, l10n.passwordUppercaseRequirement),
+                                      const Gap4(),
+                                      _buildCheckItem(passState.hasLowerCase, l10n.passwordLowercaseRequirement),
+                                      const Gap4(),
+                                      _buildCheckItem(passState.hasNumber, l10n.passwordNumberRequirement),
+                                      const Gap4(),
+                                      _buildCheckItem(passState.passwordsMatch && !passState.isConfirmEmpty, l10n.passwordsMatchRequirement),
+                                    ],
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -173,34 +212,32 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Flexible space pushing actions block down towards bottom
                         const Spacer(),
 
-                        // Actions Block (#879:1797) - 35px horizontal padding (320px width on 390px frame)
+                        // Actions Block
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 35.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 35.0, vertical: 32.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              AppButton.primary(
-                                label: l10n.continueAction,
-                                isLoading: isLoading,
-                                onPressed: isLoading
-                                    ? null
-                                    : () => _submitEmailPassword(context),
-                              ),
-                              const Gap16(),
-                              GoogleSignInButton(
-                                isLoading: isLoading,
-                                onPressed: isLoading
-                                    ? null
-                                    : () => _submitGoogleAuth(context),
+                              BlocBuilder<PasswordValidationCubit, PasswordValidationState>(
+                                bloc: _passwordCubit,
+                                builder: (context, passState) {
+                                  return AppButton.primary(
+                                    label: l10n.registerButton,
+                                    isLoading: isLoading,
+                                    onPressed: isLoading || !passState.isValid
+                                        ? null
+                                        : () => _submitEmailPassword(context),
+                                  );
+                                }
                               ),
                               const Gap16(),
                               Center(
                                 child: GestureDetector(
                                   onTap: isLoading
                                       ? null
-                                      : widget.onCreateAccountPressed,
+                                      : widget.onLoginPressed,
                                   child: Text(
-                                    l10n.createAccountLink,
+                                    l10n.alreadyHaveAccountLink,
                                     textAlign: TextAlign.center,
                                     style: typography.bodySmallEmphasis
                                         .copyWith(
@@ -214,7 +251,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                           ),
                         ),
-                        const Gap(48),
                       ],
                     ),
                   ),

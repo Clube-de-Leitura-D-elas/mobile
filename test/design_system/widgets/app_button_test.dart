@@ -141,7 +141,9 @@ void main() {
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      final indicator = find.byType(CircularProgressIndicator);
+      expect(indicator, findsOneWidget);
+      expect(tester.getSize(indicator), const Size(16.0, 16.0));
     });
   });
 }
