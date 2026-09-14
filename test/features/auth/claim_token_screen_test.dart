@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
@@ -99,6 +100,69 @@ void main() {
       await tester.pump();
 
       expect(find.byType(ClaimTokenScreen), findsOneWidget);
+    });
+
+    testWidgets('shows invalid token toast when ClaimTokenFailure occurs with Token inválido', (
+      tester,
+    ) async {
+      when(() => mockAuthRepository.claimProfile(any()))
+          .thenAnswer((_) async => const Failure(UserFailure(message: 'Token inválido')));
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final textField = find.byType(TextField);
+      await tester.enterText(textField, 'INVALID');
+      await tester.pumpAndSettle();
+
+      final confirmButton = find.byType(AppButton);
+      await tester.ensureVisible(confirmButton);
+      await tester.tap(confirmButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Token de acesso inválido ou já utilizado. Por favor, verifique o código.'), findsOneWidget);
+    });
+
+    testWidgets('shows generic error toast when ClaimTokenFailure occurs with Erro prefix', (
+      tester,
+    ) async {
+      when(() => mockAuthRepository.claimProfile(any()))
+          .thenAnswer((_) async => const Failure(UserFailure(message: 'Erro interno')));
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final textField = find.byType(TextField);
+      await tester.enterText(textField, 'FAIL');
+      await tester.pumpAndSettle();
+
+      final confirmButton = find.byType(AppButton);
+      await tester.ensureVisible(confirmButton);
+      await tester.tap(confirmButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.'), findsOneWidget);
+    });
+
+    testWidgets('shows raw message toast when ClaimTokenFailure occurs with custom message', (
+      tester,
+    ) async {
+      when(() => mockAuthRepository.claimProfile(any()))
+          .thenAnswer((_) async => const Failure(UserFailure(message: 'Mensagem customizada')));
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final textField = find.byType(TextField);
+      await tester.enterText(textField, 'CUSTOM');
+      await tester.pumpAndSettle();
+
+      final confirmButton = find.byType(AppButton);
+      await tester.ensureVisible(confirmButton);
+      await tester.tap(confirmButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Mensagem customizada'), findsOneWidget);
     });
   });
 }
