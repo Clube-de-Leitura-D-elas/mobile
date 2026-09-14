@@ -49,23 +49,16 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
       body: BlocListener<ClaimTokenCubit, ClaimTokenState>(
         listener: (context, state) {
           if (state is ClaimTokenFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-              ),
-            );
+            context.showAppToast(state.message);
             return;
           }
 
           if (state is ClaimTokenSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.claimTokenSuccessMessage),
-              ),
-            );
+            context.showAppToast(l10n.claimTokenSuccessMessage);
             context.read<SessionCubit>().checkUserProfile(widget.userId);
           }
         },
+
 
         child: Padding(
           padding: EdgeInsets.all(spacing.s24),

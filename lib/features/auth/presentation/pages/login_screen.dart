@@ -67,20 +67,13 @@ class _LoginScreenState extends State<LoginScreen> {
           listener: (context, state) {
             if (state is SessionError) {
               if (state.message.toLowerCase().contains('email not confirmed')) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.confirmEmailBeforeLoginError),
-                  ),
-                );
+                context.showAppToast(l10n.confirmEmailBeforeLoginError);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                  ),
-                );
+                context.showAppToast(state.message);
               }
             }
           },
+
 
           builder: (context, state) {
             final isLoading = state is LoadingSession;
