@@ -37,6 +37,8 @@
   "claimTokenFieldLabel": "Claim Token",
   "claimTokenFieldHint": "Ex: 1A2B3C4D",
   "claimTokenRequiredError": "Por favor, informe o token de acesso.",
+  "claimTokenInvalidError": "Token de acesso inválido ou já utilizado. Por favor, verifique o código.",
+  "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
 
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",

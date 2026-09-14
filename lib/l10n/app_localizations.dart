@@ -289,6 +289,18 @@ abstract class AppLocalizations {
   /// **'Por favor, informe o token de acesso.'**
   String get claimTokenRequiredError;
 
+  /// Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Token de acesso inválido ou já utilizado. Por favor, verifique o código.'**
+  String get claimTokenInvalidError;
+
+  /// Mensagem genérica amigável para falhas inesperadas de rede ou servidor
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.'**
+  String get genericError;
+
   /// Tooltip do botão de logout no app bar
   ///
   /// In pt, this message translates to:

@@ -132,6 +132,14 @@
   "@claimTokenRequiredError": {
     "description": "Erro exibido ao tentar enviar o token em branco"
   },
+  "claimTokenInvalidError": "Token de acesso inválido ou já utilizado. Por favor, verifique o código.",
+  "@claimTokenInvalidError": {
+    "description": "Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado"
+  },
+  "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
+  "@genericError": {
+    "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
+  },
 
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",

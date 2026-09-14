@@ -108,6 +108,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
 
   @override
+  String get claimTokenInvalidError =>
+      'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
   String get logoutTooltip => 'Sair';
 
   @override
@@ -249,6 +257,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
+
+  @override
+  String get claimTokenInvalidError =>
+      'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
 
   @override
   String get logoutTooltip => 'Sair';

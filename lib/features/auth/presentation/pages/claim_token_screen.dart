@@ -49,7 +49,14 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
       body: BlocListener<ClaimTokenCubit, ClaimTokenState>(
         listener: (context, state) {
           if (state is ClaimTokenFailure) {
-            context.showAppToast(state.message);
+            final msg = state.message;
+            final userMsg = (msg.contains('Token inválido') ||
+                    msg.contains('já utilizado') ||
+                    msg.contains('FunctionsHttpException') ||
+                    msg.contains('claimTokenInvalidError'))
+                ? l10n.claimTokenInvalidError
+                : (msg.startsWith('Erro') ? l10n.genericError : msg);
+            context.showAppToast(userMsg);
             return;
           }
 
