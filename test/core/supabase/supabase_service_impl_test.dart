@@ -291,6 +291,147 @@ void main() {
       expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
     });
 
+    test('signUpWithPassword returns Success when user is returned', () async {
+      const mockUser = User(
+        id: 'user-1',
+        appMetadata: {},
+        userMetadata: {},
+        aud: 'authenticated',
+        createdAt: '2026-01-01',
+      );
+      final authResponse = AuthResponse(user: mockUser);
+
+      when(
+        () => mockGoTrueClient.signUp(
+          email: 'test@example.com',
+          password: 'password123',
+        ),
+      ).thenAnswer((_) async => authResponse);
+
+      final result = await supabaseService.signUpWithPassword(
+        email: 'test@example.com',
+        password: 'password123',
+      );
+
+      expect(result, isA<Success<User, SupabaseFailure>>());
+    });
+
+    test('signUpWithPassword returns Failure when user is null', () async {
+      final authResponse = AuthResponse(session: null, user: null);
+
+      when(
+        () => mockGoTrueClient.signUp(
+          email: 'test@example.com',
+          password: 'password123',
+        ),
+      ).thenAnswer((_) async => authResponse);
+
+      final result = await supabaseService.signUpWithPassword(
+        email: 'test@example.com',
+        password: 'password123',
+      );
+
+      expect(result, isA<Failure<User, SupabaseFailure>>());
+    });
+
+    test('signUpWithPassword handles AuthException', () async {
+      when(
+        () => mockGoTrueClient.signUp(
+          email: 'test@example.com',
+          password: 'password123',
+        ),
+      ).thenThrow(const AuthException('User already registered'));
+
+      final result = await supabaseService.signUpWithPassword(
+        email: 'test@example.com',
+        password: 'password123',
+      );
+
+      expect(result, isA<Failure<User, SupabaseFailure>>());
+    });
+
+    test('signUpWithPassword handles generic Exception', () async {
+      when(
+        () => mockGoTrueClient.signUp(
+          email: 'test@example.com',
+          password: 'password123',
+        ),
+      ).thenThrow(Exception('Signup network error'));
+
+      final result = await supabaseService.signUpWithPassword(
+        email: 'test@example.com',
+        password: 'password123',
+      );
+
+      expect(result, isA<Failure<User, SupabaseFailure>>());
+    });
+
+    test('invokeFunction parses error message from data map when status >= 400', () async {
+      when(
+        () => mockFunctionsClient.invoke(
+          'test-func',
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const FunctionResponse(
+          status: 400,
+          data: {'error': 'Bad Request Error'},
+        ),
+      );
+
+      final result = await supabaseService.invokeFunction(
+        functionName: 'test-func',
+      );
+
+      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
+      if (result case Failure(:final failure)) {
+        expect(failure.message, equals('Bad Request Error'));
+      }
+    });
+
+    test('invokeFunction casts data as T when decoder is null', () async {
+      when(
+        () => mockFunctionsClient.invoke(
+          'test-func',
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const FunctionResponse(
+          status: 200,
+          data: {'key': 'value'},
+        ),
+      );
+
+      final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
+        functionName: 'test-func',
+      );
+
+      expect(result, isA<Success<SupabaseResponse<Map<String, dynamic>>, SupabaseFailure>>());
+    });
+
+    test('invokeFunction parses error message from FunctionException details map', () async {
+      when(
+        () => mockFunctionsClient.invoke(
+          'test-func',
+          body: any(named: 'body'),
+        ),
+      ).thenThrow(
+        const FunctionException(
+          status: 500,
+          details: {'error': 'Internal Exception Error'},
+        ),
+      );
+
+      final result = await supabaseService.invokeFunction(
+        functionName: 'test-func',
+      );
+
+      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
+      if (result case Failure(:final failure)) {
+        expect(failure.message, equals('Internal Exception Error'));
+      }
+    });
+
     test('invokeFunction handles generic Exception', () async {
       when(
         () => mockFunctionsClient.invoke(

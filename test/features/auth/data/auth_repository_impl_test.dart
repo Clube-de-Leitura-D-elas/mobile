@@ -163,6 +163,63 @@ void main() {
       expect(result, isA<Failure<UserEntity, UserFailure>>());
     });
 
+    test('signIn falls back to authorizeScopes when authorizationForScopes is null', () async {
+      when(() => mockGoogleSignIn.authenticate()).thenAnswer((_) async => mockGoogleAccount);
+      when(() => mockGoogleAccount.authorizationClient).thenReturn(mockAuthClient);
+      when(() => mockGoogleAccount.authentication).thenReturn(mockAuthentication);
+      when(() => mockAuthClient.authorizationForScopes(any())).thenAnswer((_) async => null);
+      when(() => mockAuthClient.authorizeScopes(any())).thenAnswer((_) async => mockAuthorization);
+      when(() => mockAuthorization.accessToken).thenReturn('access_token_123');
+      when(() => mockAuthentication.idToken).thenReturn('id_token_123');
+
+      when(
+        () => mockSupabaseService.signInWithIdToken(
+          provider: OAuthProvider.google,
+          idToken: 'id_token_123',
+          accessToken: 'access_token_123',
+        ),
+      ).thenAnswer((_) async => Success(testSupabaseUser));
+
+      final result = await repository.signIn();
+
+      expect(result, isA<Success<UserEntity, UserFailure>>());
+    });
+
+    test('signUpWithEmailAndPassword returns Success on valid credentials', () async {
+      when(
+        () => mockSupabaseService.signUpWithPassword(
+          email: 'test@example.com',
+          password: 'password123',
+        ),
+      ).thenAnswer((_) async => Success(testSupabaseUser));
+
+      final result = await repository.signUpWithEmailAndPassword(
+        email: 'test@example.com',
+        password: 'password123',
+      );
+
+      expect(result, isA<Success<UserEntity, UserFailure>>());
+      expect(result.unwrap().mail, equals('test@example.com'));
+    });
+
+    test('signUpWithEmailAndPassword returns Failure when supabase fails', () async {
+      when(
+        () => mockSupabaseService.signUpWithPassword(
+          email: 'test@example.com',
+          password: 'password123',
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(AuthSupabaseFailure(message: 'Sign up error')),
+      );
+
+      final result = await repository.signUpWithEmailAndPassword(
+        email: 'test@example.com',
+        password: 'password123',
+      );
+
+      expect(result, isA<Failure<UserEntity, UserFailure>>());
+    });
+
     test('logOut signs out from Supabase and GoogleSignIn', () async {
       when(() => mockSupabaseService.signOut())
           .thenAnswer((_) async => const Success(null));
