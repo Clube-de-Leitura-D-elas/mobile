@@ -49,5 +49,12 @@
   "instagramLabel": "Instagram",
   "educationLabel": "Escolaridade",
   "jobPositionLabel": "Cargo / Profissão",
-  "authUserIdLabel": "ID Auth (Supabase User ID)"
+  "authUserIdLabel": "ID Auth (Supabase User ID)",
+
+  "@@DesignSystem": "--- Design System / Dropdown ---",
+  "genreRomance": "Romance",
+  "genreFantasy": "Fantasia",
+  "genreSuspense": "Suspense",
+  "genreNonFiction": "Não Ficção",
+  "genreFieldHint": "Selecione um gênero"
 }
