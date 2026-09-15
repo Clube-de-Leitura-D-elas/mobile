@@ -35,6 +35,7 @@
   "claimTokenFieldLabel": "Claim Token",
   "claimTokenFieldHint": "Ex: 1A2B3C4D",
   "claimTokenRequiredError": "Por favor, informe o token de acesso.",
+  "back": "Voltar",
 
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",
