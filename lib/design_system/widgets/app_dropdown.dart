@@ -128,18 +128,6 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
     if (mounted) setState(() {});
   }
 
-  void _close() {
-    if (!_isOpen) return;
-
-    _menuEntry?.remove();
-    _barrierEntry?.remove();
-    _menuEntry = null;
-    _barrierEntry = null;
-    _isOpen = false;
-
-    if (mounted) setState(() {});
-  }
-
   void _select(T value) {
     _close();
     widget.onChanged(value);
@@ -158,9 +146,23 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
     }
   }
 
+  void _removeOverlay() {
+    _menuEntry?.remove();
+    _barrierEntry?.remove();
+    _menuEntry = null;
+    _barrierEntry = null;
+    _isOpen = false;
+  }
+
+  void _close() {
+    if (!_isOpen) return;
+    _removeOverlay();
+    if (mounted) setState(() {});
+  }
+
   @override
   void dispose() {
-    _close();
+    _removeOverlay(); // Limpa os overlays sem chamar setState
     super.dispose();
   }
 

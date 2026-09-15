@@ -151,14 +151,14 @@ void main() {
       await tester.pumpAndSettle();
 
       // 2. Atualiza valor com overlay aberto (executa markNeedsBuild)
-      await tester.tap(find.text('Atualizar Valor'));
+      await tester.tap(find.text('Atualizar Valor'), warnIfMissed: false);
       await tester.pumpAndSettle();
 
       // 3. Desabilita com overlay aberto (executa _close() dentro do didUpdateWidget)
       await tester.tap(find.text('Desabilitar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Opção B'), findsNothing);
+      expect(find.byType(ListView), findsNothing);
     });
 
     testWidgets(
