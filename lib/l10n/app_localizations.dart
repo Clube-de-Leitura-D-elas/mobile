@@ -235,6 +235,12 @@ abstract class AppLocalizations {
   /// **'Cadastrar'**
   String get registerButton;
 
+  /// Mensagem exibida após o cadastro bem-sucedido
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.'**
+  String get accountCreatedSuccessMessage;
+
   /// Link para quem já possui conta e quer ir para o login
   ///
   /// In pt, this message translates to:
@@ -282,6 +288,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Por favor, informe o token de acesso.'**
   String get claimTokenRequiredError;
+
+  /// Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Token de acesso inválido ou já utilizado. Por favor, verifique o código.'**
+  String get claimTokenInvalidError;
+
+  /// Mensagem genérica amigável para falhas inesperadas de rede ou servidor
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.'**
+  String get genericError;
 
   /// Tooltip do botão de logout no app bar
   ///
@@ -360,6 +378,144 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
+
+  /// Título principal do review de cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique os seus dados'**
+  String get onboardingReviewTitle;
+
+  /// Rótulo do campo Nome
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome'**
+  String get onboardingNameLabel;
+
+  /// Rótulo e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get onboardingEmailLabel;
+
+  /// Rótulo celular
+  ///
+  /// In pt, this message translates to:
+  /// **'Celular'**
+  String get onboardingPhoneLabel;
+
+  /// Rótulo data de nascimento
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de nascimento'**
+  String get onboardingBirthDateLabel;
+
+  /// Rótulo cidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Cidade'**
+  String get onboardingCityLabel;
+
+  /// Dica de seleção de cidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma cidade'**
+  String get onboardingCityHint;
+
+  /// Rótulo região
+  ///
+  /// In pt, this message translates to:
+  /// **'Região'**
+  String get onboardingRegionLabel;
+
+  /// Rótulo profissão
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual sua profissão?'**
+  String get onboardingJobLabel;
+
+  /// Rótulo escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Nível de escolaridade'**
+  String get onboardingEducationLabel;
+
+  /// Dica seleção de escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um nível'**
+  String get onboardingEducationHint;
+
+  /// Rótulo grupo de leitura
+  ///
+  /// In pt, this message translates to:
+  /// **'Você participa de outro grupo de leitura?'**
+  String get onboardingOtherGroupLabel;
+
+  /// Rótulo voluntariado
+  ///
+  /// In pt, this message translates to:
+  /// **'Teria interesse em se voluntariar como coordenadora de grupo?'**
+  String get onboardingVolunteerLabel;
+
+  /// Rótulo indicação livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual livro de ficção você indicaria para a leitura coletiva?'**
+  String get onboardingBookIndicationLabel;
+
+  /// Dica indicação livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get onboardingBookIndicationHint;
+
+  /// Rótulo expectativas
+  ///
+  /// In pt, this message translates to:
+  /// **'O que você espera ao participar do Clube de Leitura D\'Elas?'**
+  String get onboardingExpectationsLabel;
+
+  /// Dica expectativas
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get onboardingExpectationsHint;
+
+  /// Botão voltar
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get onboardingBackButton;
+
+  /// Botão continuar
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get onboardingContinueButton;
+
+  /// Título de boas-vindas
+  ///
+  /// In pt, this message translates to:
+  /// **'Seja Bem-vinda'**
+  String get onboardingWelcomeTitle;
+
+  /// Subtítulo de boas-vindas
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua inscrição foi realizada com sucesso!'**
+  String get onboardingWelcomeSubtitle;
+
+  /// Botão concluir onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Pronta para o próximo capítulo?'**
+  String get onboardingWelcomeButton;
+
+  /// Dica genérica de seleção em dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione'**
+  String get selectOptionHint;
 }
 
 class _AppLocalizationsDelegate

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/design_system/design_system.dart';
 
-/// Splash screen displaying app logo while checking authentication session.
+/// Splash screen displaying app logo and loading indicator while checking session.
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -12,12 +12,22 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.bgDefault,
       body: Center(
-        child: Image.asset(
-          'assets/images/logo.png',
-          width: 160.0,
-          fit: BoxFit.contain,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/logo.png',
+              width: 160.0,
+              fit: BoxFit.contain,
+            ),
+            const Gap24(),
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(colors.actionPrimary),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
