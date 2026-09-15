@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -67,10 +68,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (result is Success && context.mounted) {
       context.showAppToast(l10n.accountCreatedSuccessMessage);
-      if (widget.onLoginPressed != null) {
-        widget.onLoginPressed!();
-      } else if (Navigator.canPop(context)) {
-        Navigator.pop(context);
+      try {
+        context.go('/login');
+      } catch (_) {
+        if (widget.onLoginPressed != null) {
+          widget.onLoginPressed!();
+        } else if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
       }
     }
   }

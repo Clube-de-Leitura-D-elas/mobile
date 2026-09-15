@@ -16,7 +16,9 @@ import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
+import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
+
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -210,8 +212,9 @@ void main() {
           mockState,
           const NeedsClaimSession(userId: 'u1'),
         ),
-        equals('/claim-token'),
+        equals(OnboardingRoutes.claimToken),
       );
+
 
       expect(
         SplashRoutes.splashGuard(mockContext, mockState, const GuestSession()),
@@ -253,8 +256,9 @@ void main() {
       // Test claimToken route builder
       when(() => mockState.extra).thenReturn('user-123');
       final claimTokenRoute =
-          routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.claimToken)
-              as GoRoute;
+          OnboardingRoutes.routes.firstWhere(
+            (r) => (r as GoRoute).path == OnboardingRoutes.claimToken,
+          ) as GoRoute;
       final claimTokenPage = claimTokenRoute.pageBuilder!(
         mockContext,
         mockState,
@@ -269,6 +273,7 @@ void main() {
       );
       expect(claimTokenPageNull, isA<Page<dynamic>>());
     });
+
 
     test('authGuard redirects correctly based on SessionState', () {
       when(() => mockState.matchedLocation).thenReturn('/other');
@@ -327,8 +332,9 @@ void main() {
           mockState,
           const NeedsClaimSession(userId: 'u1'),
         ),
-        equals('/claim-token'),
+        equals(OnboardingRoutes.claimToken),
       );
+
 
       expect(
         HomeRoutes.homeGuard(mockContext, mockState, const GuestSession()),

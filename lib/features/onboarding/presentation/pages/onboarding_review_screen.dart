@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
@@ -49,6 +50,11 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
         child: BlocConsumer<OnboardingReviewCubit, OnboardingReviewState>(
           listener: (context, state) {
             if (state is OnboardingReviewSuccess) {
+              final sessionCubit = context.read<SessionCubit>();
+              final currentUser = sessionCubit.supabaseService.currentUser;
+              if (currentUser != null) {
+                sessionCubit.checkUserProfile(currentUser.id);
+              }
               context.go(OnboardingRoutes.welcome);
               return;
             }

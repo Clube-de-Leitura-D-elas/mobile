@@ -16,13 +16,28 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       decoder: (json) {
         if (json is Map<String, dynamic> && json['profile'] != null) {
           final p = json['profile'] as Map<String, dynamic>;
+          final cityObj = p['city'] as Map<String, dynamic>?;
+          final zoneObj = p['zone'] as Map<String, dynamic>?;
+
+          final rawBirthDate = p['birth_date'] as String? ?? '';
+          String formattedBirthDate = rawBirthDate;
+          if (rawBirthDate.contains('-')) {
+            final parts = rawBirthDate.split('T')[0].split('-');
+            if (parts.length == 3) {
+              formattedBirthDate = '${parts[2]}/${parts[1]}/${parts[0]}';
+            }
+          }
+
           return UserReviewProfile(
             name: p['name'] as String? ?? '',
             email: p['email'] as String? ?? '',
             phone: p['phone'] as String? ?? '',
-            birthDate: p['birth_date'] as String? ?? '',
+            birthDate: formattedBirthDate,
+            city: cityObj?['name'] as String? ?? '',
+            region: zoneObj?['name'] as String? ?? '',
             job: p['job'] as String? ?? '',
             levelOfEducation: p['level_of_education'] as String? ?? '',
+            bookIndication: p['book_name'] as String? ?? '',
           );
         }
         return const UserReviewProfile();
@@ -34,18 +49,25 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     }
 
     return Success(response.unwrap().data ?? const UserReviewProfile());
-
   }
 
   @override
   Future<Result<void, UserFailure>> updateUserProfile(
     UserReviewProfile profile,
   ) async {
+    String apiBirthDate = profile.birthDate;
+    if (profile.birthDate.contains('/')) {
+      final parts = profile.birthDate.split('/');
+      if (parts.length == 3) {
+        apiBirthDate = '${parts[2]}-${parts[1]}-${parts[0]}';
+      }
+    }
+
     final body = {
       'name': profile.name,
       'email': profile.email,
       'phone': profile.phone,
-      'birth_date': profile.birthDate,
+      'birth_date': apiBirthDate,
       'city_name': profile.city,
       'zone_name': profile.region,
       'job': profile.job,
@@ -67,5 +89,4 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
 
     return const Success(null);
   }
-
 }

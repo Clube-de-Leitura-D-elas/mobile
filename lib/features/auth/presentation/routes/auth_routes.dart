@@ -9,11 +9,14 @@ import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/claim_token_screen.dart';
 import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
+import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
+
 
 abstract class AuthRoutes {
   static const String login = '/login';
   static const String register = '/register';
-  static const String claimToken = '/claim-token';
+  static const String claimToken = OnboardingRoutes.claimToken;
+
 
   static List<RouteBase> get routes => [
         GoRoute(
@@ -34,22 +37,8 @@ abstract class AuthRoutes {
             ),
           ),
         ),
-        GoRoute(
-          path: claimToken,
-          pageBuilder: (context, state) {
-            final userId = state.extra as String? ?? '';
-            return AppPageTransitions.createPushPage(
-              state: state,
-              child: BlocProvider(
-                create: (context) => ClaimTokenCubit(
-                  authRepository: serviceLocator<AuthRepository>(),
-                ),
-                child: ClaimTokenScreen(userId: userId),
-              ),
-            );
-          },
-        ),
       ];
+
 
   /// Route guard for Auth feature.
   static String? authGuard(
@@ -70,14 +59,20 @@ abstract class AuthRoutes {
     }
 
     if (sessionState is AuthenticatedSession) {
+      final isWelcome = state.matchedLocation == OnboardingRoutes.welcome;
+      if (isWelcome) {
+        return null;
+      }
       if (isLogin || isRegister || isClaim) {
         return '/home';
       }
     }
 
     if (sessionState is NeedsClaimSession) {
-      if (!isClaim) {
-        return claimToken;
+      final isReview = state.matchedLocation == OnboardingRoutes.reviewProfile;
+      final isWelcome = state.matchedLocation == OnboardingRoutes.welcome;
+      if (!isClaim && !isReview && !isWelcome) {
+        return OnboardingRoutes.claimToken;
       }
     }
 
@@ -86,6 +81,7 @@ abstract class AuthRoutes {
         return login;
       }
     }
+
 
     return null;
   }

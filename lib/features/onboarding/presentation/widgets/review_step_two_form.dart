@@ -25,14 +25,12 @@ class ReviewStepTwoForm extends StatelessWidget {
         children: [
           AppTextField(
             label: l10n.onboardingJobLabel,
-            helperText: l10n.onboardingNameHelper,
             initialValue: profile.job,
             onChanged: (val) => onChanged(profile.copyWith(job: val)),
           ),
           const Gap16(),
           AppDropdown<String>(
             label: l10n.onboardingEducationLabel,
-            helperText: 'Escolha o gênero do próximo encontro',
             hintText: l10n.onboardingEducationHint,
             value: profile.levelOfEducation.isNotEmpty
                 ? profile.levelOfEducation

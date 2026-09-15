@@ -25,14 +25,12 @@ class ReviewStepOneForm extends StatelessWidget {
         children: [
           AppTextField(
             label: l10n.onboardingNameLabel,
-            helperText: l10n.onboardingNameHelper,
             initialValue: profile.name,
             onChanged: (val) => onChanged(profile.copyWith(name: val)),
           ),
           const Gap16(),
           AppTextField(
             label: l10n.onboardingEmailLabel,
-            helperText: l10n.onboardingNameHelper,
             initialValue: profile.email,
             keyboardType: TextInputType.emailAddress,
             onChanged: (val) => onChanged(profile.copyWith(email: val)),
@@ -40,7 +38,6 @@ class ReviewStepOneForm extends StatelessWidget {
           const Gap16(),
           AppTextField(
             label: l10n.onboardingPhoneLabel,
-            helperText: l10n.onboardingNameHelper,
             initialValue: profile.phone,
             keyboardType: TextInputType.phone,
             onChanged: (val) => onChanged(profile.copyWith(phone: val)),
@@ -48,28 +45,20 @@ class ReviewStepOneForm extends StatelessWidget {
           const Gap16(),
           AppTextField(
             label: l10n.onboardingBirthDateLabel,
-            helperText: l10n.onboardingNameHelper,
             initialValue: profile.birthDate,
             keyboardType: TextInputType.datetime,
             onChanged: (val) => onChanged(profile.copyWith(birthDate: val)),
           ),
           const Gap16(),
-          AppDropdown<String>(
+          AppTextField(
             label: l10n.onboardingCityLabel,
-            helperText: 'Escolha o gênero do próximo encontro',
-            hintText: l10n.onboardingCityHint,
-            value: profile.city.isNotEmpty ? profile.city : null,
-            items: const [
-              DropdownMenuItem(value: 'Porto Alegre', child: Text('Porto Alegre')),
-              DropdownMenuItem(value: 'Canoas', child: Text('Canoas')),
-              DropdownMenuItem(value: 'Novo Hamburgo', child: Text('Novo Hamburgo')),
-            ],
-            onChanged: (val) => onChanged(profile.copyWith(city: val ?? '')),
+            initialValue: profile.city,
+            keyboardType: TextInputType.text,
+            onChanged: (val) => onChanged(profile.copyWith(city: val)),
           ),
           const Gap16(),
           AppTextField(
             label: l10n.onboardingRegionLabel,
-            helperText: l10n.onboardingNameHelper,
             initialValue: profile.region,
             onChanged: (val) => onChanged(profile.copyWith(region: val)),
           ),

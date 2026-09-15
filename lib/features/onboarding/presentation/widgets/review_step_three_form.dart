@@ -25,7 +25,6 @@ class ReviewStepThreeForm extends StatelessWidget {
         children: [
           AppDropdown<String>(
             label: l10n.onboardingOtherGroupLabel,
-            helperText: 'Escolha o gênero do próximo encontro',
             hintText: l10n.selectOptionHint,
             value: profile.otherReadingGroup.isNotEmpty
                 ? profile.otherReadingGroup
@@ -40,7 +39,6 @@ class ReviewStepThreeForm extends StatelessWidget {
           const Gap16(),
           AppDropdown<String>(
             label: l10n.onboardingVolunteerLabel,
-            helperText: 'Escolha o gênero do próximo encontro',
             hintText: l10n.selectOptionHint,
             value: profile.volunteerCoordinator.isNotEmpty
                 ? profile.volunteerCoordinator
@@ -55,7 +53,6 @@ class ReviewStepThreeForm extends StatelessWidget {
           const Gap16(),
           AppTextField(
             label: l10n.onboardingBookIndicationLabel,
-            helperText: l10n.onboardingNameHelper,
             hintText: l10n.onboardingBookIndicationHint,
             initialValue: profile.bookIndication,
             onChanged: (val) => onChanged(profile.copyWith(bookIndication: val)),
@@ -63,7 +60,6 @@ class ReviewStepThreeForm extends StatelessWidget {
           const Gap16(),
           AppTextField(
             label: l10n.onboardingExpectationsLabel,
-            helperText: l10n.onboardingNameHelper,
             hintText: l10n.onboardingExpectationsHint,
             initialValue: profile.expectations,
             maxLines: 4,

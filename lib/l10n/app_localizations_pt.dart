@@ -161,9 +161,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingNameLabel => 'Nome';
 
   @override
-  String get onboardingNameHelper => 'Como você quer ser chamada no clube';
-
-  @override
   String get onboardingEmailLabel => 'E-mail';
 
   @override
@@ -387,9 +384,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingNameLabel => 'Nome';
-
-  @override
-  String get onboardingNameHelper => 'Como você quer ser chamada no clube';
 
   @override
   String get onboardingEmailLabel => 'E-mail';

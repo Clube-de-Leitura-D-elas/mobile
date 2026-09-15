@@ -6,6 +6,8 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 
+import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
+
 abstract class HomeRoutes {
   static const String home = '/home';
 
@@ -43,7 +45,7 @@ abstract class HomeRoutes {
           return '/splash';
         }
         if (sessionState is NeedsClaimSession) {
-          return '/claim-token';
+          return OnboardingRoutes.claimToken;
         }
         return '/login';
       }
@@ -52,4 +54,5 @@ abstract class HomeRoutes {
     return null;
   }
 }
+
 

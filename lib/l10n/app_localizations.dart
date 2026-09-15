@@ -385,17 +385,11 @@ abstract class AppLocalizations {
   /// **'Verifique os seus dados'**
   String get onboardingReviewTitle;
 
-  /// Rótulo nome
+  /// Rótulo do campo Nome
   ///
   /// In pt, this message translates to:
   /// **'Nome'**
   String get onboardingNameLabel;
-
-  /// Texto auxiliar para campos de formulário no onboarding
-  ///
-  /// In pt, this message translates to:
-  /// **'Como você quer ser chamada no clube'**
-  String get onboardingNameHelper;
 
   /// Rótulo e-mail
   ///

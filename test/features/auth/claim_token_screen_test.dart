@@ -94,12 +94,26 @@ void main() {
       await tester.enterText(textField, 'TOKEN123');
       await tester.pumpAndSettle();
 
-      final confirmButton = find.byType(AppButton);
+      final confirmButton = find.widgetWithText(AppButton, 'Confirmar');
       await tester.ensureVisible(confirmButton);
       await tester.tap(confirmButton);
       await tester.pump();
 
       expect(find.byType(ClaimTokenScreen), findsOneWidget);
+    });
+
+    testWidgets('pressing Sair triggers logOut on SessionCubit', (tester) async {
+      when(() => mockSessionCubit.logOut()).thenAnswer((_) async {});
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final logoutButton = find.widgetWithText(AppButton, 'Sair');
+      await tester.ensureVisible(logoutButton);
+      await tester.tap(logoutButton);
+      await tester.pumpAndSettle();
+
+      verify(() => mockSessionCubit.logOut()).called(1);
     });
 
     testWidgets('shows invalid token toast when ClaimTokenFailure occurs with Token inválido', (
@@ -115,7 +129,7 @@ void main() {
       await tester.enterText(textField, 'INVALID');
       await tester.pumpAndSettle();
 
-      final confirmButton = find.byType(AppButton);
+      final confirmButton = find.widgetWithText(AppButton, 'Confirmar');
       await tester.ensureVisible(confirmButton);
       await tester.tap(confirmButton);
       await tester.pumpAndSettle();
@@ -136,7 +150,7 @@ void main() {
       await tester.enterText(textField, 'FAIL');
       await tester.pumpAndSettle();
 
-      final confirmButton = find.byType(AppButton);
+      final confirmButton = find.widgetWithText(AppButton, 'Confirmar');
       await tester.ensureVisible(confirmButton);
       await tester.tap(confirmButton);
       await tester.pumpAndSettle();
@@ -157,7 +171,7 @@ void main() {
       await tester.enterText(textField, 'CUSTOM');
       await tester.pumpAndSettle();
 
-      final confirmButton = find.byType(AppButton);
+      final confirmButton = find.widgetWithText(AppButton, 'Confirmar');
       await tester.ensureVisible(confirmButton);
       await tester.tap(confirmButton);
       await tester.pumpAndSettle();

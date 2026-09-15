@@ -199,9 +199,9 @@
   "onboardingReviewTitle": "Verifique os seus dados",
   "@onboardingReviewTitle": { "description": "Título principal do review de cadastro" },
   "onboardingNameLabel": "Nome",
-  "@onboardingNameLabel": { "description": "Rótulo nome" },
-  "onboardingNameHelper": "Como você quer ser chamada no clube",
-  "@onboardingNameHelper": { "description": "Texto auxiliar para campos de formulário no onboarding" },
+  "@onboardingNameLabel": {
+    "description": "Rótulo do campo Nome"
+  },
   "onboardingEmailLabel": "E-mail",
   "@onboardingEmailLabel": { "description": "Rótulo e-mail" },
   "onboardingPhoneLabel": "Celular",
