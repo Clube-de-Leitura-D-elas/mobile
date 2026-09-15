@@ -91,5 +91,17 @@ void main() {
       expect(decoration.borderRadius, radius);
       expect(decoration.color, isNull);
     });
+
+    testWidgets('skips ColorFiltered when color is omitted', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(body: AppIcon(icon: AppIcons.book, size: 24)),
+        ),
+      );
+
+      expect(find.byType(ColorFiltered), findsNothing);
+      final icon = tester.widget<AppIcon>(find.byType(AppIcon));
+      expect(icon.color, isNull);
+    });
   });
 }

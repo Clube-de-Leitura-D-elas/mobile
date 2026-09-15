@@ -1,18 +1,12 @@
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
 
-@immutable
-class AppIconAsset {
+class AppIconAsset extends Equatable {
   const AppIconAsset._(this.assetPath);
 
   final String assetPath;
 
   @override
-  bool operator ==(Object other) {
-    return other is AppIconAsset && other.assetPath == assetPath;
-  }
-
-  @override
-  int get hashCode => assetPath.hashCode;
+  List<Object?> get props => [assetPath];
 }
 
 abstract final class AppIcons {

@@ -6,3 +6,4 @@ Execute na raiz do projeto:
 
 ```bash
 dart run jovial_svg:svg_to_si -o assets/icons/si assets/icons/svg/*.svg
+```

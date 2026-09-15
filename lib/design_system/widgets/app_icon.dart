@@ -3,19 +3,22 @@ import 'package:jovial_svg/jovial_svg.dart';
 
 import '../icons/app_icons.dart';
 
+/// Design-system icon. Monochromatic when [color] is set: [ColorFiltered]
+/// with [BlendMode.srcIn] replaces every pixel of the compiled `.si`.
+/// Omit [color] to keep the asset colors as compiled.
 class AppIcon extends StatelessWidget {
   const AppIcon({
     super.key,
     required this.icon,
-    required this.color,
     required this.size,
+    this.color,
     this.backgroundColor,
     this.padding,
     this.borderRadius,
   });
 
   final AppIconAsset icon;
-  final Color color;
+  final Color? color;
   final double size;
   final Color? backgroundColor;
   final EdgeInsetsGeometry? padding;
@@ -42,25 +45,32 @@ class _TintedSiIcon extends StatelessWidget {
     required this.size,
   });
 
+  static final _cache = ScalableImageCache(size: 12);
+
   final AppIconAsset icon;
-  final Color color;
+  final Color? color;
   final double size;
 
   @override
   Widget build(BuildContext context) {
+    final image = ScalableImageWidget.fromSISource(
+      si: ScalableImageSource.fromSI(
+        DefaultAssetBundle.of(context),
+        icon.assetPath,
+      ),
+      cache: _cache,
+      fit: BoxFit.contain,
+    );
+
     return SizedBox(
       width: size,
       height: size,
-      child: ColorFiltered(
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-        child: ScalableImageWidget.fromSISource(
-          si: ScalableImageSource.fromSI(
-            DefaultAssetBundle.of(context),
-            icon.assetPath,
-          ),
-          fit: BoxFit.contain,
-        ),
-      ),
+      child: color == null
+          ? image
+          : ColorFiltered(
+              colorFilter: ColorFilter.mode(color!, BlendMode.srcIn),
+              child: image,
+            ),
     );
   }
 }
