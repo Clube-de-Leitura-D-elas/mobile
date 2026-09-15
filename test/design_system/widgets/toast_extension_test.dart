@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/design_system/extensions/toast_extension.dart';
+import 'package:mobile/design_system/theme/app_theme.dart';
+import 'package:mobile/design_system/widgets/app_toast.dart';
 
 void main() {
   Widget wrap(WidgetBuilder builder) {
