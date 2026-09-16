@@ -141,6 +141,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
+
+  @override
+  String get genreNonFiction => 'Não Ficção';
+
+  @override
+  String get genreFieldHint => 'Selecione um gênero';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -280,4 +295,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
+
+  @override
+  String get genreNonFiction => 'Não Ficção';
+
+  @override
+  String get genreFieldHint => 'Selecione um gênero';
 }
