@@ -283,6 +283,12 @@ abstract class AppLocalizations {
   /// **'Por favor, informe o token de acesso.'**
   String get claimTokenRequiredError;
 
+  /// Texto padrão para ação de retornar
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get back;
+
   /// Tooltip do botão de logout no app bar
   ///
   /// In pt, this message translates to:

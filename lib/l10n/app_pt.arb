@@ -128,6 +128,10 @@
   "@claimTokenRequiredError": {
     "description": "Erro exibido ao tentar enviar o token em branco"
   },
+  "back": "Voltar",
+  "@back": {
+    "description": "Texto padrão para ação de retornar"
+  },
 
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",
