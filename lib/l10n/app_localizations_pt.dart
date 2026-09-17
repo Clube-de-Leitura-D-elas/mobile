@@ -104,6 +104,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
 
   @override
+  String get back => 'Voltar';
+
+  @override
   String get logoutTooltip => 'Sair';
 
   @override
@@ -241,6 +244,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
+
+  @override
+  String get back => 'Voltar';
 
   @override
   String get logoutTooltip => 'Sair';
