@@ -61,7 +61,9 @@ class SupabaseServiceImpl implements SupabaseService {
       debugPrint('[SupabaseService] FunctionException in "$functionName": $e');
       final message = e.details is Map && (e.details as Map)['error'] != null
           ? (e.details as Map)['error'].toString()
-          : e.toString();
+          : (e.details is String && (e.details as String).isNotEmpty
+              ? e.details as String
+              : 'Erro ao executar a função $functionName');
       return Failure(
         FunctionSupabaseFailure(
           message: message,
@@ -72,8 +74,9 @@ class SupabaseServiceImpl implements SupabaseService {
     } catch (e) {
       debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
       return Failure(
-        UnknownSupabaseFailure(
-          message: 'Erro inesperado ao chamar a função $functionName: $e',
+        FunctionSupabaseFailure(
+          message: 'Erro inesperado ao chamar a função $functionName',
+          details: e.toString(),
         ),
       );
     }
