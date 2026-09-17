@@ -140,6 +140,10 @@
   "@genericError": {
     "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
   },
+  "back": "Voltar",
+  "@back": {
+    "description": "Texto padrão para ação de retornar"
+  },
 
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",

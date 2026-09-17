@@ -116,6 +116,9 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
 
   @override
+  String get back => 'Voltar';
+
+  @override
   String get logoutTooltip => 'Sair';
 
   @override
@@ -339,6 +342,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get genericError =>
       'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
+  String get back => 'Voltar';
 
   @override
   String get logoutTooltip => 'Sair';

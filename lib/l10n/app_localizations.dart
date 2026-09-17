@@ -301,6 +301,12 @@ abstract class AppLocalizations {
   /// **'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.'**
   String get genericError;
 
+  /// Texto padrão para ação de retornar
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get back;
+
   /// Tooltip do botão de logout no app bar
   ///
   /// In pt, this message translates to:
