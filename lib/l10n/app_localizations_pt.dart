@@ -12,70 +12,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appTitle => 'Clube de Leitura D\'elas';
 
   @override
-  String get welcomeMessage => 'Bem-vinda!';
-
-  @override
-  String get ok => 'OK';
-
-  @override
-  String get cancel => 'Cancelar';
-
-  @override
-  String get save => 'Salvar';
-
-  @override
-  String get delete => 'Excluir';
-
-  @override
-  String get edit => 'Editar';
+  String get continueAction => 'Continuar';
 
   @override
   String get confirm => 'Confirmar';
 
   @override
-  String get back => 'Voltar';
-
-  @override
-  String get close => 'Fechar';
-
-  @override
-  String get retry => 'Tentar novamente';
-
-  @override
-  String get search => 'Buscar';
-
-  @override
-  String get continueAction => 'Continuar';
-
-  @override
-  String get errorGeneric => 'Ocorreu um erro inesperado. Tente novamente.';
-
-  @override
-  String get errorNetwork =>
-      'Sem conexão com a internet. Verifique sua rede e tente novamente.';
-
-  @override
-  String get errorTimeout =>
-      'O tempo de resposta da requisição esgotou. Tente novamente.';
-
-  @override
-  String get errorUnauthorized =>
-      'Sessão expirada ou não autorizada. Por favor, faça login novamente.';
-
-  @override
-  String get errorForbidden =>
-      'Você não tem permissão para realizar esta ação.';
-
-  @override
-  String get errorNotFound => 'O recurso solicitado não foi encontrado.';
-
-  @override
-  String get errorBadRequest =>
-      'Requisição inválida. Verifique os dados e tente novamente.';
-
-  @override
-  String get errorInternalServer =>
-      'Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.';
+  String get notProvided => 'Não informado';
 
   @override
   String get loginTitle => 'Faça o seu login';
@@ -106,6 +49,187 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get passwordRequiredError => 'Por favor, informe sua senha';
+
+  @override
+  String get confirmEmailBeforeLoginError =>
+      'Por favor, confirme seu e-mail antes de logar.';
+
+  @override
+  String get registerTitle => 'Criar Conta';
+
+  @override
+  String get confirmPasswordLabel => 'Confirmar Senha';
+
+  @override
+  String get passwordMinLengthRequirement => 'Pelo menos 8 caracteres';
+
+  @override
+  String get passwordUppercaseRequirement => 'Pelo menos 1 letra maiúscula';
+
+  @override
+  String get passwordLowercaseRequirement => 'Pelo menos 1 letra minúscula';
+
+  @override
+  String get passwordNumberRequirement => 'Pelo menos 1 número';
+
+  @override
+  String get passwordsMatchRequirement => 'Senhas conferem';
+
+  @override
+  String get registerButton => 'Cadastrar';
+
+  @override
+  String get accountCreatedSuccessMessage =>
+      'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.';
+
+  @override
+  String get alreadyHaveAccountLink => 'Já tenho uma conta';
+
+  @override
+  String get claimTokenTitle => 'Vincular Perfil';
+
+  @override
+  String get claimTokenSuccessMessage => 'Perfil vinculado com sucesso!';
+
+  @override
+  String get claimTokenInputHeader => 'Informe o seu Token de Acesso';
+
+  @override
+  String get claimTokenInputDescription =>
+      'Digite o token fornecido após a aprovação para vincular sua conta.';
+
+  @override
+  String get claimTokenFieldLabel => 'Claim Token';
+
+  @override
+  String get claimTokenFieldHint => 'Ex: 1A2B3C4D';
+
+  @override
+  String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
+
+  @override
+  String get claimTokenInvalidError =>
+      'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
+  String get back => 'Voltar';
+
+  @override
+  String get logoutTooltip => 'Sair';
+
+  @override
+  String get logoutButton => 'Sair da Conta';
+
+  @override
+  String get defaultUserName => 'Usuária';
+
+  @override
+  String get profileStatusActive => 'Perfil Vinculado & Ativo';
+
+  @override
+  String get profileDataSectionTitle => 'Dados do Perfil Cadastrado';
+
+  @override
+  String get fullNameLabel => 'Nome Completo';
+
+  @override
+  String get phoneLabel => 'Telefone';
+
+  @override
+  String get addressLabel => 'Endereço';
+
+  @override
+  String get birthdayLabel => 'Data de Nascimento';
+
+  @override
+  String get instagramLabel => 'Instagram';
+
+  @override
+  String get educationLabel => 'Escolaridade';
+
+  @override
+  String get jobPositionLabel => 'Cargo / Profissão';
+
+  @override
+  String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -116,70 +240,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get appTitle => 'Clube de Leitura D\'elas';
 
   @override
-  String get welcomeMessage => 'Bem-vinda!';
-
-  @override
-  String get ok => 'OK';
-
-  @override
-  String get cancel => 'Cancelar';
-
-  @override
-  String get save => 'Salvar';
-
-  @override
-  String get delete => 'Excluir';
-
-  @override
-  String get edit => 'Editar';
+  String get continueAction => 'Continuar';
 
   @override
   String get confirm => 'Confirmar';
 
   @override
-  String get back => 'Voltar';
-
-  @override
-  String get close => 'Fechar';
-
-  @override
-  String get retry => 'Tentar novamente';
-
-  @override
-  String get search => 'Buscar';
-
-  @override
-  String get continueAction => 'Continuar';
-
-  @override
-  String get errorGeneric => 'Ocorreu um erro inesperado. Tente novamente.';
-
-  @override
-  String get errorNetwork =>
-      'Sem conexão com a internet. Verifique sua rede e tente novamente.';
-
-  @override
-  String get errorTimeout =>
-      'O tempo de resposta da requisição esgotou. Tente novamente.';
-
-  @override
-  String get errorUnauthorized =>
-      'Sessão expirada ou não autorizada. Por favor, faça login novamente.';
-
-  @override
-  String get errorForbidden =>
-      'Você não tem permissão para realizar esta ação.';
-
-  @override
-  String get errorNotFound => 'O recurso solicitado não foi encontrado.';
-
-  @override
-  String get errorBadRequest =>
-      'Requisição inválida. Verifique os dados e tente novamente.';
-
-  @override
-  String get errorInternalServer =>
-      'Ocorreu uma falha nos nossos servidores. Tente novamente mais tarde.';
+  String get notProvided => 'Não informado';
 
   @override
   String get loginTitle => 'Faça o seu login';
@@ -210,4 +277,185 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get passwordRequiredError => 'Por favor, informe sua senha';
+
+  @override
+  String get confirmEmailBeforeLoginError =>
+      'Por favor, confirme seu e-mail antes de logar.';
+
+  @override
+  String get registerTitle => 'Criar Conta';
+
+  @override
+  String get confirmPasswordLabel => 'Confirmar Senha';
+
+  @override
+  String get passwordMinLengthRequirement => 'Pelo menos 8 caracteres';
+
+  @override
+  String get passwordUppercaseRequirement => 'Pelo menos 1 letra maiúscula';
+
+  @override
+  String get passwordLowercaseRequirement => 'Pelo menos 1 letra minúscula';
+
+  @override
+  String get passwordNumberRequirement => 'Pelo menos 1 número';
+
+  @override
+  String get passwordsMatchRequirement => 'Senhas conferem';
+
+  @override
+  String get registerButton => 'Cadastrar';
+
+  @override
+  String get accountCreatedSuccessMessage =>
+      'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.';
+
+  @override
+  String get alreadyHaveAccountLink => 'Já tenho uma conta';
+
+  @override
+  String get claimTokenTitle => 'Vincular Perfil';
+
+  @override
+  String get claimTokenSuccessMessage => 'Perfil vinculado com sucesso!';
+
+  @override
+  String get claimTokenInputHeader => 'Informe o seu Token de Acesso';
+
+  @override
+  String get claimTokenInputDescription =>
+      'Digite o token fornecido após a aprovação para vincular sua conta.';
+
+  @override
+  String get claimTokenFieldLabel => 'Claim Token';
+
+  @override
+  String get claimTokenFieldHint => 'Ex: 1A2B3C4D';
+
+  @override
+  String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
+
+  @override
+  String get claimTokenInvalidError =>
+      'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
+  String get back => 'Voltar';
+
+  @override
+  String get logoutTooltip => 'Sair';
+
+  @override
+  String get logoutButton => 'Sair da Conta';
+
+  @override
+  String get defaultUserName => 'Usuária';
+
+  @override
+  String get profileStatusActive => 'Perfil Vinculado & Ativo';
+
+  @override
+  String get profileDataSectionTitle => 'Dados do Perfil Cadastrado';
+
+  @override
+  String get fullNameLabel => 'Nome Completo';
+
+  @override
+  String get phoneLabel => 'Telefone';
+
+  @override
+  String get addressLabel => 'Endereço';
+
+  @override
+  String get birthdayLabel => 'Data de Nascimento';
+
+  @override
+  String get instagramLabel => 'Instagram';
+
+  @override
+  String get educationLabel => 'Escolaridade';
+
+  @override
+  String get jobPositionLabel => 'Cargo / Profissão';
+
+  @override
+  String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
 }

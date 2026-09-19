@@ -61,7 +61,9 @@ class SupabaseServiceImpl implements SupabaseService {
       debugPrint('[SupabaseService] FunctionException in "$functionName": $e');
       final message = e.details is Map && (e.details as Map)['error'] != null
           ? (e.details as Map)['error'].toString()
-          : e.toString();
+          : (e.details is String && (e.details as String).isNotEmpty
+              ? e.details as String
+              : 'Erro ao executar a função $functionName');
       return Failure(
         FunctionSupabaseFailure(
           message: message,
@@ -72,8 +74,9 @@ class SupabaseServiceImpl implements SupabaseService {
     } catch (e) {
       debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
       return Failure(
-        UnknownSupabaseFailure(
-          message: 'Erro inesperado ao chamar a função $functionName: $e',
+        FunctionSupabaseFailure(
+          message: 'Erro inesperado ao chamar a função $functionName',
+          details: e.toString(),
         ),
       );
     }
@@ -152,6 +155,44 @@ class SupabaseServiceImpl implements SupabaseService {
       return Failure(
         UnknownSupabaseFailure(
           message: 'Erro inesperado ao realizar login com e-mail: $e',
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Result<User, SupabaseFailure>> signUpWithPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      debugPrint('[SupabaseService] Signing up with password for email: $email');
+      final response = await _client.auth.signUp(
+        email: email,
+        password: password,
+      );
+
+      final user = response.user;
+      if (user == null) {
+        return const Failure(
+          AuthSupabaseFailure(message: 'Usuário nulo após registro'),
+        );
+      }
+
+      return Success(user);
+    } on AuthException catch (e) {
+      debugPrint('[SupabaseService] AuthException during sign up: ${e.message}');
+      return Failure(
+        AuthSupabaseFailure(
+          message: e.message,
+          code: e.statusCode,
+        ),
+      );
+    } catch (e) {
+      debugPrint('[SupabaseService] Unexpected error during sign up: $e');
+      return Failure(
+        UnknownSupabaseFailure(
+          message: 'Erro inesperado ao realizar registro: $e',
         ),
       );
     }

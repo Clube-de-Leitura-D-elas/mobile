@@ -41,14 +41,17 @@ class GoogleSignInButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (isLoading)
-                  SizedBox(
-                    width: 16.0,
-                    height: 16.0,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(colors.textDefault),
+                  Center(
+                    child: SizedBox(
+                      width: 16.0,
+                      height: 16.0,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: AlwaysStoppedAnimation<Color>(colors.textDefault),
+                      ),
                     ),
                   )
+
                 else ...[
                   SvgPicture.asset(
                     'assets/icons/google_icon.svg',

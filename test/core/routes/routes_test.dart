@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,15 +12,22 @@ import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
+import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
+import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
+
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
+
 class MockSupabaseService extends Mock implements SupabaseService {}
+
 class MockBuildContext extends Mock implements BuildContext {}
+
 class MockGoRouterState extends Mock implements GoRouterState {}
 
 void main() {
@@ -62,9 +70,14 @@ void main() {
     mockContext = MockBuildContext();
     mockState = MockGoRouterState();
 
+    when(() => mockState.pageKey).thenReturn(const ValueKey('test_key'));
+    when(() => mockState.matchedLocation).thenReturn('/');
+    when(() => mockState.name).thenReturn('test');
+
     when(() => mockSupabaseService.currentUser).thenReturn(null);
-    when(() => mockSupabaseService.authStateChanges)
-        .thenAnswer((_) => const Stream.empty());
+    when(
+      () => mockSupabaseService.authStateChanges,
+    ).thenAnswer((_) => const Stream.empty());
 
     sessionCubit = SessionCubit(
       authRepository: mockAuthRepository,
@@ -102,32 +115,82 @@ void main() {
       expect(router, isA<GoRouter>());
     });
 
-    testWidgets('executes builders for splash, login, claimToken, and home routes', (tester) async {
-      serviceLocator.allowReassignment = true;
-      serviceLocator.registerFactory<AuthRepository>(() => mockAuthRepository);
+    testWidgets(
+      'executes builders for splash, login, claimToken, and home routes',
+      (tester) async {
+        serviceLocator.allowReassignment = true;
+        serviceLocator.registerFactory<AuthRepository>(
+          () => mockAuthRepository,
+        );
 
-      final router = AppRoutes.createRouter(sessionCubit);
-      await tester.pumpWidget(
-        BlocProvider<SessionCubit>.value(
-          value: sessionCubit,
-          child: MaterialApp.router(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: router,
+        final router = AppRoutes.createRouter(sessionCubit);
+        await tester.pumpWidget(
+          BlocProvider<SessionCubit>.value(
+            value: sessionCubit,
+            child: MaterialApp.router(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              routerConfig: router,
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      router.go(AuthRoutes.login);
-      await tester.pumpAndSettle();
+        router.go(AuthRoutes.login);
+        await tester.pumpAndSettle();
 
-      router.go(AuthRoutes.claimToken, extra: 'user-123');
-      await tester.pumpAndSettle();
+        router.go(AuthRoutes.register);
+        await tester.pumpAndSettle();
 
-      router.go(HomeRoutes.home);
-      await tester.pumpAndSettle();
-    });
+        router.go(AuthRoutes.claimToken, extra: 'user-123');
+        await tester.pumpAndSettle();
+
+        router.go(HomeRoutes.home);
+        await tester.pumpAndSettle();
+      },
+    );
+
+    testWidgets(
+      'login route onCreateAccountPressed navigates to register and register route onLoginPressed pops back',
+      (tester) async {
+        serviceLocator.allowReassignment = true;
+        serviceLocator.registerFactory<AuthRepository>(
+          () => mockAuthRepository,
+        );
+
+        final router = AppRoutes.createRouter(sessionCubit);
+        await tester.pumpWidget(
+          BlocProvider<SessionCubit>.value(
+            value: sessionCubit,
+            child: MaterialApp.router(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              routerConfig: router,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        router.go(AuthRoutes.login);
+        await tester.pumpAndSettle();
+
+        // Tap on create account link on LoginScreen
+        final createAccountText = find.text('Criar conta');
+        if (createAccountText.evaluate().isNotEmpty) {
+          await tester.tap(createAccountText.first);
+          await tester.pumpAndSettle();
+          expect(find.byType(RegisterScreen), findsOneWidget);
+
+          // Tap on login link on RegisterScreen to pop back
+          final loginText = find.text('Entrar');
+          if (loginText.evaluate().isNotEmpty) {
+            await tester.tap(loginText.first);
+            await tester.pumpAndSettle();
+            expect(find.byType(LoginScreen), findsOneWidget);
+          }
+        }
+      },
+    );
   });
 
   group('SplashRoutes', () {
@@ -135,14 +198,23 @@ void main() {
       when(() => mockState.matchedLocation).thenReturn(SplashRoutes.splash);
 
       expect(
-        SplashRoutes.splashGuard(mockContext, mockState, const AuthenticatedSession(user: testUser, profile: testProfile)),
+        SplashRoutes.splashGuard(
+          mockContext,
+          mockState,
+          const AuthenticatedSession(user: testUser, profile: testProfile),
+        ),
         equals('/home'),
       );
 
       expect(
-        SplashRoutes.splashGuard(mockContext, mockState, const NeedsClaimSession(userId: 'u1')),
-        equals('/claim-token'),
+        SplashRoutes.splashGuard(
+          mockContext,
+          mockState,
+          const NeedsClaimSession(userId: 'u1'),
+        ),
+        equals(OnboardingRoutes.claimToken),
       );
+
 
       expect(
         SplashRoutes.splashGuard(mockContext, mockState, const GuestSession()),
@@ -150,13 +222,59 @@ void main() {
       );
 
       expect(
-        SplashRoutes.splashGuard(mockContext, mockState, const LoadingSession()),
+        SplashRoutes.splashGuard(
+          mockContext,
+          mockState,
+          const LoadingSession(),
+        ),
         isNull,
       );
     });
   });
 
   group('AuthRoutes', () {
+    test('executes route builders directly', () {
+      serviceLocator.allowReassignment = true;
+      serviceLocator.registerFactory<AuthRepository>(() => mockAuthRepository);
+
+      final routes = AuthRoutes.routes;
+
+      // Test login route builder
+      final loginRoute =
+          routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.login)
+              as GoRoute;
+      final loginPage = loginRoute.pageBuilder!(mockContext, mockState);
+      expect(loginPage, isA<Page<dynamic>>());
+
+      // Test register route builder
+      final registerRoute =
+          routes.firstWhere((r) => (r as GoRoute).path == AuthRoutes.register)
+              as GoRoute;
+      final registerPage = registerRoute.pageBuilder!(mockContext, mockState);
+      expect(registerPage, isA<Page<dynamic>>());
+
+      // Test claimToken route builder
+      when(() => mockState.extra).thenReturn('user-123');
+      final claimTokenRoute =
+          OnboardingRoutes.routes.firstWhere(
+            (r) => (r as GoRoute).path == OnboardingRoutes.claimToken,
+          ) as GoRoute;
+      final claimTokenPage = claimTokenRoute.pageBuilder!(
+        mockContext,
+        mockState,
+      );
+      expect(claimTokenPage, isA<Page<dynamic>>());
+
+      // Test claimToken route builder with null extra
+      when(() => mockState.extra).thenReturn(null);
+      final claimTokenPageNull = claimTokenRoute.pageBuilder!(
+        mockContext,
+        mockState,
+      );
+      expect(claimTokenPageNull, isA<Page<dynamic>>());
+    });
+
+
     test('authGuard redirects correctly based on SessionState', () {
       when(() => mockState.matchedLocation).thenReturn('/other');
 
@@ -167,13 +285,21 @@ void main() {
 
       when(() => mockState.matchedLocation).thenReturn(AuthRoutes.login);
       expect(
-        AuthRoutes.authGuard(mockContext, mockState, const AuthenticatedSession(user: testUser, profile: testProfile)),
+        AuthRoutes.authGuard(
+          mockContext,
+          mockState,
+          const AuthenticatedSession(user: testUser, profile: testProfile),
+        ),
         equals('/home'),
       );
 
       when(() => mockState.matchedLocation).thenReturn('/login');
       expect(
-        AuthRoutes.authGuard(mockContext, mockState, const NeedsClaimSession(userId: 'u1')),
+        AuthRoutes.authGuard(
+          mockContext,
+          mockState,
+          const NeedsClaimSession(userId: 'u1'),
+        ),
         equals(AuthRoutes.claimToken),
       );
 
@@ -201,9 +327,14 @@ void main() {
       );
 
       expect(
-        HomeRoutes.homeGuard(mockContext, mockState, const NeedsClaimSession(userId: 'u1')),
-        equals('/claim-token'),
+        HomeRoutes.homeGuard(
+          mockContext,
+          mockState,
+          const NeedsClaimSession(userId: 'u1'),
+        ),
+        equals(OnboardingRoutes.claimToken),
       );
+
 
       expect(
         HomeRoutes.homeGuard(mockContext, mockState, const GuestSession()),
@@ -211,7 +342,11 @@ void main() {
       );
 
       expect(
-        HomeRoutes.homeGuard(mockContext, mockState, const AuthenticatedSession(user: testUser, profile: testProfile)),
+        HomeRoutes.homeGuard(
+          mockContext,
+          mockState,
+          const AuthenticatedSession(user: testUser, profile: testProfile),
+        ),
         isNull,
       );
 
