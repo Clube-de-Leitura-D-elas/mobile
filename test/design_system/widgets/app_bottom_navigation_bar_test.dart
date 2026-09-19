@@ -61,7 +61,8 @@ void main() {
 
       for (var i = 0; i < labels.length; i++) {
         final semantics = tester.getSemantics(find.bySemanticsLabel(labels[i]));
-        final isSelected = semantics.hasFlag(SemanticsFlag.isSelected);
+        final isSelected =
+            semantics.flagsCollection.isSelected == Tristate.isTrue;
         expect(isSelected, i == 2);
       }
     });
