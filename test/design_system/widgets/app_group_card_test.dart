@@ -201,7 +201,6 @@ void main() {
         expect(find.text('Próximo evento'), findsOneWidget);
         expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
 
-        // Detalhes e botões não aparecem enquanto colapsado.
         expect(find.text('Roberta'), findsNothing);
         expect(find.text('Pequeno príncipe'), findsNothing);
         expect(find.text('Não irei'), findsNothing);

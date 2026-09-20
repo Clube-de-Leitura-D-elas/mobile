@@ -137,6 +137,7 @@ class AppGroupCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: AppButton.secondary(
+                      size: AppButtonSize.sm,
                       label: 'Não irei',
                       onPressed: onDeclinePresence ?? () {},
                     ),
@@ -144,6 +145,7 @@ class AppGroupCard extends StatelessWidget {
                   SizedBox(width: spacing.s8),
                   Expanded(
                     child: AppButton.primary(
+                      size: AppButtonSize.sm,
                       label: 'Confirmar presença',
                       onPressed: onConfirmPresence ?? () {},
                     ),
