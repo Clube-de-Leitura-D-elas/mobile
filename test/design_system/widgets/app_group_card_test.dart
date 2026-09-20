@@ -41,7 +41,7 @@ void main() {
           ),
         );
 
-        expect(find.text('Próximo encontro'), findsNothing);
+        expect(find.text('Próximo evento'), findsNothing);
         expect(find.text('Não irei'), findsNothing);
         expect(find.text('Confirmar presença'), findsNothing);
       },
@@ -69,7 +69,7 @@ void main() {
           ),
         );
 
-        expect(find.text('Próximo encontro'), findsOneWidget);
+        expect(find.text('Próximo evento'), findsOneWidget);
         expect(find.text('Roberta'), findsOneWidget);
         expect(find.text('Pequeno príncipe'), findsOneWidget);
         expect(find.text('29/08/2026'), findsOneWidget);
@@ -198,7 +198,7 @@ void main() {
           ),
         );
 
-        expect(find.text('Próximo encontro'), findsOneWidget);
+        expect(find.text('Próximo evento'), findsOneWidget);
         expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
 
         // Detalhes e botões não aparecem enquanto colapsado.

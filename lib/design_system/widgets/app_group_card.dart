@@ -1,25 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:jovial_svg/jovial_svg.dart';
-
-import '../tokens/color_tokens.dart';
-import '../tokens/spacing_tokens.dart';
-import '../tokens/typography_tokens.dart';
-import 'app_button.dart';
-import 'app_card.dart';
-
-enum _GroupCardIcon {
-  user('user'),
-  group('group'),
-  location('location'),
-  book('book'),
-  calendar('calendar');
-
-  final String assetName;
-  const _GroupCardIcon(this.assetName);
-
-  String get assetPath => 'assets/icons/si/$assetName.si';
-}
+import 'package:mobile/design_system/design_system.dart';
 
 class GroupMeeting {
   final String hostName;
@@ -90,10 +71,10 @@ class AppGroupCard extends StatelessWidget {
                     ),
                     SizedBox(height: spacing.s4),
                     _InfoRow(
-                      icon: _GroupCardIcon.group,
+                      icon: AppIcons.group,
                       label: '$participantsCount participantes',
                     ),
-                    _InfoRow(icon: _GroupCardIcon.location, label: cityState),
+                    _InfoRow(icon: AppIcons.location, label: cityState),
                   ],
                 ),
               ),
@@ -122,13 +103,13 @@ class AppGroupCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _InfoRow(
-                      icon: _GroupCardIcon.user,
+                      icon: AppIcons.user,
                       label: meeting.hostName,
                     ),
                   ),
                   Expanded(
                     child: _InfoRow(
-                      icon: _GroupCardIcon.book,
+                      icon: AppIcons.book,
                       label: meeting.bookTitle,
                     ),
                   ),
@@ -139,13 +120,13 @@ class AppGroupCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _InfoRow(
-                      icon: _GroupCardIcon.calendar,
+                      icon: AppIcons.calendar,
                       label: meeting.date,
                     ),
                   ),
                   Expanded(
                     child: _InfoRow(
-                      icon: _GroupCardIcon.location,
+                      icon: AppIcons.location,
                       label: meeting.location,
                     ),
                   ),
@@ -212,10 +193,12 @@ class _GroupAvatar extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  final _GroupCardIcon icon;
+  final AppIconAsset icon;
   final String label;
 
   const _InfoRow({required this.icon, required this.label});
+
+  static const double _size = 16;
 
   @override
   Widget build(BuildContext context) {
@@ -225,18 +208,7 @@ class _InfoRow extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          width: 16,
-          height: 16,
-          child: ScalableImageWidget.fromSISource(
-            si: ScalableImageSource.fromSI(
-              DefaultAssetBundle.of(context),
-              icon.assetPath,
-              currentColor: colors.textMuted,
-            ),
-            fit: BoxFit.contain,
-          ),
-        ),
+        AppIcon(icon: icon, size: _size, color: colors.textMuted),
         const SizedBox(width: 4),
         Flexible(
           child: Text(
