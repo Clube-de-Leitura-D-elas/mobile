@@ -158,6 +158,35 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -384,6 +413,35 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
