@@ -36,13 +36,10 @@ class AppDropdown<T> extends StatelessWidget {
 
         SizedBox(height: spacing.s4),
         DropdownButtonFormField<T>(
-          value: value,
+          initialValue: value,
           onChanged: onChanged,
           items: items,
-          icon: Icon(
-            Icons.keyboard_arrow_down,
-            color: colors.textMuted,
-          ),
+          icon: Icon(Icons.keyboard_arrow_down, color: colors.textMuted),
           style: text.bodyDefault.copyWith(color: colors.textDefault),
           decoration: InputDecoration(
             hintText: hintText,
@@ -65,7 +62,6 @@ class AppDropdown<T> extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.0),
               borderSide: BorderSide(color: colors.actionPrimary, width: 2.0),
             ),
-
           ),
         ),
       ],
