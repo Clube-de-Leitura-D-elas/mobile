@@ -27,39 +27,44 @@ void main() {
         title: 'Title',
       );
 
-      expect(page, isA<CupertinoPage>());
+      expect(page, isA<CupertinoPage<dynamic>>());
       debugDefaultTargetPlatformOverride = null;
     });
 
-    testWidgets('createPushPage creates MaterialPage on android/default', (tester) async {
+    testWidgets('createPushPage creates MaterialPage on android/default', (
+      tester,
+    ) async {
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
       final page = AppPageTransitions.createPushPage(
         child: const SizedBox(),
         state: mockState,
       );
 
-      expect(page, isA<MaterialPage>());
+      expect(page, isA<MaterialPage<dynamic>>());
       debugDefaultTargetPlatformOverride = null;
     });
 
-    testWidgets('createFadePage creates CustomTransitionPage with FadeTransition', (tester) async {
-      final page = AppPageTransitions.createFadePage(
-        child: const SizedBox(),
-        state: mockState,
-      );
+    testWidgets(
+      'createFadePage creates CustomTransitionPage with FadeTransition',
+      (tester) async {
+        final page = AppPageTransitions.createFadePage(
+          child: const SizedBox(),
+          state: mockState,
+        );
 
-      expect(page, isA<CustomTransitionPage>());
-      final transitionPage = page as CustomTransitionPage;
-      
-      final widget = transitionPage.transitionsBuilder(
-        MockBuildContext(),
-        const AlwaysStoppedAnimation(1.0),
-        const AlwaysStoppedAnimation(0.0),
-        const SizedBox(),
-      );
+        expect(page, isA<CustomTransitionPage<dynamic>>());
+        final transitionPage = page as CustomTransitionPage<dynamic>;
 
-      expect(widget, isA<FadeTransition>());
-    });
+        final widget = transitionPage.transitionsBuilder(
+          MockBuildContext(),
+          const AlwaysStoppedAnimation(1.0),
+          const AlwaysStoppedAnimation(0.0),
+          const SizedBox(),
+        );
+
+        expect(widget, isA<FadeTransition>());
+      },
+    );
   });
 }
 
