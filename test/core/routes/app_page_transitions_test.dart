@@ -27,7 +27,7 @@ void main() {
         title: 'Title',
       );
 
-      expect(page, isA<CupertinoPage>());
+      expect(page, isA<CupertinoPage<dynamic>>());
       debugDefaultTargetPlatformOverride = null;
     });
 
@@ -38,7 +38,7 @@ void main() {
         state: mockState,
       );
 
-      expect(page, isA<MaterialPage>());
+      expect(page, isA<MaterialPage<dynamic>>());
       debugDefaultTargetPlatformOverride = null;
     });
 
@@ -48,7 +48,7 @@ void main() {
         state: mockState,
       );
 
-      expect(page, isA<CustomTransitionPage>());
+      expect(page, isA<CustomTransitionPage<dynamic>>());
       final transitionPage = page as CustomTransitionPage;
       
       final widget = transitionPage.transitionsBuilder(
