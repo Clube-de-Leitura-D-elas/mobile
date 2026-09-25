@@ -21,6 +21,8 @@ jobs:
     if: github.event.deleted != true
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    env:
+      GITLAB_REPOSITORY: tools.ages.pucrs.br/2026-2/3jk-5jk/clube-de-leitura-d-elas/mobile.git
 
     steps:
       - name: Checkout repository
@@ -33,7 +35,6 @@ jobs:
         env:
           GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-          GITLAB_REPOSITORY: tools.ages.pucrs.br/2026-2/3jk-5jk/clube-de-leitura-d-elas/mobile.git
         shell: bash
         run: |
           set -euo pipefail
@@ -70,3 +71,40 @@ jobs:
           else
             push_with_retry "refs/remotes/origin/${GITHUB_REF_NAME}:refs/heads/${GITHUB_REF_NAME}"
           fi
+
+      - name: Notify Discord
+        if: success() || failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          JOB_STATUS: ${{ job.status }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${DISCORD_WEBHOOK_URL:-}" ]]; then
+            echo "::warning::DISCORD_WEBHOOK_URL is not set; skipping Discord notification"
+            exit 0
+          fi
+
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          ref_info="Repositório: \`${GITHUB_REPOSITORY}\`
+          Ref: \`${GITHUB_REF_NAME}\`
+          Commit: \`${GITHUB_SHA:0:7}\` por ${GITHUB_ACTOR}"
+
+          if [[ "${JOB_STATUS}" == "success" ]]; then
+            text="✅ **Espelhamento para o GitLab concluído**
+          ${ref_info}
+          GitLab: https://${GITLAB_REPOSITORY%.git}/-/tree/${GITHUB_REF_NAME}"
+          else
+            text="❌ **Espelhamento para o GitLab falhou**
+          ${ref_info}
+
+          O código está no GitHub mas **não chegou ao GitLab**, que é onde a AGES avalia.
+          Reexecutar o job: ${run_url}"
+          fi
+
+          jq -n --arg content "${text}" '{content: $content}' \
+            | curl --silent --show-error --fail --max-time 30 \
+                   -H "Content-Type: application/json" \
+                   -d @- "${DISCORD_WEBHOOK_URL}" \
+            || echo "::warning::Could not send Discord notification"
