@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
-import 'package:mobile/core/serviceLocator/service_locator.dart';
-import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
-import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
-import 'package:mobile/features/auth/presentation/pages/claim_token_screen.dart';
 import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
