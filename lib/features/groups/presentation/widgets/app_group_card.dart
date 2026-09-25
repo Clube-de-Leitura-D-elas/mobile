@@ -1,20 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-
-class GroupMeeting {
-  final String hostName;
-  final String bookTitle;
-  final String date;
-  final String location;
-
-  const GroupMeeting({
-    required this.hostName,
-    required this.bookTitle,
-    required this.date,
-    required this.location,
-  });
-}
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/presentation/widgets/app_group_avatar.dart';
+import 'package:mobile/features/groups/presentation/widgets/app_group_info_row.dart';
 
 class AppGroupCard extends StatelessWidget {
   final String groupName;
@@ -46,6 +35,7 @@ class AppGroupCard extends StatelessWidget {
     final typography = context.typography;
     final spacing = context.spacing;
     final meeting = nextMeeting;
+    final l10n = context.l10n;
 
     return AppCard(
       onTap: onTap,
@@ -56,7 +46,7 @@ class AppGroupCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _GroupAvatar(photoUrl: photoUrl),
+              AppGroupAvatar(photoUrl: photoUrl),
               SizedBox(width: spacing.s12),
               Expanded(
                 child: Column(
@@ -70,11 +60,11 @@ class AppGroupCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: spacing.s4),
-                    _InfoRow(
+                    AppGroupInfoRow(
                       icon: AppIcons.group,
-                      label: '$participantsCount participantes',
+                      label: l10n.groupParticipantsCount(participantsCount),
                     ),
-                    _InfoRow(icon: AppIcons.location, label: cityState),
+                    AppGroupInfoRow(icon: AppIcons.location, label: cityState),
                   ],
                 ),
               ),
@@ -86,7 +76,7 @@ class AppGroupCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Próximo evento',
+                  l10n.groupNextMeetingLabel,
                   style: typography.bodyLarge.copyWith(color: colors.textMuted),
                 ),
                 Icon(
@@ -102,13 +92,13 @@ class AppGroupCard extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: _InfoRow(
+                    child: AppGroupInfoRow(
                       icon: AppIcons.user,
                       label: meeting.hostName,
                     ),
                   ),
                   Expanded(
-                    child: _InfoRow(
+                    child: AppGroupInfoRow(
                       icon: AppIcons.book,
                       label: meeting.bookTitle,
                     ),
@@ -119,13 +109,13 @@ class AppGroupCard extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: _InfoRow(
+                    child: AppGroupInfoRow(
                       icon: AppIcons.calendar,
                       label: meeting.date,
                     ),
                   ),
                   Expanded(
-                    child: _InfoRow(
+                    child: AppGroupInfoRow(
                       icon: AppIcons.location,
                       label: meeting.location,
                     ),
@@ -138,7 +128,7 @@ class AppGroupCard extends StatelessWidget {
                   Expanded(
                     child: AppButton.secondary(
                       size: AppButtonSize.sm,
-                      label: 'Não irei',
+                      label: l10n.groupDeclineMeetingButton,
                       onPressed: onDeclinePresence ?? () {},
                     ),
                   ),
@@ -146,7 +136,7 @@ class AppGroupCard extends StatelessWidget {
                   Expanded(
                     child: AppButton.primary(
                       size: AppButtonSize.sm,
-                      label: 'Confirmar presença',
+                      label: l10n.groupConfirmMeetingButton,
                       onPressed: onConfirmPresence ?? () {},
                     ),
                   ),
@@ -156,70 +146,6 @@ class AppGroupCard extends StatelessWidget {
           ],
         ],
       ),
-    );
-  }
-}
-
-class _GroupAvatar extends StatelessWidget {
-  final String? photoUrl;
-
-  const _GroupAvatar({required this.photoUrl});
-
-  static const double size = 56;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final url = photoUrl;
-
-    Widget placeholder() => ColoredBox(
-      color: colors.surfaceSunken,
-      child: Icon(Icons.groups_outlined, color: colors.textMuted),
-    );
-
-    return ClipOval(
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: url == null
-            ? placeholder()
-            : CachedNetworkImage(
-                imageUrl: url,
-                fit: BoxFit.cover,
-                placeholder: (context, _) => placeholder(),
-                errorWidget: (context, _, _) => placeholder(),
-              ),
-      ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final AppIconAsset icon;
-  final String label;
-
-  const _InfoRow({required this.icon, required this.label});
-
-  static const double _size = 16;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final typography = context.typography;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        AppIcon(icon: icon, size: _size, color: colors.textMuted),
-        const SizedBox(width: 4),
-        Flexible(
-          child: Text(
-            label,
-            style: typography.bodySmall.copyWith(color: colors.textMuted),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
     );
   }
 }

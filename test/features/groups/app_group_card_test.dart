@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
+import 'package:mobile/l10n/app_localizations.dart';
+
+Widget _wrap(Widget child) {
+  return MaterialApp(
+    theme: AppTheme.light,
+    locale: const Locale('pt', 'BR'),
+    supportedLocales: AppLocalizations.supportedLocales,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    home: Scaffold(body: child),
+  );
+}
 
 void main() {
   group('AppGroupCard', () {
@@ -8,14 +27,11 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: const Scaffold(
-            body: AppGroupCard(
-              groupName: 'Grupo 27',
-              participantsCount: 18,
-              cityState: 'Porto Alegre, RS',
-            ),
+        _wrap(
+          const AppGroupCard(
+            groupName: 'Grupo 27',
+            participantsCount: 18,
+            cityState: 'Porto Alegre, RS',
           ),
         ),
       );
@@ -29,14 +45,11 @@ void main() {
       'Does not render the meeting section when there is no next meeting',
       (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: const Scaffold(
-              body: AppGroupCard(
-                groupName: 'Grupo 27',
-                participantsCount: 18,
-                cityState: 'Porto Alegre, RS',
-              ),
+          _wrap(
+            const AppGroupCard(
+              groupName: 'Grupo 27',
+              participantsCount: 18,
+              cityState: 'Porto Alegre, RS',
             ),
           ),
         );
@@ -51,19 +64,16 @@ void main() {
       'Renders the meeting section and both buttons when there is a next meeting',
       (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: const Scaffold(
-              body: AppGroupCard(
-                groupName: 'Grupo 1',
-                participantsCount: 32,
-                cityState: 'Porto Alegre, RS',
-                nextMeeting: GroupMeeting(
-                  hostName: 'Roberta',
-                  bookTitle: 'Pequeno príncipe',
-                  date: '29/08/2026',
-                  location: 'Z Café TECNOPUC',
-                ),
+          _wrap(
+            const AppGroupCard(
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '29/08/2026',
+                location: 'Z Café TECNOPUC',
               ),
             ),
           ),
@@ -83,15 +93,12 @@ void main() {
       var tapped = false;
 
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: Scaffold(
-            body: AppGroupCard(
-              groupName: 'Grupo 27',
-              participantsCount: 18,
-              cityState: 'Porto Alegre, RS',
-              onTap: () => tapped = true,
-            ),
+        _wrap(
+          AppGroupCard(
+            groupName: 'Grupo 27',
+            participantsCount: 18,
+            cityState: 'Porto Alegre, RS',
+            onTap: () => tapped = true,
           ),
         ),
       );
@@ -104,14 +111,11 @@ void main() {
 
     testWidgets('Is not tappable when onTap is not provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: const Scaffold(
-            body: AppGroupCard(
-              groupName: 'Grupo 27',
-              participantsCount: 18,
-              cityState: 'Porto Alegre, RS',
-            ),
+        _wrap(
+          const AppGroupCard(
+            groupName: 'Grupo 27',
+            participantsCount: 18,
+            cityState: 'Porto Alegre, RS',
           ),
         ),
       );
@@ -123,14 +127,11 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: const Scaffold(
-            body: AppGroupCard(
-              groupName: 'Grupo 27',
-              participantsCount: 18,
-              cityState: 'Porto Alegre, RS',
-            ),
+        _wrap(
+          const AppGroupCard(
+            groupName: 'Grupo 27',
+            participantsCount: 18,
+            cityState: 'Porto Alegre, RS',
           ),
         ),
       );
@@ -145,22 +146,19 @@ void main() {
         var declined = false;
 
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: Scaffold(
-              body: AppGroupCard(
-                groupName: 'Grupo 1',
-                participantsCount: 32,
-                cityState: 'Porto Alegre, RS',
-                nextMeeting: const GroupMeeting(
-                  hostName: 'Roberta',
-                  bookTitle: 'Pequeno príncipe',
-                  date: '29/08/2026',
-                  location: 'Z Café TECNOPUC',
-                ),
-                onConfirmPresence: () => confirmed = true,
-                onDeclinePresence: () => declined = true,
+          _wrap(
+            AppGroupCard(
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: const GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '29/08/2026',
+                location: 'Z Café TECNOPUC',
               ),
+              onConfirmPresence: () => confirmed = true,
+              onDeclinePresence: () => declined = true,
             ),
           ),
         );
@@ -179,20 +177,17 @@ void main() {
       'Shows only the header and a down chevron when collapsed (expanded: false)',
       (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: const Scaffold(
-              body: AppGroupCard(
-                groupName: 'Grupo 27',
-                participantsCount: 18,
-                cityState: 'Porto Alegre, RS',
-                expanded: false,
-                nextMeeting: GroupMeeting(
-                  hostName: 'Roberta',
-                  bookTitle: 'Pequeno príncipe',
-                  date: '29/08/2026',
-                  location: 'Z Café TECNOPUC',
-                ),
+          _wrap(
+            const AppGroupCard(
+              groupName: 'Grupo 27',
+              participantsCount: 18,
+              cityState: 'Porto Alegre, RS',
+              expanded: false,
+              nextMeeting: GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '29/08/2026',
+                location: 'Z Café TECNOPUC',
               ),
             ),
           ),
@@ -201,6 +196,7 @@ void main() {
         expect(find.text('Próximo evento'), findsOneWidget);
         expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
 
+        // Detalhes e botões não aparecem enquanto colapsado.
         expect(find.text('Roberta'), findsNothing);
         expect(find.text('Pequeno príncipe'), findsNothing);
         expect(find.text('Não irei'), findsNothing);
@@ -212,19 +208,16 @@ void main() {
       'Shows an up chevron next to the header when expanded (default)',
       (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: const Scaffold(
-              body: AppGroupCard(
-                groupName: 'Grupo 1',
-                participantsCount: 32,
-                cityState: 'Porto Alegre, RS',
-                nextMeeting: GroupMeeting(
-                  hostName: 'Roberta',
-                  bookTitle: 'Pequeno príncipe',
-                  date: '29/08/2026',
-                  location: 'Z Café TECNOPUC',
-                ),
+          _wrap(
+            const AppGroupCard(
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '29/08/2026',
+                location: 'Z Café TECNOPUC',
               ),
             ),
           ),

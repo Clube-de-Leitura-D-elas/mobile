@@ -7,7 +7,6 @@ export 'widgets/app_button.dart';
 export 'widgets/app_card.dart';
 export 'widgets/app_checkbox.dart';
 export 'widgets/app_dropdown.dart';
-export 'widgets/app_group_card.dart';
 export 'widgets/app_icon.dart';
 export 'widgets/app_step_indicator.dart';
 export 'widgets/app_tag.dart';
