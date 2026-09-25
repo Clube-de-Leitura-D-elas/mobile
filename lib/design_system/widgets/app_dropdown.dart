@@ -36,6 +36,8 @@ class AppDropdown<T> extends StatelessWidget {
 
         SizedBox(height: spacing.s4),
         DropdownButtonFormField<T>(
+          // initialValue would ignore later value changes from the parent.
+          // ignore: deprecated_member_use
           value: value,
           onChanged: onChanged,
           items: items,
