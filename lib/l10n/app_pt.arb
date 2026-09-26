@@ -247,6 +247,28 @@
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
   "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
   "selectOptionHint": "Selecione",
-  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" }
+  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
+  "@@Groups": "--- Groups ---",
+  "groupNextMeetingLabel": "Próximo evento",
+  "@groupNextMeetingLabel": {
+    "description": "Rótulo da seção de próximo encontro no card de grupo"
+  },
+  "groupDeclineMeetingButton": "Não irei",
+  "@groupDeclineMeetingButton": {
+    "description": "Botão para recusar presença no próximo encontro do grupo"
+  },
+  "groupConfirmMeetingButton": "Confirmar presença",
+  "@groupConfirmMeetingButton": {
+    "description": "Botão para confirmar presença no próximo encontro do grupo"
+  },
+  "groupParticipantsCount": "{count, plural, one {1 participante} other {{count} participantes}}",
+  "@groupParticipantsCount": {
+    "description": "Contagem de participantes do grupo, com singular/plural",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
 
