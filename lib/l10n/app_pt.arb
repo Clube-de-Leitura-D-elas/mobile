@@ -199,6 +199,42 @@
     "description": "Rótulo do item de perfil para ID do usuário no Supabase"
   },
 
+  "@@Groups": "--- Groups ---",
+  "groupNextEventTitle": "Próximo evento",
+  "@groupNextEventTitle": {
+    "description": "Título da seção do próximo evento nos detalhes do grupo"
+  },
+  "groupParticipantsTitle": "Participantes",
+  "@groupParticipantsTitle": {
+    "description": "Título da seção de participantes nos detalhes do grupo"
+  },
+  "groupParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
+  "@groupParticipantsCount": {
+    "description": "Quantidade de participantes do grupo",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupOpenWhatsAppButton": "Abrir Whatsapp",
+  "@groupOpenWhatsAppButton": {
+    "description": "Botão para abrir o grupo no WhatsApp"
+  },
+  "groupRecommendBookButton": "Indicar livro",
+  "@groupRecommendBookButton": {
+    "description": "Botão para indicar um livro ao grupo"
+  },
+  "groupCoverSemanticLabel": "Foto do grupo {name}",
+  "@groupCoverSemanticLabel": {
+    "description": "Descrição acessível da foto de capa do grupo",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
   "@@Onboarding": "--- Onboarding ---",
   "onboardingReviewTitle": "Verifique os seus dados",
   "@onboardingReviewTitle": { "description": "Título principal do review de cadastro" },
