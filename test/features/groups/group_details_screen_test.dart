@@ -192,6 +192,55 @@ void main() {
     },
   );
 
+  testWidgets(
+    'given a cover image, when rendered, then displays the image',
+    (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          GroupDetailsScreen(
+            name: 'Grupo 1',
+            genres: const ['Ficção'],
+            participantCount: 5,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+            coverImage: const NetworkImage('https://example.com/cover.jpg'),
+          ),
+        ),
+      );
+
+      expect(find.byType(Image), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'given a cover image that fails to load, when rendered, then shows fallback icon',
+    (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          GroupDetailsScreen(
+            name: 'Grupo 1',
+            genres: const ['Ficção'],
+            participantCount: 5,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+            coverImage: const NetworkImage('https://invalid.example.com/x.jpg'),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Trigger the errorBuilder by finding the Image and simulating an error
+      final imageWidget = tester.widget<Image>(find.byType(Image));
+      final errorWidget = imageWidget.errorBuilder!(
+        tester.element(find.byType(Image)),
+        Exception('error'),
+        StackTrace.empty,
+      );
+      expect(errorWidget, isA<Center>());
+    },
+  );
+
   testWidgets('given action buttons, when tapped, then the page stays open', (
     tester,
   ) async {
