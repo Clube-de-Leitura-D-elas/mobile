@@ -546,6 +546,48 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, one {1 participante} other {{count} participantes}}'**
   String groupParticipantsCount(int count);
+
+  /// Título principal da tela de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Meus grupos'**
+  String get myGroupsTitle;
+
+  /// Placeholder do campo de busca de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar grupo'**
+  String get searchGroupPlaceholder;
+
+  /// Chip de filtro Todos
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get filterAll;
+
+  /// Chip de filtro Não respondidos com contagem
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondidos ({count})'**
+  String filterUnanswered(int count);
+
+  /// Chip de filtro Respondidos
+  ///
+  /// In pt, this message translates to:
+  /// **'Respondidos'**
+  String get filterAnswered;
+
+  /// Título exibido quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo'**
+  String get emptyGroupsTitle;
+
+  /// Mensagem detalhada exibida quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
+  String get emptyGroupsMessage;
 }
 
 class _AppLocalizationsDelegate

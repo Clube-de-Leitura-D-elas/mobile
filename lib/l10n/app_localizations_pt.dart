@@ -250,6 +250,30 @@ class AppLocalizationsPt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -478,4 +502,48 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get selectOptionHint => 'Selecione';
+
+  @override
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }

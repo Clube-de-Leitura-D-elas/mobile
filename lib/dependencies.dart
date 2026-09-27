@@ -9,6 +9,7 @@ import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 
@@ -48,6 +49,10 @@ class DependenciesContainer {
         authRepository: serviceLocator<AuthRepository>(),
         supabaseService: serviceLocator<SupabaseService>(),
       ),
+    );
+
+    serviceLocator.registerFactory<HomeCubit>(
+      () => HomeCubit(),
     );
   }
 }
