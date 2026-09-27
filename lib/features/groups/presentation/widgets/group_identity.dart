@@ -32,10 +32,12 @@ class GroupIdentity extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              name,
-              key: const ValueKey('group-name'),
-              style: text.headingH2.copyWith(color: colors.textDefault),
+            Flexible(
+              child: Text(
+                name,
+                key: const ValueKey('group-name'),
+                style: text.headingH2.copyWith(color: colors.textDefault),
+              ),
             ),
             SizedBox(width: spacing.s8),
             Expanded(
