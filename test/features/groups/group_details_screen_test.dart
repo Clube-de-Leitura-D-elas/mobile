@@ -98,7 +98,7 @@ void main() {
       routes: [
         GoRoute(
           path: '/',
-          builder: (_, __) => Scaffold(
+          builder: (_, _) => Scaffold(
             body: Builder(
               builder: (context) => TextButton(
                 onPressed: () => context.push('/group'),
@@ -107,7 +107,7 @@ void main() {
             ),
           ),
         ),
-        GoRoute(path: '/group', builder: (_, __) => group),
+        GoRoute(path: '/group', builder: (_, _) => group),
       ],
     );
 
