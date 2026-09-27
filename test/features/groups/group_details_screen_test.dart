@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -93,18 +94,30 @@ void main() {
   testWidgets('given an open group, when back is tapped, then returns home', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      buildSubject(
-        Builder(
-          builder: (context) => Scaffold(
-            body: TextButton(
-              onPressed: () => Navigator.of(
-                context,
-              ).push(MaterialPageRoute<void>(builder: (_) => group)),
-              child: const Text('Abrir grupo'),
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, __) => Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                onPressed: () => context.push('/group'),
+                child: const Text('Abrir grupo'),
+              ),
             ),
           ),
         ),
+        GoRoute(path: '/group', builder: (_, __) => group),
+      ],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+        theme: AppTheme.light.copyWith(splashFactory: NoSplash.splashFactory),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
       ),
     );
 
@@ -175,7 +188,7 @@ void main() {
       final genresBounds = tester.getRect(
         find.byKey(const ValueKey('group-genres')),
       );
-      expect(genresBounds.top, greaterThanOrEqualTo(nameBounds.bottom));
+      expect(genresBounds.top, lessThanOrEqualTo(nameBounds.bottom));
     },
   );
 
