@@ -187,6 +187,15 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -259,26 +268,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get selectOptionHint => 'Selecione';
-
-  @override
-  String get groupNextMeetingLabel => 'Próximo evento';
-
-  @override
-  String get groupDeclineMeetingButton => 'Não irei';
-
-  @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
-
-  @override
-  String groupParticipantsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count participantes',
-      one: '1 participante',
-    );
-    return '$_temp0';
-  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
