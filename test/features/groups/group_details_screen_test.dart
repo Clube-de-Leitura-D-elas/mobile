@@ -197,13 +197,13 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         buildSubject(
-          GroupDetailsScreen(
+          const GroupDetailsScreen(
             name: 'Grupo 1',
-            genres: const ['Ficção'],
+            genres: ['Ficção'],
             participantCount: 5,
             city: 'Porto Alegre',
             stateCode: 'RS',
-            coverImage: const NetworkImage('https://example.com/cover.jpg'),
+            coverImage: NetworkImage('https://example.com/cover.jpg'),
           ),
         ),
       );
@@ -218,13 +218,13 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         buildSubject(
-          GroupDetailsScreen(
+          const GroupDetailsScreen(
             name: 'Grupo 1',
-            genres: const ['Ficção'],
+            genres: ['Ficção'],
             participantCount: 5,
             city: 'Porto Alegre',
             stateCode: 'RS',
-            coverImage: const NetworkImage('https://invalid.example.com/x.jpg'),
+            coverImage: NetworkImage('https://invalid.example.com/x.jpg'),
           ),
         ),
       );
