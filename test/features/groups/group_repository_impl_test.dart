@@ -3,6 +3,7 @@ import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mocktail/mocktail.dart';
@@ -29,17 +30,17 @@ void main() {
 
   test('maps the Edge Function JSON response to GroupDetailsEntity', () async {
     when(
-      () => mockSupabaseService.invokeFunction<GroupDetailsEntity>(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
         functionName: 'get-group-details?group_id=group-1',
         decoder: any(named: 'decoder'),
       ),
     ).thenAnswer((invocation) async {
       final decoder =
           invocation.namedArguments[#decoder]
-              as GroupDetailsEntity Function(dynamic);
+              as GroupDetailsModel Function(dynamic);
       final group = decoder(groupJson);
 
-      return Success<SupabaseResponse<GroupDetailsEntity>, SupabaseFailure>(
+      return Success<SupabaseResponse<GroupDetailsModel>, SupabaseFailure>(
         SupabaseResponse(data: group),
       );
     });
@@ -60,7 +61,7 @@ void main() {
       ),
     );
     verify(
-      () => mockSupabaseService.invokeFunction<GroupDetailsEntity>(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
         functionName: 'get-group-details?group_id=group-1',
         decoder: any(named: 'decoder'),
       ),
@@ -70,7 +71,7 @@ void main() {
   test('returns Failure when the Edge Function call fails', () async {
     const failure = FunctionSupabaseFailure(message: 'Falha do servidor');
     when(
-      () => mockSupabaseService.invokeFunction<GroupDetailsEntity>(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
         functionName: 'get-group-details?group_id=group-1',
         decoder: any(named: 'decoder'),
       ),
@@ -83,14 +84,14 @@ void main() {
 
   test('uses empty location values when response fields are null', () async {
     when(
-      () => mockSupabaseService.invokeFunction<GroupDetailsEntity>(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
         functionName: 'get-group-details?group_id=group-1',
         decoder: any(named: 'decoder'),
       ),
     ).thenAnswer((invocation) async {
       final decoder =
           invocation.namedArguments[#decoder]
-              as GroupDetailsEntity Function(dynamic);
+              as GroupDetailsModel Function(dynamic);
       final group = decoder({
         'name': '45',
         'genres': <String>[],
@@ -100,7 +101,7 @@ void main() {
         'cover_image_url': null,
       });
 
-      return Success<SupabaseResponse<GroupDetailsEntity>, SupabaseFailure>(
+      return Success<SupabaseResponse<GroupDetailsModel>, SupabaseFailure>(
         SupabaseResponse(data: group),
       );
     });
@@ -119,5 +120,21 @@ void main() {
         ),
       ),
     );
+  });
+
+  test('returns Failure when the function response has no data', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
+        functionName: 'get-group-details?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async =>
+          const Success(SupabaseResponse<GroupDetailsModel>(data: null)),
+    );
+
+    final result = await repository.getGroupDetails('group-1');
+
+    expect(result, isA<Failure<GroupDetailsEntity, SupabaseFailure>>());
   });
 }

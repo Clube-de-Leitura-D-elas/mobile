@@ -137,8 +137,9 @@ void main() {
         routes: [
           GoRoute(
             path: '/',
-            builder: (context, state) => const Scaffold(
-              body: AppGroupCard(
+            builder: (context, state) => Scaffold(
+              appBar: AppBar(title: Text('Home')),
+              body: const AppGroupCard(
                 groupId: 'group-1',
                 groupName: 'Grupo 27',
                 participantsCount: 18,
@@ -148,18 +149,32 @@ void main() {
           ),
           GoRoute(
             path: GroupRoutes.groupDetails,
-            builder: (context, state) =>
-                Scaffold(body: Text(state.uri.queryParameters['group_id']!)),
+            builder: (context, state) => Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  tooltip: 'Voltar para home',
+                  onPressed: () => context.pop(),
+                  icon: const Icon(Icons.arrow_back),
+                ),
+              ),
+              body: Text(state.uri.queryParameters['group_id']!),
+            ),
           ),
         ],
       );
       addTearDown(router.dispose);
 
       await tester.pumpWidget(_wrapRouter(router));
+      expect(find.text('Home'), findsOneWidget);
       await tester.tap(find.byType(InkWell));
       await tester.pumpAndSettle();
 
       expect(find.text('group-1'), findsOneWidget);
+      await tester.tap(find.byTooltip('Voltar para home'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Home'), findsOneWidget);
+      expect(find.byType(AppGroupCard), findsOneWidget);
     });
 
     testWidgets('Shows a placeholder icon when there is no photo URL', (

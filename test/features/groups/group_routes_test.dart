@@ -5,6 +5,7 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -19,10 +20,19 @@ void main() {
     if (serviceLocator.isRegistered<GroupRepository>()) {
       serviceLocator.unregister<GroupRepository>();
     }
+    if (serviceLocator.isRegistered<GroupDetailsCubit>()) {
+      serviceLocator.unregister<GroupDetailsCubit>();
+    }
     serviceLocator.registerFactory<GroupRepository>(() => mockRepository);
+    serviceLocator.registerFactory<GroupDetailsCubit>(
+      () => GroupDetailsCubit(groupRepository: mockRepository),
+    );
   });
 
   tearDown(() {
+    if (serviceLocator.isRegistered<GroupDetailsCubit>()) {
+      serviceLocator.unregister<GroupDetailsCubit>();
+    }
     if (serviceLocator.isRegistered<GroupRepository>()) {
       serviceLocator.unregister<GroupRepository>();
     }

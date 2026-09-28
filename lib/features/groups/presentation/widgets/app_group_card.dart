@@ -42,7 +42,14 @@ class AppGroupCard extends StatelessWidget {
     final l10n = context.l10n;
 
     return AppCard(
-      onTap: onTap ?? () => context.go('${GroupRoutes.groupDetails}?group_id=$groupId'),
+      onTap:
+          onTap ??
+          () => context.push(
+            Uri(
+              path: GroupRoutes.groupDetails,
+              queryParameters: {'group_id': groupId},
+            ).toString(),
+          ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -168,5 +175,5 @@ class AppGroupCard extends StatelessWidget {
 //     location: 'Z Café TECNOPUC',
 //   ),
 //   expanded: false, // mostra só "Próximo encontro" + seta pra baixo
-//   onTap: () => Navigator.pushNamed(context, '/grupo/27'),
+//   onTap: () => context.push('/group-details?group_id=group-27'),
 // ),

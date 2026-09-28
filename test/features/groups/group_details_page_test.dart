@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -46,7 +48,12 @@ void main() {
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     locale: const Locale('pt', 'BR'),
-    home: const GroupDetailsPage(groupId: 'group-1'),
+    home: BlocProvider(
+      create: (_) =>
+          GroupDetailsCubit(groupRepository: serviceLocator<GroupRepository>())
+            ..load('group-1'),
+      child: const GroupDetailsPage(),
+    ),
   );
 
   testWidgets('renders loading state while the group request is pending', (

@@ -1,6 +1,7 @@
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
@@ -10,22 +11,29 @@ class GroupRepositoryImpl implements GroupRepository {
   const GroupRepositoryImpl({required this.supabaseService});
 
   @override
-  Future<Result<GroupDetailsEntity, SupabaseFailure>> getGroupDetails(String groupId) async {
-    final result = await supabaseService.invokeFunction<GroupDetailsEntity>(
+  Future<Result<GroupDetailsEntity, SupabaseFailure>> getGroupDetails(
+    String groupId,
+  ) async {
+    final result = await supabaseService.invokeFunction<GroupDetailsModel>(
       functionName: 'get-group-details?group_id=$groupId',
-      decoder: (json) => GroupDetailsEntity(
-        name: json['name'] as String,
-        genres: List<String>.from(json['genres'] as List),
-        participantCount: json['participant_count'] as int,
-        city: json['city'] as String? ?? '',
-        stateCode: json['state_code'] as String? ?? '',
-        coverImageUrl: json['cover_image_url'] as String?,
-      ),
+      decoder: GroupDetailsModel.fromJson,
     );
 
-    return switch (result) {
-      Success(:final data) => Success(data.data!),
-      Failure(:final failure) => Failure(failure),
-    };
+    switch (result) {
+      case Failure(:final failure):
+        return Failure(failure);
+      case Success(:final data):
+        final group = data.data;
+        if (group == null) {
+          return Failure(
+            FunctionSupabaseFailure(
+              message:
+                  'A função get-group-details retornou uma resposta vazia.',
+              code: data.statusCode.toString(),
+            ),
+          );
+        }
+        return Success<GroupDetailsEntity, SupabaseFailure>(group.toDomain());
+    }
   }
 }
