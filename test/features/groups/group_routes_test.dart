@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
-import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
@@ -52,9 +52,8 @@ void main() {
     tester,
   ) async {
     when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
-      (_) async => const Failure(
-        FunctionSupabaseFailure(message: 'Not used in this test'),
-      ),
+      (_) async =>
+          const Failure(GroupDetailsFailure(message: 'Not used in this test')),
     );
 
     await pumpRoute(tester, '/group-details?group_id=group-1');
@@ -68,7 +67,7 @@ void main() {
   ) async {
     when(() => mockRepository.getGroupDetails('')).thenAnswer(
       (_) async =>
-          const Failure(FunctionSupabaseFailure(message: 'Missing group id')),
+          const Failure(GroupDetailsFailure(message: 'Missing group id')),
     );
 
     await pumpRoute(tester, '/group-details');

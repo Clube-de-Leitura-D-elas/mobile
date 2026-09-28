@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
@@ -53,7 +55,7 @@ void main() {
       build: () {
         when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
           (_) async => const Failure(
-            FunctionSupabaseFailure(message: 'Falha ao carregar grupo'),
+            GroupDetailsFailure(message: 'Falha ao carregar grupo'),
           ),
         );
         return GroupDetailsCubit(groupRepository: mockRepository);
@@ -64,5 +66,23 @@ void main() {
         const GroupDetailsError('Falha ao carregar grupo'),
       ],
     );
+
+    test('does not emit a result after being closed during a load', () async {
+      final response = Completer<Result<GroupDetailsEntity, GroupFailure>>();
+      when(
+        () => mockRepository.getGroupDetails('group-1'),
+      ).thenAnswer((_) => response.future);
+      final cubit = GroupDetailsCubit(groupRepository: mockRepository);
+      final states = <GroupDetailsState>[];
+      final subscription = cubit.stream.listen(states.add);
+
+      final load = cubit.load('group-1');
+      await cubit.close();
+      response.complete(const Success(testGroup));
+      await load;
+      await subscription.cancel();
+
+      expect(states, [const GroupDetailsLoading()]);
+    });
   });
 }

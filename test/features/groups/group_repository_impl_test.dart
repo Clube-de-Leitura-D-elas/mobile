@@ -6,6 +6,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
@@ -49,7 +50,7 @@ void main() {
 
     expect(
       result,
-      const Success<GroupDetailsEntity, SupabaseFailure>(
+      const Success<GroupDetailsEntity, GroupFailure>(
         GroupDetailsEntity(
           name: '45',
           genres: ['Ficção', 'Aventura'],
@@ -68,7 +69,7 @@ void main() {
     ).called(1);
   });
 
-  test('returns Failure when the Edge Function call fails', () async {
+  test('maps an Edge Function failure to a group failure', () async {
     const failure = FunctionSupabaseFailure(message: 'Falha do servidor');
     when(
       () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
@@ -79,7 +80,10 @@ void main() {
 
     final result = await repository.getGroupDetails('group-1');
 
-    expect(result, const Failure<GroupDetailsEntity, SupabaseFailure>(failure));
+    expect(
+      result,
+      const Failure<GroupDetailsEntity, GroupFailure>(GroupDetailsFailure()),
+    );
   });
 
   test('uses empty location values when response fields are null', () async {
@@ -110,7 +114,7 @@ void main() {
 
     expect(
       result,
-      const Success<GroupDetailsEntity, SupabaseFailure>(
+      const Success<GroupDetailsEntity, GroupFailure>(
         GroupDetailsEntity(
           name: '45',
           genres: [],
@@ -135,6 +139,26 @@ void main() {
 
     final result = await repository.getGroupDetails('group-1');
 
-    expect(result, isA<Failure<GroupDetailsEntity, SupabaseFailure>>());
+    expect(result, isA<Failure<GroupDetailsEntity, GroupFailure>>());
+  });
+
+  test('maps a not found response to GroupNotFoundFailure', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
+        functionName: 'get-group-details?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(
+        FunctionSupabaseFailure(message: 'Not found', code: '404'),
+      ),
+    );
+
+    final result = await repository.getGroupDetails('group-1');
+
+    expect(
+      result,
+      const Failure<GroupDetailsEntity, GroupFailure>(GroupNotFoundFailure()),
+    );
   });
 }

@@ -6,12 +6,15 @@ import 'package:mobile/features/groups/presentation/cubit/group_details_state.da
 class GroupDetailsCubit extends Cubit<GroupDetailsState> {
   final GroupRepository groupRepository;
 
-  GroupDetailsCubit({required this.groupRepository}) : super(const GroupDetailsLoading());
+  GroupDetailsCubit({required this.groupRepository})
+    : super(const GroupDetailsLoading());
 
   Future<void> load(String groupId) async {
     emit(const GroupDetailsLoading());
 
     final result = await groupRepository.getGroupDetails(groupId);
+
+    if (isClosed) return;
 
     switch (result) {
       case Success(:final data):

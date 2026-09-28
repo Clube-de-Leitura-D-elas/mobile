@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
-import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
@@ -59,7 +59,7 @@ void main() {
   testWidgets('renders loading state while the group request is pending', (
     tester,
   ) async {
-    final response = Completer<Result<GroupDetailsEntity, SupabaseFailure>>();
+    final response = Completer<Result<GroupDetailsEntity, GroupFailure>>();
     when(
       () => mockRepository.getGroupDetails('group-1'),
     ).thenAnswer((_) => response.future);
@@ -70,9 +70,7 @@ void main() {
     expect(find.byType(GroupDetailsScreen), findsNothing);
 
     response.complete(
-      const Failure(
-        FunctionSupabaseFailure(message: 'Falha ao carregar grupo'),
-      ),
+      const Failure(GroupDetailsFailure(message: 'Falha ao carregar grupo')),
     );
     await tester.pumpAndSettle();
   });
@@ -80,7 +78,7 @@ void main() {
   testWidgets('renders the error state message', (tester) async {
     when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
       (_) async => const Failure(
-        FunctionSupabaseFailure(message: 'Falha ao carregar grupo'),
+        GroupDetailsFailure(message: 'Falha ao carregar grupo'),
       ),
     );
 
