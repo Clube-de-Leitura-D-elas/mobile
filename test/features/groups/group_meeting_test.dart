@@ -4,7 +4,7 @@ import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 void main() {
   group('GroupMeeting', () {
     test('stores all meeting details', () {
-      final meeting = GroupMeeting(
+      const meeting = GroupMeeting(
         hostName: 'Ana Souza',
         bookTitle: 'Quarto de Despejo',
         date: '28 de setembro',

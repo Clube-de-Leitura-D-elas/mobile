@@ -138,7 +138,7 @@ void main() {
           GoRoute(
             path: '/',
             builder: (context, state) => Scaffold(
-              appBar: AppBar(title: Text('Home')),
+              appBar: AppBar(title: const Text('Home')),
               body: const AppGroupCard(
                 groupId: 'group-1',
                 groupName: 'Grupo 27',
