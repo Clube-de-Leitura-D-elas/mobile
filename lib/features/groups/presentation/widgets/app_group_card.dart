@@ -164,6 +164,7 @@ class AppGroupCard extends StatelessWidget {
 // Exemplo de uso:
 //
 // AppGroupCard(
+//   groupId: 'grupo-27',
 //   groupName: 'Grupo 27',
 //   photoUrl: 'https://.../grupo27.jpg',
 //   participantsCount: 18,
