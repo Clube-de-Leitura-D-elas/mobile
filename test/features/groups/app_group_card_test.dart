@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 Widget _wrap(Widget child) {
@@ -21,6 +23,21 @@ Widget _wrap(Widget child) {
   );
 }
 
+Widget _wrapRouter(GoRouter router) {
+  return MaterialApp.router(
+    theme: AppTheme.light,
+    locale: const Locale('pt', 'BR'),
+    supportedLocales: AppLocalizations.supportedLocales,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    routerConfig: router,
+  );
+}
+
 void main() {
   group('AppGroupCard', () {
     testWidgets('Renders group name, participants count and city/state', (
@@ -29,6 +46,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           const AppGroupCard(
+            groupId: 'group-1',
             groupName: 'Grupo 27',
             participantsCount: 18,
             cityState: 'Porto Alegre, RS',
@@ -47,6 +65,7 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             const AppGroupCard(
+              groupId: 'group-1',
               groupName: 'Grupo 27',
               participantsCount: 18,
               cityState: 'Porto Alegre, RS',
@@ -66,6 +85,7 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             const AppGroupCard(
+              groupId: 'group-1',
               groupName: 'Grupo 1',
               participantsCount: 32,
               cityState: 'Porto Alegre, RS',
@@ -95,6 +115,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppGroupCard(
+            groupId: 'group-1',
             groupName: 'Grupo 27',
             participantsCount: 18,
             cityState: 'Porto Alegre, RS',
@@ -109,18 +130,36 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('Is not tappable when onTap is not provided', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const AppGroupCard(
-            groupName: 'Grupo 27',
-            participantsCount: 18,
-            cityState: 'Porto Alegre, RS',
+    testWidgets('Navigates to group details when onTap is not provided', (
+      tester,
+    ) async {
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => const Scaffold(
+              body: AppGroupCard(
+                groupId: 'group-1',
+                groupName: 'Grupo 27',
+                participantsCount: 18,
+                cityState: 'Porto Alegre, RS',
+              ),
+            ),
           ),
-        ),
+          GoRoute(
+            path: GroupRoutes.groupDetails,
+            builder: (context, state) =>
+                Scaffold(body: Text(state.uri.queryParameters['group_id']!)),
+          ),
+        ],
       );
+      addTearDown(router.dispose);
 
-      expect(find.byType(InkWell), findsNothing);
+      await tester.pumpWidget(_wrapRouter(router));
+      await tester.tap(find.byType(InkWell));
+      await tester.pumpAndSettle();
+
+      expect(find.text('group-1'), findsOneWidget);
     });
 
     testWidgets('Shows a placeholder icon when there is no photo URL', (
@@ -129,6 +168,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           const AppGroupCard(
+            groupId: 'group-1',
             groupName: 'Grupo 27',
             participantsCount: 18,
             cityState: 'Porto Alegre, RS',
@@ -148,6 +188,7 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             AppGroupCard(
+              groupId: 'group-1',
               groupName: 'Grupo 1',
               participantsCount: 32,
               cityState: 'Porto Alegre, RS',
@@ -179,6 +220,7 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             const AppGroupCard(
+              groupId: 'group-1',
               groupName: 'Grupo 27',
               participantsCount: 18,
               cityState: 'Porto Alegre, RS',
@@ -210,6 +252,7 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             const AppGroupCard(
+              groupId: 'group-1',
               groupName: 'Grupo 1',
               participantsCount: 32,
               cityState: 'Porto Alegre, RS',
