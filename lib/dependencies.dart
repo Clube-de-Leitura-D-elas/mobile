@@ -14,6 +14,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 
+GroupRepository _createGroupRepository() =>
+    GroupRepositoryImpl(supabaseService: serviceLocator<SupabaseService>());
+
 class DependenciesContainer {
   DependenciesContainer() {
     serviceLocator.allowReassignment = true;
@@ -45,11 +48,7 @@ class DependenciesContainer {
       ),
     );
 
-    serviceLocator.registerLazySingleton<GroupRepository>(
-      () => GroupRepositoryImpl(
-        supabaseService: serviceLocator<SupabaseService>(),
-      ),
-    );
+    serviceLocator.registerLazySingleton<GroupRepository>(_createGroupRepository);
 
     serviceLocator.registerFactory<SessionCubit>(
       () => SessionCubit(
@@ -59,4 +58,3 @@ class DependenciesContainer {
     );
   }
 }
-

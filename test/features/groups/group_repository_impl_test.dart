@@ -66,4 +66,58 @@ void main() {
       ),
     ).called(1);
   });
+
+  test('returns Failure when the Edge Function call fails', () async {
+    const failure = FunctionSupabaseFailure(message: 'Falha do servidor');
+    when(
+      () => mockSupabaseService.invokeFunction<GroupDetailsEntity>(
+        functionName: 'get-group-details?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer((_) async => const Failure(failure));
+
+    final result = await repository.getGroupDetails('group-1');
+
+    expect(result, const Failure<GroupDetailsEntity, SupabaseFailure>(failure));
+  });
+
+  test('uses empty location values when response fields are null', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<GroupDetailsEntity>(
+        functionName: 'get-group-details?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer((invocation) async {
+      final decoder =
+          invocation.namedArguments[#decoder]
+              as GroupDetailsEntity Function(dynamic);
+      final group = decoder({
+        'name': '45',
+        'genres': <String>[],
+        'participant_count': 0,
+        'city': null,
+        'state_code': null,
+        'cover_image_url': null,
+      });
+
+      return Success<SupabaseResponse<GroupDetailsEntity>, SupabaseFailure>(
+        SupabaseResponse(data: group),
+      );
+    });
+
+    final result = await repository.getGroupDetails('group-1');
+
+    expect(
+      result,
+      const Success<GroupDetailsEntity, SupabaseFailure>(
+        GroupDetailsEntity(
+          name: '45',
+          genres: [],
+          participantCount: 0,
+          city: '',
+          stateCode: '',
+        ),
+      ),
+    );
+  });
 }

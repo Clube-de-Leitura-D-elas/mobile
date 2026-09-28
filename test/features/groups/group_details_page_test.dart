@@ -101,4 +101,32 @@ void main() {
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
+
+  testWidgets('uses the network cover image when the group has a URL', (
+    tester,
+  ) async {
+    const groupWithCover = GroupDetailsEntity(
+      name: '45',
+      genres: ['Ficção'],
+      participantCount: 34,
+      city: 'Porto Alegre',
+      stateCode: 'RS',
+      coverImageUrl: 'https://example.com/group-cover.jpg',
+    );
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Success(groupWithCover));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    final screen = tester.widget<GroupDetailsScreen>(
+      find.byType(GroupDetailsScreen),
+    );
+    expect(screen.coverImage, isA<NetworkImage>());
+    expect(
+      (screen.coverImage! as NetworkImage).url,
+      'https://example.com/group-cover.jpg',
+    );
+  });
 }
