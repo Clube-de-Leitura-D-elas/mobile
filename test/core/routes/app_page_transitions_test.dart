@@ -62,13 +62,6 @@ void main() {
           const SizedBox(),
         );
 
-        final widget = transitionPage.transitionsBuilder(
-          MockBuildContext(),
-          const AlwaysStoppedAnimation(1.0),
-          const AlwaysStoppedAnimation(0.0),
-          const SizedBox(),
-        );
-
         expect(widget, isA<FadeTransition>());
       },
     );

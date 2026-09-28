@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jovial_svg/jovial_svg.dart';
+import 'package:mobile/design_system/icons/app_icons.dart';
+import 'package:mobile/design_system/widgets/app_icon.dart';
 
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
@@ -19,21 +20,18 @@ class BottomNavigationBarWidget extends StatelessWidget {
 
   final ValueChanged<int> onItemSelected;
 
-  static const String _iconsBasePath = 'assets/si';
-
   static const List<_QuickAccessIconData> _icons = [
-    _QuickAccessIconData(name: 'home', label: 'Início'),
-    _QuickAccessIconData(name: 'search', label: 'Busca'),
-    _QuickAccessIconData(name: 'plus', label: 'Adicionar'),
-    _QuickAccessIconData(name: 'calendar', label: 'Calendário'),
-    _QuickAccessIconData(name: 'profile', label: 'Perfil'),
+    _QuickAccessIconData(icon: AppIcons.home, label: 'Início'),
+    _QuickAccessIconData(icon: AppIcons.search, label: 'Busca'),
+    _QuickAccessIconData(icon: AppIcons.plus, label: 'Adicionar'),
+    _QuickAccessIconData(icon: AppIcons.calendar, label: 'Calendário'),
+    _QuickAccessIconData(icon: AppIcons.user, label: 'Perfil'),
   ];
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final spacing = context.spacing;
-    final assetBundle = DefaultAssetBundle.of(context);
 
     return Material(
       color: colors.surfaceDefault,
@@ -54,9 +52,6 @@ class BottomNavigationBarWidget extends StatelessWidget {
               final iconColor = isSelected
                   ? colors.actionPrimary
                   : colors.textMuted;
-              final state = isSelected ? 'active' : 'inactive';
-              final assetPath =
-                  '$_iconsBasePath/type=${iconData.name}_$state.si';
 
               return Expanded(
                 child: Semantics(
@@ -70,12 +65,10 @@ class BottomNavigationBarWidget extends StatelessWidget {
                         child: SizedBox(
                           width: spacing.s24,
                           height: spacing.s24,
-                          child: ScalableImageWidget.fromSISource(
-                            si: ScalableImageSource.fromSI(
-                              assetBundle,
-                              assetPath,
-                            ),
-                            currentColor: iconColor,
+                          child: AppIcon(
+                            icon: iconData.icon,
+                            size: spacing.s24,
+                            color: iconColor,
                           ),
                         ),
                       ),
@@ -92,8 +85,8 @@ class BottomNavigationBarWidget extends StatelessWidget {
 }
 
 class _QuickAccessIconData {
-  const _QuickAccessIconData({required this.name, required this.label});
+  const _QuickAccessIconData({required this.icon, required this.label});
 
-  final String name;
+  final AppIconAsset icon;
   final String label;
 }

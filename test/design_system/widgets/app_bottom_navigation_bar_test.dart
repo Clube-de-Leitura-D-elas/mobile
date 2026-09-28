@@ -67,31 +67,45 @@ void main() {
       }
     });
 
-    testWidgets('Requests the active .si asset for the selected item', (
-      tester,
-    ) async {
+    testWidgets('Requests the .si asset of each item', (tester) async {
       final bundle = await pumpWithBundle(tester, currentIndex: 3);
 
-      expect(bundle.loadedKeys, contains('assets/si/type=calendar_active.si'));
       expect(
         bundle.loadedKeys,
-        isNot(contains('assets/si/type=calendar_inactive.si')),
+        containsAll([
+          AppIcons.home.assetPath,
+          AppIcons.search.assetPath,
+          AppIcons.plus.assetPath,
+          AppIcons.calendar.assetPath,
+          AppIcons.user.assetPath,
+        ]),
       );
     });
 
-    testWidgets('Requests the inactive .si asset for unselected items', (
-      tester,
-    ) async {
-      final bundle = await pumpWithBundle(tester, currentIndex: 3);
+    testWidgets(
+      'Tints selected icon with actionPrimary, others with textMuted',
+      (tester) async {
+        await pumpWithBundle(tester, currentIndex: 3);
 
-      expect(bundle.loadedKeys, contains('assets/si/type=home_inactive.si'));
-      expect(bundle.loadedKeys, contains('assets/si/type=search_inactive.si'));
-      expect(bundle.loadedKeys, contains('assets/si/type=profile_inactive.si'));
-      expect(
-        bundle.loadedKeys,
-        isNot(contains('assets/si/type=home_active.si')),
-      );
-    });
+        final filters = tester
+            .widgetList<ColorFiltered>(
+              find.descendant(
+                of: find.byType(BottomNavigationBarWidget),
+                matching: find.byType(ColorFiltered),
+              ),
+            )
+            .map((w) => w.colorFilter)
+            .toList();
+
+        expect(filters, hasLength(5));
+        for (var i = 0; i < filters.length; i++) {
+          final expected = i == 3
+              ? AppColorTokens.light.actionPrimary
+              : AppColorTokens.light.textMuted;
+          expect(filters[i], ColorFilter.mode(expected, BlendMode.srcIn));
+        }
+      },
+    );
 
     testWidgets('Tapping an item notifies onItemSelected with its index', (
       tester,
@@ -116,10 +130,12 @@ void main() {
       await pumpWithBundle(tester, currentIndex: 0);
 
       final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(BottomNavigationBarWidget),
-          matching: find.byType(Container),
-        ),
+        find
+            .descendant(
+              of: find.byType(BottomNavigationBarWidget),
+              matching: find.byType(Container),
+            )
+            .first,
       );
       final decoration = container.decoration as BoxDecoration;
       final border = decoration.border as Border;
