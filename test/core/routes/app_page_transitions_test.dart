@@ -53,7 +53,14 @@ void main() {
         );
 
         expect(page, isA<CustomTransitionPage<dynamic>>());
-        final transitionPage = page as CustomTransitionPage<dynamic>;
+        final transitionPage = page as CustomTransitionPage;
+
+        final widget = transitionPage.transitionsBuilder(
+          MockBuildContext(),
+          const AlwaysStoppedAnimation(1.0),
+          const AlwaysStoppedAnimation(0.0),
+          const SizedBox(),
+        );
 
         final widget = transitionPage.transitionsBuilder(
           MockBuildContext(),

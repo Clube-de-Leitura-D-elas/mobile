@@ -199,6 +199,42 @@
     "description": "Rótulo do item de perfil para ID do usuário no Supabase"
   },
 
+  "@@Groups": "--- Groups ---",
+  "groupNextEventTitle": "Próximo evento",
+  "@groupNextEventTitle": {
+    "description": "Título da seção do próximo evento nos detalhes do grupo"
+  },
+  "groupParticipantsTitle": "Participantes",
+  "@groupParticipantsTitle": {
+    "description": "Título da seção de participantes nos detalhes do grupo"
+  },
+  "groupParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
+  "@groupParticipantsCount": {
+    "description": "Quantidade de participantes do grupo",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupOpenWhatsAppButton": "Abrir Whatsapp",
+  "@groupOpenWhatsAppButton": {
+    "description": "Botão para abrir o grupo no WhatsApp"
+  },
+  "groupRecommendBookButton": "Indicar livro",
+  "@groupRecommendBookButton": {
+    "description": "Botão para indicar um livro ao grupo"
+  },
+  "groupCoverSemanticLabel": "Foto do grupo {name}",
+  "@groupCoverSemanticLabel": {
+    "description": "Descrição acessível da foto de capa do grupo",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
   "@@Onboarding": "--- Onboarding ---",
   "onboardingReviewTitle": "Verifique os seus dados",
   "@onboardingReviewTitle": { "description": "Título principal do review de cadastro" },
@@ -247,6 +283,28 @@
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
   "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
   "selectOptionHint": "Selecione",
-  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" }
+  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
+  "@@Groups": "--- Groups ---",
+  "groupNextMeetingLabel": "Próximo evento",
+  "@groupNextMeetingLabel": {
+    "description": "Rótulo da seção de próximo encontro no card de grupo"
+  },
+  "groupDeclineMeetingButton": "Não irei",
+  "@groupDeclineMeetingButton": {
+    "description": "Botão para recusar presença no próximo encontro do grupo"
+  },
+  "groupConfirmMeetingButton": "Confirmar presença",
+  "@groupConfirmMeetingButton": {
+    "description": "Botão para confirmar presença no próximo encontro do grupo"
+  },
+  "groupParticipantsCount": "{count, plural, one {1 participante} other {{count} participantes}}",
+  "@groupParticipantsCount": {
+    "description": "Contagem de participantes do grupo, com singular/plural",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
 

@@ -36,7 +36,13 @@ class AppDropdown<T> extends StatelessWidget {
 
         SizedBox(height: spacing.s4),
         DropdownButtonFormField<T>(
+<<<<<<< HEAD
           initialValue: value,
+=======
+          // initialValue would ignore later value changes from the parent.
+          // ignore: deprecated_member_use
+          value: value,
+>>>>>>> 6d17f1d44c6a04f20a397e6e1b526edf60c0f566
           onChanged: onChanged,
           items: items,
           icon: Icon(Icons.keyboard_arrow_down, color: colors.textMuted),
