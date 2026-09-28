@@ -170,7 +170,6 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
-      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -268,17 +267,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupConfirmMeetingButton => 'Confirmar presença';
-
-  @override
-  String groupParticipantsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count participantes',
-      one: '1 participante',
-    );
-    return '$_temp0';
-  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

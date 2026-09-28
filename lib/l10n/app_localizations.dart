@@ -397,10 +397,10 @@ abstract class AppLocalizations {
   /// **'Participantes'**
   String get groupParticipantsTitle;
 
-  /// Quantidade de participantes do grupo
+  /// Contagem de participantes do grupo, com singular/plural
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
+  /// **'{count, plural, one {1 participante} other {{count} participantes}}'**
   String groupParticipantsCount(int count);
 
   /// Botão para abrir o grupo no WhatsApp
@@ -576,12 +576,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Confirmar presença'**
   String get groupConfirmMeetingButton;
-
-  /// Contagem de participantes do grupo, com singular/plural
-  ///
-  /// In pt, this message translates to:
-  /// **'{count, plural, one {1 participante} other {{count} participantes}}'**
-  String groupParticipantsCount(int count);
 }
 
 class _AppLocalizationsDelegate

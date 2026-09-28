@@ -7,6 +7,8 @@ import 'package:mobile/core/supabase/supabase_service_impl.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
@@ -39,6 +41,12 @@ class DependenciesContainer {
 
     serviceLocator.registerLazySingleton<OnboardingRepository>(
       () => OnboardingRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerLazySingleton<GroupRepository>(
+      () => GroupRepositoryImpl(
         supabaseService: serviceLocator<SupabaseService>(),
       ),
     );
