@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_avatar.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_info_row.dart';
 
 class AppGroupCard extends StatelessWidget {
+  final String groupId;
   final String groupName;
   final String? photoUrl;
   final int participantsCount;
@@ -18,6 +21,7 @@ class AppGroupCard extends StatelessWidget {
 
   const AppGroupCard({
     super.key,
+    required this.groupId,
     required this.groupName,
     required this.participantsCount,
     required this.cityState,
@@ -38,7 +42,14 @@ class AppGroupCard extends StatelessWidget {
     final l10n = context.l10n;
 
     return AppCard(
-      onTap: onTap,
+      onTap:
+          onTap ??
+          () => context.push(
+            Uri(
+              path: GroupRoutes.groupDetails,
+              queryParameters: {'group_id': groupId},
+            ).toString(),
+          ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -153,6 +164,7 @@ class AppGroupCard extends StatelessWidget {
 // Exemplo de uso:
 //
 // AppGroupCard(
+//   groupId: 'grupo-27',
 //   groupName: 'Grupo 27',
 //   photoUrl: 'https://.../grupo27.jpg',
 //   participantsCount: 18,
@@ -164,5 +176,5 @@ class AppGroupCard extends StatelessWidget {
 //     location: 'Z Café TECNOPUC',
 //   ),
 //   expanded: false, // mostra só "Próximo encontro" + seta pra baixo
-//   onTap: () => Navigator.pushNamed(context, '/grupo/27'),
+//   onTap: () => context.push('/group-details?group_id=group-27'),
 // ),

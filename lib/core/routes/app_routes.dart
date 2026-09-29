@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
@@ -35,6 +36,7 @@ abstract class AppRoutes {
         ...AuthRoutes.routes,
         ...OnboardingRoutes.routes,
         ...HomeRoutes.routes,
+        ...GroupRoutes.routes,
       ],
       redirect: (context, state) {
         final sessionState = sessionCubit.state;
