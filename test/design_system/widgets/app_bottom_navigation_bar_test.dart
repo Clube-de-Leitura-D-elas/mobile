@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/design_system/widgets/app_bottom_navigation_bar.dart';
 
 class _RecordingAssetBundle extends CachingAssetBundle {
   final List<String> loadedKeys = [];

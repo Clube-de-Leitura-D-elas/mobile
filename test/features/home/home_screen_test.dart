@@ -82,6 +82,7 @@ void main() {
         expect(find.text('Todos'), findsOneWidget);
         expect(find.text('Não respondidos (2)'), findsOneWidget);
         expect(find.text('Respondidos'), findsOneWidget);
+        expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
       },
     );
 

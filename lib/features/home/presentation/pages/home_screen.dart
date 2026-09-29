@@ -23,6 +23,10 @@ class HomeScreen extends StatelessWidget {
           builder: (context, state) => _HomeContent(state: state),
         ),
       ),
+      bottomNavigationBar: BottomNavigationBarWidget(
+        currentIndex: 0,
+        onItemSelected: (_) {},
+      ),
     );
   }
 }
