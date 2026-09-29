@@ -63,6 +63,12 @@
   "groupOpenWhatsAppButton": "Abrir Whatsapp",
   "groupRecommendBookButton": "Indicar livro",
   "groupCoverSemanticLabel": "Foto do grupo {name}",
+  "groupEventHistoryTitle": "Histórico de eventos",
+  "groupEventHistoryHost": "Anfitriã: {hostName}",
+  "groupEventHistoryDetailsLink": "Confira mais detalhes",
+  "groupEventHistoryOpenLink": "Exibir detalhes dos últimos eventos",
+  "groupEventHistoryHomeButton": "Ver histórico de eventos",
+  "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
 
   "@@Onboarding": "--- Onboarding ---",
   "onboardingReviewTitle": "Verifique os seus dados",

@@ -37,6 +37,7 @@ void main() {
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.text('Abrir Whatsapp'), findsOneWidget);
     expect(find.text('Indicar livro'), findsOneWidget);
+    expect(find.text('Exibir detalhes dos últimos eventos'), findsOneWidget);
     expect(find.text('Próximo evento'), findsOneWidget);
     expect(find.text('Participantes'), findsOneWidget);
     expect(find.byTooltip('Voltar'), findsOneWidget);
@@ -184,7 +185,9 @@ void main() {
       expect(find.text('Abrir Whatsapp'), findsOneWidget);
       expect(find.text('Indicar livro'), findsOneWidget);
 
-      final nameBounds = tester.getRect(find.byKey(const ValueKey('group-name')));
+      final nameBounds = tester.getRect(
+        find.byKey(const ValueKey('group-name')),
+      );
       final genresBounds = tester.getRect(
         find.byKey(const ValueKey('group-genres')),
       );
@@ -192,26 +195,25 @@ void main() {
     },
   );
 
-  testWidgets(
-    'given a cover image, when rendered, then displays the image',
-    (tester) async {
-      await tester.pumpWidget(
-        buildSubject(
-          const GroupDetailsScreen(
-            name: 'Grupo 1',
-            genres: ['Ficção'],
-            participantCount: 5,
-            city: 'Porto Alegre',
-            stateCode: 'RS',
-            coverImage: NetworkImage('https://example.com/cover.jpg'),
-          ),
+  testWidgets('given a cover image, when rendered, then displays the image', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        const GroupDetailsScreen(
+          name: 'Grupo 1',
+          genres: ['Ficção'],
+          participantCount: 5,
+          city: 'Porto Alegre',
+          stateCode: 'RS',
+          coverImage: NetworkImage('https://example.com/cover.jpg'),
         ),
-      );
+      ),
+    );
 
-      expect(find.byType(Image), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+    expect(find.byType(Image), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'given a cover image that fails to load, when rendered, then shows fallback icon',
@@ -252,5 +254,29 @@ void main() {
 
     expect(find.text('Grupo 1'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('calls the event history callback when its link is tapped', (
+    tester,
+  ) async {
+    var historyOpened = false;
+    await tester.pumpWidget(
+      buildSubject(
+        GroupDetailsScreen(
+          name: 'Grupo 1',
+          genres: const ['Ficção'],
+          participantCount: 5,
+          city: 'Porto Alegre',
+          stateCode: 'RS',
+          onEventHistoryPressed: () => historyOpened = true,
+        ),
+      ),
+    );
+
+    final historyLink = find.text('Exibir detalhes dos últimos eventos');
+    await tester.ensureVisible(historyLink);
+    await tester.tap(historyLink);
+
+    expect(historyOpened, isTrue);
   });
 }

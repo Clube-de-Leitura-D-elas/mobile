@@ -439,6 +439,42 @@ abstract class AppLocalizations {
   /// **'Confirmar presença'**
   String get groupConfirmMeetingButton;
 
+  /// Título da tela de histórico de eventos do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de eventos'**
+  String get groupEventHistoryTitle;
+
+  /// Identificação da anfitriã de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {hostName}'**
+  String groupEventHistoryHost(String hostName);
+
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
+  /// Link da tela do grupo para abrir o histórico de eventos
+  ///
+  /// In pt, this message translates to:
+  /// **'Exibir detalhes dos últimos eventos'**
+  String get groupEventHistoryOpenLink;
+
+  /// Botão de demonstração na tela inicial para abrir o histórico de eventos
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver histórico de eventos'**
+  String get groupEventHistoryHomeButton;
+
+  /// Mensagem exibida quando o grupo não possui encontros realizados
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo ainda não realizou encontros.'**
+  String get groupEventHistoryEmpty;
+
   /// Título principal do review de cadastro
   ///
   /// In pt, this message translates to:

@@ -196,6 +196,27 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupConfirmMeetingButton => 'Confirmar presença';
 
   @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryOpenLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
+  String get groupEventHistoryHomeButton => 'Ver histórico de eventos';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -451,6 +472,27 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupCoverSemanticLabel(String name) {
     return 'Foto do grupo $name';
   }
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryOpenLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
+  String get groupEventHistoryHomeButton => 'Ver histórico de eventos';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';

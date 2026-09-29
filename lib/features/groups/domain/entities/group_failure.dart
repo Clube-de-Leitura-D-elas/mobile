@@ -19,3 +19,10 @@ class GroupDetailsFailure extends GroupFailure {
 class GroupNotFoundFailure extends GroupFailure {
   const GroupNotFoundFailure({super.message = 'Grupo não encontrado.'});
 }
+
+class GroupEventHistoryFailure extends GroupFailure {
+  const GroupEventHistoryFailure({
+    super.message =
+        'Não foi possível carregar o histórico de eventos. Tente novamente.',
+  });
+}
