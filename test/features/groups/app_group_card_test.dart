@@ -294,6 +294,7 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             AppGroupCard(
+              groupId: '1',
               groupName: 'Grupo 1',
               participantsCount: 32,
               cityState: 'Porto Alegre, RS',

@@ -57,6 +57,7 @@ class _GroupCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppGroupCard(
       key: ValueKey('group_card_${group.id}'),
+      groupId: group.id,
       groupName: group.name,
       participantsCount: group.participantsCount,
       cityState: group.cityState,

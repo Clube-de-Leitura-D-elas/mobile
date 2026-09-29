@@ -295,7 +295,6 @@
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
   "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
   "selectOptionHint": "Selecione",
-<<<<<<< HEAD
   "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
   "@@Groups": "--- Groups ---",
   "groupNextMeetingLabel": "Próximo evento",
@@ -352,7 +351,4 @@
   "@emptyGroupsMessage": {
     "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
   }
-=======
-  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" }
->>>>>>> develop
 }
