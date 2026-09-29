@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -170,7 +171,6 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
-      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -185,15 +185,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupCoverSemanticLabel(String name) {
     return 'Foto do grupo $name';
   }
-
-  @override
-  String get groupNextMeetingLabel => 'Próximo evento';
-
-  @override
-  String get groupDeclineMeetingButton => 'Não irei';
-
-  @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
@@ -268,6 +259,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get selectOptionHint => 'Selecione';
+
+  @override
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
