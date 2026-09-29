@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_avatar.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_info_row.dart';
 
 class AppGroupCard extends StatelessWidget {
+  final String groupId;
   final String groupName;
   final String? photoUrl;
   final int participantsCount;
@@ -19,6 +22,7 @@ class AppGroupCard extends StatelessWidget {
 
   const AppGroupCard({
     super.key,
+    required this.groupId,
     required this.groupName,
     required this.participantsCount,
     required this.cityState,
@@ -37,7 +41,14 @@ class AppGroupCard extends StatelessWidget {
     final meeting = nextMeeting;
 
     return AppCard(
-      onTap: onTap,
+      onTap:
+          onTap ??
+          () => context.push(
+            Uri(
+              path: GroupRoutes.groupDetails,
+              queryParameters: {'group_id': groupId},
+            ).toString(),
+          ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

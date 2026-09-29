@@ -385,6 +385,36 @@ abstract class AppLocalizations {
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
 
+  /// Título da seção do próximo evento nos detalhes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo evento'**
+  String get groupNextEventTitle;
+
+  /// Título da seção de participantes nos detalhes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Participantes'**
+  String get groupParticipantsTitle;
+
+  /// Botão para abrir o grupo no WhatsApp
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir Whatsapp'**
+  String get groupOpenWhatsAppButton;
+
+  /// Botão para indicar um livro ao grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar livro'**
+  String get groupRecommendBookButton;
+
+  /// Descrição acessível da foto de capa do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto do grupo {name}'**
+  String groupCoverSemanticLabel(String name);
+
   /// Título principal do review de cadastro
   ///
   /// In pt, this message translates to:

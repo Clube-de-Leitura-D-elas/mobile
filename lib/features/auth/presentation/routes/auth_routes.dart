@@ -6,34 +6,29 @@ import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 
-
 abstract class AuthRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String claimToken = OnboardingRoutes.claimToken;
 
-
   static List<RouteBase> get routes => [
-        GoRoute(
-          path: login,
-          pageBuilder: (context, state) => AppPageTransitions.createFadePage(
-            state: state,
-            child: LoginScreen(
-              onCreateAccountPressed: () => context.push(register),
-            ),
-          ),
+    GoRoute(
+      path: login,
+      pageBuilder: (context, state) => AppPageTransitions.createFadePage(
+        state: state,
+        child: LoginScreen(
+          onCreateAccountPressed: () => context.push(register),
         ),
-        GoRoute(
-          path: register,
-          pageBuilder: (context, state) => AppPageTransitions.createPushPage(
-            state: state,
-            child: RegisterScreen(
-              onLoginPressed: () => context.pop(),
-            ),
-          ),
-        ),
-      ];
-
+      ),
+    ),
+    GoRoute(
+      path: register,
+      pageBuilder: (context, state) => AppPageTransitions.createPushPage(
+        state: state,
+        child: RegisterScreen(onLoginPressed: () => context.pop()),
+      ),
+    ),
+  ];
 
   /// Route guard for Auth feature.
   static String? authGuard(
@@ -76,7 +71,6 @@ abstract class AuthRoutes {
         return login;
       }
     }
-
 
     return null;
   }

@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -158,6 +159,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -239,17 +257,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupConfirmMeetingButton => 'Confirmar presença';
-
-  @override
-  String groupParticipantsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count participantes',
-      one: '1 participante',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get myGroupsTitle => 'Meus grupos';
@@ -430,6 +437,35 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -511,17 +547,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupConfirmMeetingButton => 'Confirmar presença';
-
-  @override
-  String groupParticipantsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count participantes',
-      one: '1 participante',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get myGroupsTitle => 'Meus grupos';

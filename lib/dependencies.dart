@@ -7,11 +7,17 @@ import 'package:mobile/core/supabase/supabase_service_impl.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
+
+GroupRepository _createGroupRepository() =>
+    GroupRepositoryImpl(supabaseService: serviceLocator<SupabaseService>());
 
 class DependenciesContainer {
   DependenciesContainer() {
@@ -44,6 +50,14 @@ class DependenciesContainer {
       ),
     );
 
+    serviceLocator.registerLazySingleton<GroupRepository>(
+      _createGroupRepository,
+    );
+    serviceLocator.registerFactory<GroupDetailsCubit>(
+      () =>
+          GroupDetailsCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
+
     serviceLocator.registerFactory<SessionCubit>(
       () => SessionCubit(
         authRepository: serviceLocator<AuthRepository>(),
@@ -56,4 +70,3 @@ class DependenciesContainer {
     );
   }
 }
-
