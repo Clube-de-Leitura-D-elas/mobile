@@ -161,6 +161,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -448,6 +456,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
 
   @override
   String get groupParticipantsTitle => 'Participantes';

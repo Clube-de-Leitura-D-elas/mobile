@@ -201,6 +201,15 @@
 
   "@@Groups": "--- Groups ---",
   "groupNextEventTitle": "Próximo evento",
+  "groupNextEventEmpty": "Nenhum próximo evento agendado",
+  "@groupNextEventEmpty": { "description": "Mensagem exibida quando o grupo não possui próximo evento" },
+  "groupNextEventHost": "Anfitriã: {name}",
+  "@groupNextEventHost": {
+    "description": "Nome da anfitriã do próximo evento",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "@groupNextEventTitle": {
     "description": "Título da seção do próximo evento nos detalhes do grupo"
   },
