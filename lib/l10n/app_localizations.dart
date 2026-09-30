@@ -391,6 +391,24 @@ abstract class AppLocalizations {
   /// **'Próximo evento'**
   String get groupNextEventTitle;
 
+  /// Mensagem exibida quando o grupo não possui próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum próximo evento agendado'**
+  String get groupNextEventEmpty;
+
+  /// Nome da anfitriã do próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String groupNextEventHost(String name);
+
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
   /// Título da seção de participantes nos detalhes do grupo
   ///
   /// In pt, this message translates to:

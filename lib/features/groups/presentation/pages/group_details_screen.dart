@@ -21,8 +21,7 @@ class GroupDetailsScreen extends StatefulWidget {
     required this.stateCode,
     this.coverImage,
     this.nextEventCount,
-    this.nextEventContent,
-    this.bookContent,
+    this.nextEvent = const GroupNextEvent(),
     this.participantsContent,
     this.onEventHistoryPressed,
   });
@@ -34,8 +33,7 @@ class GroupDetailsScreen extends StatefulWidget {
   final String stateCode;
   final ImageProvider<Object>? coverImage;
   final int? nextEventCount;
-  final Widget? nextEventContent;
-  final Widget? bookContent;
+  final Widget nextEvent;
   final Widget? participantsContent;
   final VoidCallback? onEventHistoryPressed;
 
@@ -94,11 +92,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                     onToggle: () => setState(
                       () => _nextEventExpanded = !_nextEventExpanded,
                     ),
-                    children: [
-                      if (widget.nextEventContent != null)
-                        widget.nextEventContent!,
-                      if (widget.bookContent != null) widget.bookContent!,
-                    ],
+                    children: [widget.nextEvent],
                   ),
                   SizedBox(height: spacing.s24),
                   GroupSection(

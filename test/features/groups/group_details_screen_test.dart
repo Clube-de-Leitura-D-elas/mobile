@@ -6,15 +6,21 @@ import 'package:mobile/features/groups/presentation/pages/group_details_screen.d
 import 'package:mobile/l10n/app_localizations.dart';
 
 void main() {
-  const group = GroupDetailsScreen(
+  final group = GroupDetailsScreen(
     name: 'Grupo 1',
-    genres: ['Ficção', 'Aventura'],
+    genres: const ['Ficção', 'Aventura'],
     participantCount: 34,
     city: 'Porto Alegre',
     stateCode: 'RS',
-    nextEventContent: Text('Conteúdo do evento'),
-    bookContent: Text('Conteúdo do livro'),
-    participantsContent: Text('Conteúdo dos participantes'),
+    nextEvent: GroupNextEvent(
+      status: GroupNextEventStatus.loaded,
+      data: GroupNextEventData(
+        location: 'Porto Alegre, RS',
+        date: DateTime(2026, 8, 29),
+        hostName: 'Roberta',
+      ),
+    ),
+    participantsContent: const Text('Conteúdo dos participantes'),
   );
 
   Widget buildSubject(Widget child) => MaterialApp(
@@ -34,15 +40,15 @@ void main() {
     expect(find.text('Ficção'), findsOneWidget);
     expect(find.text('Aventura'), findsOneWidget);
     expect(find.text('34 participantes'), findsOneWidget);
-    expect(find.text('Porto Alegre, RS'), findsOneWidget);
+    expect(find.text('Porto Alegre, RS'), findsNWidgets(2));
     expect(find.text('Abrir Whatsapp'), findsOneWidget);
     expect(find.text('Indicar livro'), findsOneWidget);
     expect(find.text('Próximo evento'), findsOneWidget);
     expect(find.text('Participantes'), findsOneWidget);
     expect(find.byTooltip('Voltar'), findsOneWidget);
     expect(find.byType(SingleChildScrollView), findsOneWidget);
-    expect(find.text('Conteúdo do evento'), findsOneWidget);
-    expect(find.text('Conteúdo do livro'), findsOneWidget);
+    expect(find.text('29/08/2026'), findsOneWidget);
+    expect(find.text('Anfitriã: Roberta'), findsOneWidget);
     expect(find.text('Conteúdo dos participantes'), findsOneWidget);
 
     final buttons = tester
@@ -58,7 +64,7 @@ void main() {
     expect(firstTagBounds.left, greaterThan(titleBounds.right));
 
     final participantsBounds = tester.getRect(find.text('34 participantes'));
-    final locationBounds = tester.getRect(find.text('Porto Alegre, RS'));
+    final locationBounds = tester.getRect(find.text('Porto Alegre, RS').first);
     expect(
       locationBounds.left - participantsBounds.right,
       greaterThanOrEqualTo(AppSpacingTokens.standard.s24),
@@ -139,8 +145,8 @@ void main() {
       await tester.ensureVisible(nextEvent);
       await tester.tap(nextEvent);
       await tester.pump();
-      expect(find.text('Conteúdo do evento'), findsNothing);
-      expect(find.text('Conteúdo do livro'), findsNothing);
+      expect(find.text('29/08/2026'), findsNothing);
+      expect(find.text('Anfitriã: Roberta'), findsNothing);
       expect(find.text('Conteúdo dos participantes'), findsOneWidget);
 
       final participants = find.byKey(const ValueKey('section-Participantes'));
@@ -152,8 +158,8 @@ void main() {
       await tester.ensureVisible(nextEvent);
       await tester.tap(nextEvent);
       await tester.pump();
-      expect(find.text('Conteúdo do evento'), findsOneWidget);
-      expect(find.text('Conteúdo do livro'), findsOneWidget);
+      expect(find.text('29/08/2026'), findsOneWidget);
+      expect(find.text('Anfitriã: Roberta'), findsOneWidget);
       expect(find.text('Conteúdo dos participantes'), findsNothing);
     },
   );
