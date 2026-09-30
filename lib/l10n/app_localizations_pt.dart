@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -8,295 +7,6 @@ import 'app_localizations.dart';
 /// The translations for Portuguese (`pt`).
 class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
-
-  @override
-  String get appTitle => 'Clube de Leitura D\'elas';
-
-  @override
-  String get continueAction => 'Continuar';
-
-  @override
-  String get confirm => 'Confirmar';
-
-  @override
-  String get notProvided => 'Não informado';
-
-  @override
-  String get loginTitle => 'Faça o seu login';
-
-  @override
-  String get emailLabel => 'E-mail';
-
-  @override
-  String get emailHint => 'seu@email.com';
-
-  @override
-  String get passwordLabel => 'Senha';
-
-  @override
-  String get forgotPasswordLink => 'Esqueci minha senha';
-
-  @override
-  String get signInWithGoogle => 'Entrar com Google';
-
-  @override
-  String get createAccountLink => 'Primeiro acesso? Crie sua conta aqui';
-
-  @override
-  String get emailRequiredError => 'Por favor, informe seu e-mail';
-
-  @override
-  String get emailInvalidError => 'Informe um e-mail válido';
-
-  @override
-  String get passwordRequiredError => 'Por favor, informe sua senha';
-
-  @override
-  String get confirmEmailBeforeLoginError =>
-      'Por favor, confirme seu e-mail antes de logar.';
-
-  @override
-  String get registerTitle => 'Criar Conta';
-
-  @override
-  String get confirmPasswordLabel => 'Confirmar Senha';
-
-  @override
-  String get passwordMinLengthRequirement => 'Pelo menos 8 caracteres';
-
-  @override
-  String get passwordUppercaseRequirement => 'Pelo menos 1 letra maiúscula';
-
-  @override
-  String get passwordLowercaseRequirement => 'Pelo menos 1 letra minúscula';
-
-  @override
-  String get passwordNumberRequirement => 'Pelo menos 1 número';
-
-  @override
-  String get passwordsMatchRequirement => 'Senhas conferem';
-
-  @override
-  String get registerButton => 'Cadastrar';
-
-  @override
-  String get accountCreatedSuccessMessage =>
-      'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.';
-
-  @override
-  String get alreadyHaveAccountLink => 'Já tenho uma conta';
-
-  @override
-  String get claimTokenTitle => 'Vincular Perfil';
-
-  @override
-  String get claimTokenSuccessMessage => 'Perfil vinculado com sucesso!';
-
-  @override
-  String get claimTokenInputHeader => 'Informe o seu Token de Acesso';
-
-  @override
-  String get claimTokenInputDescription =>
-      'Digite o token fornecido após a aprovação para vincular sua conta.';
-
-  @override
-  String get claimTokenFieldLabel => 'Claim Token';
-
-  @override
-  String get claimTokenFieldHint => 'Ex: 1A2B3C4D';
-
-  @override
-  String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
-
-  @override
-  String get claimTokenInvalidError =>
-      'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
-
-  @override
-  String get genericError =>
-      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
-
-  @override
-  String get back => 'Voltar';
-
-  @override
-  String get logoutTooltip => 'Sair';
-
-  @override
-  String get logoutButton => 'Sair da Conta';
-
-  @override
-  String get defaultUserName => 'Usuária';
-
-  @override
-  String get profileStatusActive => 'Perfil Vinculado & Ativo';
-
-  @override
-  String get profileDataSectionTitle => 'Dados do Perfil Cadastrado';
-
-  @override
-  String get fullNameLabel => 'Nome Completo';
-
-  @override
-  String get phoneLabel => 'Telefone';
-
-  @override
-  String get addressLabel => 'Endereço';
-
-  @override
-  String get birthdayLabel => 'Data de Nascimento';
-
-  @override
-  String get instagramLabel => 'Instagram';
-
-  @override
-  String get educationLabel => 'Escolaridade';
-
-  @override
-  String get jobPositionLabel => 'Cargo / Profissão';
-
-  @override
-  String get authUserIdLabel => 'ID Auth (Supabase User ID)';
-
-  @override
-  String get groupNextEventTitle => 'Próximo evento';
-
-  @override
-  String get groupParticipantsTitle => 'Participantes';
-
-  @override
-  String groupParticipantsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count participantes',
-      one: '1 participante',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
-
-  @override
-  String get groupRecommendBookButton => 'Indicar livro';
-
-  @override
-  String groupCoverSemanticLabel(String name) {
-    return 'Foto do grupo $name';
-  }
-
-  @override
-  String get groupNextMeetingLabel => 'Próximo evento';
-
-  @override
-  String get groupDeclineMeetingButton => 'Não irei';
-
-  @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
-
-  @override
-  String get groupEventHistoryTitle => 'Histórico de eventos';
-
-  @override
-  String groupEventHistoryHost(String hostName) {
-    return 'Anfitriã: $hostName';
-  }
-
-  @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get onboardingReviewTitle => 'Verifique os seus dados';
-
-  @override
-  String get onboardingNameLabel => 'Nome';
-
-  @override
-  String get onboardingEmailLabel => 'E-mail';
-
-  @override
-  String get onboardingPhoneLabel => 'Celular';
-
-  @override
-  String get onboardingBirthDateLabel => 'Data de nascimento';
-
-  @override
-  String get onboardingCityLabel => 'Cidade';
-
-  @override
-  String get onboardingCityHint => 'Selecione uma cidade';
-
-  @override
-  String get onboardingRegionLabel => 'Região';
-
-  @override
-  String get onboardingJobLabel => 'Qual sua profissão?';
-
-  @override
-  String get onboardingEducationLabel => 'Nível de escolaridade';
-
-  @override
-  String get onboardingEducationHint => 'Selecione um nível';
-
-  @override
-  String get onboardingOtherGroupLabel =>
-      'Você participa de outro grupo de leitura?';
-
-  @override
-  String get onboardingVolunteerLabel =>
-      'Teria interesse em se voluntariar como coordenadora de grupo?';
-
-  @override
-  String get onboardingBookIndicationLabel =>
-      'Qual livro de ficção você indicaria para a leitura coletiva?';
-
-  @override
-  String get onboardingBookIndicationHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingExpectationsLabel =>
-      'O que você espera ao participar do Clube de Leitura D\'Elas?';
-
-  @override
-  String get onboardingExpectationsHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingBackButton => 'Voltar';
-
-  @override
-  String get onboardingContinueButton => 'Continuar';
-
-  @override
-  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
-
-  @override
-  String get onboardingWelcomeSubtitle =>
-      'Sua inscrição foi realizada com sucesso!';
-
-  @override
-  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
-
-  @override
-  String get selectOptionHint => 'Selecione';
-
-  @override
-  String get groupNextMeetingLabel => 'Próximo evento';
-
-  @override
-  String get groupDeclineMeetingButton => 'Não irei';
-
-  @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
-}
-
-/// The translations for Portuguese, as used in Brazil (`pt_BR`).
-class AppLocalizationsPtBr extends AppLocalizationsPt {
-  AppLocalizationsPtBr() : super('pt_BR');
 
   @override
   String get appTitle => 'Clube de Leitura D\'elas';
@@ -477,6 +187,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
   String get groupEventHistoryTitle => 'Histórico de eventos';
 
   @override
@@ -564,4 +297,346 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get selectOptionHint => 'Selecione';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+}
+
+/// The translations for Portuguese, as used in Brazil (`pt_BR`).
+class AppLocalizationsPtBr extends AppLocalizationsPt {
+  AppLocalizationsPtBr() : super('pt_BR');
+
+  @override
+  String get appTitle => 'Clube de Leitura D\'elas';
+
+  @override
+  String get continueAction => 'Continuar';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get notProvided => 'Não informado';
+
+  @override
+  String get loginTitle => 'Faça o seu login';
+
+  @override
+  String get emailLabel => 'E-mail';
+
+  @override
+  String get emailHint => 'seu@email.com';
+
+  @override
+  String get passwordLabel => 'Senha';
+
+  @override
+  String get forgotPasswordLink => 'Esqueci minha senha';
+
+  @override
+  String get signInWithGoogle => 'Entrar com Google';
+
+  @override
+  String get createAccountLink => 'Primeiro acesso? Crie sua conta aqui';
+
+  @override
+  String get emailRequiredError => 'Por favor, informe seu e-mail';
+
+  @override
+  String get emailInvalidError => 'Informe um e-mail válido';
+
+  @override
+  String get passwordRequiredError => 'Por favor, informe sua senha';
+
+  @override
+  String get confirmEmailBeforeLoginError =>
+      'Por favor, confirme seu e-mail antes de logar.';
+
+  @override
+  String get registerTitle => 'Criar Conta';
+
+  @override
+  String get confirmPasswordLabel => 'Confirmar Senha';
+
+  @override
+  String get passwordMinLengthRequirement => 'Pelo menos 8 caracteres';
+
+  @override
+  String get passwordUppercaseRequirement => 'Pelo menos 1 letra maiúscula';
+
+  @override
+  String get passwordLowercaseRequirement => 'Pelo menos 1 letra minúscula';
+
+  @override
+  String get passwordNumberRequirement => 'Pelo menos 1 número';
+
+  @override
+  String get passwordsMatchRequirement => 'Senhas conferem';
+
+  @override
+  String get registerButton => 'Cadastrar';
+
+  @override
+  String get accountCreatedSuccessMessage =>
+      'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.';
+
+  @override
+  String get alreadyHaveAccountLink => 'Já tenho uma conta';
+
+  @override
+  String get claimTokenTitle => 'Vincular Perfil';
+
+  @override
+  String get claimTokenSuccessMessage => 'Perfil vinculado com sucesso!';
+
+  @override
+  String get claimTokenInputHeader => 'Informe o seu Token de Acesso';
+
+  @override
+  String get claimTokenInputDescription =>
+      'Digite o token fornecido após a aprovação para vincular sua conta.';
+
+  @override
+  String get claimTokenFieldLabel => 'Claim Token';
+
+  @override
+  String get claimTokenFieldHint => 'Ex: 1A2B3C4D';
+
+  @override
+  String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
+
+  @override
+  String get claimTokenInvalidError =>
+      'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
+  String get back => 'Voltar';
+
+  @override
+  String get logoutTooltip => 'Sair';
+
+  @override
+  String get logoutButton => 'Sair da Conta';
+
+  @override
+  String get defaultUserName => 'Usuária';
+
+  @override
+  String get profileStatusActive => 'Perfil Vinculado & Ativo';
+
+  @override
+  String get profileDataSectionTitle => 'Dados do Perfil Cadastrado';
+
+  @override
+  String get fullNameLabel => 'Nome Completo';
+
+  @override
+  String get phoneLabel => 'Telefone';
+
+  @override
+  String get addressLabel => 'Endereço';
+
+  @override
+  String get birthdayLabel => 'Data de Nascimento';
+
+  @override
+  String get instagramLabel => 'Instagram';
+
+  @override
+  String get educationLabel => 'Escolaridade';
+
+  @override
+  String get jobPositionLabel => 'Cargo / Profissão';
+
+  @override
+  String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
+
+  @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }

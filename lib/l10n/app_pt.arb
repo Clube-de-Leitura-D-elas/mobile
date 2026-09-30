@@ -234,6 +234,22 @@
       }
     }
   },
+  "groupParticipantsEmpty": "Ainda não há participantes neste grupo.",
+  "@groupParticipantsEmpty": {
+    "description": "Mensagem quando o grupo não tem participantes"
+  },
+  "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
+  "@groupParticipantsLoadError": {
+    "description": "Erro ao buscar a lista de participantes do grupo"
+  },
+  "groupParticipantsRetryButton": "Tentar novamente",
+  "@groupParticipantsRetryButton": {
+    "description": "Botão para buscar de novo a lista de participantes após erro"
+  },
+  "groupParticipantsLoading": "Carregando participantes",
+  "@groupParticipantsLoading": {
+    "description": "Rótulo acessível do estado de carregamento da lista de participantes"
+  },
   "groupNextMeetingLabel": "Próximo evento",
   "@groupNextMeetingLabel": {
     "description": "Rótulo da seção de próximo encontro no card de grupo"
@@ -316,5 +332,38 @@
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
   "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
   "selectOptionHint": "Selecione",
-  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" }
+  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
+  "myGroupsTitle": "Meus grupos",
+  "@myGroupsTitle": {
+    "description": "Título principal da tela de grupos"
+  },
+  "searchGroupPlaceholder": "Buscar grupo",
+  "@searchGroupPlaceholder": {
+    "description": "Placeholder do campo de busca de grupos"
+  },
+  "filterAll": "Todos",
+  "@filterAll": {
+    "description": "Chip de filtro Todos"
+  },
+  "filterUnanswered": "Não respondidos ({count})",
+  "@filterUnanswered": {
+    "description": "Chip de filtro Não respondidos com contagem",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterAnswered": "Respondidos",
+  "@filterAnswered": {
+    "description": "Chip de filtro Respondidos"
+  },
+  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
+  "@emptyGroupsTitle": {
+    "description": "Título exibido quando a lista de grupos está vazia"
+  },
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
+  "@emptyGroupsMessage": {
+    "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
+  }
 }

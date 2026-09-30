@@ -5,6 +5,7 @@ import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.da
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key, required this.groupId});
@@ -38,6 +39,7 @@ class GroupDetailsPage extends StatelessWidget {
                 queryParameters: {'group_id': groupId},
               ).toString(),
             ),
+            participantsContent: const GroupParticipantsContent(),
           ),
         };
       },

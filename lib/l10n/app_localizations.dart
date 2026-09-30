@@ -397,10 +397,10 @@ abstract class AppLocalizations {
   /// **'Participantes'**
   String get groupParticipantsTitle;
 
-  /// Contagem de participantes do grupo, com singular/plural
+  /// Quantidade de participantes do grupo
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, one {1 participante} other {{count} participantes}}'**
+  /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
   String groupParticipantsCount(int count);
 
   /// Botão para abrir o grupo no WhatsApp
@@ -420,6 +420,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Foto do grupo {name}'**
   String groupCoverSemanticLabel(String name);
+
+  /// Mensagem quando o grupo não tem participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há participantes neste grupo.'**
+  String get groupParticipantsEmpty;
+
+  /// Erro ao buscar a lista de participantes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar as participantes.'**
+  String get groupParticipantsLoadError;
+
+  /// Botão para buscar de novo a lista de participantes após erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get groupParticipantsRetryButton;
+
+  /// Rótulo acessível do estado de carregamento da lista de participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando participantes'**
+  String get groupParticipantsLoading;
 
   /// Rótulo da seção de próximo encontro no card de grupo
   ///
@@ -601,23 +625,47 @@ abstract class AppLocalizations {
   /// **'Selecione'**
   String get selectOptionHint;
 
-  /// Rótulo da seção de próximo encontro no card de grupo
+  /// Título principal da tela de grupos
   ///
   /// In pt, this message translates to:
-  /// **'Próximo evento'**
-  String get groupNextMeetingLabel;
+  /// **'Meus grupos'**
+  String get myGroupsTitle;
 
-  /// Botão para recusar presença no próximo encontro do grupo
+  /// Placeholder do campo de busca de grupos
   ///
   /// In pt, this message translates to:
-  /// **'Não irei'**
-  String get groupDeclineMeetingButton;
+  /// **'Buscar grupo'**
+  String get searchGroupPlaceholder;
 
-  /// Botão para confirmar presença no próximo encontro do grupo
+  /// Chip de filtro Todos
   ///
   /// In pt, this message translates to:
-  /// **'Confirmar presença'**
-  String get groupConfirmMeetingButton;
+  /// **'Todos'**
+  String get filterAll;
+
+  /// Chip de filtro Não respondidos com contagem
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondidos ({count})'**
+  String filterUnanswered(int count);
+
+  /// Chip de filtro Respondidos
+  ///
+  /// In pt, this message translates to:
+  /// **'Respondidos'**
+  String get filterAnswered;
+
+  /// Título exibido quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo'**
+  String get emptyGroupsTitle;
+
+  /// Mensagem detalhada exibida quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
+  String get emptyGroupsMessage;
 }
 
 class _AppLocalizationsDelegate
