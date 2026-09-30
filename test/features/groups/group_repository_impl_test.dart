@@ -4,11 +4,13 @@ import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
+import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
@@ -203,6 +205,71 @@ void main() {
     expect(
       result,
       const Failure<GroupDetailsEntity, GroupFailure>(GroupNotFoundFailure()),
+    );
+  });
+
+  test('maps event history items from the Edge Function response', () async {
+    const eventHistoryJson = {
+      'items': [
+        {
+          'id': 'meeting-1',
+          'book_title': 'Quarto de Despejo',
+          'book_cover_url': 'https://example.com/book-cover.jpg',
+          'host_name': 'Ana Souza',
+          'date': '2026-08-22T00:00:00Z',
+        },
+      ],
+    };
+    when(
+      () => mockSupabaseService.invokeFunction<List<GroupEventHistoryModel>>(
+        functionName: 'get-group-event-history?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer((invocation) async {
+      final decoder =
+          invocation.namedArguments[#decoder]
+              as List<GroupEventHistoryModel> Function(dynamic);
+      return Success<
+        SupabaseResponse<List<GroupEventHistoryModel>>,
+        SupabaseFailure
+      >(SupabaseResponse(data: decoder(eventHistoryJson)));
+    });
+
+    final result = await repository.getEventHistory('group-1');
+
+    expect(
+      result,
+      const Success<List<GroupMeeting>, GroupFailure>([
+        GroupMeeting(
+          id: 'meeting-1',
+          bookTitle: 'Quarto de Despejo',
+          bookCoverUrl: 'https://example.com/book-cover.jpg',
+          hostName: 'Ana Souza',
+          date: '2026-08-22T00:00:00Z',
+          location: '',
+        ),
+      ]),
+    );
+  });
+
+  test('maps an event history function failure to a group failure', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<List<GroupEventHistoryModel>>(
+        functionName: 'get-group-event-history?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async =>
+          const Failure(FunctionSupabaseFailure(message: 'Falha do servidor')),
+    );
+
+    final result = await repository.getEventHistory('group-1');
+
+    expect(
+      result,
+      const Failure<List<GroupMeeting>, GroupFailure>(
+        GroupEventHistoryFailure(),
+      ),
     );
   });
 }

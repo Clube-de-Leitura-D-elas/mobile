@@ -9,12 +9,14 @@ void main() {
         bookTitle: 'Quarto de Despejo',
         date: '28 de setembro',
         location: 'Biblioteca Municipal',
+        bookCoverUrl: 'https://example.com/quarto-de-despejo.jpg',
       );
 
       expect(meeting.hostName, 'Ana Souza');
       expect(meeting.bookTitle, 'Quarto de Despejo');
       expect(meeting.date, '28 de setembro');
       expect(meeting.location, 'Biblioteca Municipal');
+      expect(meeting.bookCoverUrl, 'https://example.com/quarto-de-despejo.jpg');
     });
   });
 }

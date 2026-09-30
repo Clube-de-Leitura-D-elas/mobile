@@ -21,9 +21,9 @@ class GroupDetailsScreen extends StatefulWidget {
     required this.stateCode,
     this.coverImage,
     this.nextEventCount,
-    this.nextEventContent,
-    this.bookContent,
+    this.nextEvent = const GroupNextEvent(),
     this.participantsContent,
+    this.onEventHistoryPressed,
   });
 
   final String name;
@@ -33,9 +33,9 @@ class GroupDetailsScreen extends StatefulWidget {
   final String stateCode;
   final ImageProvider<Object>? coverImage;
   final int? nextEventCount;
-  final Widget? nextEventContent;
-  final Widget? bookContent;
+  final Widget nextEvent;
   final Widget? participantsContent;
+  final VoidCallback? onEventHistoryPressed;
 
   @override
   State<GroupDetailsScreen> createState() => _GroupDetailsScreenState();
@@ -75,6 +75,15 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                   ),
                   SizedBox(height: spacing.s32),
                   const GroupActions(),
+                  if (widget.onEventHistoryPressed != null) ...[
+                    SizedBox(height: spacing.s8),
+                    AppButton.ghost(
+                      label: l10n.groupEventHistoryTitle,
+                      size: AppButtonSize.sm,
+                      icon: const Icon(Icons.history),
+                      onPressed: widget.onEventHistoryPressed,
+                    ),
+                  ],
                   SizedBox(height: spacing.s24),
                   GroupSection(
                     title: l10n.groupNextEventTitle,
@@ -83,11 +92,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                     onToggle: () => setState(
                       () => _nextEventExpanded = !_nextEventExpanded,
                     ),
-                    children: [
-                      if (widget.nextEventContent != null)
-                        widget.nextEventContent!,
-                      if (widget.bookContent != null) widget.bookContent!,
-                    ],
+                    children: [widget.nextEvent],
                   ),
                   SizedBox(height: spacing.s24),
                   GroupSection(

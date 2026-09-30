@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
+import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
 
 class GroupDetailsPage extends StatelessWidget {
-  const GroupDetailsPage({super.key});
+  const GroupDetailsPage({super.key, required this.groupId});
+
+  final String groupId;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +33,12 @@ class GroupDetailsPage extends StatelessWidget {
             coverImage: group.coverImageUrl != null
                 ? NetworkImage(group.coverImageUrl!)
                 : null,
+            onEventHistoryPressed: () => context.push(
+              Uri(
+                path: GroupRoutePaths.eventHistory,
+                queryParameters: {'group_id': groupId},
+              ).toString(),
+            ),
             participantsContent: const GroupParticipantsContent(),
           ),
         };

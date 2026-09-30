@@ -161,6 +161,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -170,6 +178,7 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
+      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -207,6 +216,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
@@ -464,6 +488,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -473,6 +505,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
+      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -503,13 +536,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupParticipantsLoading => 'Carregando participantes';
 
   @override
-  String get groupNextMeetingLabel => 'Próximo evento';
+  String get groupEventHistoryTitle => 'Histórico de eventos';
 
   @override
-  String get groupDeclineMeetingButton => 'Não irei';
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
 
   @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
