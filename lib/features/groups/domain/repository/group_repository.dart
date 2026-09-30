@@ -2,6 +2,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 
 abstract class GroupRepository {
   Future<Result<GroupDetailsEntity, GroupFailure>> getGroupDetails(
@@ -10,5 +11,9 @@ abstract class GroupRepository {
 
   Future<Result<List<GroupMeeting>, GroupFailure>> getEventHistory(
     String groupId,
+  );
+
+  Future<Result<MeetingDetailsEntity, GroupFailure>> getMeetingDetails(
+    String meetingId,
   );
 }

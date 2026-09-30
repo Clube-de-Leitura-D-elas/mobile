@@ -26,3 +26,14 @@ class GroupEventHistoryFailure extends GroupFailure {
         'Não foi possível carregar o histórico de eventos. Tente novamente.',
   });
 }
+
+class MeetingDetailsFailure extends GroupFailure {
+  const MeetingDetailsFailure({
+    super.message =
+        'Não foi possível carregar os detalhes do encontro. Tente novamente.',
+  });
+}
+
+class MeetingNotFoundFailure extends GroupFailure {
+  const MeetingNotFoundFailure({super.message = 'Encontro não encontrado.'});
+}
