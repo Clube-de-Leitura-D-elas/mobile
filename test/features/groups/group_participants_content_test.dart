@@ -242,7 +242,7 @@ void main() {
             participantCount: 2,
             city: 'Porto Alegre',
             stateCode: 'RS',
-            nextEventContent: Text('Conteúdo do evento'),
+            nextEvent: Text('Conteúdo do evento'),
             participantsContent: GroupParticipantsContent(),
           ),
         ),

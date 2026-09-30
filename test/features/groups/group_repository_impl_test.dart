@@ -69,7 +69,7 @@ void main() {
       const Success<List<GroupEntity>, GroupFailure>([
         GroupEntity(
           id: 'group-1',
-          name: 'Group 1',
+          number: 1,
           participantsCount: 2,
           cityState: 'Porto Alegre, RS',
         ),

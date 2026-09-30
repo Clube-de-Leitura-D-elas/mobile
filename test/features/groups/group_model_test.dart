@@ -6,7 +6,7 @@ void main() {
   test('maps a group returned by get-my-groups', () {
     final group = GroupModel.fromJson(const {
       'id': 'group-1',
-      'name': 'Group 1',
+      'number': 1,
       'participant_count': 3,
       'city_state': 'Porto Alegre, RS',
       'photo_url': 'https://example.com/group.jpg',
@@ -16,7 +16,7 @@ void main() {
       group.toDomain(),
       const GroupEntity(
         id: 'group-1',
-        name: 'Group 1',
+        number: 1,
         participantsCount: 3,
         cityState: 'Porto Alegre, RS',
         photoUrl: 'https://example.com/group.jpg',

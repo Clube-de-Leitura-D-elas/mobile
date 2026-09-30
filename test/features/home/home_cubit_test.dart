@@ -16,13 +16,13 @@ void main() {
 
     const testGroup1 = GroupEntity(
       id: '1',
-      name: 'Grupo 1',
+      number: 1,
       participantsCount: 32,
       cityState: 'Porto Alegre, RS',
     );
     const testGroup27 = GroupEntity(
       id: '27',
-      name: 'Grupo 27',
+      number: 27,
       participantsCount: 18,
       cityState: 'Porto Alegre, RS',
     );

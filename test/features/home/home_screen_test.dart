@@ -25,7 +25,7 @@ class MockSessionCubit extends MockCubit<SessionState>
 void main() {
   const group = GroupEntity(
     id: 'group-1',
-    name: 'Group 1',
+    number: 1,
     participantsCount: 3,
     cityState: 'Porto Alegre, RS',
   );
