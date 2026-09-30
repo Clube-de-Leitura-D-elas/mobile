@@ -541,6 +541,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get groupEventHistoryEmpty =>
       'Este grupo ainda não realizou encontros.';
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
