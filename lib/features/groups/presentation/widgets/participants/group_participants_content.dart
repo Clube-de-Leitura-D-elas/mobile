@@ -5,9 +5,9 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_state.dart';
-import 'package:mobile/features/groups/presentation/widgets/participants/participant_avatar.dart';
+import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_error_view.dart';
+import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_skeleton.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/participant_tile.dart';
-import 'package:shimmer/shimmer.dart';
 
 /// Body of the "Participantes" section in the group details screen.
 ///
@@ -25,7 +25,7 @@ class GroupParticipantsContent extends StatelessWidget {
         GroupParticipantsError() => GroupParticipantsErrorView(
           onRetry: context.read<GroupParticipantsCubit>().retry,
         ),
-        GroupParticipantsEmpty() => const GroupParticipantsEmptyView(),
+        GroupParticipantsEmpty() => const _GroupParticipantsEmptyView(),
         GroupParticipantsLoaded(:final participants) => GroupParticipantsList(
           participants: participants,
         ),
@@ -55,8 +55,8 @@ class GroupParticipantsList extends StatelessWidget {
   }
 }
 
-class GroupParticipantsEmptyView extends StatelessWidget {
-  const GroupParticipantsEmptyView({super.key});
+class _GroupParticipantsEmptyView extends StatelessWidget {
+  const _GroupParticipantsEmptyView();
 
   @override
   Widget build(BuildContext context) {
@@ -68,102 +68,6 @@ class GroupParticipantsEmptyView extends StatelessWidget {
       child: Text(
         context.l10n.groupParticipantsEmpty,
         style: context.text.bodyDefault.copyWith(color: colors.textMuted),
-      ),
-    );
-  }
-}
-
-class GroupParticipantsErrorView extends StatelessWidget {
-  final VoidCallback onRetry;
-
-  const GroupParticipantsErrorView({super.key, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final spacing = context.spacing;
-    final l10n = context.l10n;
-
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: spacing.s16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            liveRegion: true,
-            child: Text(
-              l10n.groupParticipantsLoadError,
-              style: context.text.bodyDefault.copyWith(color: colors.textMuted),
-            ),
-          ),
-          SizedBox(height: spacing.s12),
-          AppButton.secondary(
-            label: l10n.groupParticipantsRetryButton,
-            size: AppButtonSize.sm,
-            onPressed: onRetry,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class GroupParticipantsSkeleton extends StatelessWidget {
-  const GroupParticipantsSkeleton({super.key});
-
-  static const int rowCount = 3;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return Semantics(
-      label: context.l10n.groupParticipantsLoading,
-      child: ExcludeSemantics(
-        child: Shimmer.fromColors(
-          baseColor: colors.surfaceSunken,
-          highlightColor: colors.bgSubtle,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: context.spacing.s16,
-            children: List.filled(rowCount, const ParticipantSkeletonTile()),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ParticipantSkeletonTile extends StatelessWidget {
-  const ParticipantSkeletonTile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final spacing = context.spacing;
-
-    return SizedBox(
-      height: ParticipantAvatar.size,
-      child: Row(
-        children: [
-          Container(
-            width: ParticipantAvatar.size,
-            height: ParticipantAvatar.size,
-            decoration: BoxDecoration(
-              color: colors.surfaceSunken,
-              shape: BoxShape.circle,
-            ),
-          ),
-          SizedBox(width: spacing.s16),
-          Container(
-            width: 160,
-            height: 20,
-            decoration: BoxDecoration(
-              color: colors.surfaceSunken,
-              borderRadius: BorderRadius.circular(spacing.s4),
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -11,6 +11,8 @@ import 'package:mobile/features/groups/domain/repository/group_participants_repo
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
+import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_error_view.dart';
+import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_skeleton.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/participant_avatar.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/participant_tile.dart';
 import 'package:mobile/l10n/app_localizations.dart';
