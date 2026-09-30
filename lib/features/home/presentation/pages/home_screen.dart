@@ -11,11 +11,7 @@ class HomeScreen extends StatelessWidget {
   final UserEntity user;
   final UserProfileEntity? profile;
 
-  const HomeScreen({
-    super.key,
-    required this.user,
-    this.profile,
-  });
+  const HomeScreen({super.key, required this.user, this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +21,25 @@ class HomeScreen extends StatelessWidget {
     final l10n = context.l10n;
 
     final name = profile?.name.isNotEmpty == true ? profile!.name : user.name;
-    final email = profile?.email.isNotEmpty == true ? profile!.email : user.mail;
+    final email = profile?.email.isNotEmpty == true
+        ? profile!.email
+        : user.mail;
     final address = profile?.address;
-    final phone = profile?.phoneNumber.isNotEmpty == true ? profile!.phoneNumber : user.phoneNumber;
-    final birthday = profile?.birthday.isNotEmpty == true ? profile!.birthday : user.birthday;
-    final instagram = profile?.instagram.isNotEmpty == true ? profile!.instagram : user.instagramUser;
-    final education = profile?.educationDegree.isNotEmpty == true ? profile!.educationDegree : user.educationDegree;
-    final job = profile?.jobPosition.isNotEmpty == true ? profile!.jobPosition : user.jobPosition;
+    final phone = profile?.phoneNumber.isNotEmpty == true
+        ? profile!.phoneNumber
+        : user.phoneNumber;
+    final birthday = profile?.birthday.isNotEmpty == true
+        ? profile!.birthday
+        : user.birthday;
+    final instagram = profile?.instagram.isNotEmpty == true
+        ? profile!.instagram
+        : user.instagramUser;
+    final education = profile?.educationDegree.isNotEmpty == true
+        ? profile!.educationDegree
+        : user.educationDegree;
+    final job = profile?.jobPosition.isNotEmpty == true
+        ? profile!.jobPosition
+        : user.jobPosition;
     final userId = profile?.userId ?? '';
     final isActive = profile?.isActive ?? true;
 
@@ -86,9 +94,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const Gap12(),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
-                      color: isActive ? colors.feedbackSuccessLight : colors.surfaceBrandSoft,
+                      color: isActive
+                          ? colors.feedbackSuccessLight
+                          : colors.surfaceBrandSoft,
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Row(
@@ -97,13 +110,17 @@ class HomeScreen extends StatelessWidget {
                         Icon(
                           Icons.verified,
                           size: 16,
-                          color: isActive ? colors.feedbackSuccessDark : colors.actionPrimary,
+                          color: isActive
+                              ? colors.feedbackSuccessDark
+                              : colors.actionPrimary,
                         ),
                         const Gap4(),
                         Text(
                           l10n.profileStatusActive,
                           style: text.labelTag.copyWith(
-                            color: isActive ? colors.feedbackSuccessDark : colors.actionPrimary,
+                            color: isActive
+                                ? colors.feedbackSuccessDark
+                                : colors.actionPrimary,
                           ),
                         ),
                       ],

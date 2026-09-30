@@ -457,18 +457,6 @@ abstract class AppLocalizations {
   /// **'Confira mais detalhes'**
   String get groupEventHistoryDetailsLink;
 
-  /// Link da tela do grupo para abrir o histórico de eventos
-  ///
-  /// In pt, this message translates to:
-  /// **'Exibir detalhes dos últimos eventos'**
-  String get groupEventHistoryOpenLink;
-
-  /// Botão de demonstração na tela inicial para abrir o histórico de eventos
-  ///
-  /// In pt, this message translates to:
-  /// **'Ver histórico de eventos'**
-  String get groupEventHistoryHomeButton;
-
   /// Mensagem exibida quando o grupo não possui encontros realizados
   ///
   /// In pt, this message translates to:

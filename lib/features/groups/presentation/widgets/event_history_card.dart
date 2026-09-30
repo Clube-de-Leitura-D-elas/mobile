@@ -65,20 +65,18 @@ class EventHistoryCard extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Semantics(
-                    button: onDetailsPressed != null,
-                    enabled: onDetailsPressed != null,
+                    button: true,
+                    enabled: true,
                     label: l10n.groupEventHistoryDetailsLink,
                     child: InkWell(
-                      onTap: onDetailsPressed,
+                      onTap: onDetailsPressed ?? () {},
                       borderRadius: BorderRadius.circular(spacing.s4),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: spacing.s4),
                         child: Text(
                           l10n.groupEventHistoryDetailsLink,
                           style: typography.bodySmallEmphasis.copyWith(
-                            color: onDetailsPressed == null
-                                ? colors.textMuted
-                                : colors.textBrand,
+                            color: colors.textBrand,
                           ),
                         ),
                       ),

@@ -27,6 +27,16 @@ void main() {
     mockRepository = MockGroupRepository();
   });
 
+  test('keeps loaded meetings immutable', () {
+    final sourceMeetings = [meeting];
+
+    final state = EventHistoryLoaded(sourceMeetings);
+    sourceMeetings.clear();
+
+    expect(state.meetings, [meeting]);
+    expect(() => state.meetings.add(meeting), throwsUnsupportedError);
+  });
+
   blocTest<EventHistoryCubit, EventHistoryState>(
     'emits loading and loaded when event history loads successfully',
     build: () {
@@ -38,7 +48,7 @@ void main() {
     act: (cubit) => cubit.load('group-1'),
     expect: () => [
       const EventHistoryLoading(),
-      const EventHistoryLoaded([meeting]),
+      EventHistoryLoaded(const [meeting]),
     ],
   );
 

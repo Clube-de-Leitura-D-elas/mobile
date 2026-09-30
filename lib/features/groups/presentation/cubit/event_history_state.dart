@@ -17,7 +17,8 @@ class EventHistoryEmpty extends EventHistoryState {
 }
 
 class EventHistoryLoaded extends EventHistoryState {
-  const EventHistoryLoaded(this.meetings);
+  EventHistoryLoaded(List<GroupMeeting> meetings)
+    : meetings = List.unmodifiable(meetings);
 
   final List<GroupMeeting> meetings;
 

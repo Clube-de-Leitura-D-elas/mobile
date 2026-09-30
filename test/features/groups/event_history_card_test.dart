@@ -30,9 +30,7 @@ Widget _wrap(Widget child) {
 
 void main() {
   testWidgets('renders the completed event details', (tester) async {
-    await tester.pumpWidget(
-      _wrap(EventHistoryCard(meeting: _meeting, onDetailsPressed: () {})),
-    );
+    await tester.pumpWidget(_wrap(const EventHistoryCard(meeting: _meeting)));
 
     expect(find.text('Quarto de Despejo'), findsOneWidget);
     expect(find.text('Anfitriã: Ana Souza'), findsOneWidget);
@@ -40,7 +38,7 @@ void main() {
     expect(find.text('Confira mais detalhes'), findsOneWidget);
   });
 
-  testWidgets('calls the details callback', (tester) async {
+  testWidgets('calls the details callback when it is provided', (tester) async {
     var detailsOpened = false;
     await tester.pumpWidget(
       _wrap(
@@ -52,30 +50,29 @@ void main() {
     );
 
     await tester.tap(find.text('Confira mais detalhes'));
+
     expect(detailsOpened, isTrue);
   });
 
-  testWidgets('aligns the details link to the right', (tester) async {
-    await tester.pumpWidget(
-      _wrap(EventHistoryCard(meeting: _meeting, onDetailsPressed: () {})),
-    );
+  testWidgets('keeps the details link enabled without a destination', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_wrap(const EventHistoryCard(meeting: _meeting)));
 
-    final alignment = find.ancestor(
-      of: find.text('Confira mais detalhes'),
-      matching: find.byType(Align),
+    final semantics = tester.widget<Semantics>(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'Confira mais detalhes',
+      ),
     );
-    expect(
-      tester.widget<Align>(alignment.first).alignment,
-      Alignment.centerRight,
-    );
+    expect(semantics.properties.enabled, isTrue);
   });
 
   testWidgets('shows a placeholder when the book cover is unavailable', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      _wrap(EventHistoryCard(meeting: _meeting, onDetailsPressed: () {})),
-    );
+    await tester.pumpWidget(_wrap(const EventHistoryCard(meeting: _meeting)));
 
     expect(find.byType(AppIcon), findsOneWidget);
   });
@@ -87,9 +84,7 @@ void main() {
       date: '2026-08-22T00:00:00Z',
       location: 'Biblioteca Municipal',
     );
-    await tester.pumpWidget(
-      _wrap(EventHistoryCard(meeting: meeting, onDetailsPressed: () {})),
-    );
+    await tester.pumpWidget(_wrap(const EventHistoryCard(meeting: meeting)));
 
     expect(find.text('22/08/2026'), findsOneWidget);
   });
@@ -101,14 +96,13 @@ void main() {
         'Uma anfitriã com um nome muito longo que não deve quebrar o layout';
     await tester.pumpWidget(
       _wrap(
-        EventHistoryCard(
-          meeting: const GroupMeeting(
+        const EventHistoryCard(
+          meeting: GroupMeeting(
             bookTitle: bookTitle,
             hostName: hostName,
             date: '22/08/2026',
             location: 'Biblioteca Municipal',
           ),
-          onDetailsPressed: () {},
         ),
       ),
     );

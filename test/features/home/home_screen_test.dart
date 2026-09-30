@@ -48,10 +48,7 @@ void main() {
     when(() => mockSessionCubit.logOut()).thenAnswer((_) async {});
   });
 
-  Widget buildSubject({
-    required UserEntity user,
-    UserProfileEntity? profile,
-  }) {
+  Widget buildSubject({required UserEntity user, UserProfileEntity? profile}) {
     return MaterialApp(
       theme: AppTheme.light,
       localizationsDelegates: const [
@@ -72,7 +69,9 @@ void main() {
     testWidgets('renders profile data correctly when profile is provided', (
       tester,
     ) async {
-      await tester.pumpWidget(buildSubject(user: testUser, profile: testProfile));
+      await tester.pumpWidget(
+        buildSubject(user: testUser, profile: testProfile),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text("Clube de Leitura D'elas"), findsOneWidget);
@@ -98,25 +97,30 @@ void main() {
       expect(find.text('jane@example.com'), findsNWidgets(2));
     });
 
-    testWidgets('tapping logout button in AppBar calls logOut on SessionCubit', (
-      tester,
-    ) async {
-      await tester.pumpWidget(buildSubject(user: testUser, profile: testProfile));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'tapping logout button in AppBar calls logOut on SessionCubit',
+      (tester) async {
+        await tester.pumpWidget(
+          buildSubject(user: testUser, profile: testProfile),
+        );
+        await tester.pumpAndSettle();
 
-      final logoutIconButton = find.byIcon(Icons.logout);
-      expect(logoutIconButton, findsOneWidget);
+        final logoutIconButton = find.byIcon(Icons.logout);
+        expect(logoutIconButton, findsOneWidget);
 
-      await tester.tap(logoutIconButton);
-      await tester.pumpAndSettle();
+        await tester.tap(logoutIconButton);
+        await tester.pumpAndSettle();
 
-      verify(() => mockSessionCubit.logOut()).called(1);
-    });
+        verify(() => mockSessionCubit.logOut()).called(1);
+      },
+    );
 
     testWidgets('tapping Sair da Conta button calls logOut on SessionCubit', (
       tester,
     ) async {
-      await tester.pumpWidget(buildSubject(user: testUser, profile: testProfile));
+      await tester.pumpWidget(
+        buildSubject(user: testUser, profile: testProfile),
+      );
       await tester.pumpAndSettle();
 
       final logoutButton = find.text('Sair da Conta');

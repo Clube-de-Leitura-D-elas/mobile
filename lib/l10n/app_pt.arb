@@ -263,14 +263,6 @@
   "@groupEventHistoryDetailsLink": {
     "description": "Link para abrir os detalhes de um evento realizado"
   },
-  "groupEventHistoryOpenLink": "Exibir detalhes dos últimos eventos",
-  "@groupEventHistoryOpenLink": {
-    "description": "Link da tela do grupo para abrir o histórico de eventos"
-  },
-  "groupEventHistoryHomeButton": "Ver histórico de eventos",
-  "@groupEventHistoryHomeButton": {
-    "description": "Botão de demonstração na tela inicial para abrir o histórico de eventos"
-  },
   "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
   "@groupEventHistoryEmpty": {
     "description": "Mensagem exibida quando o grupo não possui encontros realizados"

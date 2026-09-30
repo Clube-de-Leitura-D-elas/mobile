@@ -30,7 +30,15 @@ class EventHistoryPage extends StatelessWidget {
           EventHistoryLoaded(:final meetings) => EventHistoryScreen(
             meetings: meetings,
           ),
-          EventHistoryError(:final message) => Center(child: Text(message)),
+          EventHistoryError(:final message) => Center(
+            child: Text(
+              message,
+              style: context.typography.bodyDefault.copyWith(
+                color: context.colors.textMuted,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         },
       ),
     );

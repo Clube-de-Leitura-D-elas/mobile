@@ -52,7 +52,7 @@ void main() {
       create: (_) =>
           GroupDetailsCubit(groupRepository: serviceLocator<GroupRepository>())
             ..load('group-1'),
-      child: const GroupDetailsPage(groupId: 'group-1'),
+      child: const GroupDetailsPage(),
     ),
   );
 

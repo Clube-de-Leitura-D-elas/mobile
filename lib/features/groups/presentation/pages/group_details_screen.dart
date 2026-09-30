@@ -24,7 +24,6 @@ class GroupDetailsScreen extends StatefulWidget {
     this.nextEventContent,
     this.bookContent,
     this.participantsContent,
-    this.onEventHistoryPressed,
   });
 
   final String name;
@@ -37,7 +36,6 @@ class GroupDetailsScreen extends StatefulWidget {
   final Widget? nextEventContent;
   final Widget? bookContent;
   final Widget? participantsContent;
-  final VoidCallback? onEventHistoryPressed;
 
   @override
   State<GroupDetailsScreen> createState() => _GroupDetailsScreenState();
@@ -91,11 +89,6 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                       if (widget.bookContent != null) widget.bookContent!,
                     ],
                   ),
-                  TextButton(
-                    onPressed: widget.onEventHistoryPressed,
-                    child: Text(l10n.groupEventHistoryOpenLink),
-                  ),
-                  SizedBox(height: spacing.s24),
                   GroupSection(
                     title: l10n.groupParticipantsTitle,
                     count: widget.participantCount,

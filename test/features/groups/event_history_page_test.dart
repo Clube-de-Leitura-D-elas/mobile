@@ -64,7 +64,7 @@ void main() {
   });
 
   testWidgets('displays event cards when events are loaded', (tester) async {
-    await tester.pumpWidget(_wrap(const EventHistoryLoaded([meeting])));
+    await tester.pumpWidget(_wrap(EventHistoryLoaded(const [meeting])));
 
     expect(find.text('Histórico de eventos'), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);

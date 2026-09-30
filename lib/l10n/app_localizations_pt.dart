@@ -207,12 +207,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
 
   @override
-  String get groupEventHistoryOpenLink => 'Exibir detalhes dos últimos eventos';
-
-  @override
-  String get groupEventHistoryHomeButton => 'Ver histórico de eventos';
-
-  @override
   String get groupEventHistoryEmpty =>
       'Este grupo ainda não realizou encontros.';
 
@@ -483,12 +477,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryOpenLink => 'Exibir detalhes dos últimos eventos';
-
-  @override
-  String get groupEventHistoryHomeButton => 'Ver histórico de eventos';
 
   @override
   String get groupEventHistoryEmpty =>
