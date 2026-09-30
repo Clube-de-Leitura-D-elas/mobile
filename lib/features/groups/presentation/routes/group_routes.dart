@@ -3,13 +3,30 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
+import 'package:mobile/features/groups/presentation/pages/event_history_page.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
+import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 
 abstract class GroupRoutes {
-  static const String groupDetails = '/group-details';
+  static const groupDetails = GroupRoutePaths.groupDetails;
+  static const eventHistory = GroupRoutePaths.eventHistory;
 
   static List<RouteBase> get routes => [
+    GoRoute(
+      path: eventHistory,
+      pageBuilder: (context, state) {
+        final groupId = state.uri.queryParameters['group_id'] ?? '';
+        return AppPageTransitions.createPushPage(
+          state: state,
+          child: BlocProvider(
+            create: (_) => serviceLocator<EventHistoryCubit>()..load(groupId),
+            child: const EventHistoryPage(),
+          ),
+        );
+      },
+    ),
     GoRoute(
       path: groupDetails,
       pageBuilder: (context, state) {
@@ -27,7 +44,7 @@ abstract class GroupRoutes {
                     serviceLocator<GroupParticipantsCubit>()..load(groupId),
               ),
             ],
-            child: const GroupDetailsPage(),
+            child: GroupDetailsPage(groupId: groupId),
           ),
         );
       },

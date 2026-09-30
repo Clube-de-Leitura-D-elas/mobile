@@ -262,6 +262,27 @@
   "@groupConfirmMeetingButton": {
     "description": "Botão para confirmar presença no próximo encontro do grupo"
   },
+  "groupEventHistoryTitle": "Histórico de eventos",
+  "@groupEventHistoryTitle": {
+    "description": "Título da tela de histórico de eventos do grupo"
+  },
+  "groupEventHistoryHost": "Anfitriã: {hostName}",
+  "@groupEventHistoryHost": {
+    "description": "Identificação da anfitriã de um evento realizado",
+    "placeholders": {
+      "hostName": {
+        "type": "String"
+      }
+    }
+  },
+  "groupEventHistoryDetailsLink": "Confira mais detalhes",
+  "@groupEventHistoryDetailsLink": {
+    "description": "Link para abrir os detalhes de um evento realizado"
+  },
+  "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
+  "@groupEventHistoryEmpty": {
+    "description": "Mensagem exibida quando o grupo não possui encontros realizados"
+  },
 
   "@@Onboarding": "--- Onboarding ---",
   "onboardingReviewTitle": "Verifique os seus dados",
@@ -312,28 +333,6 @@
   "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
   "selectOptionHint": "Selecione",
   "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
-  "@@Groups": "--- Groups ---",
-  "groupNextMeetingLabel": "Próximo evento",
-  "@groupNextMeetingLabel": {
-    "description": "Rótulo da seção de próximo encontro no card de grupo"
-  },
-  "groupDeclineMeetingButton": "Não irei",
-  "@groupDeclineMeetingButton": {
-    "description": "Botão para recusar presença no próximo encontro do grupo"
-  },
-  "groupConfirmMeetingButton": "Confirmar presença",
-  "@groupConfirmMeetingButton": {
-    "description": "Botão para confirmar presença no próximo encontro do grupo"
-  },
-  "groupParticipantsCount": "{count, plural, one {1 participante} other {{count} participantes}}",
-  "@groupParticipantsCount": {
-    "description": "Contagem de participantes do grupo, com singular/plural",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "myGroupsTitle": "Meus grupos",
   "@myGroupsTitle": {
     "description": "Título principal da tela de grupos"

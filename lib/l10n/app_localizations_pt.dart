@@ -170,6 +170,7 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
+      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -207,6 +208,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
@@ -510,6 +526,21 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';

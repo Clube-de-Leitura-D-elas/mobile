@@ -184,7 +184,9 @@ void main() {
       expect(find.text('Abrir Whatsapp'), findsOneWidget);
       expect(find.text('Indicar livro'), findsOneWidget);
 
-      final nameBounds = tester.getRect(find.byKey(const ValueKey('group-name')));
+      final nameBounds = tester.getRect(
+        find.byKey(const ValueKey('group-name')),
+      );
       final genresBounds = tester.getRect(
         find.byKey(const ValueKey('group-genres')),
       );
@@ -192,26 +194,25 @@ void main() {
     },
   );
 
-  testWidgets(
-    'given a cover image, when rendered, then displays the image',
-    (tester) async {
-      await tester.pumpWidget(
-        buildSubject(
-          const GroupDetailsScreen(
-            name: 'Grupo 1',
-            genres: ['Ficção'],
-            participantCount: 5,
-            city: 'Porto Alegre',
-            stateCode: 'RS',
-            coverImage: NetworkImage('https://example.com/cover.jpg'),
-          ),
+  testWidgets('given a cover image, when rendered, then displays the image', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        const GroupDetailsScreen(
+          name: 'Grupo 1',
+          genres: ['Ficção'],
+          participantCount: 5,
+          city: 'Porto Alegre',
+          stateCode: 'RS',
+          coverImage: NetworkImage('https://example.com/cover.jpg'),
         ),
-      );
+      ),
+    );
 
-      expect(find.byType(Image), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+    expect(find.byType(Image), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'given a cover image that fails to load, when rendered, then shows fallback icon',

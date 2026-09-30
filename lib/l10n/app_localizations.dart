@@ -397,10 +397,10 @@ abstract class AppLocalizations {
   /// **'Participantes'**
   String get groupParticipantsTitle;
 
-  /// Contagem de participantes do grupo, com singular/plural
+  /// Quantidade de participantes do grupo
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, one {1 participante} other {{count} participantes}}'**
+  /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
   String groupParticipantsCount(int count);
 
   /// Botão para abrir o grupo no WhatsApp
@@ -421,7 +421,7 @@ abstract class AppLocalizations {
   /// **'Foto do grupo {name}'**
   String groupCoverSemanticLabel(String name);
 
-  /// Mensagem quando o grupo só tem a coordenadora
+  /// Mensagem quando o grupo não tem participantes
   ///
   /// In pt, this message translates to:
   /// **'Ainda não há participantes neste grupo.'**
@@ -462,6 +462,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Confirmar presença'**
   String get groupConfirmMeetingButton;
+
+  /// Título da tela de histórico de eventos do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de eventos'**
+  String get groupEventHistoryTitle;
+
+  /// Identificação da anfitriã de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {hostName}'**
+  String groupEventHistoryHost(String hostName);
+
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
+  /// Mensagem exibida quando o grupo não possui encontros realizados
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo ainda não realizou encontros.'**
+  String get groupEventHistoryEmpty;
 
   /// Título principal do review de cadastro
   ///

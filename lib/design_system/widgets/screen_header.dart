@@ -49,36 +49,60 @@ class ScreenHeader extends StatelessWidget implements PreferredSizeWidget {
           height: _height,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-            child: Row(
-              children: [
-                if (_variant == ScreenHeaderVariant.back) ...[
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 48,
-                      minHeight: 48,
-                    ),
-                    icon: Icon(Icons.arrow_back, color: colors.textDefault),
-                    onPressed:
-                        onBackPressed ?? () => Navigator.of(context).pop(),
-                    tooltip: context.l10n.back,
+            child: _variant == ScreenHeaderVariant.back
+                ? Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 48),
+                        child: Text(
+                          title,
+                          style: text.headingH3.copyWith(
+                            color: colors.textDefault,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(
+                            minWidth: 48,
+                            minHeight: 48,
+                          ),
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: colors.textDefault,
+                          ),
+                          onPressed:
+                              onBackPressed ??
+                              () => Navigator.of(context).pop(),
+                          tooltip: context.l10n.back,
+                        ),
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: text.headingH3.copyWith(
+                            color: colors.textDefault,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (_variant == ScreenHeaderVariant.action) ...[
+                        const Gap8(),
+                        action!,
+                      ],
+                    ],
                   ),
-                  const Gap8(),
-                ],
-                Expanded(
-                  child: Text(
-                    title,
-                    style: text.headingH3.copyWith(color: colors.textDefault),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (_variant == ScreenHeaderVariant.action) ...[
-                  const Gap8(),
-                  action!,
-                ],
-              ],
-            ),
           ),
         ),
       ),

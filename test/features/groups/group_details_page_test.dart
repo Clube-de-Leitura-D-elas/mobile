@@ -76,7 +76,7 @@ void main() {
           )..load('group-1'),
         ),
       ],
-      child: const GroupDetailsPage(),
+      child: const GroupDetailsPage(groupId: 'group-1'),
     ),
   );
 
