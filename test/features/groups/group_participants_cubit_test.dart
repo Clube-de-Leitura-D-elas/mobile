@@ -35,9 +35,9 @@ void main() {
   blocTest<GroupParticipantsCubit, GroupParticipantsState>(
     'given members, when loaded, then emits loaded with the list',
     build: () {
-      when(() => repository.getParticipants('g')).thenAnswer(
-        (_) async => const Success([coordinator, member]),
-      );
+      when(
+        () => repository.getParticipants('g'),
+      ).thenAnswer((_) async => const Success([coordinator, member]));
       return build();
     },
     act: (cubit) => cubit.load('g'),
@@ -48,7 +48,7 @@ void main() {
   );
 
   blocTest<GroupParticipantsCubit, GroupParticipantsState>(
-    'given only the coordinator, when loaded, then emits empty',
+    'given only the coordinator, when loaded, then emits loaded with the coordinator',
     build: () {
       when(
         () => repository.getParticipants('g'),
@@ -58,7 +58,7 @@ void main() {
     act: (cubit) => cubit.load('g'),
     expect: () => [
       const GroupParticipantsLoading(),
-      const GroupParticipantsEmpty(),
+      const GroupParticipantsLoaded([coordinator]),
     ],
   );
 
@@ -81,8 +81,7 @@ void main() {
     'given a failure, when loaded, then emits error',
     build: () {
       when(() => repository.getParticipants('g')).thenAnswer(
-        (_) async =>
-            const Failure(GroupParticipantsFailure(message: 'Falhou')),
+        (_) async => const Failure(GroupParticipantsFailure(message: 'Falhou')),
       );
       return build();
     },

@@ -187,7 +187,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupParticipantsEmpty =>
-      'Ainda não há outras participantes neste grupo.';
+      'Ainda não há participantes neste grupo.';
 
   @override
   String get groupParticipantsLoadError =>
@@ -490,7 +490,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupParticipantsEmpty =>
-      'Ainda não há outras participantes neste grupo.';
+      'Ainda não há participantes neste grupo.';
 
   @override
   String get groupParticipantsLoadError =>

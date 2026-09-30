@@ -21,11 +21,10 @@ class GroupParticipantsCubit extends Cubit<GroupParticipantsState> {
       case Failure(:final failure):
         emit(GroupParticipantsError(failure.message));
       case Success(:final data):
-        final hasMembers = data.any((participant) => !participant.isCoordinator);
         emit(
-          hasMembers
-              ? GroupParticipantsLoaded(data)
-              : const GroupParticipantsEmpty(),
+          data.isEmpty
+              ? const GroupParticipantsEmpty()
+              : GroupParticipantsLoaded(data),
         );
     }
   }

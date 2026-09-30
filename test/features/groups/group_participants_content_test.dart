@@ -148,7 +148,7 @@ void main() {
     },
   );
 
-  testWidgets('given only the coordinator, then shows the empty message', (
+  testWidgets('given only the coordinator, then renders the coordinator', (
     tester,
   ) async {
     answer(const Success([coordinator]));
@@ -156,8 +156,20 @@ void main() {
     await tester.pumpWidget(buildSection());
     await tester.pumpAndSettle();
 
+    expect(find.text('Roberta'), findsOneWidget);
+    expect(find.byType(ParticipantTile), findsOneWidget);
+  });
+
+  testWidgets('given no participants, then shows the empty message', (
+    tester,
+  ) async {
+    answer(const Success([]));
+
+    await tester.pumpWidget(buildSection());
+    await tester.pumpAndSettle();
+
     expect(
-      find.text('Ainda não há outras participantes neste grupo.'),
+      find.text('Ainda não há participantes neste grupo.'),
       findsOneWidget,
     );
     expect(find.byType(ParticipantTile), findsNothing);

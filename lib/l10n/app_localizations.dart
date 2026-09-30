@@ -424,7 +424,7 @@ abstract class AppLocalizations {
   /// Mensagem quando o grupo só tem a coordenadora
   ///
   /// In pt, this message translates to:
-  /// **'Ainda não há outras participantes neste grupo.'**
+  /// **'Ainda não há participantes neste grupo.'**
   String get groupParticipantsEmpty;
 
   /// Erro ao buscar a lista de participantes do grupo

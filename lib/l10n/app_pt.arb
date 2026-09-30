@@ -234,9 +234,9 @@
       }
     }
   },
-  "groupParticipantsEmpty": "Ainda não há outras participantes neste grupo.",
+  "groupParticipantsEmpty": "Ainda não há participantes neste grupo.",
   "@groupParticipantsEmpty": {
-    "description": "Mensagem quando o grupo só tem a coordenadora"
+    "description": "Mensagem quando o grupo não tem participantes"
   },
   "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
   "@groupParticipantsLoadError": {

@@ -63,7 +63,7 @@
   "groupOpenWhatsAppButton": "Abrir Whatsapp",
   "groupRecommendBookButton": "Indicar livro",
   "groupCoverSemanticLabel": "Foto do grupo {name}",
-  "groupParticipantsEmpty": "Ainda não há outras participantes neste grupo.",
+  "groupParticipantsEmpty": "Ainda não há participantes neste grupo.",
   "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
   "groupParticipantsRetryButton": "Tentar novamente",
   "groupParticipantsLoading": "Carregando participantes",
