@@ -43,6 +43,7 @@ class GroupParticipantsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: context.spacing.s16,
       children: [
         for (final participant in participants)
           ParticipantTile(
@@ -92,9 +93,7 @@ class GroupParticipantsErrorView extends StatelessWidget {
             liveRegion: true,
             child: Text(
               l10n.groupParticipantsLoadError,
-              style: context.text.bodyDefault.copyWith(
-                color: colors.textMuted,
-              ),
+              style: context.text.bodyDefault.copyWith(color: colors.textMuted),
             ),
           ),
           SizedBox(height: spacing.s12),
@@ -126,6 +125,7 @@ class GroupParticipantsSkeleton extends StatelessWidget {
           highlightColor: colors.bgSubtle,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: context.spacing.s16,
             children: List.filled(rowCount, const ParticipantSkeletonTile()),
           ),
         ),
@@ -143,7 +143,7 @@ class ParticipantSkeletonTile extends StatelessWidget {
     final spacing = context.spacing;
 
     return SizedBox(
-      height: ParticipantTile.minHeight,
+      height: ParticipantAvatar.size,
       child: Row(
         children: [
           Container(

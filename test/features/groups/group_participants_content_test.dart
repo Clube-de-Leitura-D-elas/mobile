@@ -140,7 +140,7 @@ void main() {
       expect(text.overflow, TextOverflow.ellipsis);
       expect(
         tester.getSize(find.byType(ParticipantTile)).height,
-        ParticipantTile.minHeight,
+        ParticipantAvatar.size,
       );
       expect(tester.getRect(find.text(longName)).right, lessThanOrEqualTo(320));
     },
