@@ -6,11 +6,13 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
+import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
@@ -270,6 +272,88 @@ void main() {
       const Failure<List<GroupMeeting>, GroupFailure>(
         GroupEventHistoryFailure(),
       ),
+    );
+  });
+
+  test('maps next event JSON to NextEventEntity', () async {
+    // A edge function retorna { next_event: { ... } }
+    const nextEventEnvelope = {
+      'next_event': {
+        'location_name': 'Porto Alegre, RS',
+        'date': '2026-09-15T21:30:00Z',
+        'host_name': 'Roberta',
+      },
+    };
+
+    when(
+      () => mockSupabaseService.invokeFunction<NextEventModel?>(
+        functionName: 'get-group-next-event?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer((invocation) async {
+      final decoder =
+          invocation.namedArguments[#decoder] as NextEventModel? Function(
+            dynamic,
+          );
+      return Success<SupabaseResponse<NextEventModel?>, SupabaseFailure>(
+        SupabaseResponse(data: decoder(nextEventEnvelope)),
+      );
+    });
+
+    final result = await repository.getNextEvent('group-1');
+
+    expect(
+      result,
+      const Success<NextEventEntity?, GroupFailure>(
+        NextEventEntity(
+          location: 'Porto Alegre, RS',
+          date: '2026-09-15T21:30:00Z',
+          hostName: 'Roberta',
+        ),
+      ),
+    );
+  });
+
+  test('returns Success(null) when group has no next event', () async {
+    // A edge function retorna { next_event: null } quando não há evento
+    const noEventEnvelope = {'next_event': null};
+
+    when(
+      () => mockSupabaseService.invokeFunction<NextEventModel?>(
+        functionName: 'get-group-next-event?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer((invocation) async {
+      final decoder =
+          invocation.namedArguments[#decoder] as NextEventModel? Function(
+            dynamic,
+          );
+      return Success<SupabaseResponse<NextEventModel?>, SupabaseFailure>(
+        SupabaseResponse(data: decoder(noEventEnvelope)),
+      );
+    });
+
+    final result = await repository.getNextEvent('group-1');
+
+    expect(result, const Success<NextEventEntity?, GroupFailure>(null));
+  });
+
+  test('maps a next event function failure to GroupNextEventFailure', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<NextEventModel?>(
+        functionName: 'get-group-next-event?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async =>
+          const Failure(FunctionSupabaseFailure(message: 'Falha do servidor')),
+    );
+
+    final result = await repository.getNextEvent('group-1');
+
+    expect(
+      result,
+      const Failure<NextEventEntity?, GroupFailure>(GroupNextEventFailure()),
     );
   });
 }

@@ -4,10 +4,12 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
+import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
 class GroupRepositoryImpl implements GroupRepository {
@@ -79,7 +81,23 @@ class GroupRepositoryImpl implements GroupRepository {
         return Success<List<GroupMeeting>, GroupFailure>(
           meetings.map((meeting) => meeting.toDomain()).toList(growable: false),
         );
-      }
     }
   }
 
+  @override
+  Future<Result<NextEventEntity?, GroupFailure>> getNextEvent(
+    String groupId,
+  ) async {
+    final result = await supabaseService.invokeFunction<NextEventModel?>(
+      functionName: 'get-group-next-event?group_id=$groupId',
+      decoder: NextEventModel.fromEnvelope,
+    );
+
+    switch (result) {
+      case Failure():
+        return const Failure(GroupNextEventFailure());
+      case Success(:final data):
+        return Success(data.data?.toDomain());
+    }
+  }
+}

@@ -102,15 +102,15 @@ class _EventDetails extends StatelessWidget {
             child: Semantics(
               button: true,
               enabled: true,
-              label: context.l10n.groupEventHistoryDetailsLink,
+              label: context.l10n.groupNextEventHistoryLink,
               child: InkWell(
                 onTap: onEventHistoryPressed,
                 borderRadius: BorderRadius.circular(spacing.s4),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: spacing.s4),
                   child: Text(
-                    context.l10n.groupEventHistoryDetailsLink,
-                    style: context.text.bodySmallEmphasis.copyWith(
+                    context.l10n.groupNextEventHistoryLink,
+                    style: context.text.bodyDefaultEmphasis.copyWith(
                       color: context.colors.textBrand,
                     ),
                   ),

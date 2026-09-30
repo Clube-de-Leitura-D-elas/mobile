@@ -213,6 +213,10 @@
   "@groupNextEventTitle": {
     "description": "Título da seção do próximo evento nos detalhes do grupo"
   },
+  "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
+  "@groupNextEventHistoryLink": {
+    "description": "Link exibido abaixo do próximo evento para acessar o histórico de encontros"
+  },
   "groupParticipantsTitle": "Participantes",
   "@groupParticipantsTitle": {
     "description": "Título da seção de participantes nos detalhes do grupo"

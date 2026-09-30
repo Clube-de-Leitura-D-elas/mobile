@@ -60,6 +60,7 @@
   "groupNextEventTitle": "Próximo evento",
   "groupNextEventEmpty": "Nenhum próximo evento agendado",
   "groupNextEventHost": "Anfitriã: {name}",
+  "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
   "groupParticipantsTitle": "Participantes",
   "groupParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
   "groupOpenWhatsAppButton": "Abrir Whatsapp",

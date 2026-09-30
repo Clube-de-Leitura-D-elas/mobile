@@ -169,6 +169,9 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -494,6 +497,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupNextEventHost(String name) {
     return 'Anfitriã: $name';
   }
+
+  @override
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
 
   @override
   String get groupParticipantsTitle => 'Participantes';

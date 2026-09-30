@@ -38,3 +38,10 @@ class GroupEventHistoryFailure extends GroupFailure {
         'Não foi possível carregar o histórico de eventos. Tente novamente.',
   });
 }
+
+class GroupNextEventFailure extends GroupFailure {
+  const GroupNextEventFailure({
+    super.message =
+        'Não foi possível carregar o próximo evento. Tente novamente.',
+  });
+}
