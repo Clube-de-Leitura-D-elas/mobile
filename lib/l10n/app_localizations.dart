@@ -684,6 +684,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
   String get emptyGroupsMessage;
+
+  /// Título da tela de detalhes do grupo, com o número do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupDetailsNumberLabel(int number);
+
+  /// Exibido no próximo evento do grupo quando nenhum local foi definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem localização'**
+  String get groupNextEventNoLocation;
 }
 
 class _AppLocalizationsDelegate

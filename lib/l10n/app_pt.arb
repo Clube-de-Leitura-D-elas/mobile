@@ -378,5 +378,16 @@
   "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
   "@emptyGroupsMessage": {
     "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
+  },
+  "groupDetailsNumberLabel": "Grupo {number}",
+  "@groupDetailsNumberLabel": {
+    "description": "Título da tela de detalhes do grupo, com o número do grupo",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "groupNextEventNoLocation": "Sem localização",
+  "@groupNextEventNoLocation": {
+    "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
   }
 }

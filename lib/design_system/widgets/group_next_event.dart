@@ -77,12 +77,14 @@ class _EventDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
+                Row(
           children: [
             Expanded(
               child: _EventMetadata(
                 icon: AppIcons.location,
-                label: data.location,
+                label: data.location.isEmpty
+                    ? context.l10n.groupNextEventNoLocation
+                    : data.location,
               ),
             ),
             SizedBox(width: spacing.s16),

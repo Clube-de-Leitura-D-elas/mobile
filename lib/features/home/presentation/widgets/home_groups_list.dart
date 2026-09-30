@@ -108,7 +108,7 @@ class _GroupCardItem extends StatelessWidget {
     return AppGroupCard(
       key: ValueKey('group_card_${group.id}'),
       groupId: group.id,
-      groupName: group.name,
+      groupName: context.l10n.groupDetailsNumberLabel(group.number),
       participantsCount: group.participantsCount,
       cityState: group.cityState,
       photoUrl: group.photoUrl,
