@@ -295,5 +295,60 @@
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
   "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
   "selectOptionHint": "Selecione",
-  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" }
+  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
+  "@@Groups": "--- Groups ---",
+  "groupNextMeetingLabel": "Próximo evento",
+  "@groupNextMeetingLabel": {
+    "description": "Rótulo da seção de próximo encontro no card de grupo"
+  },
+  "groupDeclineMeetingButton": "Não irei",
+  "@groupDeclineMeetingButton": {
+    "description": "Botão para recusar presença no próximo encontro do grupo"
+  },
+  "groupConfirmMeetingButton": "Confirmar presença",
+  "@groupConfirmMeetingButton": {
+    "description": "Botão para confirmar presença no próximo encontro do grupo"
+  },
+  "groupParticipantsCount": "{count, plural, one {1 participante} other {{count} participantes}}",
+  "@groupParticipantsCount": {
+    "description": "Contagem de participantes do grupo, com singular/plural",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "myGroupsTitle": "Meus grupos",
+  "@myGroupsTitle": {
+    "description": "Título principal da tela de grupos"
+  },
+  "searchGroupPlaceholder": "Buscar grupo",
+  "@searchGroupPlaceholder": {
+    "description": "Placeholder do campo de busca de grupos"
+  },
+  "filterAll": "Todos",
+  "@filterAll": {
+    "description": "Chip de filtro Todos"
+  },
+  "filterUnanswered": "Não respondidos ({count})",
+  "@filterUnanswered": {
+    "description": "Chip de filtro Não respondidos com contagem",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterAnswered": "Respondidos",
+  "@filterAnswered": {
+    "description": "Chip de filtro Respondidos"
+  },
+  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
+  "@emptyGroupsTitle": {
+    "description": "Título exibido quando a lista de grupos está vazia"
+  },
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
+  "@emptyGroupsMessage": {
+    "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
+  }
 }

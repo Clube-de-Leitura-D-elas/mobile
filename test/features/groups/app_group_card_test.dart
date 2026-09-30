@@ -285,5 +285,35 @@ void main() {
         expect(find.byIcon(Icons.keyboard_arrow_down), findsNothing);
       },
     );
+
+    testWidgets(
+      'Calls onToggleExpanded when the meeting header row is tapped',
+      (tester) async {
+        var toggleCalled = false;
+
+        await tester.pumpWidget(
+          _wrap(
+            AppGroupCard(
+              groupId: '1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: const GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '29/08/2026',
+                location: 'Z Café TECNOPUC',
+              ),
+              onToggleExpanded: () => toggleCalled = true,
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Próximo evento'));
+        await tester.pump();
+
+        expect(toggleCalled, isTrue);
+      },
+    );
   });
 }

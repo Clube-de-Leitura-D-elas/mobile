@@ -421,6 +421,24 @@ abstract class AppLocalizations {
   /// **'Foto do grupo {name}'**
   String groupCoverSemanticLabel(String name);
 
+  /// Rótulo da seção de próximo encontro no card de grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo evento'**
+  String get groupNextMeetingLabel;
+
+  /// Botão para recusar presença no próximo encontro do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Não irei'**
+  String get groupDeclineMeetingButton;
+
+  /// Botão para confirmar presença no próximo encontro do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar presença'**
+  String get groupConfirmMeetingButton;
+
   /// Título principal do review de cadastro
   ///
   /// In pt, this message translates to:
@@ -559,23 +577,47 @@ abstract class AppLocalizations {
   /// **'Selecione'**
   String get selectOptionHint;
 
-  /// Rótulo da seção de próximo encontro no card de grupo
+  /// Título principal da tela de grupos
   ///
   /// In pt, this message translates to:
-  /// **'Próximo evento'**
-  String get groupNextMeetingLabel;
+  /// **'Meus grupos'**
+  String get myGroupsTitle;
 
-  /// Botão para recusar presença no próximo encontro do grupo
+  /// Placeholder do campo de busca de grupos
   ///
   /// In pt, this message translates to:
-  /// **'Não irei'**
-  String get groupDeclineMeetingButton;
+  /// **'Buscar grupo'**
+  String get searchGroupPlaceholder;
 
-  /// Botão para confirmar presença no próximo encontro do grupo
+  /// Chip de filtro Todos
   ///
   /// In pt, this message translates to:
-  /// **'Confirmar presença'**
-  String get groupConfirmMeetingButton;
+  /// **'Todos'**
+  String get filterAll;
+
+  /// Chip de filtro Não respondidos com contagem
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondidos ({count})'**
+  String filterUnanswered(int count);
+
+  /// Chip de filtro Respondidos
+  ///
+  /// In pt, this message translates to:
+  /// **'Respondidos'**
+  String get filterAnswered;
+
+  /// Título exibido quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo'**
+  String get emptyGroupsTitle;
+
+  /// Mensagem detalhada exibida quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
+  String get emptyGroupsMessage;
 }
 
 class _AppLocalizationsDelegate

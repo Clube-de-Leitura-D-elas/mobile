@@ -1,4 +1,6 @@
-class GroupMeeting {
+import 'package:equatable/equatable.dart';
+
+class GroupMeeting extends Equatable {
   final String hostName;
   final String bookTitle;
   final String date;
@@ -10,4 +12,7 @@ class GroupMeeting {
     required this.date,
     required this.location,
   });
+
+  @override
+  List<Object?> get props => [hostName, bookTitle, date, location];
 }
