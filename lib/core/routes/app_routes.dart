@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -14,9 +15,7 @@ class GoRouterRefreshStream extends ChangeNotifier {
 
   GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
-    _subscription = stream.asBroadcastStream().listen(
-          (_) => notifyListeners(),
-        );
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
   }
 
   @override
@@ -41,13 +40,21 @@ abstract class AppRoutes {
       redirect: (context, state) {
         final sessionState = sessionCubit.state;
 
-        final splashRedirect = SplashRoutes.splashGuard(context, state, sessionState);
+        final splashRedirect = SplashRoutes.splashGuard(
+          context,
+          state,
+          sessionState,
+        );
         if (splashRedirect != null) return splashRedirect;
 
         final authRedirect = AuthRoutes.authGuard(context, state, sessionState);
         if (authRedirect != null) return authRedirect;
 
-        final onboardingRedirect = OnboardingRoutes.onboardingGuard(context, state, sessionState);
+        final onboardingRedirect = OnboardingRoutes.onboardingGuard(
+          context,
+          state,
+          sessionState,
+        );
         if (onboardingRedirect != null) return onboardingRedirect;
 
         final homeRedirect = HomeRoutes.homeGuard(context, state, sessionState);
@@ -58,3 +65,24 @@ abstract class AppRoutes {
     );
   }
 }
+
+/*abstract class AppRoutes {
+  static GoRouter createRouter(SessionCubit sessionCubit) {
+    return GoRouter(
+      // 1. ALTERADO: Aponta diretamente para a rota do grupo com um ID de teste
+      initialLocation: '${GroupRoutes.groupDetails}?group_id=1',
+      refreshListenable: GoRouterRefreshStream(sessionCubit.stream),
+      routes: [
+        ...SplashRoutes.routes,
+        ...AuthRoutes.routes,
+        ...OnboardingRoutes.routes,
+        ...HomeRoutes.routes,
+        ...GroupRoutes.routes,
+      ],
+      // 2. ALTERADO: Retorna null imediatamente para ignorar todos os guards de login/splash
+      redirect: (context, state) {
+        return null; // Força a permanência na rota inicial definida
+      },
+    );
+  }
+}*/

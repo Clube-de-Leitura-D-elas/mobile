@@ -28,7 +28,9 @@ class GroupDetailsPage extends StatelessWidget {
             coverImage: group.coverImageUrl != null
                 ? NetworkImage(group.coverImageUrl!)
                 : null,
+            whatsappUrl: group.whatsappUrl,
           ),
+
         };
       },
     );

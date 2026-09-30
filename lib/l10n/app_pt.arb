@@ -221,6 +221,11 @@
   "@groupOpenWhatsAppButton": {
     "description": "Botão para abrir o grupo no WhatsApp"
   },
+  "whatsappLaunchError": "Não foi possível abrir o link do WhatsApp.",
+  "@whatsappLaunchError": {
+    "description": "Mensagem de erro exibida quando falha a abertura do link do WhatsApp"
+  },
+
   "groupRecommendBookButton": "Indicar livro",
   "@groupRecommendBookButton": {
     "description": "Botão para indicar um livro ao grupo"

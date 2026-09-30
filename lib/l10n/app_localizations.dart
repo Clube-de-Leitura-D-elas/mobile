@@ -397,10 +397,10 @@ abstract class AppLocalizations {
   /// **'Participantes'**
   String get groupParticipantsTitle;
 
-  /// Contagem de participantes do grupo, com singular/plural
+  /// Quantidade de participantes do grupo
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, one {1 participante} other {{count} participantes}}'**
+  /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
   String groupParticipantsCount(int count);
 
   /// Botão para abrir o grupo no WhatsApp
@@ -408,6 +408,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Abrir Whatsapp'**
   String get groupOpenWhatsAppButton;
+
+  /// Mensagem de erro exibida quando falha a abertura do link do WhatsApp
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o link do WhatsApp.'**
+  String get whatsappLaunchError;
 
   /// Botão para indicar um livro ao grupo
   ///
@@ -420,6 +426,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Foto do grupo {name}'**
   String groupCoverSemanticLabel(String name);
+
+  /// Rótulo da seção de próximo encontro no card de grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo evento'**
+  String get groupNextMeetingLabel;
+
+  /// Botão para recusar presença no próximo encontro do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Não irei'**
+  String get groupDeclineMeetingButton;
+
+  /// Botão para confirmar presença no próximo encontro do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar presença'**
+  String get groupConfirmMeetingButton;
 
   /// Título principal do review de cadastro
   ///
@@ -558,24 +582,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Selecione'**
   String get selectOptionHint;
-
-  /// Rótulo da seção de próximo encontro no card de grupo
-  ///
-  /// In pt, this message translates to:
-  /// **'Próximo evento'**
-  String get groupNextMeetingLabel;
-
-  /// Botão para recusar presença no próximo encontro do grupo
-  ///
-  /// In pt, this message translates to:
-  /// **'Não irei'**
-  String get groupDeclineMeetingButton;
-
-  /// Botão para confirmar presença no próximo encontro do grupo
-  ///
-  /// In pt, this message translates to:
-  /// **'Confirmar presença'**
-  String get groupConfirmMeetingButton;
 }
 
 class _AppLocalizationsDelegate

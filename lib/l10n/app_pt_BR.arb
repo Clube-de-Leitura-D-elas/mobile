@@ -61,6 +61,8 @@
   "groupParticipantsTitle": "Participantes",
   "groupParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
   "groupOpenWhatsAppButton": "Abrir Whatsapp",
+  "whatsappLaunchError": "Não foi possível abrir o link do WhatsApp.",
+
   "groupRecommendBookButton": "Indicar livro",
   "groupCoverSemanticLabel": "Foto do grupo {name}",
 
