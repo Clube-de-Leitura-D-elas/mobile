@@ -4,12 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
+
+class MockGroupParticipantsRepository extends Mock
+    implements GroupParticipantsRepository {}
 
 void main() {
   late MockGroupRepository mockRepository;
@@ -27,9 +32,20 @@ void main() {
     serviceLocator.registerFactory<GroupDetailsCubit>(
       () => GroupDetailsCubit(groupRepository: mockRepository),
     );
+    if (serviceLocator.isRegistered<GroupParticipantsCubit>()) {
+      serviceLocator.unregister<GroupParticipantsCubit>();
+    }
+    serviceLocator.registerFactory<GroupParticipantsCubit>(
+      () => GroupParticipantsCubit(
+        participantsRepository: MockGroupParticipantsRepository(),
+      ),
+    );
   });
 
   tearDown(() {
+    if (serviceLocator.isRegistered<GroupParticipantsCubit>()) {
+      serviceLocator.unregister<GroupParticipantsCubit>();
+    }
     if (serviceLocator.isRegistered<GroupDetailsCubit>()) {
       serviceLocator.unregister<GroupDetailsCubit>();
     }

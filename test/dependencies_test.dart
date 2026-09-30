@@ -9,7 +9,10 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
+import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -53,6 +56,11 @@ void main() {
       expect(serviceLocator.isRegistered<SessionCubit>(), isTrue);
       expect(serviceLocator.isRegistered<GroupRepository>(), isTrue);
       expect(serviceLocator<GroupRepository>(), isA<GroupRepositoryImpl>());
+      expect(
+        serviceLocator<GroupParticipantsRepository>(),
+        isA<GroupParticipantsRepositoryImpl>(),
+      );
+      expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
     },
   );
 }

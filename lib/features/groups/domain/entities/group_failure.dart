@@ -16,6 +16,12 @@ class GroupDetailsFailure extends GroupFailure {
   });
 }
 
+class GroupParticipantsFailure extends GroupFailure {
+  const GroupParticipantsFailure({
+    super.message = 'Não foi possível carregar as participantes do grupo.',
+  });
+}
+
 class GroupNotFoundFailure extends GroupFailure {
   const GroupNotFoundFailure({super.message = 'Grupo não encontrado.'});
 }

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 
 abstract class GroupRoutes {
@@ -15,8 +16,17 @@ abstract class GroupRoutes {
         final groupId = state.uri.queryParameters['group_id'] ?? '';
         return AppPageTransitions.createPushPage(
           state: state,
-          child: BlocProvider(
-            create: (_) => serviceLocator<GroupDetailsCubit>()..load(groupId),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<GroupDetailsCubit>()..load(groupId),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<GroupParticipantsCubit>()..load(groupId),
+              ),
+            ],
             child: const GroupDetailsPage(),
           ),
         );

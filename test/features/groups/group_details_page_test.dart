@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
+import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
@@ -17,8 +20,12 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
+class MockGroupParticipantsRepository extends Mock
+    implements GroupParticipantsRepository {}
+
 void main() {
   late MockGroupRepository mockRepository;
+  late MockGroupParticipantsRepository mockParticipantsRepository;
 
   const group = GroupDetailsEntity(
     name: '45',
@@ -30,6 +37,14 @@ void main() {
 
   setUp(() {
     mockRepository = MockGroupRepository();
+    mockParticipantsRepository = MockGroupParticipantsRepository();
+    when(
+      () => mockParticipantsRepository.getParticipants('group-1'),
+    ).thenAnswer(
+      (_) async => const Success([
+        GroupParticipantEntity(id: 'p-1', name: 'Ana Beatriz'),
+      ]),
+    );
     serviceLocator.allowReassignment = true;
     if (serviceLocator.isRegistered<GroupRepository>()) {
       serviceLocator.unregister<GroupRepository>();
@@ -48,10 +63,19 @@ void main() {
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     locale: const Locale('pt', 'BR'),
-    home: BlocProvider(
-      create: (_) =>
-          GroupDetailsCubit(groupRepository: serviceLocator<GroupRepository>())
-            ..load('group-1'),
+    home: MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => GroupDetailsCubit(
+            groupRepository: serviceLocator<GroupRepository>(),
+          )..load('group-1'),
+        ),
+        BlocProvider(
+          create: (_) => GroupParticipantsCubit(
+            participantsRepository: mockParticipantsRepository,
+          )..load('group-1'),
+        ),
+      ],
       child: const GroupDetailsPage(),
     ),
   );
@@ -105,6 +129,7 @@ void main() {
     expect(find.text('34 participantes'), findsOneWidget);
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.text('Ana Beatriz'), findsOneWidget);
   });
 
   testWidgets('uses the network cover image when the group has a URL', (
