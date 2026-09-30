@@ -34,7 +34,7 @@ abstract class GroupRoutes {
           state: state,
           child: BlocProvider(
             create: (_) => serviceLocator<GroupDetailsCubit>()..load(groupId),
-            child: const GroupDetailsPage(),
+            child: GroupDetailsPage(groupId: groupId),
           ),
         );
       },

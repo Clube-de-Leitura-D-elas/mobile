@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
@@ -124,4 +125,41 @@ void main() {
     expect(find.text('Quarto de Despejo'), findsOneWidget);
     verify(() => mockRepository.getEventHistory('group-1')).called(1);
   });
+
+  testWidgets(
+    'opens event history from group details using the current group ID',
+    (tester) async {
+      when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
+        (_) async => const Success(
+          GroupDetailsEntity(
+            name: 'Grupo 1',
+            genres: ['Ficção'],
+            participantCount: 5,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+          ),
+        ),
+      );
+      when(() => mockRepository.getEventHistory('group-1')).thenAnswer(
+        (_) async => const Success([
+          GroupMeeting(
+            id: 'meeting-1',
+            bookTitle: 'Quarto de Despejo',
+            hostName: 'Ana Souza',
+            date: '2026-08-22T00:00:00Z',
+            location: '',
+          ),
+        ]),
+      );
+
+      await pumpRoute(tester, '/group-details?group_id=group-1');
+      final historyAction = find.text('Histórico de eventos');
+      await tester.ensureVisible(historyAction);
+      await tester.tap(historyAction);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Quarto de Despejo'), findsOneWidget);
+      verify(() => mockRepository.getEventHistory('group-1')).called(1);
+    },
+  );
 }
