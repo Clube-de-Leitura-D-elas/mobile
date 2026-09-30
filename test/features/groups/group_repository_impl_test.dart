@@ -4,8 +4,10 @@ import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
+import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -27,6 +29,48 @@ void main() {
   setUp(() {
     mockSupabaseService = MockSupabaseService();
     repository = GroupRepositoryImpl(supabaseService: mockSupabaseService);
+  });
+
+  test('maps the authenticated participant groups response', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<List<GroupModel>>(
+        functionName: 'get-my-groups',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer((invocation) async {
+      final decoder =
+          invocation.namedArguments[#decoder]
+              as List<GroupModel> Function(dynamic);
+      return Success<SupabaseResponse<List<GroupModel>>, SupabaseFailure>(
+        SupabaseResponse(
+          data: decoder({
+            'groups': [
+              {
+                'id': 'group-1',
+                'name': 'Group 1',
+                'participant_count': 2,
+                'city_state': 'Porto Alegre, RS',
+                'photo_url': null,
+              },
+            ],
+          }),
+        ),
+      );
+    });
+
+    final result = await repository.getMyGroups();
+
+    expect(
+      result,
+      const Success<List<GroupEntity>, GroupFailure>([
+        GroupEntity(
+          id: 'group-1',
+          name: 'Group 1',
+          participantsCount: 2,
+          cityState: 'Porto Alegre, RS',
+        ),
+      ]),
+    );
   });
 
   test('maps the Edge Function JSON response to GroupDetailsEntity', () async {

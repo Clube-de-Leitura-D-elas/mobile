@@ -79,7 +79,7 @@ class DependenciesContainer {
     );
 
     serviceLocator.registerFactory<HomeCubit>(
-      () => HomeCubit(),
+      () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
     );
   }
 }

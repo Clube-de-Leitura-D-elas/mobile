@@ -1,26 +1,40 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/groups/data/mock_groups.dart';
-import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(const HomeState());
+  final GroupRepository groupRepository;
 
-  void loadGroups({List<GroupEntity>? initialGroups}) {
+  HomeCubit({required this.groupRepository}) : super(const HomeState());
+
+  Future<void> loadGroups() async {
     emit(state.copyWith(status: HomeStatus.loading));
 
-    final groups = initialGroups ?? MockGroups.defaultGroups;
-    // In Figma node 644:1225, Grupo 1 and Grupo 12 are expanded; Grupo 27 is collapsed.
-    final initialExpanded = groups
-        .where((g) => g.id != '27')
-        .map((g) => g.id)
-        .toSet();
+    final result = await groupRepository.getMyGroups();
+    if (isClosed) return;
 
-    emit(state.copyWith(
-      status: HomeStatus.loaded,
-      groups: groups,
-      expandedGroupIds: initialExpanded,
-    ));
+    switch (result) {
+      case Failure(:final failure):
+        emit(
+          state.copyWith(
+            status: HomeStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
+      case Success(:final data):
+        final expandedGroupIds = data
+            .where((group) => group.nextMeeting != null)
+            .map((group) => group.id)
+            .toSet();
+        emit(
+          state.copyWith(
+            status: HomeStatus.loaded,
+            groups: data,
+            expandedGroupIds: expandedGroupIds,
+          ),
+        );
+    }
   }
 
   void toggleCardExpansion(String groupId) {
