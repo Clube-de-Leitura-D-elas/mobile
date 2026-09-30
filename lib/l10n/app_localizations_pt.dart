@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -285,13 +284,28 @@ class AppLocalizationsPt extends AppLocalizations {
   String get selectOptionHint => 'Selecione';
 
   @override
-  String get groupNextMeetingLabel => 'Próximo evento';
+  String get myGroupsTitle => 'Meus grupos';
 
   @override
-  String get groupDeclineMeetingButton => 'Não irei';
+  String get searchGroupPlaceholder => 'Buscar grupo';
 
   @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -460,7 +474,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
-      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -490,6 +503,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get groupEventHistoryEmpty =>
       'Este grupo ainda não realizou encontros.';
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
@@ -564,4 +584,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get selectOptionHint => 'Selecione';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }

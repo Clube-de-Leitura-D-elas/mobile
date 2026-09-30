@@ -91,5 +91,16 @@
   "onboardingWelcomeTitle": "Seja Bem-vinda",
   "onboardingWelcomeSubtitle": "Sua inscrição foi realizada com sucesso!",
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
-  "selectOptionHint": "Selecione"
+  "selectOptionHint": "Selecione",
+  "groupNextMeetingLabel": "Próximo evento",
+  "groupDeclineMeetingButton": "Não irei",
+  "groupConfirmMeetingButton": "Confirmar presença",
+  "groupParticipantsCount": "{count, plural, one {1 participante} other {{count} participantes}}",
+  "myGroupsTitle": "Meus grupos",
+  "searchGroupPlaceholder": "Buscar grupo",
+  "filterAll": "Todos",
+  "filterUnanswered": "Não respondidos ({count})",
+  "filterAnswered": "Respondidos",
+  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui."
 }

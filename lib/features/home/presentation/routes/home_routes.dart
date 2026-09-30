@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
@@ -18,9 +20,12 @@ abstract class HomeRoutes {
             final sessionState = context.read<SessionCubit>().state;
             Widget child = const Scaffold(body: SizedBox.shrink());
             if (sessionState is AuthenticatedSession) {
-              child = HomeScreen(
-                user: sessionState.user,
-                profile: sessionState.profile,
+              child = BlocProvider(
+                create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
+                child: HomeScreen(
+                  user: sessionState.user,
+                  profile: sessionState.profile,
+                ),
               );
             }
             return AppPageTransitions.createFadePage(
