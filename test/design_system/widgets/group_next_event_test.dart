@@ -21,7 +21,7 @@ void main() {
           status: GroupNextEventStatus.loaded,
           data: GroupNextEventData(
             location: 'Porto Alegre, RS',
-            date: DateTime.utc(2026, 8, 29),
+            date: DateTime(2026, 8, 29),
             hostName: 'Roberta',
           ),
         ),
@@ -83,7 +83,7 @@ void main() {
           status: GroupNextEventStatus.loaded,
           data: GroupNextEventData(
             location: 'Uma localização muito extensa para a largura disponível',
-            date: DateTime.utc(2026, 8, 29),
+            date: DateTime(2026, 8, 29),
             hostName: 'Roberta',
           ),
         ),

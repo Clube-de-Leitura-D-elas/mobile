@@ -26,6 +26,7 @@ class GroupNextEvent extends StatelessWidget {
     super.key,
     this.status = GroupNextEventStatus.empty,
     this.data,
+    this.onEventHistoryPressed,
   }) : assert(
          status != GroupNextEventStatus.loaded || data != null,
          'Loaded state requires event data.',
@@ -33,6 +34,10 @@ class GroupNextEvent extends StatelessWidget {
 
   final GroupNextEventStatus status;
   final GroupNextEventData? data;
+
+  /// Called when the user taps the "Ver histórico de eventos" link.
+  /// When null, the link is not rendered.
+  final VoidCallback? onEventHistoryPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +53,7 @@ class GroupNextEvent extends StatelessWidget {
       ),
       GroupNextEventStatus.loaded when data != null => _EventDetails(
         data: data!,
+        onEventHistoryPressed: onEventHistoryPressed,
       ),
       GroupNextEventStatus.loaded => _MessageState(
         icon: Icons.error_outline,
@@ -58,14 +64,15 @@ class GroupNextEvent extends StatelessWidget {
 }
 
 class _EventDetails extends StatelessWidget {
-  const _EventDetails({required this.data});
+  const _EventDetails({required this.data, this.onEventHistoryPressed});
 
   final GroupNextEventData data;
+  final VoidCallback? onEventHistoryPressed;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
-    final date = DateFormat('dd/MM/yyyy', 'pt_BR').format(data.date);
+    final date = DateFormat('dd/MM/yyyy', 'pt_BR').format(data.date.toLocal());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -89,6 +96,29 @@ class _EventDetails extends StatelessWidget {
           icon: AppIcons.user,
           label: context.l10n.groupNextEventHost(data.hostName),
         ),
+        if (onEventHistoryPressed != null) ...[
+          SizedBox(height: spacing.s12),
+          Center(
+            child: Semantics(
+              button: true,
+              enabled: true,
+              label: context.l10n.groupEventHistoryDetailsLink,
+              child: InkWell(
+                onTap: onEventHistoryPressed,
+                borderRadius: BorderRadius.circular(spacing.s4),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: spacing.s4),
+                  child: Text(
+                    context.l10n.groupEventHistoryDetailsLink,
+                    style: context.text.bodySmallEmphasis.copyWith(
+                      color: context.colors.textBrand,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }

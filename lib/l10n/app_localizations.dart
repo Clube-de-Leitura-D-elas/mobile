@@ -403,6 +403,12 @@ abstract class AppLocalizations {
   /// **'Anfitriã: {name}'**
   String groupNextEventHost(String name);
 
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
   /// Título da seção de participantes nos detalhes do grupo
   ///
   /// In pt, this message translates to:
