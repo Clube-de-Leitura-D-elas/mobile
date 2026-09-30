@@ -234,6 +234,22 @@
       }
     }
   },
+  "groupParticipantsEmpty": "Ainda não há outras participantes neste grupo.",
+  "@groupParticipantsEmpty": {
+    "description": "Mensagem quando o grupo só tem a coordenadora"
+  },
+  "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
+  "@groupParticipantsLoadError": {
+    "description": "Erro ao buscar a lista de participantes do grupo"
+  },
+  "groupParticipantsRetryButton": "Tentar novamente",
+  "@groupParticipantsRetryButton": {
+    "description": "Botão para buscar de novo a lista de participantes após erro"
+  },
+  "groupParticipantsLoading": "Carregando participantes",
+  "@groupParticipantsLoading": {
+    "description": "Rótulo acessível do estado de carregamento da lista de participantes"
+  },
   "groupNextMeetingLabel": "Próximo evento",
   "@groupNextMeetingLabel": {
     "description": "Rótulo da seção de próximo encontro no card de grupo"

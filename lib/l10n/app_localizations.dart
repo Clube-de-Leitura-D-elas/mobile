@@ -421,6 +421,30 @@ abstract class AppLocalizations {
   /// **'Foto do grupo {name}'**
   String groupCoverSemanticLabel(String name);
 
+  /// Mensagem quando o grupo só tem a coordenadora
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há outras participantes neste grupo.'**
+  String get groupParticipantsEmpty;
+
+  /// Erro ao buscar a lista de participantes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar as participantes.'**
+  String get groupParticipantsLoadError;
+
+  /// Botão para buscar de novo a lista de participantes após erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get groupParticipantsRetryButton;
+
+  /// Rótulo acessível do estado de carregamento da lista de participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando participantes'**
+  String get groupParticipantsLoading;
+
   /// Rótulo da seção de próximo encontro no card de grupo
   ///
   /// In pt, this message translates to:

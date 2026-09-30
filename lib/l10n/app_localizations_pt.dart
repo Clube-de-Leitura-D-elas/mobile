@@ -186,6 +186,20 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há outras participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
   String get groupNextMeetingLabel => 'Próximo evento';
 
   @override
@@ -473,6 +487,20 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupCoverSemanticLabel(String name) {
     return 'Foto do grupo $name';
   }
+
+  @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há outras participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
 
   @override
   String get groupNextMeetingLabel => 'Próximo evento';

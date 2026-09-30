@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
+import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key});
@@ -28,6 +29,7 @@ class GroupDetailsPage extends StatelessWidget {
             coverImage: group.coverImageUrl != null
                 ? NetworkImage(group.coverImageUrl!)
                 : null,
+            participantsContent: const GroupParticipantsContent(),
           ),
         };
       },
