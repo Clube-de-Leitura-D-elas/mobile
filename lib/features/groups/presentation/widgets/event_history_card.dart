@@ -27,7 +27,7 @@ class EventHistoryCard extends StatelessWidget {
         : DateFormat(
             'dd/MM/yyyy',
             Localizations.localeOf(context).toString(),
-          ).format(parsedDate);
+          ).format(parsedDate.toLocal());
 
     return AppCard(
       child: Row(

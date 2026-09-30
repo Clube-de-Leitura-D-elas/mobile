@@ -100,6 +100,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                       if (widget.bookContent != null) widget.bookContent!,
                     ],
                   ),
+                  SizedBox(height: spacing.s24),
                   GroupSection(
                     title: l10n.groupParticipantsTitle,
                     count: widget.participantCount,

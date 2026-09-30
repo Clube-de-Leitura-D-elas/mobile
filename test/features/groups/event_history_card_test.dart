@@ -78,10 +78,11 @@ void main() {
   });
 
   testWidgets('formats an ISO meeting date for display', (tester) async {
+    // 12:00 UTC nunca vira o dia ao converter para qualquer fuso das Américas.
     const meeting = GroupMeeting(
       bookTitle: 'Quarto de Despejo',
       hostName: 'Ana Souza',
-      date: '2026-08-22T00:00:00Z',
+      date: '2026-08-22T12:00:00Z',
       location: 'Biblioteca Municipal',
     );
     await tester.pumpWidget(_wrap(const EventHistoryCard(meeting: meeting)));
