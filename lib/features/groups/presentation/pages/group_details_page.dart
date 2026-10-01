@@ -10,7 +10,6 @@ import 'package:mobile/features/groups/presentation/cubit/next_event_state.dart'
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
-import 'package:mobile/core/extensions/build_context_l10n.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key, required this.groupId});
@@ -30,7 +29,7 @@ class GroupDetailsPage extends StatelessWidget {
             body: Center(child: Text(message)),
           ),
           GroupDetailsLoaded(:final group) => GroupDetailsScreen(
-            name: context.l10n.groupDetailsNumberLabel(int.parse(group.name)),
+            name: group.name,
             genres: group.genres,
             participantCount: group.participantCount,
             city: group.city,
@@ -69,10 +68,9 @@ class GroupDetailsPage extends StatelessWidget {
   GroupNextEventData? _toWidgetData(NextEventState state) {
     if (state is! NextEventLoaded) return null;
     final NextEventEntity event = state.event;
-    final DateTime? parsed = DateTime.tryParse(event.date);
     return GroupNextEventData(
       location: event.location,
-      date: parsed ?? DateTime.now(),
+      date: event.date,
       hostName: event.hostName,
     );
   }

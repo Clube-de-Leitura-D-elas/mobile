@@ -18,7 +18,7 @@ void main() {
 
     expect(model, isNotNull);
     expect(model!.location, 'Porto Alegre, RS');
-    expect(model.date, '2026-09-15T21:30:00Z');
+    expect(model.date, DateTime.utc(2026, 9, 15, 21, 30));
     expect(model.hostName, 'Roberta');
   });
 
@@ -51,7 +51,7 @@ void main() {
     final model = NextEventModel.fromJson(validInnerJson);
 
     expect(model.location, 'Porto Alegre, RS');
-    expect(model.date, '2026-09-15T21:30:00Z');
+    expect(model.date, DateTime.utc(2026, 9, 15, 21, 30));
     expect(model.hostName, 'Roberta');
   });
 
@@ -64,16 +64,27 @@ void main() {
 
   test('fromJson throws FormatException when required fields are missing', () {
     expect(
-      () => NextEventModel.fromJson({'location_name': 'Porto Alegre'}),
+      () => NextEventModel.fromJson(const {'location_name': 'Porto Alegre'}),
       throwsA(isA<FormatException>()),
     );
   });
 
   test('fromJson throws FormatException when field types are wrong', () {
     expect(
-      () => NextEventModel.fromJson({
+      () => NextEventModel.fromJson(const {
         'location_name': 'Porto Alegre, RS',
         'date': 12345,
+        'host_name': 'Roberta',
+      }),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('fromJson throws FormatException when date is not ISO 8601', () {
+    expect(
+      () => NextEventModel.fromJson(const {
+        'location_name': 'Porto Alegre, RS',
+        'date': 'not-a-date',
         'host_name': 'Roberta',
       }),
       throwsA(isA<FormatException>()),
@@ -88,9 +99,9 @@ void main() {
 
     expect(
       entity,
-      const NextEventEntity(
+      NextEventEntity(
         location: 'Porto Alegre, RS',
-        date: '2026-09-15T21:30:00Z',
+        date: DateTime.utc(2026, 9, 15, 21, 30),
         hostName: 'Roberta',
       ),
     );

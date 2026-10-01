@@ -15,9 +15,9 @@ class MockGroupRepository extends Mock implements GroupRepository {}
 void main() {
   late MockGroupRepository mockRepository;
 
-  const event = NextEventEntity(
+  final event = NextEventEntity(
     location: 'Porto Alegre, RS',
-    date: '2026-09-15T21:30:00Z',
+    date: DateTime.utc(2026, 9, 15, 21, 30),
     hostName: 'Roberta',
   );
 
@@ -30,14 +30,11 @@ void main() {
     build: () {
       when(
         () => mockRepository.getNextEvent('group-1'),
-      ).thenAnswer((_) async => const Success(event));
+      ).thenAnswer((_) async => Success(event));
       return NextEventCubit(groupRepository: mockRepository);
     },
     act: (cubit) => cubit.load('group-1'),
-    expect: () => [
-      const NextEventLoading(),
-      const NextEventLoaded(event),
-    ],
+    expect: () => [const NextEventLoading(), NextEventLoaded(event)],
   );
 
   blocTest<NextEventCubit, NextEventState>(
@@ -55,9 +52,7 @@ void main() {
   blocTest<NextEventCubit, NextEventState>(
     'emits loading then error when request fails',
     build: () {
-      when(
-        () => mockRepository.getNextEvent('group-1'),
-      ).thenAnswer(
+      when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
         (_) async => const Failure(
           GroupNextEventFailure(message: 'Falha ao carregar próximo evento'),
         ),
@@ -72,8 +67,7 @@ void main() {
   );
 
   test('does not emit after being closed during load', () async {
-    final response =
-        Completer<Result<NextEventEntity?, GroupFailure>>();
+    final response = Completer<Result<NextEventEntity?, GroupFailure>>();
     when(
       () => mockRepository.getNextEvent('group-1'),
     ).thenAnswer((_) => response.future);
@@ -84,7 +78,7 @@ void main() {
 
     final load = cubit.load('group-1');
     await cubit.close();
-    response.complete(const Success(event));
+    response.complete(Success(event));
     await load;
     await subscription.cancel();
 

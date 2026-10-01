@@ -292,9 +292,8 @@ void main() {
       ),
     ).thenAnswer((invocation) async {
       final decoder =
-          invocation.namedArguments[#decoder] as NextEventModel? Function(
-            dynamic,
-          );
+          invocation.namedArguments[#decoder]
+              as NextEventModel? Function(dynamic);
       return Success<SupabaseResponse<NextEventModel?>, SupabaseFailure>(
         SupabaseResponse(data: decoder(nextEventEnvelope)),
       );
@@ -304,10 +303,10 @@ void main() {
 
     expect(
       result,
-      const Success<NextEventEntity?, GroupFailure>(
+      Success<NextEventEntity?, GroupFailure>(
         NextEventEntity(
           location: 'Porto Alegre, RS',
-          date: '2026-09-15T21:30:00Z',
+          date: DateTime.utc(2026, 9, 15, 21, 30),
           hostName: 'Roberta',
         ),
       ),
@@ -325,9 +324,8 @@ void main() {
       ),
     ).thenAnswer((invocation) async {
       final decoder =
-          invocation.namedArguments[#decoder] as NextEventModel? Function(
-            dynamic,
-          );
+          invocation.namedArguments[#decoder]
+              as NextEventModel? Function(dynamic);
       return Success<SupabaseResponse<NextEventModel?>, SupabaseFailure>(
         SupabaseResponse(data: decoder(noEventEnvelope)),
       );

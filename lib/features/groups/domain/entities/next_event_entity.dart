@@ -2,8 +2,7 @@ import 'package:equatable/equatable.dart';
 
 /// Representa o próximo encontro agendado de um grupo.
 ///
-/// A data é armazenada como string ISO 8601 (conforme entregue pelo Supabase).
-/// A conversão para fuso local é responsabilidade da camada de apresentação.
+/// A data é validada e convertida do ISO 8601 pela camada de dados.
 class NextEventEntity extends Equatable {
   const NextEventEntity({
     required this.location,
@@ -13,8 +12,7 @@ class NextEventEntity extends Equatable {
 
   final String location;
 
-  /// Data/hora do encontro em formato ISO 8601 (ex: "2026-09-15T21:30:00Z").
-  final String date;
+  final DateTime date;
 
   final String hostName;
 

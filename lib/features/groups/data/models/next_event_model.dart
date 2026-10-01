@@ -34,20 +34,20 @@ class NextEventModel extends NextEventEntity {
     if (date is! String || hostName is! String) {
       throw const FormatException('Invalid next event response.');
     }
+    final parsedDate = DateTime.tryParse(date);
+    if (parsedDate == null) {
+      throw const FormatException('Invalid next event date.');
+    }
 
     return NextEventModel(
       // location_name pode ser null quando o encontro não tem local definido.
       location: locationName is String ? locationName : '',
-      date: date,
+      date: parsedDate,
       hostName: hostName,
     );
   }
 
   NextEventEntity toDomain() {
-    return NextEventEntity(
-      location: location,
-      date: date,
-      hostName: hostName,
-    );
+    return NextEventEntity(location: location, date: date, hostName: hostName);
   }
 }

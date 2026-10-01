@@ -15,13 +15,13 @@ class GroupModel extends GroupEntity {
     }
 
     final id = json['id'];
-    final number = json['number'];
+    final number = _parseNumber(json['number'], json['name']);
     final participantsCount = json['participant_count'];
     final cityState = json['city_state'];
     final photoUrl = json['photo_url'];
 
     if (id is! String ||
-        number is! int ||
+        number == null ||
         participantsCount is! int ||
         cityState is! String ||
         (photoUrl != null && photoUrl is! String)) {
@@ -35,6 +35,14 @@ class GroupModel extends GroupEntity {
       cityState: cityState,
       photoUrl: photoUrl as String?,
     );
+  }
+
+  static int? _parseNumber(dynamic number, dynamic name) {
+    if (number is int) return number;
+    if (name is! String) return null;
+
+    return int.tryParse(name) ??
+        int.tryParse(RegExp(r'\d+$').firstMatch(name)?.group(0) ?? '');
   }
 
   static List<GroupModel> listFromJson(dynamic json) {
