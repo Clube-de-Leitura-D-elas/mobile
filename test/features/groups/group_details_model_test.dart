@@ -20,14 +20,39 @@ void main() {
       expect(model.whatsappUrl, 'https://chat.whatsapp.com/ABC123xyz');
     });
 
-    test('given json without whatsapp_url, when fromJson, whatsappUrl is null', () {
-      final jsonWithoutWhatsapp = Map<String, dynamic>.from(validJson)
-        ..remove('whatsapp_url');
+    test(
+      'given json without whatsapp_url, when fromJson, whatsappUrl is null',
+      () {
+        final jsonWithoutWhatsapp = Map<String, dynamic>.from(validJson)
+          ..remove('whatsapp_url');
 
-      final model = GroupDetailsModel.fromJson(jsonWithoutWhatsapp);
+        final model = GroupDetailsModel.fromJson(jsonWithoutWhatsapp);
 
-      expect(model.whatsappUrl, isNull);
-    });
+        expect(model.whatsappUrl, isNull);
+      },
+    );
+
+    test(
+      'given json with null whatsapp_url, when fromJson, then whatsappUrl is null',
+      () {
+        final json = Map<String, dynamic>.from(validJson)
+          ..['whatsapp_url'] = null;
+
+        final model = GroupDetailsModel.fromJson(json);
+
+        expect(model.whatsappUrl, isNull);
+      },
+    );
+
+    test(
+      'given json with non-string whatsapp_url, when fromJson, then throws FormatException',
+      () {
+        final json = Map<String, dynamic>.from(validJson)
+          ..['whatsapp_url'] = 123;
+
+        expect(() => GroupDetailsModel.fromJson(json), throwsFormatException);
+      },
+    );
 
     test('given model, when toDomain, returns entity with whatsappUrl', () {
       final model = GroupDetailsModel.fromJson(validJson);

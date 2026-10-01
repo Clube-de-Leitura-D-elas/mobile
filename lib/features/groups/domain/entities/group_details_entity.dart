@@ -21,12 +21,12 @@ class GroupDetailsEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        name,
-        genres,
-        participantCount,
-        city,
-        stateCode,
-        coverImageUrl,
-        whatsappUrl,
-      ];
+    name,
+    genres,
+    participantCount,
+    city,
+    stateCode,
+    coverImageUrl,
+    whatsappUrl,
+  ];
 }

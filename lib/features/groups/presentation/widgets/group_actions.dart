@@ -4,11 +4,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 
 class GroupActions extends StatelessWidget {
-  const GroupActions({
-    super.key,
-    this.whatsappUrl,
-    this.onOpenWhatsApp,
-  });
+  const GroupActions({super.key, this.whatsappUrl, this.onOpenWhatsApp});
 
   final String? whatsappUrl;
   final Future<bool> Function(Uri url)? onOpenWhatsApp;
@@ -20,17 +16,18 @@ class GroupActions extends StatelessWidget {
     if (!_hasWhatsAppUrl) return;
 
     final uri = Uri.tryParse(whatsappUrl!.trim());
-    if (uri == null || (!uri.isScheme('http') && !uri.isScheme('https'))) {
+    if (uri == null || !uri.isScheme('https')) {
       _showErrorSnackBar(context);
       return;
     }
 
     try {
-      final launchFn = onOpenWhatsApp ??
+      final launchFn =
+          onOpenWhatsApp ??
           (url) => launcher.launchUrl(
-                url,
-                mode: launcher.LaunchMode.externalApplication,
-              );
+            url,
+            mode: launcher.LaunchMode.externalApplication,
+          );
       final success = await launchFn(uri);
       if (!success && context.mounted) {
         _showErrorSnackBar(context);
@@ -43,11 +40,9 @@ class GroupActions extends StatelessWidget {
   }
 
   void _showErrorSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(context.l10n.whatsappLaunchError),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.whatsappLaunchError)));
   }
 
   @override
@@ -60,8 +55,9 @@ class GroupActions extends StatelessWidget {
           AppButton.secondary(
             label: l10n.groupOpenWhatsAppButton,
             size: AppButtonSize.sm,
-            onPressed:
-                _hasWhatsAppUrl ? () => _handleWhatsAppTap(context) : null,
+            onPressed: _hasWhatsAppUrl
+                ? () => _handleWhatsAppTap(context)
+                : null,
           ),
           AppButton.primary(
             label: l10n.groupRecommendBookButton,

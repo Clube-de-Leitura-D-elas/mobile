@@ -75,9 +75,9 @@ void main() {
           )..load('group-1'),
         ),
         BlocProvider(
-          create: (_) => NextEventCubit(
-            groupRepository: serviceLocator<GroupRepository>(),
-          )..load('group-1'),
+          create: (_) =>
+              NextEventCubit(groupRepository: serviceLocator<GroupRepository>())
+                ..load('group-1'),
         ),
         BlocProvider(
           create: (_) => GroupParticipantsCubit(
@@ -193,4 +193,3 @@ void main() {
     expect(screen.whatsappUrl, 'https://chat.whatsapp.com/ABC123xyz');
   });
 }
-

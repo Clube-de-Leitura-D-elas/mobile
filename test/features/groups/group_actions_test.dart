@@ -6,37 +6,39 @@ import 'package:mobile/l10n/app_localizations.dart';
 
 void main() {
   Widget buildSubject(Widget child) => MaterialApp(
-        theme: AppTheme.light,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('pt', 'BR'),
-        home: Scaffold(body: child),
-      );
+    theme: AppTheme.light,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    locale: const Locale('pt', 'BR'),
+    home: Scaffold(body: child),
+  );
 
   group('GroupActions', () {
-    testWidgets('given null whatsappUrl, when rendered, then whatsapp button is disabled', (
-      tester,
-    ) async {
-      await tester.pumpWidget(buildSubject(const GroupActions()));
+    testWidgets(
+      'given null whatsappUrl, when rendered, then whatsapp button is disabled',
+      (tester) async {
+        await tester.pumpWidget(buildSubject(const GroupActions()));
 
-      final button = tester.widget<AppButton>(
-        find.widgetWithText(AppButton, 'Abrir Whatsapp'),
-      );
-      expect(button.onPressed, isNull);
-    });
+        final button = tester.widget<AppButton>(
+          find.widgetWithText(AppButton, 'Abrir Whatsapp'),
+        );
+        expect(button.onPressed, isNull);
+      },
+    );
 
-    testWidgets('given empty whatsappUrl, when rendered, then whatsapp button is disabled', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        buildSubject(const GroupActions(whatsappUrl: '   ')),
-      );
+    testWidgets(
+      'given empty whatsappUrl, when rendered, then whatsapp button is disabled',
+      (tester) async {
+        await tester.pumpWidget(
+          buildSubject(const GroupActions(whatsappUrl: '   ')),
+        );
 
-      final button = tester.widget<AppButton>(
-        find.widgetWithText(AppButton, 'Abrir Whatsapp'),
-      );
-      expect(button.onPressed, isNull);
-    });
+        final button = tester.widget<AppButton>(
+          find.widgetWithText(AppButton, 'Abrir Whatsapp'),
+        );
+        expect(button.onPressed, isNull);
+      },
+    );
 
     testWidgets(
       'given valid whatsappUrl, when button tapped, then calls onOpenWhatsApp with Uri',
@@ -70,9 +72,7 @@ void main() {
       'given invalid scheme url, when button tapped, then shows error snackbar',
       (tester) async {
         await tester.pumpWidget(
-          buildSubject(
-            const GroupActions(whatsappUrl: 'invalid-url'),
-          ),
+          buildSubject(const GroupActions(whatsappUrl: 'invalid-url')),
         );
 
         await tester.tap(find.text('Abrir Whatsapp'));
