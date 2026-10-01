@@ -6,16 +6,24 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_state.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_photos_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockMeetingDetailsCubit extends Mock implements MeetingDetailsCubit {}
 
+class MockMeetingPhotosCubit extends Mock implements MeetingPhotosCubit {}
+
 Widget _wrap(MeetingDetailsState state) {
   final cubit = MockMeetingDetailsCubit();
   when(() => cubit.state).thenReturn(state);
   when(() => cubit.stream).thenAnswer((_) => Stream.value(state));
+  final photosCubit = MockMeetingPhotosCubit();
+  const photosState = MeetingPhotosState(status: MeetingPhotosStatus.loaded);
+  when(() => photosCubit.state).thenReturn(photosState);
+  when(() => photosCubit.stream).thenAnswer((_) => const Stream.empty());
 
   return MaterialApp(
     theme: AppTheme.light,
@@ -27,8 +35,11 @@ Widget _wrap(MeetingDetailsState state) {
       GlobalWidgetsLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
     ],
-    home: BlocProvider<MeetingDetailsCubit>.value(
-      value: cubit,
+    home: MultiBlocProvider(
+      providers: [
+        BlocProvider<MeetingDetailsCubit>.value(value: cubit),
+        BlocProvider<MeetingPhotosCubit>.value(value: photosCubit),
+      ],
       child: const MeetingDetailsPage(),
     ),
   );
@@ -90,6 +101,7 @@ void main() {
       ]),
     );
     expect(find.byTooltip('Voltar'), findsOneWidget);
+    expect(find.text('Fotos do encontro'), findsOneWidget);
   });
 
   testWidgets('hides the description section when there is no description', (

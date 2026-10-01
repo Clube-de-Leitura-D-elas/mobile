@@ -62,3 +62,27 @@ class GroupMeetingPresenceFailure extends GroupFailure {
     super.message = 'Não foi possível atualizar sua presença. Tente novamente.',
   });
 }
+
+class MeetingPhotosFailure extends GroupFailure {
+  const MeetingPhotosFailure({
+    super.message = 'Não foi possível carregar as fotos do encontro.',
+  });
+}
+
+class MeetingPhotoUploadFailure extends GroupFailure {
+  const MeetingPhotoUploadFailure({
+    super.message = 'Não foi possível enviar a foto.',
+  });
+}
+
+class MeetingPhotoLimitFailure extends GroupFailure {
+  const MeetingPhotoLimitFailure({
+    super.message = 'O encontro já atingiu o limite de fotos.',
+  });
+}
+
+class MeetingPhotoRejectedFailure extends GroupFailure {
+  const MeetingPhotoRejectedFailure({
+    super.message = 'A foto foi recusada e não pode ser enviada.',
+  });
+}

@@ -4,6 +4,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_cover.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_info_card.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_section.dart';
 
 class MeetingDetailsScreen extends StatelessWidget {
   const MeetingDetailsScreen({super.key, required this.meeting});
@@ -32,6 +33,15 @@ class MeetingDetailsScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(spacing.s24),
               child: MeetingInfoCard(meeting: meeting, title: title),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                spacing.s24,
+                0,
+                spacing.s24,
+                spacing.s24,
+              ),
+              child: const MeetingPhotosSection(),
             ),
           ],
         ),

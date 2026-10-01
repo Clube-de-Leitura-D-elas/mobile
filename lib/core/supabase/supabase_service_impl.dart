@@ -6,6 +6,8 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseServiceImpl implements SupabaseService {
+  static const _maxLoggedValueLength = 200;
+
   final SupabaseClient _client;
 
   SupabaseServiceImpl(this._client);
@@ -23,13 +25,13 @@ class SupabaseServiceImpl implements SupabaseService {
     T Function(dynamic data)? decoder,
   }) async {
     try {
-      debugPrint('[SupabaseService] Invoking function "$functionName" with body: $body');
+      if (kDebugMode) debugPrint('[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}');
       final res = await _client.functions.invoke(
         functionName,
         body: body,
       );
 
-      debugPrint('[SupabaseService] Function "$functionName" status: ${res.status}, data: ${res.data}');
+      if (kDebugMode) debugPrint('[SupabaseService] Function "$functionName" status: ${res.status}, data: ${res.data}');
 
       if (res.status >= 400) {
         final message = res.data is Map && res.data['error'] != null
@@ -58,7 +60,7 @@ class SupabaseServiceImpl implements SupabaseService {
         ),
       );
     } on FunctionException catch (e) {
-      debugPrint('[SupabaseService] FunctionException in "$functionName": $e');
+      if (kDebugMode) debugPrint('[SupabaseService] FunctionException in "$functionName": $e');
       final message = e.details is Map && (e.details as Map)['error'] != null
           ? (e.details as Map)['error'].toString()
           : (e.details is String && (e.details as String).isNotEmpty
@@ -72,7 +74,7 @@ class SupabaseServiceImpl implements SupabaseService {
         ),
       );
     } catch (e) {
-      debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
+      if (kDebugMode) debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
       return Failure(
         FunctionSupabaseFailure(
           message: 'Erro inesperado ao chamar a função $functionName',
@@ -80,6 +82,18 @@ class SupabaseServiceImpl implements SupabaseService {
         ),
       );
     }
+  }
+
+  // Fotos vão em base64 no body; logar o valor inteiro trava o console.
+  static Map<String, dynamic>? _loggableBody(Map<String, dynamic>? body) {
+    return body?.map(
+      (key, value) => MapEntry(
+        key,
+        value is String && value.length > _maxLoggedValueLength
+            ? '<${value.length} chars>'
+            : value,
+      ),
+    );
   }
 
   @override
