@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 
@@ -46,7 +47,9 @@ class MeetingCover extends StatelessWidget {
                     tooltip: l10n.back,
                     icon: const Icon(Icons.arrow_back),
                     color: colors.textDefault,
-                    onPressed: () => context.pop(),
+                    onPressed: () => context.canPop()
+                        ? context.pop()
+                        : context.go(HomeRoutes.home),
                   ),
                 ),
               ),
