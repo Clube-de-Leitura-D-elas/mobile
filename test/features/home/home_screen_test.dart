@@ -159,9 +159,14 @@ void main() {
         await tester.pumpWidget(buildSubject(homeCubit: homeCubit));
         await tester.pumpAndSettle();
 
-        expect(find.text('Você ainda não participa de nenhum grupo'), findsOneWidget);
         expect(
-          find.text('Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'),
+          find.text('Você ainda não participa de nenhum grupo'),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.',
+          ),
           findsOneWidget,
         );
       },
@@ -172,7 +177,8 @@ void main() {
       (tester) async {
         const longNameGroup = GroupEntity(
           id: '99',
-          name: 'Clube do Livro com Nome Extremamente Longo para Testar Quebra de Linha em Telas Pequenas',
+          name:
+              'Clube do Livro com Nome Extremamente Longo para Testar Quebra de Linha em Telas Pequenas',
           participantsCount: 99,
           cityState: 'São Paulo - SP, Brasil / Região Metropolitana',
           nextMeeting: testMeeting,

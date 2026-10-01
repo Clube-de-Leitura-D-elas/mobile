@@ -201,8 +201,21 @@
 
   "@@Groups": "--- Groups ---",
   "groupNextEventTitle": "Próximo evento",
+  "groupNextEventEmpty": "Nenhum próximo evento agendado",
+  "@groupNextEventEmpty": { "description": "Mensagem exibida quando o grupo não possui próximo evento" },
+  "groupNextEventHost": "Anfitriã: {name}",
+  "@groupNextEventHost": {
+    "description": "Nome da anfitriã do próximo evento",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "@groupNextEventTitle": {
     "description": "Título da seção do próximo evento nos detalhes do grupo"
+  },
+  "groupEventHistoryDetailsLink": "Confira mais detalhes",
+  "@groupEventHistoryDetailsLink": {
+    "description": "Link para abrir os detalhes de um evento realizado"
   },
   "groupParticipantsTitle": "Participantes",
   "@groupParticipantsTitle": {
@@ -233,6 +246,22 @@
         "type": "String"
       }
     }
+  },
+  "groupParticipantsEmpty": "Ainda não há participantes neste grupo.",
+  "@groupParticipantsEmpty": {
+    "description": "Mensagem quando o grupo não tem participantes"
+  },
+  "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
+  "@groupParticipantsLoadError": {
+    "description": "Erro ao buscar a lista de participantes do grupo"
+  },
+  "groupParticipantsRetryButton": "Tentar novamente",
+  "@groupParticipantsRetryButton": {
+    "description": "Botão para buscar de novo a lista de participantes após erro"
+  },
+  "groupParticipantsLoading": "Carregando participantes",
+  "@groupParticipantsLoading": {
+    "description": "Rótulo acessível do estado de carregamento da lista de participantes"
   },
   "groupNextMeetingLabel": "Próximo evento",
   "@groupNextMeetingLabel": {
@@ -391,28 +420,6 @@
   "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
   "selectOptionHint": "Selecione",
   "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
-  "@@Groups": "--- Groups ---",
-  "groupNextMeetingLabel": "Próximo evento",
-  "@groupNextMeetingLabel": {
-    "description": "Rótulo da seção de próximo encontro no card de grupo"
-  },
-  "groupDeclineMeetingButton": "Não irei",
-  "@groupDeclineMeetingButton": {
-    "description": "Botão para recusar presença no próximo encontro do grupo"
-  },
-  "groupConfirmMeetingButton": "Confirmar presença",
-  "@groupConfirmMeetingButton": {
-    "description": "Botão para confirmar presença no próximo encontro do grupo"
-  },
-  "groupParticipantsCount": "{count, plural, one {1 participante} other {{count} participantes}}",
-  "@groupParticipantsCount": {
-    "description": "Contagem de participantes do grupo, com singular/plural",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "myGroupsTitle": "Meus grupos",
   "@myGroupsTitle": {
     "description": "Título principal da tela de grupos"

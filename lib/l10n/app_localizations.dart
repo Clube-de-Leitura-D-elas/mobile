@@ -391,16 +391,34 @@ abstract class AppLocalizations {
   /// **'Próximo evento'**
   String get groupNextEventTitle;
 
+  /// Mensagem exibida quando o grupo não possui próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum próximo evento agendado'**
+  String get groupNextEventEmpty;
+
+  /// Nome da anfitriã do próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String groupNextEventHost(String name);
+
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
   /// Título da seção de participantes nos detalhes do grupo
   ///
   /// In pt, this message translates to:
   /// **'Participantes'**
   String get groupParticipantsTitle;
 
-  /// Contagem de participantes do grupo, com singular/plural
+  /// Quantidade de participantes do grupo
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, one {1 participante} other {{count} participantes}}'**
+  /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
   String groupParticipantsCount(int count);
 
   /// Botão para abrir o grupo no WhatsApp
@@ -420,6 +438,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Foto do grupo {name}'**
   String groupCoverSemanticLabel(String name);
+
+  /// Mensagem quando o grupo não tem participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há participantes neste grupo.'**
+  String get groupParticipantsEmpty;
+
+  /// Erro ao buscar a lista de participantes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar as participantes.'**
+  String get groupParticipantsLoadError;
+
+  /// Botão para buscar de novo a lista de participantes após erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get groupParticipantsRetryButton;
+
+  /// Rótulo acessível do estado de carregamento da lista de participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando participantes'**
+  String get groupParticipantsLoading;
 
   /// Rótulo da seção de próximo encontro no card de grupo
   ///
@@ -450,12 +492,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Anfitriã: {hostName}'**
   String groupEventHistoryHost(String hostName);
-
-  /// Link para abrir os detalhes de um evento realizado
-  ///
-  /// In pt, this message translates to:
-  /// **'Confira mais detalhes'**
-  String get groupEventHistoryDetailsLink;
 
   /// Mensagem exibida quando o grupo não possui encontros realizados
   ///

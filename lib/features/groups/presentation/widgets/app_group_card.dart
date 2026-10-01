@@ -41,6 +41,7 @@ class AppGroupCard extends StatelessWidget {
     final meeting = nextMeeting;
 
     return AppCard(
+      showBorder: false,
       onTap:
           onTap ??
           () => context.push(

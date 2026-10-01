@@ -6,6 +6,7 @@ import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.da
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_page.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
@@ -49,8 +50,17 @@ abstract class GroupRoutes {
         final groupId = state.uri.queryParameters['group_id'] ?? '';
         return AppPageTransitions.createPushPage(
           state: state,
-          child: BlocProvider(
-            create: (_) => serviceLocator<GroupDetailsCubit>()..load(groupId),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<GroupDetailsCubit>()..load(groupId),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<GroupParticipantsCubit>()..load(groupId),
+              ),
+            ],
             child: GroupDetailsPage(groupId: groupId),
           ),
         );

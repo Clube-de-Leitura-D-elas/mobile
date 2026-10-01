@@ -5,6 +5,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_state.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_screen.dart';
+import 'package:mobile/features/groups/presentation/widgets/event_history_message_view.dart';
 
 class EventHistoryPage extends StatelessWidget {
   const EventHistoryPage({super.key});
@@ -18,26 +19,14 @@ class EventHistoryPage extends StatelessWidget {
           EventHistoryLoading() => const Center(
             child: CircularProgressIndicator(),
           ),
-          EventHistoryEmpty() => Center(
-            child: Text(
-              context.l10n.groupEventHistoryEmpty,
-              style: context.typography.bodyDefault.copyWith(
-                color: context.colors.textMuted,
-              ),
-              textAlign: TextAlign.center,
-            ),
+          EventHistoryEmpty() => EventHistoryMessageView(
+            message: context.l10n.groupEventHistoryEmpty,
           ),
           EventHistoryLoaded(:final meetings) => EventHistoryScreen(
             meetings: meetings,
           ),
-          EventHistoryError(:final message) => Center(
-            child: Text(
-              message,
-              style: context.typography.bodyDefault.copyWith(
-                color: context.colors.textMuted,
-              ),
-              textAlign: TextAlign.center,
-            ),
+          EventHistoryError(:final message) => EventHistoryMessageView(
+            message: message,
           ),
         },
       ),

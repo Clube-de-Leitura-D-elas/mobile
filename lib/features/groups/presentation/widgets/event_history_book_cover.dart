@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/widgets/event_history_book_cover_dimensions.dart';
@@ -18,12 +19,12 @@ class EventHistoryBookCover extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppCard.borderRadius / 2),
-      child: Image.network(
-        imageUrl!,
+      child: CachedNetworkImage(
+        imageUrl: imageUrl!,
         width: EventHistoryBookCoverDimensions.width,
         height: EventHistoryBookCoverDimensions.height,
         fit: BoxFit.cover,
-        errorBuilder: (_, _, _) =>
+        errorWidget: (_, _, _) =>
             EventHistoryBookCoverPlaceholder(color: colors.surfaceSunken),
       ),
     );

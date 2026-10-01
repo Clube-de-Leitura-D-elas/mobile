@@ -130,6 +130,41 @@ void main() {
       expect(tapped, isTrue);
     });
 
+    testWidgets('Renders the card without a border, before and after tap', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          AppGroupCard(
+            groupId: 'group-1',
+            groupName: 'Grupo 27',
+            participantsCount: 18,
+            cityState: 'Porto Alegre, RS',
+            onTap: () {},
+          ),
+        ),
+      );
+
+      BoxDecoration decorationOf(WidgetTester t) {
+        final ink = t.widget<Ink>(
+          find.descendant(of: find.byType(AppCard), matching: find.byType(Ink)),
+        );
+        return ink.decoration as BoxDecoration;
+      }
+
+      expect(decorationOf(tester).border, isNull);
+      expect(decorationOf(tester).color, AppColorTokens.light.surfaceDefault);
+      expect(
+        decorationOf(tester).borderRadius,
+        BorderRadius.circular(AppCard.borderRadius),
+      );
+
+      await tester.tap(find.byType(InkWell).first);
+      await tester.pump();
+
+      expect(decorationOf(tester).border, isNull);
+    });
+
     testWidgets('Navigates to group details when onTap is not provided', (
       tester,
     ) async {

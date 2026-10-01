@@ -11,11 +11,16 @@ class AppCard extends StatefulWidget {
   final CardVariant variant;
   final VoidCallback? onTap;
 
+  /// Quando `false`, o card é renderizado sem borda (em qualquer variante),
+  /// mantendo fundo, raio e padding.
+  final bool showBorder;
+
   const AppCard({
     super.key,
     required this.child,
     this.variant = CardVariant.normal,
     this.onTap,
+    this.showBorder = true,
   });
 
   factory AppCard.titled({
@@ -24,11 +29,13 @@ class AppCard extends StatefulWidget {
     required String supportText,
     CardVariant variant = CardVariant.normal,
     VoidCallback? onTap,
+    bool showBorder = true,
   }) {
     return AppCard(
       key: key,
       variant: variant,
       onTap: onTap,
+      showBorder: showBorder,
       child: Builder(
         builder: (context) {
           final colors = context.colors;
@@ -103,10 +110,9 @@ class _AppCardState extends State<AppCard> {
     final decoration = BoxDecoration(
       color: colors.surfaceDefault,
       borderRadius: BorderRadius.circular(AppCard.borderRadius),
-      border: Border.all(
-        color: _getBorderColor(colors),
-        width: _getBorderWidth(),
-      ),
+      border: widget.showBorder
+          ? Border.all(color: _getBorderColor(colors), width: _getBorderWidth())
+          : null,
     );
 
     if (widget.onTap == null) {

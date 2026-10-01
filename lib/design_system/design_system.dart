@@ -14,4 +14,5 @@ export 'widgets/app_tag.dart';
 export 'widgets/app_text_field.dart';
 export 'widgets/app_toast.dart';
 export 'widgets/gap.dart';
+export 'widgets/group_next_event.dart';
 export 'widgets/screen_header.dart';

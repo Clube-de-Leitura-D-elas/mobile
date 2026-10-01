@@ -7,11 +7,14 @@ import 'package:mobile/core/supabase/supabase_service_impl.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
+import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
@@ -68,6 +71,16 @@ class DependenciesContainer {
         groupRepository: serviceLocator<GroupRepository>(),
       ),
     );
+    serviceLocator.registerLazySingleton<GroupParticipantsRepository>(
+      () => GroupParticipantsRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+    serviceLocator.registerFactory<GroupParticipantsCubit>(
+      () => GroupParticipantsCubit(
+        participantsRepository: serviceLocator<GroupParticipantsRepository>(),
+      ),
+    );
 
     serviceLocator.registerFactory<SessionCubit>(
       () => SessionCubit(
@@ -76,8 +89,6 @@ class DependenciesContainer {
       ),
     );
 
-    serviceLocator.registerFactory<HomeCubit>(
-      () => HomeCubit(),
-    );
+    serviceLocator.registerFactory<HomeCubit>(() => HomeCubit());
   }
 }

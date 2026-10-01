@@ -161,6 +161,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -170,6 +181,7 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
+      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -184,6 +196,20 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupCoverSemanticLabel(String name) {
     return 'Foto do grupo $name';
   }
+
+  @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
 
   @override
   String get groupNextMeetingLabel => 'Próximo evento';
@@ -201,9 +227,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupEventHistoryHost(String hostName) {
     return 'Anfitriã: $hostName';
   }
-
-  @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
 
   @override
   String get groupEventHistoryEmpty =>
@@ -510,6 +533,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -519,6 +553,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
+      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -535,13 +570,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get groupNextMeetingLabel => 'Próximo evento';
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
 
   @override
-  String get groupDeclineMeetingButton => 'Não irei';
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
 
   @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
 
   @override
   String get groupEventHistoryTitle => 'Histórico de eventos';
@@ -550,9 +590,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupEventHistoryHost(String hostName) {
     return 'Anfitriã: $hostName';
   }
-
-  @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
 
   @override
   String get groupEventHistoryEmpty =>
