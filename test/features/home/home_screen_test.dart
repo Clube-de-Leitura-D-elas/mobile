@@ -134,35 +134,4 @@ void main() {
     );
     expect(find.text('Tentar novamente'), findsOneWidget);
   });
-
-  testWidgets('logs out when the temporary exit button is tapped', (
-    tester,
-  ) async {
-    final repository = MockGroupRepository();
-    when(
-      () => repository.getMyGroups(),
-    ).thenAnswer((_) async => const Success(<GroupEntity>[]));
-    final cubit = HomeCubit(groupRepository: repository);
-    final sessionCubit = MockSessionCubit();
-    when(() => sessionCubit.logOut()).thenAnswer((_) async {});
-    addTearDown(cubit.close);
-
-    await tester.pumpWidget(buildSubject(cubit, sessionCubit));
-    final logoutButton = find.text('Sair');
-    final logoutButtonWidth = tester
-        .getSize(
-          find.ancestor(
-            of: logoutButton,
-            matching: find.byType(IntrinsicWidth),
-          ),
-        )
-        .width;
-    final screenWidth = tester.getSize(find.byType(Scaffold)).width;
-
-    expect(logoutButtonWidth, lessThan(screenWidth));
-
-    await tester.tap(logoutButton);
-
-    verify(() => sessionCubit.logOut()).called(1);
-  });
 }

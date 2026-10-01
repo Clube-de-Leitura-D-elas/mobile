@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
-import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_state.dart';
 import 'package:mobile/features/home/presentation/widgets/home_groups_list.dart';
@@ -29,12 +27,6 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 0,
         onItemSelected: (_) {},
-      ),
-      floatingActionButton: IntrinsicWidth(
-        child: AppButton.secondary(
-          label: context.l10n.logoutTooltip,
-          onPressed: () => context.read<SessionCubit>().logOut(),
-        ),
       ),
     );
   }
