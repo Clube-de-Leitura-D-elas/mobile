@@ -69,10 +69,15 @@ class GroupDetailsPage extends StatelessWidget {
   GroupNextEventData? _toWidgetData(NextEventState state) {
     if (state is! NextEventLoaded) return null;
     final NextEventEntity event = state.event;
+    final coverUrl = event.bookCoverUrl;
     return GroupNextEventData(
       location: event.location,
       date: event.date,
       hostName: event.hostName,
+      bookTitle: event.bookTitle,
+      bookCover: coverUrl == null || coverUrl.isEmpty
+          ? null
+          : NetworkImage(coverUrl),
     );
   }
 }

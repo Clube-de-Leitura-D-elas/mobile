@@ -409,6 +409,30 @@ abstract class AppLocalizations {
   /// **'Exibir detalhes dos últimos eventos'**
   String get groupNextEventHistoryLink;
 
+  /// Rótulo exibido acima da capa do livro do próximo evento do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'O livro da vez é:'**
+  String get groupNextEventCurrentBookLabel;
+
+  /// Rótulo de acessibilidade da capa do livro do próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Capa do livro {title}'**
+  String groupNextEventBookCoverSemanticLabel(String title);
+
+  /// Exibido no lugar da capa quando o livro do próximo evento não tem capa ou ela não carregou
+  ///
+  /// In pt, this message translates to:
+  /// **'Capa indisponível'**
+  String get groupNextEventBookCoverUnavailable;
+
+  /// Exibido no lugar da capa quando o próximo evento ainda não tem livro definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro ainda não definido'**
+  String get groupNextEventBookUndefined;
+
   /// Título da seção de participantes nos detalhes do grupo
   ///
   /// In pt, this message translates to:

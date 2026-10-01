@@ -91,7 +91,86 @@ void main() {
     );
   });
 
+  test('Given a next event with a book and cover, '
+      'When parsing from JSON, '
+      'Then bookTitle and bookCoverUrl are mapped', () {
+    final model = NextEventModel.fromJson(const {
+      ...validInnerJson,
+      'book_title': 'Ponciá Vicêncio',
+      'book_cover_url': 'https://example.com/cover.jpg',
+    });
+
+    expect(model.bookTitle, 'Ponciá Vicêncio');
+    expect(model.bookCoverUrl, 'https://example.com/cover.jpg');
+  });
+
+  test('Given a next event without book fields, '
+      'When parsing from JSON, '
+      'Then bookTitle and bookCoverUrl are null', () {
+    final model = NextEventModel.fromJson(validInnerJson);
+
+    expect(model.bookTitle, isNull);
+    expect(model.bookCoverUrl, isNull);
+  });
+
+  test('Given a next event whose book has no cover, '
+      'When parsing from JSON, '
+      'Then bookTitle is mapped and bookCoverUrl is null', () {
+    final model = NextEventModel.fromJson(const {
+      ...validInnerJson,
+      'book_title': "Olhos d'água",
+      'book_cover_url': null,
+    });
+
+    expect(model.bookTitle, "Olhos d'água");
+    expect(model.bookCoverUrl, isNull);
+  });
+
+  test('Given a non-string book_title, '
+      'When parsing from JSON, '
+      'Then a FormatException is thrown', () {
+    expect(
+      () =>
+          NextEventModel.fromJson(const {...validInnerJson, 'book_title': 42}),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('Given a non-string book_cover_url, '
+      'When parsing from JSON, '
+      'Then a FormatException is thrown', () {
+    expect(
+      () => NextEventModel.fromJson(const {
+        ...validInnerJson,
+        'book_title': 'Ponciá Vicêncio',
+        'book_cover_url': {'url': 'https://example.com/cover.jpg'},
+      }),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
   // ── toDomain ─────────────────────────────────────────────────────────────
+
+  test('Given a model with book data, '
+      'When converting to domain, '
+      'Then the entity keeps bookTitle and bookCoverUrl', () {
+    final model = NextEventModel.fromJson(const {
+      ...validInnerJson,
+      'book_title': 'Ponciá Vicêncio',
+      'book_cover_url': 'https://example.com/cover.jpg',
+    });
+
+    expect(
+      model.toDomain(),
+      NextEventEntity(
+        location: 'Porto Alegre, RS',
+        date: DateTime.utc(2026, 9, 15, 21, 30),
+        hostName: 'Roberta',
+        bookTitle: 'Ponciá Vicêncio',
+        bookCoverUrl: 'https://example.com/cover.jpg',
+      ),
+    );
+  });
 
   test('toDomain returns a NextEventEntity with the same values', () {
     final model = NextEventModel.fromJson(validInnerJson);
