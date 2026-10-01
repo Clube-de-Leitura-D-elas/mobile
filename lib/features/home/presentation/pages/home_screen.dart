@@ -29,9 +29,11 @@ class HomeScreen extends StatelessWidget {
         currentIndex: 0,
         onItemSelected: (_) {},
       ),
-      floatingActionButton: AppButton.secondary(
-        label: context.l10n.logoutTooltip,
-        onPressed: () => context.read<SessionCubit>().logOut(),
+      floatingActionButton: IntrinsicWidth(
+        child: AppButton.secondary(
+          label: context.l10n.logoutTooltip,
+          onPressed: () => context.read<SessionCubit>().logOut(),
+        ),
       ),
     );
   }

@@ -148,7 +148,20 @@ void main() {
     addTearDown(cubit.close);
 
     await tester.pumpWidget(buildSubject(cubit, sessionCubit));
-    await tester.tap(find.text('Sair'));
+    final logoutButton = find.text('Sair');
+    final logoutButtonWidth = tester
+        .getSize(
+          find.ancestor(
+            of: logoutButton,
+            matching: find.byType(IntrinsicWidth),
+          ),
+        )
+        .width;
+    final screenWidth = tester.getSize(find.byType(Scaffold)).width;
+
+    expect(logoutButtonWidth, lessThan(screenWidth));
+
+    await tester.tap(logoutButton);
 
     verify(() => sessionCubit.logOut()).called(1);
   });
