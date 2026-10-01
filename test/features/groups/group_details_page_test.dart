@@ -12,6 +12,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
@@ -191,5 +192,97 @@ void main() {
       find.byType(GroupDetailsScreen),
     );
     expect(screen.whatsappUrl, 'https://chat.whatsapp.com/ABC123xyz');
+  });
+
+  testWidgets('Given a next event with a book cover, '
+      'When the page loads, '
+      'Then GroupNextEvent receives the book title and a network cover', (
+    tester,
+  ) async {
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Success(group));
+    when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+      (_) async => Success(
+        NextEventEntity(
+          location: 'Casa da Fernanda',
+          date: DateTime.utc(2026, 10, 13, 22),
+          hostName: 'Fernanda Vargas',
+          bookTitle: 'Ponciá Vicêncio',
+          bookCoverUrl: 'https://example.com/book-cover.jpg',
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final data = tester
+        .widget<GroupNextEvent>(find.byType(GroupNextEvent))
+        .data;
+    expect(data?.bookTitle, 'Ponciá Vicêncio');
+    expect(data?.bookCover, isA<NetworkImage>());
+    expect(
+      (data!.bookCover! as NetworkImage).url,
+      'https://example.com/book-cover.jpg',
+    );
+  });
+
+  testWidgets('Given a next event whose book has an empty cover URL, '
+      'When the page loads, '
+      'Then GroupNextEvent receives no cover', (tester) async {
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Success(group));
+    when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+      (_) async => Success(
+        NextEventEntity(
+          location: 'Casa da Fernanda',
+          date: DateTime.utc(2026, 10, 13, 22),
+          hostName: 'Fernanda Vargas',
+          bookTitle: 'Ponciá Vicêncio',
+          bookCoverUrl: '',
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final data = tester
+        .widget<GroupNextEvent>(find.byType(GroupNextEvent))
+        .data;
+    expect(data?.bookTitle, 'Ponciá Vicêncio');
+    expect(data?.bookCover, isNull);
+    expect(find.text('Ponciá Vicêncio'), findsOneWidget);
+  });
+
+  testWidgets('Given a next event without a book, '
+      'When the page loads, '
+      'Then GroupNextEvent shows the undefined-book placeholder', (
+    tester,
+  ) async {
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Success(group));
+    when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+      (_) async => Success(
+        NextEventEntity(
+          location: 'Casa da Fernanda',
+          date: DateTime.utc(2026, 10, 13, 22),
+          hostName: 'Fernanda Vargas',
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final data = tester
+        .widget<GroupNextEvent>(find.byType(GroupNextEvent))
+        .data;
+    expect(data?.bookTitle, isNull);
+    expect(data?.bookCover, isNull);
+    expect(find.text('Livro ainda não definido'), findsOneWidget);
   });
 }
