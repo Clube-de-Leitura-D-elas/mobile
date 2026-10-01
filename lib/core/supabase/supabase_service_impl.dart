@@ -25,13 +25,13 @@ class SupabaseServiceImpl implements SupabaseService {
     T Function(dynamic data)? decoder,
   }) async {
     try {
-      debugPrint('[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}');
+      if (kDebugMode) debugPrint('[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}');
       final res = await _client.functions.invoke(
         functionName,
         body: body,
       );
 
-      debugPrint('[SupabaseService] Function "$functionName" status: ${res.status}, data: ${res.data}');
+      if (kDebugMode) debugPrint('[SupabaseService] Function "$functionName" status: ${res.status}, data: ${res.data}');
 
       if (res.status >= 400) {
         final message = res.data is Map && res.data['error'] != null
@@ -60,7 +60,7 @@ class SupabaseServiceImpl implements SupabaseService {
         ),
       );
     } on FunctionException catch (e) {
-      debugPrint('[SupabaseService] FunctionException in "$functionName": $e');
+      if (kDebugMode) debugPrint('[SupabaseService] FunctionException in "$functionName": $e');
       final message = e.details is Map && (e.details as Map)['error'] != null
           ? (e.details as Map)['error'].toString()
           : (e.details is String && (e.details as String).isNotEmpty
@@ -74,7 +74,7 @@ class SupabaseServiceImpl implements SupabaseService {
         ),
       );
     } catch (e) {
-      debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
+      if (kDebugMode) debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
       return Failure(
         FunctionSupabaseFailure(
           message: 'Erro inesperado ao chamar a função $functionName',

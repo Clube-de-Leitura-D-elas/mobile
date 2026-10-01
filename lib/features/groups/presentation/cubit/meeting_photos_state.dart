@@ -45,6 +45,15 @@ class MeetingPhotosLimitReachedNotice extends MeetingPhotosNotice {
   const MeetingPhotosLimitReachedNotice();
 }
 
+class MeetingPhotosRejectedNotice extends MeetingPhotosNotice {
+  const MeetingPhotosRejectedNotice(this.count);
+
+  final int count;
+
+  @override
+  List<Object?> get props => [count];
+}
+
 class MeetingPhotosState extends Equatable {
   const MeetingPhotosState({
     this.status = MeetingPhotosStatus.loading,

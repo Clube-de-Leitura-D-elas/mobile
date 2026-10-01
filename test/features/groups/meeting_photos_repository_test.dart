@@ -133,6 +133,7 @@ void main() {
 
         final result = await repository.addMeetingPhoto(
           'meeting-1',
+          'photo-1',
           bytes,
           'image/jpeg',
         );
@@ -154,6 +155,7 @@ void main() {
                 as Map<String, dynamic>;
         expect(body, {
           'meeting_id': 'meeting-1',
+          'photo_id': 'photo-1',
           'content_type': 'image/jpeg',
           'data_base64': base64Encode(bytes),
         });
@@ -169,6 +171,7 @@ void main() {
 
         final result = await repository.addMeetingPhoto(
           'meeting-1',
+          'photo-1',
           bytes,
           'image/jpeg',
         );
@@ -182,6 +185,31 @@ void main() {
       },
     );
 
+    for (final code in ['400', '403', '404', '413', '422']) {
+      test(
+        'given a $code, when uploading, then returns MeetingPhotoRejectedFailure',
+        () async {
+          answerUpload(
+            Failure(FunctionSupabaseFailure(message: 'no', code: code)),
+          );
+
+          final result = await repository.addMeetingPhoto(
+            'meeting-1',
+            'photo-1',
+            bytes,
+            'image/jpeg',
+          );
+
+          expect(
+            result,
+            const Failure<MeetingPhotoEntity, GroupFailure>(
+              MeetingPhotoRejectedFailure(),
+            ),
+          );
+        },
+      );
+    }
+
     test(
       'given any other error, when uploading, then returns MeetingPhotoUploadFailure',
       () async {
@@ -191,6 +219,7 @@ void main() {
 
         final result = await repository.addMeetingPhoto(
           'meeting-1',
+          'photo-1',
           bytes,
           'image/jpeg',
         );

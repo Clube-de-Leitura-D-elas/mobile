@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
@@ -179,6 +180,7 @@ class GroupRepositoryImpl implements GroupRepository {
   @override
   Future<Result<MeetingPhotoEntity, GroupFailure>> addMeetingPhoto(
     String meetingId,
+    String photoId,
     Uint8List bytes,
     String contentType,
   ) async {
@@ -186,22 +188,30 @@ class GroupRepositoryImpl implements GroupRepository {
       functionName: 'add-meeting-photo',
       body: {
         'meeting_id': meetingId,
+        'photo_id': photoId,
         'content_type': contentType,
-        'data_base64': base64Encode(bytes),
+        'data_base64': await compute(base64Encode, bytes),
       },
       decoder: MeetingPhotoModel.fromEnvelope,
     );
 
     switch (result) {
       case Failure(:final failure):
-        if (failure.code == '409') {
-          return const Failure(MeetingPhotoLimitFailure());
-        }
-        return const Failure(MeetingPhotoUploadFailure());
+        return Failure(_uploadFailure(failure.code));
       case Success(:final data):
         final photo = data.data;
         if (photo == null) return const Failure(MeetingPhotoUploadFailure());
         return Success(photo.toDomain());
     }
+  }
+
+  static const _rejectedUploadCodes = {'400', '403', '404', '413', '422'};
+
+  GroupFailure _uploadFailure(String? code) {
+    if (code == '409') return const MeetingPhotoLimitFailure();
+    if (_rejectedUploadCodes.contains(code)) {
+      return const MeetingPhotoRejectedFailure();
+    }
+    return const MeetingPhotoUploadFailure();
   }
 }

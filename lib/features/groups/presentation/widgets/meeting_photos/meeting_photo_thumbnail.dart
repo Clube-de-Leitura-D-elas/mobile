@@ -8,28 +8,34 @@ class MeetingPhotoThumbnail extends StatelessWidget {
     super.key,
     required this.photo,
     required this.index,
+    required this.onReload,
   });
 
   static const radius = 8.0;
 
   final MeetingPhotoEntity photo;
   final int index;
+  final VoidCallback onReload;
 
   @override
   Widget build(BuildContext context) {
+    final pixelRatio = MediaQuery.devicePixelRatioOf(context);
+
     return Semantics(
       image: true,
       label: context.l10n.meetingPhotoSemanticLabel(index + 1),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: Image.network(
-          photo.url,
-          fit: BoxFit.cover,
-          loadingBuilder: (context, child, progress) => progress == null
-              ? child
-              : const MeetingPhotoPlaceholder(isLoading: true),
-          errorBuilder: (context, error, stackTrace) =>
-              const MeetingPhotoPlaceholder(isLoading: false),
+        child: LayoutBuilder(
+          builder: (context, constraints) => Image.network(
+            photo.url,
+            fit: BoxFit.cover,
+            cacheWidth: (constraints.maxWidth * pixelRatio).ceil(),
+            loadingBuilder: (context, child, progress) =>
+                progress == null ? child : const MeetingPhotoPlaceholder(),
+            errorBuilder: (context, error, stackTrace) =>
+                MeetingPhotoPlaceholder(onReload: onReload),
+          ),
         ),
       ),
     );
@@ -37,29 +43,33 @@ class MeetingPhotoThumbnail extends StatelessWidget {
 }
 
 class MeetingPhotoPlaceholder extends StatelessWidget {
-  const MeetingPhotoPlaceholder({super.key, required this.isLoading});
+  const MeetingPhotoPlaceholder({super.key, this.onReload});
 
-  final bool isLoading;
+  final VoidCallback? onReload;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final isLoading = onReload == null;
 
-    return ColoredBox(
+    return Material(
       key: ValueKey(
         isLoading ? 'meeting-photo-loading' : 'meeting-photo-error',
       ),
       color: colors.surfaceSunken,
-      child: Center(
-        child: isLoading
-            ? SizedBox.square(
-                dimension: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: colors.textMuted,
-                ),
-              )
-            : Icon(Icons.broken_image_outlined, color: colors.textMuted),
+      child: InkWell(
+        onTap: onReload,
+        child: Center(
+          child: isLoading
+              ? SizedBox.square(
+                  dimension: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: colors.textMuted,
+                  ),
+                )
+              : Icon(Icons.refresh, color: colors.textMuted),
+        ),
       ),
     );
   }

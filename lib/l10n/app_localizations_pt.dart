@@ -347,6 +347,17 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String meetingPhotosRejected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fotos foram recusadas e não podem ser enviadas.',
+      one: '1 foto foi recusada e não pode ser enviada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -784,6 +795,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String meetingPhotosLimitReached(int max) {
     return 'Este encontro já tem o máximo de $max fotos.';
+  }
+
+  @override
+  String meetingPhotosRejected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fotos foram recusadas e não podem ser enviadas.',
+      one: '1 foto foi recusada e não pode ser enviada.',
+    );
+    return '$_temp0';
   }
 
   @override

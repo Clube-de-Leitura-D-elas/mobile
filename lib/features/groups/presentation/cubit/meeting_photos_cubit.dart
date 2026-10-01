@@ -16,6 +16,7 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
   final PhotoPicker photoPicker;
 
   String _meetingId = '';
+  bool _isPicking = false;
 
   Future<void> load(String meetingId) async {
     _meetingId = meetingId;
@@ -32,10 +33,13 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
     }
   }
 
-  Future<void> reload() => load(_meetingId);
+  Future<void> reload() async {
+    if (state.isUploading) return;
+    await load(_meetingId);
+  }
 
   Future<void> pickAndUpload() async {
-    if (state.isUploading) return;
+    if (state.isUploading || _isPicking) return;
     emit(state.copyWith(clearNotice: true));
 
     final remaining = MeetingPhotoLimits.perMeeting - state.photos.length;
@@ -44,9 +48,11 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
       return;
     }
 
+    _isPicking = true;
     final result = await photoPicker.pickFromGallery(
       limit: min(MeetingPhotoLimits.perSelection, remaining),
     );
+    _isPicking = false;
     if (isClosed) return;
 
     switch (result) {
@@ -60,7 +66,7 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
   Future<void> retryFailed() async {
     if (state.isUploading || state.failedPhotos.isEmpty) return;
     emit(state.copyWith(clearNotice: true));
-    await _upload(state.failedPhotos);
+    await _upload(state.failedPhotos, pendingFailures: const []);
   }
 
   Future<void> _uploadSelection(List<PickedPhoto> selection) async {
@@ -69,27 +75,23 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
     if (skipped > 0) {
       emit(state.copyWith(notice: MeetingPhotosSkippedNotice(skipped)));
     }
-    await _upload(accepted);
+    await _upload(accepted, pendingFailures: state.failedPhotos);
   }
 
-  Future<void> _upload(List<PickedPhoto> queue) async {
+  Future<void> _upload(
+    List<PickedPhoto> queue, {
+    required List<PickedPhoto> pendingFailures,
+  }) async {
     if (queue.isEmpty) return;
-    final failed = <PickedPhoto>[];
+    final failed = [...pendingFailures];
+    var rejected = 0;
 
     for (var index = 0; index < queue.length; index++) {
-      emit(
-        state.copyWith(
-          progress: MeetingPhotosUploadProgress(
-            current: index + 1,
-            total: queue.length,
-          ),
-          failedPhotos: const [],
-        ),
-      );
-
+      _emitProgress(index + 1, queue.length);
       final photo = queue[index];
       final result = await groupRepository.addMeetingPhoto(
         _meetingId,
+        photo.id,
         photo.bytes,
         photo.contentType ?? '',
       );
@@ -100,16 +102,30 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
           emit(state.copyWith(photos: [...state.photos, data]));
         case Failure(failure: MeetingPhotoLimitFailure()):
           _finishUpload(
-            failed,
+            const [],
             notice: const MeetingPhotosLimitReachedNotice(),
           );
           return;
+        case Failure(failure: MeetingPhotoRejectedFailure()):
+          rejected++;
         case Failure():
           failed.add(photo);
       }
     }
 
-    _finishUpload(failed);
+    _finishUpload(
+      failed,
+      notice: rejected > 0 ? MeetingPhotosRejectedNotice(rejected) : null,
+    );
+  }
+
+  void _emitProgress(int current, int total) {
+    emit(
+      state.copyWith(
+        progress: MeetingPhotosUploadProgress(current: current, total: total),
+        failedPhotos: const [],
+      ),
+    );
   }
 
   void _finishUpload(List<PickedPhoto> failed, {MeetingPhotosNotice? notice}) {

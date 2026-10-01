@@ -58,6 +58,7 @@ class MeetingPhotosLoadedContent extends StatelessWidget {
             photos: state.photos,
             showAddTile: state.photos.length < MeetingPhotoLimits.perMeeting,
             onAdd: onAdd,
+            onReload: cubit.reload,
           ),
         if (progress != null) ...[
           SizedBox(height: spacing.s16),

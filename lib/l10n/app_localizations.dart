@@ -649,6 +649,12 @@ abstract class AppLocalizations {
   /// **'Este encontro já tem o máximo de {max} fotos.'**
   String meetingPhotosLimitReached(int max);
 
+  /// Fotos recusadas pelo servidor (sem nova tentativa), por exemplo tamanho, formato ou permissão
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}'**
+  String meetingPhotosRejected(int count);
+
   /// Título principal do review de cadastro
   ///
   /// In pt, this message translates to:

@@ -38,6 +38,7 @@ abstract class GroupRepository {
 
   Future<Result<MeetingPhotoEntity, GroupFailure>> addMeetingPhoto(
     String meetingId,
+    String photoId,
     Uint8List bytes,
     String contentType,
   );

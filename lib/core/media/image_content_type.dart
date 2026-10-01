@@ -9,8 +9,17 @@ String? detectImageContentType(Uint8List bytes) {
       _startsWith(bytes, 8, 'WEBP'.codeUnits)) {
     return 'image/webp';
   }
-  if (_startsWith(bytes, 4, 'ftyp'.codeUnits)) return 'image/heic';
+  if (_isHeic(bytes)) return 'image/heic';
   return null;
+}
+
+const _heicBrands = {'heic', 'heix', 'hevc', 'hevx', 'mif1', 'msf1'};
+
+bool _isHeic(Uint8List bytes) {
+  if (!_startsWith(bytes, 4, 'ftyp'.codeUnits) || bytes.length < 12) {
+    return false;
+  }
+  return _heicBrands.contains(String.fromCharCodes(bytes.sublist(8, 12)));
 }
 
 bool _startsWith(Uint8List bytes, int offset, List<int> signature) {

@@ -8,6 +8,10 @@ import 'package:mocktail/mocktail.dart';
 
 class MockImagePicker extends Mock implements ImagePicker {}
 
+final _uuidV4 = RegExp(
+  r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+);
+
 void main() {
   late MockImagePicker imagePicker;
   late ImagePickerPhotoPicker picker;
@@ -42,15 +46,15 @@ void main() {
         ],
       );
 
-      final result = await picker.pickFromGallery(limit: 10);
+      final photos = (await picker.pickFromGallery(limit: 10)).unwrap();
 
-      expect(
-        result,
-        Success<List<PickedPhoto>, PhotoPickerFailure>([
-          PickedPhoto(bytes: jpeg, contentType: 'image/jpeg'),
-          PickedPhoto(bytes: Uint8List.fromList([1, 2])),
-        ]),
-      );
+      expect(photos.map((photo) => photo.bytes), [
+        jpeg,
+        Uint8List.fromList([1, 2]),
+      ]);
+      expect(photos.map((photo) => photo.contentType), ['image/jpeg', null]);
+      expect(photos.first.id, matches(_uuidV4));
+      expect(photos.first.id, isNot(photos.last.id));
       verify(
         () => imagePicker.pickMultiImage(
           imageQuality: 80,

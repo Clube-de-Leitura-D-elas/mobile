@@ -26,8 +26,16 @@ final _photos = List.generate(
 );
 
 final _failed = [
-  PickedPhoto(bytes: Uint8List.fromList([1]), contentType: 'image/jpeg'),
-  PickedPhoto(bytes: Uint8List.fromList([2]), contentType: 'image/jpeg'),
+  PickedPhoto(
+    id: 'f1',
+    bytes: Uint8List.fromList([1]),
+    contentType: 'image/jpeg',
+  ),
+  PickedPhoto(
+    id: 'f2',
+    bytes: Uint8List.fromList([2]),
+    contentType: 'image/jpeg',
+  ),
 ];
 
 void main() {
@@ -220,12 +228,15 @@ void main() {
   );
 
   testWidgets(
-    'given a thumbnail fails to load, when rendered, then shows the error placeholder',
+    'given a thumbnail fails to load, when tapping the placeholder, then reloads the photos',
     (tester) async {
       await pumpSection(tester, _loadedEmpty.copyWith(photos: [_photos.first]));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey('meeting-photo-error')), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('meeting-photo-error')));
+      verify(() => cubit.reload()).called(1);
     },
   );
 }

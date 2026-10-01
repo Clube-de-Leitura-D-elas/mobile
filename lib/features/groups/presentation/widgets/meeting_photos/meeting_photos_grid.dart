@@ -10,6 +10,7 @@ class MeetingPhotosGrid extends StatelessWidget {
     required this.photos,
     required this.showAddTile,
     required this.onAdd,
+    required this.onReload,
   });
 
   static const _columns = 3;
@@ -17,6 +18,7 @@ class MeetingPhotosGrid extends StatelessWidget {
   final List<MeetingPhotoEntity> photos;
   final bool showAddTile;
   final VoidCallback? onAdd;
+  final VoidCallback onReload;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,11 @@ class MeetingPhotosGrid extends StatelessWidget {
       ),
       itemCount: photos.length + (showAddTile ? 1 : 0),
       itemBuilder: (context, index) => index < photos.length
-          ? MeetingPhotoThumbnail(photo: photos[index], index: index)
+          ? MeetingPhotoThumbnail(
+              photo: photos[index],
+              index: index,
+              onReload: onReload,
+            )
           : MeetingPhotosAddTile(onTap: onAdd),
     );
   }

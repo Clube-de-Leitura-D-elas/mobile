@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile/core/media/image_content_type.dart';
 import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/core/tools/uuid.dart';
 
 class ImagePickerPhotoPicker implements PhotoPicker {
   ImagePickerPhotoPicker(this._imagePicker);
@@ -54,6 +55,7 @@ class ImagePickerPhotoPicker implements PhotoPicker {
   Future<PickedPhoto> _toPickedPhoto(XFile file) async {
     final bytes = await file.readAsBytes();
     return PickedPhoto(
+      id: generateUuidV4(),
       bytes: bytes,
       contentType: detectImageContentType(bytes),
     );

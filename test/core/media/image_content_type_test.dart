@@ -39,6 +39,12 @@ void main() {
     expect(detectImageContentType(bytes), 'image/heic');
   });
 
+  test('given an ftyp video brand, when detected, then returns null', () {
+    final bytes = _bytes([0, 0, 0, 24, ...'ftypmp42'.codeUnits]);
+
+    expect(detectImageContentType(bytes), isNull);
+  });
+
   test('given gif or short bytes, when detected, then returns null', () {
     expect(detectImageContentType(_bytes('GIF89a'.codeUnits)), isNull);
     expect(detectImageContentType(_bytes([0xFF])), isNull);

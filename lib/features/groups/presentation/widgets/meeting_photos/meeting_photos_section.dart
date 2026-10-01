@@ -48,6 +48,9 @@ class MeetingPhotosSection extends StatelessWidget {
       MeetingPhotosLimitReachedNotice() => l10n.meetingPhotosLimitReached(
         MeetingPhotoLimits.perMeeting,
       ),
+      MeetingPhotosRejectedNotice(:final count) => l10n.meetingPhotosRejected(
+        count,
+      ),
     };
   }
 }

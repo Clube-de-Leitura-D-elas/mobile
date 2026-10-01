@@ -80,3 +80,9 @@ class MeetingPhotoLimitFailure extends GroupFailure {
     super.message = 'O encontro já atingiu o limite de fotos.',
   });
 }
+
+class MeetingPhotoRejectedFailure extends GroupFailure {
+  const MeetingPhotoRejectedFailure({
+    super.message = 'A foto foi recusada e não pode ser enviada.',
+  });
+}

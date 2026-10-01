@@ -4,15 +4,18 @@ import 'package:equatable/equatable.dart';
 import 'package:mobile/core/tools/result.dart';
 
 class PickedPhoto extends Equatable {
-  const PickedPhoto({required this.bytes, this.contentType});
+  const PickedPhoto({required this.id, required this.bytes, this.contentType});
 
+  /// Gerado na seleção e reenviado nas novas tentativas, para o backend não
+  /// duplicar uma foto que já salvou.
+  final String id;
   final Uint8List bytes;
 
   /// `null` quando o formato não é um dos aceitos (jpeg, png, webp, heic).
   final String? contentType;
 
   @override
-  List<Object?> get props => [bytes, contentType];
+  List<Object?> get props => [id, bytes, contentType];
 }
 
 sealed class PhotoPickerFailure extends Equatable {

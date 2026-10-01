@@ -94,6 +94,7 @@
   "meetingPhotosPickerFailed": "Não foi possível abrir a galeria. Tente novamente.",
   "meetingPhotosSkipped": "{count, plural, =1{1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.} other{{count} fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.}}",
   "meetingPhotosLimitReached": "Este encontro já tem o máximo de {max} fotos.",
+  "meetingPhotosRejected": "{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}",
   "groupParticipantsEmpty": "Ainda não há participantes neste grupo.",
   "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
   "groupParticipantsRetryButton": "Tentar novamente",

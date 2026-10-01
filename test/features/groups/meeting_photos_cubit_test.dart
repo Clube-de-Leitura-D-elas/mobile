@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:bloc_test/bloc_test.dart';
@@ -17,6 +18,7 @@ class MockPhotoPicker extends Mock implements PhotoPicker {}
 
 PickedPhoto _picked(int seed, {String? contentType = 'image/jpeg'}) =>
     PickedPhoto(
+      id: 'photo-$seed',
       bytes: Uint8List.fromList([0xFF, 0xD8, 0xFF, seed]),
       contentType: contentType,
     );
@@ -63,7 +65,12 @@ void main() {
     Result<MeetingPhotoEntity, GroupFailure> result,
   ) {
     when(
-      () => repository.addMeetingPhoto(meetingId, photo.bytes, 'image/jpeg'),
+      () => repository.addMeetingPhoto(
+        meetingId,
+        photo.id,
+        photo.bytes,
+        'image/jpeg',
+      ),
     ).thenAnswer((_) async => result);
   }
 
@@ -142,8 +149,12 @@ void main() {
         givenUpload(third, Success(_photo('c')));
         var attempts = 0;
         when(
-          () =>
-              repository.addMeetingPhoto(meetingId, second.bytes, 'image/jpeg'),
+          () => repository.addMeetingPhoto(
+            meetingId,
+            second.id,
+            second.bytes,
+            'image/jpeg',
+          ),
         ).thenAnswer(
           (_) async => attempts++ == 0
               ? const Failure(MeetingPhotoUploadFailure())
@@ -172,10 +183,20 @@ void main() {
           'b',
         ]);
         verify(
-          () => repository.addMeetingPhoto(meetingId, first.bytes, any()),
+          () => repository.addMeetingPhoto(
+            meetingId,
+            first.id,
+            first.bytes,
+            any(),
+          ),
         ).called(1);
         verify(
-          () => repository.addMeetingPhoto(meetingId, second.bytes, any()),
+          () => repository.addMeetingPhoto(
+            meetingId,
+            second.id,
+            second.bytes,
+            any(),
+          ),
         ).called(2);
       },
     );
@@ -226,7 +247,9 @@ void main() {
         loaded.copyWith(notice: const MeetingPhotosAccessDeniedNotice()),
       ],
       verify: (_) {
-        verifyNever(() => repository.addMeetingPhoto(any(), any(), any()));
+        verifyNever(
+          () => repository.addMeetingPhoto(any(), any(), any(), any()),
+        );
       },
     );
 
@@ -269,6 +292,7 @@ void main() {
       'given an oversize and an unsupported photo, when picking, then skips them and uploads the rest',
       build: () {
         final oversize = PickedPhoto(
+          id: 'oversize',
           bytes: Uint8List(MeetingPhotoLimits.maxBytes + 1),
           contentType: 'image/jpeg',
         );
@@ -298,7 +322,9 @@ void main() {
         ),
       ],
       verify: (_) {
-        verify(() => repository.addMeetingPhoto(any(), any(), any())).called(1);
+        verify(
+          () => repository.addMeetingPhoto(any(), any(), any(), any()),
+        ).called(1);
       },
     );
 
@@ -363,8 +389,117 @@ void main() {
       ],
       verify: (_) {
         verifyNever(
-          () => repository.addMeetingPhoto(meetingId, second.bytes, any()),
+          () => repository.addMeetingPhoto(
+            meetingId,
+            second.id,
+            second.bytes,
+            any(),
+          ),
         );
+      },
+    );
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given a pending failure, when a new selection is uploaded, then the pending failure is kept for retry',
+      build: () {
+        givenUpload(first, const Failure(MeetingPhotoUploadFailure()));
+        givenUpload(second, Success(_photo('b')));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        givenPicked([first]);
+        await cubit.pickAndUpload();
+        givenPicked([second]);
+        await cubit.pickAndUpload();
+      },
+      verify: (cubit) {
+        expect(cubit.state.failedPhotos, [first]);
+        expect(cubit.state.photos.map((photo) => photo.id), ['existing', 'b']);
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the gallery is already open, when tapping again, then does not open a second picker',
+      build: () {
+        final selection =
+            Completer<Result<List<PickedPhoto>, PhotoPickerFailure>>();
+        when(
+          () => picker.pickFromGallery(limit: any(named: 'limit')),
+        ).thenAnswer((_) => selection.future);
+        addTearDown(() => selection.complete(const Success([])));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        unawaited(cubit.pickAndUpload());
+        await cubit.pickAndUpload();
+      },
+      verify: (_) {
+        verify(
+          () => picker.pickFromGallery(limit: any(named: 'limit')),
+        ).called(1);
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given an earlier failure in the batch, when the server rejects for the limit, then nothing is left to retry',
+      build: () {
+        givenPicked([first, second]);
+        givenUpload(first, const Failure(MeetingPhotoUploadFailure()));
+        givenUpload(second, const Failure(MeetingPhotoLimitFailure()));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        await cubit.pickAndUpload();
+      },
+      verify: (cubit) {
+        expect(cubit.state.failedPhotos, isEmpty);
+        expect(cubit.state.isUploading, isFalse);
+        expect(cubit.state.notice, const MeetingPhotosLimitReachedNotice());
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the server rejects a photo, when uploading, then it is not offered for retry and a notice is shown',
+      build: () {
+        givenPicked([first, second]);
+        givenUpload(first, const Failure(MeetingPhotoRejectedFailure()));
+        givenUpload(second, Success(_photo('b')));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        await cubit.pickAndUpload();
+      },
+      verify: (cubit) {
+        expect(cubit.state.failedPhotos, isEmpty);
+        expect(cubit.state.notice, const MeetingPhotosRejectedNotice(1));
+        expect(cubit.state.photos.map((photo) => photo.id), ['existing', 'b']);
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given a failed photo, when retrying, then resends it with the same photo id',
+      build: () {
+        givenPicked([first]);
+        givenUpload(first, const Failure(MeetingPhotoUploadFailure()));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        await cubit.pickAndUpload();
+        await cubit.retryFailed();
+      },
+      verify: (_) {
+        verify(
+          () => repository.addMeetingPhoto(
+            meetingId,
+            'photo-1',
+            first.bytes,
+            'image/jpeg',
+          ),
+        ).called(2);
       },
     );
   });
