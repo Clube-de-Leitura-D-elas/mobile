@@ -169,7 +169,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
 
   @override
   String get groupParticipantsTitle => 'Participantes';
@@ -332,6 +332,14 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get emptyGroupsMessage =>
       'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String groupDetailsNumberLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get groupNextEventNoLocation => 'Sem localização';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -499,7 +507,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
 
   @override
   String get groupParticipantsTitle => 'Participantes';
@@ -511,6 +519,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       locale: localeName,
       other: '$count participantes',
       one: '1 participante',
+      zero: 'Nenhum participante',
     );
     return '$_temp0';
   }
@@ -539,15 +548,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupParticipantsLoading => 'Carregando participantes';
-
-  @override
-  String get groupNextMeetingLabel => 'Próximo evento';
-
-  @override
-  String get groupDeclineMeetingButton => 'Não irei';
-
-  @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
 
   @override
   String get groupEventHistoryTitle => 'Histórico de eventos';

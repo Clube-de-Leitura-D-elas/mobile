@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -45,6 +46,9 @@ void main() {
         GroupParticipantEntity(id: 'p-1', name: 'Ana Beatriz'),
       ]),
     );
+    when(
+      () => mockRepository.getNextEvent('group-1'),
+    ).thenAnswer((_) async => const Success(null));
     serviceLocator.allowReassignment = true;
     if (serviceLocator.isRegistered<GroupRepository>()) {
       serviceLocator.unregister<GroupRepository>();
@@ -67,6 +71,11 @@ void main() {
       providers: [
         BlocProvider(
           create: (_) => GroupDetailsCubit(
+            groupRepository: serviceLocator<GroupRepository>(),
+          )..load('group-1'),
+        ),
+        BlocProvider(
+          create: (_) => NextEventCubit(
             groupRepository: serviceLocator<GroupRepository>(),
           )..load('group-1'),
         ),

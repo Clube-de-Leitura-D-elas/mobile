@@ -190,7 +190,7 @@ void main() {
       },
     );
 
-    testWidgets('Renders without border when showBorder is false', (
+    testWidgets('Keeps the card geometry with a transparent border', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -205,7 +205,10 @@ void main() {
       final container = tester.widget<Container>(find.byType(Container));
       final decoration = container.decoration as BoxDecoration;
 
-      expect(decoration.border, isNull);
+      final border = decoration.border as Border;
+
+      expect(border.top.color, Colors.transparent);
+      expect(border.top.width, 1);
       expect(decoration.color, AppColorTokens.light.surfaceDefault);
       expect(decoration.borderRadius, BorderRadius.circular(16));
     });
@@ -232,12 +235,16 @@ void main() {
           return ink.decoration as BoxDecoration;
         }
 
-        expect(decorationOf(tester).border, isNull);
+        final initialBorder = decorationOf(tester).border as Border;
+        expect(initialBorder.top.color, Colors.transparent);
+        expect(initialBorder.top.width, 1);
 
         await tester.tap(find.byType(InkWell));
         await tester.pump();
 
-        expect(decorationOf(tester).border, isNull);
+        final toggledBorder = decorationOf(tester).border as Border;
+        expect(toggledBorder.top.color, Colors.transparent);
+        expect(toggledBorder.top.width, 1);
         expect(decorationOf(tester).color, AppColorTokens.light.surfaceDefault);
       },
     );

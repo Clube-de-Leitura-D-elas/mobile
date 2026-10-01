@@ -112,7 +112,7 @@ class _AppCardState extends State<AppCard> {
       borderRadius: BorderRadius.circular(AppCard.borderRadius),
       border: widget.showBorder
           ? Border.all(color: _getBorderColor(colors), width: _getBorderWidth())
-          : null,
+          : Border.all(color: Colors.transparent),
     );
 
     if (widget.onTap == null) {

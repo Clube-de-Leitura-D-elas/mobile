@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+enum MeetingPresenceResponse { present, absent }
+
 class GroupMeeting extends Equatable {
   final String? id;
   final String hostName;
