@@ -190,6 +190,58 @@ void main() {
       },
     );
 
+    testWidgets('Renders without border when showBorder is false', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: const Scaffold(
+            body: AppCard(showBorder: false, child: Text('Conteúdo')),
+          ),
+        ),
+      );
+
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration;
+
+      expect(decoration.border, isNull);
+      expect(decoration.color, AppColorTokens.light.surfaceDefault);
+      expect(decoration.borderRadius, BorderRadius.circular(16));
+    });
+
+    testWidgets(
+      'Keeps no border on tap when showBorder is false, even for highlighted',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: AppCard(
+                showBorder: false,
+                variant: CardVariant.highlighted,
+                onTap: () {},
+                child: const Text('Conteúdo'),
+              ),
+            ),
+          ),
+        );
+
+        BoxDecoration decorationOf(WidgetTester t) {
+          final ink = t.widget<Ink>(find.byType(Ink));
+          return ink.decoration as BoxDecoration;
+        }
+
+        expect(decorationOf(tester).border, isNull);
+
+        await tester.tap(find.byType(InkWell));
+        await tester.pump();
+
+        expect(decorationOf(tester).border, isNull);
+        expect(decorationOf(tester).color, AppColorTokens.light.surfaceDefault);
+      },
+    );
+
     testWidgets(
       'AppCard.titled renders title and support text with the right styles',
       (tester) async {
