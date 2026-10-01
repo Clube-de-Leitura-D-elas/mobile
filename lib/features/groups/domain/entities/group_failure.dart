@@ -16,6 +16,38 @@ class GroupDetailsFailure extends GroupFailure {
   });
 }
 
+class GroupListFailure extends GroupFailure {
+  const GroupListFailure({
+    super.message = 'Não foi possível carregar seus grupos. Tente novamente.',
+  });
+}
+
+class GroupParticipantsFailure extends GroupFailure {
+  const GroupParticipantsFailure({
+    super.message = 'Não foi possível carregar as participantes do grupo.',
+  });
+}
+
 class GroupNotFoundFailure extends GroupFailure {
   const GroupNotFoundFailure({super.message = 'Grupo não encontrado.'});
+}
+
+class GroupEventHistoryFailure extends GroupFailure {
+  const GroupEventHistoryFailure({
+    super.message =
+        'Não foi possível carregar o histórico de eventos. Tente novamente.',
+  });
+}
+
+class GroupNextEventFailure extends GroupFailure {
+  const GroupNextEventFailure({
+    super.message =
+        'Não foi possível carregar o próximo evento. Tente novamente.',
+  });
+}
+
+class GroupMeetingPresenceFailure extends GroupFailure {
+  const GroupMeetingPresenceFailure({
+    super.message = 'Não foi possível atualizar sua presença. Tente novamente.',
+  });
 }

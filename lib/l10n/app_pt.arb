@@ -201,8 +201,21 @@
 
   "@@Groups": "--- Groups ---",
   "groupNextEventTitle": "Próximo evento",
+  "groupNextEventEmpty": "Nenhum próximo evento agendado",
+  "@groupNextEventEmpty": { "description": "Mensagem exibida quando o grupo não possui próximo evento" },
+  "groupNextEventHost": "Anfitriã: {name}",
+  "@groupNextEventHost": {
+    "description": "Nome da anfitriã do próximo evento",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "@groupNextEventTitle": {
     "description": "Título da seção do próximo evento nos detalhes do grupo"
+  },
+  "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
+  "@groupNextEventHistoryLink": {
+    "description": "Link exibido abaixo do próximo evento para acessar o histórico de encontros"
   },
   "groupParticipantsTitle": "Participantes",
   "@groupParticipantsTitle": {
@@ -225,7 +238,6 @@
   "@whatsappLaunchError": {
     "description": "Mensagem de erro exibida quando falha a abertura do link do WhatsApp"
   },
-
   "groupRecommendBookButton": "Indicar livro",
   "@groupRecommendBookButton": {
     "description": "Botão para indicar um livro ao grupo"
@@ -239,6 +251,22 @@
       }
     }
   },
+  "groupParticipantsEmpty": "Ainda não há participantes neste grupo.",
+  "@groupParticipantsEmpty": {
+    "description": "Mensagem quando o grupo não tem participantes"
+  },
+  "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
+  "@groupParticipantsLoadError": {
+    "description": "Erro ao buscar a lista de participantes do grupo"
+  },
+  "groupParticipantsRetryButton": "Tentar novamente",
+  "@groupParticipantsRetryButton": {
+    "description": "Botão para buscar de novo a lista de participantes após erro"
+  },
+  "groupParticipantsLoading": "Carregando participantes",
+  "@groupParticipantsLoading": {
+    "description": "Rótulo acessível do estado de carregamento da lista de participantes"
+  },
   "groupNextMeetingLabel": "Próximo evento",
   "@groupNextMeetingLabel": {
     "description": "Rótulo da seção de próximo encontro no card de grupo"
@@ -250,6 +278,27 @@
   "groupConfirmMeetingButton": "Confirmar presença",
   "@groupConfirmMeetingButton": {
     "description": "Botão para confirmar presença no próximo encontro do grupo"
+  },
+  "groupEventHistoryTitle": "Histórico de eventos",
+  "@groupEventHistoryTitle": {
+    "description": "Título da tela de histórico de eventos do grupo"
+  },
+  "groupEventHistoryHost": "Anfitriã: {hostName}",
+  "@groupEventHistoryHost": {
+    "description": "Identificação da anfitriã de um evento realizado",
+    "placeholders": {
+      "hostName": {
+        "type": "String"
+      }
+    }
+  },
+  "groupEventHistoryDetailsLink": "Confira mais detalhes",
+  "@groupEventHistoryDetailsLink": {
+    "description": "Link para abrir os detalhes de um evento realizado"
+  },
+  "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
+  "@groupEventHistoryEmpty": {
+    "description": "Mensagem exibida quando o grupo não possui encontros realizados"
   },
 
   "@@Onboarding": "--- Onboarding ---",
@@ -300,5 +349,49 @@
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
   "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
   "selectOptionHint": "Selecione",
-  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" }
+  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
+  "myGroupsTitle": "Meus grupos",
+  "@myGroupsTitle": {
+    "description": "Título principal da tela de grupos"
+  },
+  "searchGroupPlaceholder": "Buscar grupo",
+  "@searchGroupPlaceholder": {
+    "description": "Placeholder do campo de busca de grupos"
+  },
+  "filterAll": "Todos",
+  "@filterAll": {
+    "description": "Chip de filtro Todos"
+  },
+  "filterUnanswered": "Não respondidos ({count})",
+  "@filterUnanswered": {
+    "description": "Chip de filtro Não respondidos com contagem",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterAnswered": "Respondidos",
+  "@filterAnswered": {
+    "description": "Chip de filtro Respondidos"
+  },
+  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
+  "@emptyGroupsTitle": {
+    "description": "Título exibido quando a lista de grupos está vazia"
+  },
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
+  "@emptyGroupsMessage": {
+    "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
+  },
+  "groupDetailsNumberLabel": "Grupo {number}",
+  "@groupDetailsNumberLabel": {
+    "description": "Título da tela de detalhes do grupo, com o número do grupo",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "groupNextEventNoLocation": "Sem localização",
+  "@groupNextEventNoLocation": {
+    "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
+  }
 }

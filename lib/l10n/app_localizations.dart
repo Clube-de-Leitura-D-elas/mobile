@@ -391,6 +391,24 @@ abstract class AppLocalizations {
   /// **'Próximo evento'**
   String get groupNextEventTitle;
 
+  /// Mensagem exibida quando o grupo não possui próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum próximo evento agendado'**
+  String get groupNextEventEmpty;
+
+  /// Nome da anfitriã do próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String groupNextEventHost(String name);
+
+  /// Link exibido abaixo do próximo evento para acessar o histórico de encontros
+  ///
+  /// In pt, this message translates to:
+  /// **'Exibir detalhes dos últimos eventos'**
+  String get groupNextEventHistoryLink;
+
   /// Título da seção de participantes nos detalhes do grupo
   ///
   /// In pt, this message translates to:
@@ -427,6 +445,30 @@ abstract class AppLocalizations {
   /// **'Foto do grupo {name}'**
   String groupCoverSemanticLabel(String name);
 
+  /// Mensagem quando o grupo não tem participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há participantes neste grupo.'**
+  String get groupParticipantsEmpty;
+
+  /// Erro ao buscar a lista de participantes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar as participantes.'**
+  String get groupParticipantsLoadError;
+
+  /// Botão para buscar de novo a lista de participantes após erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get groupParticipantsRetryButton;
+
+  /// Rótulo acessível do estado de carregamento da lista de participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando participantes'**
+  String get groupParticipantsLoading;
+
   /// Rótulo da seção de próximo encontro no card de grupo
   ///
   /// In pt, this message translates to:
@@ -444,6 +486,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Confirmar presença'**
   String get groupConfirmMeetingButton;
+
+  /// Título da tela de histórico de eventos do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de eventos'**
+  String get groupEventHistoryTitle;
+
+  /// Identificação da anfitriã de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {hostName}'**
+  String groupEventHistoryHost(String hostName);
+
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
+  /// Mensagem exibida quando o grupo não possui encontros realizados
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo ainda não realizou encontros.'**
+  String get groupEventHistoryEmpty;
 
   /// Título principal do review de cadastro
   ///
@@ -582,6 +648,60 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Selecione'**
   String get selectOptionHint;
+
+  /// Título principal da tela de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Meus grupos'**
+  String get myGroupsTitle;
+
+  /// Placeholder do campo de busca de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar grupo'**
+  String get searchGroupPlaceholder;
+
+  /// Chip de filtro Todos
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get filterAll;
+
+  /// Chip de filtro Não respondidos com contagem
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondidos ({count})'**
+  String filterUnanswered(int count);
+
+  /// Chip de filtro Respondidos
+  ///
+  /// In pt, this message translates to:
+  /// **'Respondidos'**
+  String get filterAnswered;
+
+  /// Título exibido quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo'**
+  String get emptyGroupsTitle;
+
+  /// Mensagem detalhada exibida quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
+  String get emptyGroupsMessage;
+
+  /// Título da tela de detalhes do grupo, com o número do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupDetailsNumberLabel(int number);
+
+  /// Exibido no próximo evento do grupo quando nenhum local foi definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem localização'**
+  String get groupNextEventNoLocation;
 }
 
 class _AppLocalizationsDelegate

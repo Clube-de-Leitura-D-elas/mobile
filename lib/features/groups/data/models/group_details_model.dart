@@ -22,8 +22,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
     final city = json['city'];
     final stateCode = json['state_code'];
     final coverImageUrl = json['cover_image_url'];
-    final whatsappUrl = json['whatsapp_url'] ?? json['whatsapp_link'];
-
+    final whatsappUrl = json['whatsapp_url'];
 
     if (name is! String ||
         genres is! List ||
@@ -59,4 +58,3 @@ class GroupDetailsModel extends GroupDetailsEntity {
     );
   }
 }
-

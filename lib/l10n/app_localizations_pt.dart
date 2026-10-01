@@ -161,6 +161,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -191,6 +202,20 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
   String get groupNextMeetingLabel => 'Próximo evento';
 
   @override
@@ -198,6 +223,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
@@ -272,6 +312,38 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get selectOptionHint => 'Selecione';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String groupDetailsNumberLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get groupNextEventNoLocation => 'Sem localização';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -431,6 +503,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -459,6 +542,35 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupCoverSemanticLabel(String name) {
     return 'Foto do grupo $name';
   }
+
+  @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
@@ -533,4 +645,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get selectOptionHint => 'Selecione';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }
