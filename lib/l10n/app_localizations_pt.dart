@@ -285,6 +285,68 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get meetingPhotosTitle => 'Fotos do encontro';
+
+  @override
+  String get meetingPhotosAdd => 'Adicionar fotos';
+
+  @override
+  String get meetingPhotosAddMoreSemanticLabel => 'Adicionar mais fotos';
+
+  @override
+  String meetingPhotoSemanticLabel(int index) {
+    return 'Foto $index do encontro';
+  }
+
+  @override
+  String meetingPhotosUploading(int current, int total) {
+    return 'Enviando $current de $total';
+  }
+
+  @override
+  String meetingPhotosUploadFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Não foi possível enviar $count fotos.',
+      one: 'Não foi possível enviar 1 foto.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meetingPhotosRetryButton => 'Tentar novamente';
+
+  @override
+  String get meetingPhotosLoadError =>
+      'Não foi possível carregar as fotos do encontro.';
+
+  @override
+  String get meetingPhotosAccessDenied =>
+      'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
+
+  @override
+  String get meetingPhotosPickerFailed =>
+      'Não foi possível abrir a galeria. Tente novamente.';
+
+  @override
+  String meetingPhotosSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.',
+      one: '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String meetingPhotosLimitReached(int max) {
+    return 'Este encontro já tem o máximo de $max fotos.';
+  }
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -660,6 +722,68 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String meetingCoverSemanticLabel(String title) {
     return 'Foto do $title';
+  }
+
+  @override
+  String get meetingPhotosTitle => 'Fotos do encontro';
+
+  @override
+  String get meetingPhotosAdd => 'Adicionar fotos';
+
+  @override
+  String get meetingPhotosAddMoreSemanticLabel => 'Adicionar mais fotos';
+
+  @override
+  String meetingPhotoSemanticLabel(int index) {
+    return 'Foto $index do encontro';
+  }
+
+  @override
+  String meetingPhotosUploading(int current, int total) {
+    return 'Enviando $current de $total';
+  }
+
+  @override
+  String meetingPhotosUploadFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Não foi possível enviar $count fotos.',
+      one: 'Não foi possível enviar 1 foto.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meetingPhotosRetryButton => 'Tentar novamente';
+
+  @override
+  String get meetingPhotosLoadError =>
+      'Não foi possível carregar as fotos do encontro.';
+
+  @override
+  String get meetingPhotosAccessDenied =>
+      'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
+
+  @override
+  String get meetingPhotosPickerFailed =>
+      'Não foi possível abrir a galeria. Tente novamente.';
+
+  @override
+  String meetingPhotosSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.',
+      one: '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String meetingPhotosLimitReached(int max) {
+    return 'Este encontro já tem o máximo de $max fotos.';
   }
 
   @override

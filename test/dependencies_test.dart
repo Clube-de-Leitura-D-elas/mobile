@@ -4,6 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_platform_interface/google_sign_in_platform_interface.dart';
 import 'package:mobile/core/environment/environment.dart';
+import 'package:mobile/core/media/image_picker_photo_picker.dart';
+import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/dependencies.dart';
@@ -14,6 +16,7 @@ import 'package:mobile/features/groups/data/repositories/group_repository_impl.d
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -61,6 +64,8 @@ void main() {
         isA<GroupParticipantsRepositoryImpl>(),
       );
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
+      expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
+      expect(serviceLocator<MeetingPhotosCubit>(), isA<MeetingPhotosCubit>());
     },
   );
 }

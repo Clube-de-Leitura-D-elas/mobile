@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_details_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_photo_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
@@ -11,6 +15,7 @@ import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
@@ -147,5 +152,56 @@ class GroupRepositoryImpl implements GroupRepository {
       Failure() => const Failure(GroupMeetingPresenceFailure()),
       Success() => const Success(null),
     };
+  }
+
+  @override
+  Future<Result<List<MeetingPhotoEntity>, GroupFailure>> getMeetingPhotos(
+    String meetingId,
+  ) async {
+    final result = await supabaseService
+        .invokeFunction<List<MeetingPhotoModel>>(
+          functionName: 'get-meeting-photos?meeting_id=$meetingId',
+          decoder: MeetingPhotoModel.listFromEnvelope,
+        );
+
+    switch (result) {
+      case Failure():
+        return const Failure(MeetingPhotosFailure());
+      case Success(:final data):
+        final photos = data.data;
+        if (photos == null) return const Failure(MeetingPhotosFailure());
+        return Success(
+          photos.map((photo) => photo.toDomain()).toList(growable: false),
+        );
+    }
+  }
+
+  @override
+  Future<Result<MeetingPhotoEntity, GroupFailure>> addMeetingPhoto(
+    String meetingId,
+    Uint8List bytes,
+    String contentType,
+  ) async {
+    final result = await supabaseService.invokeFunction<MeetingPhotoModel>(
+      functionName: 'add-meeting-photo',
+      body: {
+        'meeting_id': meetingId,
+        'content_type': contentType,
+        'data_base64': base64Encode(bytes),
+      },
+      decoder: MeetingPhotoModel.fromEnvelope,
+    );
+
+    switch (result) {
+      case Failure(:final failure):
+        if (failure.code == '409') {
+          return const Failure(MeetingPhotoLimitFailure());
+        }
+        return const Failure(MeetingPhotoUploadFailure());
+      case Success(:final data):
+        final photo = data.data;
+        if (photo == null) return const Failure(MeetingPhotoUploadFailure());
+        return Success(photo.toDomain());
+    }
   }
 }

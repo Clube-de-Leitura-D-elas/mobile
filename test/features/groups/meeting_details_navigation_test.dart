@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -11,11 +12,14 @@ import 'package:mobile/features/groups/domain/entities/meeting_details_entity.da
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
+
+class MockPhotoPicker extends Mock implements PhotoPicker {}
 
 void main() {
   late MockGroupRepository mockRepository;
@@ -29,11 +33,21 @@ void main() {
     serviceLocator.registerFactory<MeetingDetailsCubit>(
       () => MeetingDetailsCubit(groupRepository: mockRepository),
     );
+    serviceLocator.registerFactory<MeetingPhotosCubit>(
+      () => MeetingPhotosCubit(
+        groupRepository: mockRepository,
+        photoPicker: MockPhotoPicker(),
+      ),
+    );
+    when(
+      () => mockRepository.getMeetingPhotos(any()),
+    ).thenAnswer((_) async => const Success([]));
   });
 
   tearDown(() {
     serviceLocator.unregister<EventHistoryCubit>();
     serviceLocator.unregister<MeetingDetailsCubit>();
+    serviceLocator.unregister<MeetingPhotosCubit>();
   });
 
   Future<void> pumpRoute(WidgetTester tester, String location) async {
@@ -112,7 +126,9 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(() => mockRepository.getMeetingDetails('meeting-2')).called(1);
+      verify(() => mockRepository.getMeetingPhotos('meeting-2')).called(1);
       expect(find.text('Encontro 12'), findsOneWidget);
+      expect(find.text('Fotos do encontro'), findsOneWidget);
       expect(find.text('Livro: Dom Casmurro'), findsOneWidget);
 
       await tester.tap(find.byTooltip('Voltar'));

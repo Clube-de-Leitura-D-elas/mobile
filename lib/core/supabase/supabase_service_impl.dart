@@ -6,6 +6,8 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseServiceImpl implements SupabaseService {
+  static const _maxLoggedValueLength = 200;
+
   final SupabaseClient _client;
 
   SupabaseServiceImpl(this._client);
@@ -23,7 +25,7 @@ class SupabaseServiceImpl implements SupabaseService {
     T Function(dynamic data)? decoder,
   }) async {
     try {
-      debugPrint('[SupabaseService] Invoking function "$functionName" with body: $body');
+      debugPrint('[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}');
       final res = await _client.functions.invoke(
         functionName,
         body: body,
@@ -80,6 +82,18 @@ class SupabaseServiceImpl implements SupabaseService {
         ),
       );
     }
+  }
+
+  // Fotos vão em base64 no body; logar o valor inteiro trava o console.
+  static Map<String, dynamic>? _loggableBody(Map<String, dynamic>? body) {
+    return body?.map(
+      (key, value) => MapEntry(
+        key,
+        value is String && value.length > _maxLoggedValueLength
+            ? '<${value.length} chars>'
+            : value,
+      ),
+    );
   }
 
   @override

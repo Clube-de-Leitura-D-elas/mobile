@@ -577,6 +577,78 @@ abstract class AppLocalizations {
   /// **'Foto do {title}'**
   String meetingCoverSemanticLabel(String title);
 
+  /// Título da seção de fotos na tela de detalhes do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Fotos do encontro'**
+  String get meetingPhotosTitle;
+
+  /// Texto do estado vazio da seção de fotos; ao tocar abre a galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar fotos'**
+  String get meetingPhotosAdd;
+
+  /// Rótulo de acessibilidade do botão de adicionar fotos ao final da galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar mais fotos'**
+  String get meetingPhotosAddMoreSemanticLabel;
+
+  /// Rótulo de acessibilidade de uma miniatura da galeria do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto {index} do encontro'**
+  String meetingPhotoSemanticLabel(int index);
+
+  /// Progresso do envio das fotos selecionadas
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviando {current} de {total}'**
+  String meetingPhotosUploading(int current, int total);
+
+  /// Mensagem exibida quando parte das fotos não foi enviada
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{Não foi possível enviar 1 foto.} other{Não foi possível enviar {count} fotos.}}'**
+  String meetingPhotosUploadFailed(int count);
+
+  /// Ação para reenviar só as fotos que falharam ou recarregar a galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get meetingPhotosRetryButton;
+
+  /// Erro ao carregar a galeria do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar as fotos do encontro.'**
+  String get meetingPhotosLoadError;
+
+  /// Exibido quando o acesso à galeria foi negado
+  ///
+  /// In pt, this message translates to:
+  /// **'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.'**
+  String get meetingPhotosAccessDenied;
+
+  /// Exibido quando a galeria não abre por um erro inesperado
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir a galeria. Tente novamente.'**
+  String get meetingPhotosPickerFailed;
+
+  /// Fotos descartadas antes do envio por tamanho ou formato
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.} other{{count} fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.}}'**
+  String meetingPhotosSkipped(int count);
+
+  /// Exibido quando o encontro atingiu o limite de fotos
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro já tem o máximo de {max} fotos.'**
+  String meetingPhotosLimitReached(int max);
+
   /// Título principal do review de cadastro
   ///
   /// In pt, this message translates to:
