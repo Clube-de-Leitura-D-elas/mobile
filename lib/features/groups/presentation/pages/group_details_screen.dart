@@ -20,6 +20,7 @@ class GroupDetailsScreen extends StatefulWidget {
     required this.city,
     required this.stateCode,
     this.coverImage,
+    this.whatsappUrl,
     this.nextEventCount,
     this.nextEvent = const GroupNextEvent(),
     this.participantsContent,
@@ -31,6 +32,7 @@ class GroupDetailsScreen extends StatefulWidget {
   final String city;
   final String stateCode;
   final ImageProvider<Object>? coverImage;
+  final String? whatsappUrl;
   final int? nextEventCount;
   final Widget nextEvent;
   final Widget? participantsContent;
@@ -72,7 +74,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                     stateCode: widget.stateCode,
                   ),
                   SizedBox(height: spacing.s32),
-                  const GroupActions(),
+                  GroupActions(whatsappUrl: widget.whatsappUrl),
                   SizedBox(height: spacing.s24),
                   GroupSection(
                     title: l10n.groupNextEventTitle,

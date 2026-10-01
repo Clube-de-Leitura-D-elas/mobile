@@ -75,9 +75,9 @@ void main() {
           )..load('group-1'),
         ),
         BlocProvider(
-          create: (_) => NextEventCubit(
-            groupRepository: serviceLocator<GroupRepository>(),
-          )..load('group-1'),
+          create: (_) =>
+              NextEventCubit(groupRepository: serviceLocator<GroupRepository>())
+                ..load('group-1'),
         ),
         BlocProvider(
           create: (_) => GroupParticipantsCubit(
@@ -167,5 +167,29 @@ void main() {
       (screen.coverImage! as NetworkImage).url,
       'https://example.com/group-cover.jpg',
     );
+  });
+
+  testWidgets('passes whatsappUrl to GroupDetailsScreen when group has it', (
+    tester,
+  ) async {
+    const groupWithWhatsapp = GroupDetailsEntity(
+      name: '45',
+      genres: ['Ficção'],
+      participantCount: 34,
+      city: 'Porto Alegre',
+      stateCode: 'RS',
+      whatsappUrl: 'https://chat.whatsapp.com/ABC123xyz',
+    );
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Success(groupWithWhatsapp));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pump();
+
+    final screen = tester.widget<GroupDetailsScreen>(
+      find.byType(GroupDetailsScreen),
+    );
+    expect(screen.whatsappUrl, 'https://chat.whatsapp.com/ABC123xyz');
   });
 }

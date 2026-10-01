@@ -190,6 +190,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
 
   @override
+  String get whatsappLaunchError =>
+      'Não foi possível abrir o link do WhatsApp.';
+
+  @override
   String get groupRecommendBookButton => 'Indicar livro';
 
   @override
@@ -571,6 +575,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get whatsappLaunchError =>
+      'Não foi possível abrir o link do WhatsApp.';
 
   @override
   String get groupRecommendBookButton => 'Indicar livro';

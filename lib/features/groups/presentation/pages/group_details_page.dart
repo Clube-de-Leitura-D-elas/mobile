@@ -37,6 +37,7 @@ class GroupDetailsPage extends StatelessWidget {
             coverImage: group.coverImageUrl != null
                 ? NetworkImage(group.coverImageUrl!)
                 : null,
+            whatsappUrl: group.whatsappUrl,
             nextEvent: BlocBuilder<NextEventCubit, NextEventState>(
               builder: (context, nextEventState) => GroupNextEvent(
                 status: _toWidgetStatus(nextEventState),

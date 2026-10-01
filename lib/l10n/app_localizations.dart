@@ -427,6 +427,12 @@ abstract class AppLocalizations {
   /// **'Abrir Whatsapp'**
   String get groupOpenWhatsAppButton;
 
+  /// Mensagem de erro exibida quando falha a abertura do link do WhatsApp
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o link do WhatsApp.'**
+  String get whatsappLaunchError;
+
   /// Botão para indicar um livro ao grupo
   ///
   /// In pt, this message translates to:
