@@ -403,11 +403,11 @@ abstract class AppLocalizations {
   /// **'Anfitriã: {name}'**
   String groupNextEventHost(String name);
 
-  /// Link para abrir os detalhes de um evento realizado
+  /// Link exibido abaixo do próximo evento para acessar o histórico de encontros
   ///
   /// In pt, this message translates to:
-  /// **'Confira mais detalhes'**
-  String get groupEventHistoryDetailsLink;
+  /// **'Exibir detalhes dos últimos eventos'**
+  String get groupNextEventHistoryLink;
 
   /// Título da seção de participantes nos detalhes do grupo
   ///
@@ -492,6 +492,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Anfitriã: {hostName}'**
   String groupEventHistoryHost(String hostName);
+
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
 
   /// Mensagem exibida quando o grupo não possui encontros realizados
   ///
@@ -744,6 +750,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
   String get emptyGroupsMessage;
+
+  /// Título da tela de detalhes do grupo, com o número do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupDetailsNumberLabel(int number);
+
+  /// Exibido no próximo evento do grupo quando nenhum local foi definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem localização'**
+  String get groupNextEventNoLocation;
 }
 
 class _AppLocalizationsDelegate

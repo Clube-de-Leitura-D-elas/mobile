@@ -5,6 +5,7 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_page.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
@@ -55,6 +56,10 @@ abstract class GroupRoutes {
               BlocProvider(
                 create: (_) =>
                     serviceLocator<GroupDetailsCubit>()..load(groupId),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<NextEventCubit>()..load(groupId),
               ),
               BlocProvider(
                 create: (_) =>

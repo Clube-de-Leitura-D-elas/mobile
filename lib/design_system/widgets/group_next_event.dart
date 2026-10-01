@@ -77,12 +77,14 @@ class _EventDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
+                Row(
           children: [
             Expanded(
               child: _EventMetadata(
                 icon: AppIcons.location,
-                label: data.location,
+                label: data.location.isEmpty
+                    ? context.l10n.groupNextEventNoLocation
+                    : data.location,
               ),
             ),
             SizedBox(width: spacing.s16),
@@ -102,15 +104,15 @@ class _EventDetails extends StatelessWidget {
             child: Semantics(
               button: true,
               enabled: true,
-              label: context.l10n.groupEventHistoryDetailsLink,
+              label: context.l10n.groupNextEventHistoryLink,
               child: InkWell(
                 onTap: onEventHistoryPressed,
                 borderRadius: BorderRadius.circular(spacing.s4),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: spacing.s4),
                   child: Text(
-                    context.l10n.groupEventHistoryDetailsLink,
-                    style: context.text.bodySmallEmphasis.copyWith(
+                    context.l10n.groupNextEventHistoryLink,
+                    style: context.text.bodyDefaultEmphasis.copyWith(
                       color: context.colors.textBrand,
                     ),
                   ),

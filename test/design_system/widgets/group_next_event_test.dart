@@ -113,4 +113,59 @@ void main() {
       throwsAssertionError,
     );
   });
+
+  testWidgets(
+    'renders history link with bodyDefaultEmphasis when callback is provided',
+    (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(
+        buildSubject(
+          GroupNextEvent(
+            status: GroupNextEventStatus.loaded,
+            data: GroupNextEventData(
+              location: 'Porto Alegre, RS',
+              date: DateTime(2026, 8, 29),
+              hostName: 'Roberta',
+            ),
+            onEventHistoryPressed: () => tapped = true,
+          ),
+        ),
+      );
+
+      expect(
+        find.text('Exibir detalhes dos últimos eventos'),
+        findsOneWidget,
+      );
+
+      final linkText = tester.widget<Text>(
+        find.text('Exibir detalhes dos últimos eventos'),
+      );
+      expect(
+        linkText.style?.fontSize,
+        AppTypographyTokens.standard.bodyDefaultEmphasis.fontSize,
+      );
+
+      await tester.tap(find.text('Exibir detalhes dos últimos eventos'));
+      expect(tapped, isTrue);
+    },
+  );
+
+  testWidgets('does not render history link when no callback is given', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        GroupNextEvent(
+          status: GroupNextEventStatus.loaded,
+          data: GroupNextEventData(
+            location: 'Porto Alegre, RS',
+            date: DateTime(2026, 8, 29),
+            hostName: 'Roberta',
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Exibir detalhes dos últimos eventos'), findsNothing);
+  });
 }

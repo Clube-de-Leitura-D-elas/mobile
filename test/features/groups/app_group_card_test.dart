@@ -92,7 +92,7 @@ void main() {
               nextMeeting: GroupMeeting(
                 hostName: 'Roberta',
                 bookTitle: 'Pequeno príncipe',
-                date: '29/08/2026',
+                date: '2026-08-29T19:00:00Z',
                 location: 'Z Café TECNOPUC',
               ),
             ),
@@ -108,6 +108,55 @@ void main() {
         expect(find.text('Confirmar presença'), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'Shows the localized fallback when the meeting has no location',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: '',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Sem localização'), findsOneWidget);
+      },
+    );
+
+    testWidgets('Hides presence actions after the member responds', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppGroupCard(
+            groupId: 'group-1',
+            groupName: 'Grupo 1',
+            participantsCount: 32,
+            cityState: 'Porto Alegre, RS',
+            showPresenceActions: false,
+            nextMeeting: GroupMeeting(
+              hostName: 'Roberta',
+              bookTitle: 'Pequeno príncipe',
+              date: '2026-08-29T19:00:00Z',
+              location: 'Z Café TECNOPUC',
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Não irei'), findsNothing);
+      expect(find.text('Confirmar presença'), findsNothing);
+    });
 
     testWidgets('Triggers onTap when the card is tapped', (tester) async {
       var tapped = false;
@@ -130,40 +179,48 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('Renders the card without a border, before and after tap', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _wrap(
-          AppGroupCard(
-            groupId: 'group-1',
-            groupName: 'Grupo 27',
-            participantsCount: 18,
-            cityState: 'Porto Alegre, RS',
-            onTap: () {},
+    testWidgets(
+      'Renders the card without a visible border, before and after tap',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 27',
+              participantsCount: 18,
+              cityState: 'Porto Alegre, RS',
+              onTap: () {},
+            ),
           ),
-        ),
-      );
-
-      BoxDecoration decorationOf(WidgetTester t) {
-        final ink = t.widget<Ink>(
-          find.descendant(of: find.byType(AppCard), matching: find.byType(Ink)),
         );
-        return ink.decoration as BoxDecoration;
-      }
 
-      expect(decorationOf(tester).border, isNull);
-      expect(decorationOf(tester).color, AppColorTokens.light.surfaceDefault);
-      expect(
-        decorationOf(tester).borderRadius,
-        BorderRadius.circular(AppCard.borderRadius),
-      );
+        BoxDecoration decorationOf(WidgetTester t) {
+          final ink = t.widget<Ink>(
+            find.descendant(
+              of: find.byType(AppCard),
+              matching: find.byType(Ink),
+            ),
+          );
+          return ink.decoration as BoxDecoration;
+        }
 
-      await tester.tap(find.byType(InkWell).first);
-      await tester.pump();
+        Border borderOf(WidgetTester t) => decorationOf(t).border! as Border;
 
-      expect(decorationOf(tester).border, isNull);
-    });
+        expect(borderOf(tester).top.color, Colors.transparent);
+        expect(borderOf(tester).top.width, 1);
+        expect(decorationOf(tester).color, AppColorTokens.light.surfaceDefault);
+        expect(
+          decorationOf(tester).borderRadius,
+          BorderRadius.circular(AppCard.borderRadius),
+        );
+
+        await tester.tap(find.byType(InkWell).first);
+        await tester.pump();
+
+        expect(borderOf(tester).top.color, Colors.transparent);
+        expect(borderOf(tester).top.width, 1);
+      },
+    );
 
     testWidgets('Navigates to group details when onTap is not provided', (
       tester,

@@ -169,7 +169,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
 
   @override
   String get groupParticipantsTitle => 'Participantes';
@@ -227,6 +227,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupEventHistoryHost(String hostName) {
     return 'Anfitriã: $hostName';
   }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
 
   @override
   String get groupEventHistoryEmpty =>
@@ -374,6 +377,14 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get emptyGroupsMessage =>
       'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String groupDetailsNumberLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get groupNextEventNoLocation => 'Sem localização';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -541,7 +552,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
 
   @override
   String get groupParticipantsTitle => 'Participantes';
@@ -590,6 +601,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupEventHistoryHost(String hostName) {
     return 'Anfitriã: $hostName';
   }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
 
   @override
   String get groupEventHistoryEmpty =>

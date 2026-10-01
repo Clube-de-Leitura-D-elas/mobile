@@ -15,6 +15,7 @@ import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.da
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
@@ -71,6 +72,9 @@ class DependenciesContainer {
         groupRepository: serviceLocator<GroupRepository>(),
       ),
     );
+    serviceLocator.registerFactory<NextEventCubit>(
+      () => NextEventCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
     serviceLocator.registerLazySingleton<GroupParticipantsRepository>(
       () => GroupParticipantsRepositoryImpl(
         supabaseService: serviceLocator<SupabaseService>(),
@@ -89,6 +93,8 @@ class DependenciesContainer {
       ),
     );
 
-    serviceLocator.registerFactory<HomeCubit>(() => HomeCubit());
+    serviceLocator.registerFactory<HomeCubit>(
+      () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
   }
 }

@@ -3,7 +3,7 @@ import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 
 class GroupEntity extends Equatable {
   final String id;
-  final String name;
+  final int number;
   final int participantsCount;
   final String cityState;
   final String? photoUrl;
@@ -12,7 +12,7 @@ class GroupEntity extends Equatable {
 
   const GroupEntity({
     required this.id,
-    required this.name,
+    required this.number,
     required this.participantsCount,
     required this.cityState,
     this.photoUrl,
@@ -22,7 +22,7 @@ class GroupEntity extends Equatable {
 
   GroupEntity copyWith({
     String? id,
-    String? name,
+    int? number,
     int? participantsCount,
     String? cityState,
     String? photoUrl,
@@ -31,7 +31,7 @@ class GroupEntity extends Equatable {
   }) {
     return GroupEntity(
       id: id ?? this.id,
-      name: name ?? this.name,
+      number: number ?? this.number,
       participantsCount: participantsCount ?? this.participantsCount,
       cityState: cityState ?? this.cityState,
       photoUrl: photoUrl ?? this.photoUrl,
@@ -43,7 +43,7 @@ class GroupEntity extends Equatable {
   @override
   List<Object?> get props => [
         id,
-        name,
+        number,
         participantsCount,
         cityState,
         photoUrl,

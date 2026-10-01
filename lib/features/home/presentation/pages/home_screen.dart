@@ -7,6 +7,7 @@ import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_state.dart';
 import 'package:mobile/features/home/presentation/widgets/home_groups_list.dart';
 import 'package:mobile/features/home/presentation/widgets/home_header.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserEntity? user;
@@ -54,8 +55,21 @@ class _HomeContent extends StatelessWidget {
         ),
         HomeGroupsList(
           groups: state.groups,
+          isLoading: state.status == HomeStatus.loading,
+          errorMessage: state.status == HomeStatus.error
+              ? state.errorMessage
+              : null,
           isExpanded: state.isGroupExpanded,
           onToggleExpanded: cubit.toggleCardExpansion,
+          onRetry: cubit.loadGroups,
+          onConfirmPresence: (meetingId) => cubit.setMeetingPresence(
+            meetingId,
+            MeetingPresenceResponse.present,
+          ),
+          onDeclinePresence: (meetingId) => cubit.setMeetingPresence(
+            meetingId,
+            MeetingPresenceResponse.absent,
+          ),
         ),
       ],
     );

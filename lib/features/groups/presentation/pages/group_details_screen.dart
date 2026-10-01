@@ -23,7 +23,6 @@ class GroupDetailsScreen extends StatefulWidget {
     this.nextEventCount,
     this.nextEvent = const GroupNextEvent(),
     this.participantsContent,
-    this.onEventHistoryPressed,
   });
 
   final String name;
@@ -35,7 +34,6 @@ class GroupDetailsScreen extends StatefulWidget {
   final int? nextEventCount;
   final Widget nextEvent;
   final Widget? participantsContent;
-  final VoidCallback? onEventHistoryPressed;
 
   @override
   State<GroupDetailsScreen> createState() => _GroupDetailsScreenState();
@@ -75,15 +73,6 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                   ),
                   SizedBox(height: spacing.s32),
                   const GroupActions(),
-                  if (widget.onEventHistoryPressed != null) ...[
-                    SizedBox(height: spacing.s8),
-                    AppButton.ghost(
-                      label: l10n.groupEventHistoryTitle,
-                      size: AppButtonSize.sm,
-                      icon: const Icon(Icons.history),
-                      onPressed: widget.onEventHistoryPressed,
-                    ),
-                  ],
                   SizedBox(height: spacing.s24),
                   GroupSection(
                     title: l10n.groupNextEventTitle,
