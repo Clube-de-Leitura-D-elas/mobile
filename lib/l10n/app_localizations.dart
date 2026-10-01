@@ -511,6 +511,72 @@ abstract class AppLocalizations {
   /// **'Este grupo ainda não realizou encontros.'**
   String get groupEventHistoryEmpty;
 
+  /// Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do encontro'**
+  String get meetingDetailsHeader;
+
+  /// Título do encontro com a numeração sequencial no grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro {number}'**
+  String meetingDetailsTitle(int number);
+
+  /// Título do encontro quando ele ainda não tem numeração (sem data)
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro'**
+  String get meetingDetailsTitleFallback;
+
+  /// Data do encontro já formatada
+  ///
+  /// In pt, this message translates to:
+  /// **'Data: {date}'**
+  String meetingDetailsDate(String date);
+
+  /// Exibido quando o encontro ainda não tem data
+  ///
+  /// In pt, this message translates to:
+  /// **'Data: a definir'**
+  String get meetingDetailsDateUndefined;
+
+  /// Livro lido no encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro: {title}'**
+  String meetingDetailsBook(String title);
+
+  /// Anfitriã do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String meetingDetailsHost(String name);
+
+  /// Nome e endereço do local do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Local: {location}'**
+  String meetingDetailsLocation(String location);
+
+  /// Exibido quando o encontro ainda não tem local
+  ///
+  /// In pt, this message translates to:
+  /// **'Local: a definir'**
+  String get meetingDetailsLocationUndefined;
+
+  /// Título da seção de descrição do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição'**
+  String get meetingDetailsDescriptionTitle;
+
+  /// Rótulo de acessibilidade da foto de capa do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto do {title}'**
+  String meetingCoverSemanticLabel(String title);
+
   /// Título principal do review de cadastro
   ///
   /// In pt, this message translates to:

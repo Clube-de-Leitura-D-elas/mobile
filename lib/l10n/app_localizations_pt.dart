@@ -240,6 +240,51 @@ class AppLocalizationsPt extends AppLocalizations {
       'Este grupo ainda não realizou encontros.';
 
   @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
+  String get meetingDetailsTitleFallback => 'Encontro';
+
+  @override
+  String meetingDetailsDate(String date) {
+    return 'Data: $date';
+  }
+
+  @override
+  String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsBook(String title) {
+    return 'Livro: $title';
+  }
+
+  @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
+  }
+
+  @override
+  String get meetingDetailsLocationUndefined => 'Local: a definir';
+
+  @override
+  String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
+  }
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -571,6 +616,51 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get groupEventHistoryEmpty =>
       'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
+  String get meetingDetailsTitleFallback => 'Encontro';
+
+  @override
+  String meetingDetailsDate(String date) {
+    return 'Data: $date';
+  }
+
+  @override
+  String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsBook(String title) {
+    return 'Livro: $title';
+  }
+
+  @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
+  }
+
+  @override
+  String get meetingDetailsLocationUndefined => 'Local: a definir';
+
+  @override
+  String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
+  }
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';

@@ -13,6 +13,7 @@ import 'package:mobile/features/groups/domain/repository/group_participants_repo
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -65,6 +66,11 @@ class DependenciesContainer {
     serviceLocator.registerFactory<EventHistoryCubit>(
       () =>
           EventHistoryCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
+    serviceLocator.registerFactory<MeetingDetailsCubit>(
+      () => MeetingDetailsCubit(
+        groupRepository: serviceLocator<GroupRepository>(),
+      ),
     );
     serviceLocator.registerFactory<NextEventCubit>(
       () => NextEventCubit(groupRepository: serviceLocator<GroupRepository>()),

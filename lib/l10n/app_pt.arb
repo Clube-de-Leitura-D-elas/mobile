@@ -300,6 +300,80 @@
   "@groupEventHistoryEmpty": {
     "description": "Mensagem exibida quando o grupo não possui encontros realizados"
   },
+  "meetingDetailsHeader": "Detalhes do encontro",
+  "@meetingDetailsHeader": {
+    "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
+  },
+  "meetingDetailsTitle": "Encontro {number}",
+  "@meetingDetailsTitle": {
+    "description": "Título do encontro com a numeração sequencial no grupo",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "meetingDetailsTitleFallback": "Encontro",
+  "@meetingDetailsTitleFallback": {
+    "description": "Título do encontro quando ele ainda não tem numeração (sem data)"
+  },
+  "meetingDetailsDate": "Data: {date}",
+  "@meetingDetailsDate": {
+    "description": "Data do encontro já formatada",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingDetailsDateUndefined": "Data: a definir",
+  "@meetingDetailsDateUndefined": {
+    "description": "Exibido quando o encontro ainda não tem data"
+  },
+  "meetingDetailsBook": "Livro: {title}",
+  "@meetingDetailsBook": {
+    "description": "Livro lido no encontro",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingDetailsHost": "Anfitriã: {name}",
+  "@meetingDetailsHost": {
+    "description": "Anfitriã do encontro",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingDetailsLocation": "Local: {location}",
+  "@meetingDetailsLocation": {
+    "description": "Nome e endereço do local do encontro",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingDetailsLocationUndefined": "Local: a definir",
+  "@meetingDetailsLocationUndefined": {
+    "description": "Exibido quando o encontro ainda não tem local"
+  },
+  "meetingDetailsDescriptionTitle": "Descrição",
+  "@meetingDetailsDescriptionTitle": {
+    "description": "Título da seção de descrição do encontro"
+  },
+  "meetingCoverSemanticLabel": "Foto do {title}",
+  "@meetingCoverSemanticLabel": {
+    "description": "Rótulo de acessibilidade da foto de capa do encontro",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
 
   "@@Onboarding": "--- Onboarding ---",
   "onboardingReviewTitle": "Verifique os seus dados",

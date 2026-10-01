@@ -3,12 +3,14 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
@@ -81,6 +83,30 @@ class GroupRepositoryImpl implements GroupRepository {
         return Success<List<GroupMeeting>, GroupFailure>(
           meetings.map((meeting) => meeting.toDomain()).toList(growable: false),
         );
+    }
+  }
+
+  @override
+  Future<Result<MeetingDetailsEntity, GroupFailure>> getMeetingDetails(
+    String meetingId,
+  ) async {
+    final result = await supabaseService.invokeFunction<MeetingDetailsModel>(
+      functionName: 'get-meeting-details?meeting_id=$meetingId',
+      decoder: MeetingDetailsModel.fromJson,
+    );
+
+    switch (result) {
+      case Failure(:final failure):
+        if (failure is NotFoundSupabaseFailure || failure.code == '404') {
+          return const Failure(MeetingNotFoundFailure());
+        }
+        return const Failure(MeetingDetailsFailure());
+      case Success(:final data):
+        final meeting = data.data;
+        if (meeting == null) {
+          return const Failure(MeetingDetailsFailure());
+        }
+        return Success<MeetingDetailsEntity, GroupFailure>(meeting.toDomain());
     }
   }
 
