@@ -209,9 +209,7 @@ class _BookCover extends StatelessWidget {
       return _BookCoverPlaceholder(message: l10n.groupNextEventBookUndefined);
     }
     if (cover == null) {
-      return _BookCoverPlaceholder(
-        message: l10n.groupNextEventBookCoverUnavailable,
-      );
+      return _BookCoverPlaceholder(message: title);
     }
 
     return ClipRRect(
@@ -224,9 +222,7 @@ class _BookCover extends StatelessWidget {
         semanticLabel: l10n.groupNextEventBookCoverSemanticLabel(title),
         loadingBuilder: (_, child, progress) =>
             progress == null ? child : const _BookCoverLoading(),
-        errorBuilder: (_, _, _) => _BookCoverPlaceholder(
-          message: l10n.groupNextEventBookCoverUnavailable,
-        ),
+        errorBuilder: (_, _, _) => _BookCoverPlaceholder(message: title),
       ),
     );
   }

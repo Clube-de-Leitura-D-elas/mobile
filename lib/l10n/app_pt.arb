@@ -228,10 +228,6 @@
       "title": { "type": "String" }
     }
   },
-  "groupNextEventBookCoverUnavailable": "Capa indisponível",
-  "@groupNextEventBookCoverUnavailable": {
-    "description": "Exibido no lugar da capa quando o livro do próximo evento não tem capa ou ela não carregou"
-  },
   "groupNextEventBookUndefined": "Livro ainda não definido",
   "@groupNextEventBookUndefined": {
     "description": "Exibido no lugar da capa quando o próximo evento ainda não tem livro definido"

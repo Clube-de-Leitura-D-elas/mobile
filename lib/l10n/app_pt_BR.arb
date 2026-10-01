@@ -63,7 +63,6 @@
   "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
   "groupNextEventCurrentBookLabel": "O livro da vez é:",
   "groupNextEventBookCoverSemanticLabel": "Capa do livro {title}",
-  "groupNextEventBookCoverUnavailable": "Capa indisponível",
   "groupNextEventBookUndefined": "Livro ainda não definido",
   "groupParticipantsTitle": "Participantes",
   "groupParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",

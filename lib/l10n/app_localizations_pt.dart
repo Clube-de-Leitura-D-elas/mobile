@@ -180,9 +180,6 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get groupNextEventBookCoverUnavailable => 'Capa indisponível';
-
-  @override
   String get groupNextEventBookUndefined => 'Livro ainda não definido';
 
   @override
@@ -579,9 +576,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupNextEventBookCoverSemanticLabel(String title) {
     return 'Capa do livro $title';
   }
-
-  @override
-  String get groupNextEventBookCoverUnavailable => 'Capa indisponível';
 
   @override
   String get groupNextEventBookUndefined => 'Livro ainda não definido';

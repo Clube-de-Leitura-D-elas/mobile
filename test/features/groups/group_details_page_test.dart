@@ -254,7 +254,7 @@ void main() {
         .data;
     expect(data?.bookTitle, 'Ponciá Vicêncio');
     expect(data?.bookCover, isNull);
-    expect(find.text('Capa indisponível'), findsOneWidget);
+    expect(find.text('Ponciá Vicêncio'), findsOneWidget);
   });
 
   testWidgets('Given a next event without a book, '

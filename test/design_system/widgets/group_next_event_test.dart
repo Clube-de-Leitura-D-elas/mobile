@@ -287,7 +287,7 @@ void main() {
         buildSubject(buildEvent(bookTitle: "Olhos d'água")),
       );
 
-      expect(find.text('Capa indisponível'), findsOneWidget);
+      expect(find.text("Olhos d'água"), findsOneWidget);
       expect(find.text('Livro ainda não definido'), findsNothing);
       expect(tester.getSize(find.byKey(placeholderKey)), const Size(180, 240));
     });
@@ -308,7 +308,7 @@ void main() {
         await tester.pump();
 
         expect(tester.takeException(), isNull);
-        expect(find.text('Capa indisponível'), findsOneWidget);
+        expect(find.text('Ponciá Vicêncio'), findsOneWidget);
         expect(
           tester.getSize(find.byKey(placeholderKey)),
           const Size(180, 240),

@@ -421,12 +421,6 @@ abstract class AppLocalizations {
   /// **'Capa do livro {title}'**
   String groupNextEventBookCoverSemanticLabel(String title);
 
-  /// Exibido no lugar da capa quando o livro do próximo evento não tem capa ou ela não carregou
-  ///
-  /// In pt, this message translates to:
-  /// **'Capa indisponível'**
-  String get groupNextEventBookCoverUnavailable;
-
   /// Exibido no lugar da capa quando o próximo evento ainda não tem livro definido
   ///
   /// In pt, this message translates to:
