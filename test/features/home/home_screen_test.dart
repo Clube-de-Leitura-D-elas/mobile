@@ -61,7 +61,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Meus grupos'), findsOneWidget);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Grupo 1'), findsOneWidget);
     expect(find.text('3 participantes'), findsOneWidget);
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
