@@ -3,6 +3,7 @@ import 'package:mobile/features/groups/domain/entities/group_details_entity.dart
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 
 abstract class GroupRepository {
@@ -14,6 +15,10 @@ abstract class GroupRepository {
 
   Future<Result<List<GroupMeeting>, GroupFailure>> getEventHistory(
     String groupId,
+  );
+
+  Future<Result<MeetingDetailsEntity, GroupFailure>> getMeetingDetails(
+    String meetingId,
   );
 
   /// Retorna o próximo evento agendado do grupo, ou null se não houver.

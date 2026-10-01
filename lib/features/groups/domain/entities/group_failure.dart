@@ -39,6 +39,17 @@ class GroupEventHistoryFailure extends GroupFailure {
   });
 }
 
+class MeetingDetailsFailure extends GroupFailure {
+  const MeetingDetailsFailure({
+    super.message =
+        'Não foi possível carregar os detalhes do encontro. Tente novamente.',
+  });
+}
+
+class MeetingNotFoundFailure extends GroupFailure {
+  const MeetingNotFoundFailure({super.message = 'Encontro não encontrado.'});
+}
+
 class GroupNextEventFailure extends GroupFailure {
   const GroupNextEventFailure({
     super.message =
