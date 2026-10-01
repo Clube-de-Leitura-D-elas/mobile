@@ -100,4 +100,26 @@ class GroupRepositoryImpl implements GroupRepository {
         return Success(data.data?.toDomain());
     }
   }
+
+  @override
+  Future<Result<void, GroupFailure>> setMeetingPresence(
+    String meetingId,
+    MeetingPresenceResponse response,
+  ) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'set-meeting-attendance-response',
+      body: {
+        'meeting_id': meetingId,
+        'presence_status': switch (response) {
+          MeetingPresenceResponse.present => 'PRESENT',
+          MeetingPresenceResponse.absent => 'ABSENT',
+        },
+      },
+    );
+
+    return switch (result) {
+      Failure() => const Failure(GroupMeetingPresenceFailure()),
+      Success() => const Success(null),
+    };
+  }
 }

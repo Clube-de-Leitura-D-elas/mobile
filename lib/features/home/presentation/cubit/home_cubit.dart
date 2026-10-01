@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'home_state.dart';
 
@@ -53,5 +54,28 @@ class HomeCubit extends Cubit<HomeState> {
 
   void updateSearch(String query) {
     emit(state.copyWith(searchQuery: query));
+  }
+
+  Future<void> setMeetingPresence(
+    String meetingId,
+    MeetingPresenceResponse response,
+  ) async {
+    final result = await groupRepository.setMeetingPresence(
+      meetingId,
+      response,
+    );
+    if (isClosed) return;
+
+    switch (result) {
+      case Failure(:final failure):
+        emit(
+          state.copyWith(
+            status: HomeStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
+      case Success():
+        await loadGroups();
+    }
   }
 }

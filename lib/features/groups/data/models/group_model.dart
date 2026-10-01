@@ -1,4 +1,5 @@
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 
 class GroupModel extends GroupEntity {
   const GroupModel({
@@ -7,6 +8,8 @@ class GroupModel extends GroupEntity {
     required super.participantsCount,
     required super.cityState,
     super.photoUrl,
+    super.nextMeeting,
+    super.hasPendingResponse,
   });
 
   factory GroupModel.fromJson(dynamic json) {
@@ -19,12 +22,15 @@ class GroupModel extends GroupEntity {
     final participantsCount = json['participant_count'];
     final cityState = json['city_state'];
     final photoUrl = json['photo_url'];
+    final nextMeeting = _parseNextMeeting(json['next_meeting']);
+    final hasPendingResponse = json['has_pending_response'];
 
     if (id is! String ||
         number == null ||
         participantsCount is! int ||
         cityState is! String ||
-        (photoUrl != null && photoUrl is! String)) {
+        (photoUrl != null && photoUrl is! String) ||
+        (hasPendingResponse != null && hasPendingResponse is! bool)) {
       throw const FormatException('Invalid group.');
     }
 
@@ -34,6 +40,8 @@ class GroupModel extends GroupEntity {
       participantsCount: participantsCount,
       cityState: cityState,
       photoUrl: photoUrl as String?,
+      nextMeeting: nextMeeting,
+      hasPendingResponse: hasPendingResponse as bool? ?? false,
     );
   }
 
@@ -43,6 +51,35 @@ class GroupModel extends GroupEntity {
 
     return int.tryParse(name) ??
         int.tryParse(RegExp(r'\d+$').firstMatch(name)?.group(0) ?? '');
+  }
+
+  static GroupMeeting? _parseNextMeeting(dynamic json) {
+    if (json == null) return null;
+    if (json is! Map<String, dynamic>) {
+      throw const FormatException('Invalid next meeting.');
+    }
+
+    final id = json['id'];
+    final hostName = json['host_name'];
+    final bookTitle = json['book_title'];
+    final date = json['date'];
+    final location = json['location'];
+
+    if (id is! String ||
+        hostName is! String ||
+        bookTitle is! String ||
+        date is! String ||
+        location is! String) {
+      throw const FormatException('Invalid next meeting.');
+    }
+
+    return GroupMeeting(
+      id: id,
+      hostName: hostName,
+      bookTitle: bookTitle,
+      date: date,
+      location: location,
+    );
   }
 
   static List<GroupModel> listFromJson(dynamic json) {
@@ -60,6 +97,8 @@ class GroupModel extends GroupEntity {
       participantsCount: participantsCount,
       cityState: cityState,
       photoUrl: photoUrl,
+      nextMeeting: nextMeeting,
+      hasPendingResponse: hasPendingResponse,
     );
   }
 }

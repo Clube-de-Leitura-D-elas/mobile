@@ -18,4 +18,9 @@ abstract class GroupRepository {
 
   /// Retorna o próximo evento agendado do grupo, ou null se não houver.
   Future<Result<NextEventEntity?, GroupFailure>> getNextEvent(String groupId);
+
+  Future<Result<void, GroupFailure>> setMeetingPresence(
+    String meetingId,
+    MeetingPresenceResponse response,
+  );
 }

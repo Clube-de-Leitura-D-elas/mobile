@@ -92,7 +92,7 @@ void main() {
               nextMeeting: GroupMeeting(
                 hostName: 'Roberta',
                 bookTitle: 'Pequeno príncipe',
-                date: '29/08/2026',
+                date: '2026-08-29T19:00:00Z',
                 location: 'Z Café TECNOPUC',
               ),
             ),
@@ -108,6 +108,55 @@ void main() {
         expect(find.text('Confirmar presença'), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'Shows the localized fallback when the meeting has no location',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: '',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Sem localização'), findsOneWidget);
+      },
+    );
+
+    testWidgets('Hides presence actions after the member responds', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppGroupCard(
+            groupId: 'group-1',
+            groupName: 'Grupo 1',
+            participantsCount: 32,
+            cityState: 'Porto Alegre, RS',
+            showPresenceActions: false,
+            nextMeeting: GroupMeeting(
+              hostName: 'Roberta',
+              bookTitle: 'Pequeno príncipe',
+              date: '2026-08-29T19:00:00Z',
+              location: 'Z Café TECNOPUC',
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Não irei'), findsNothing);
+      expect(find.text('Confirmar presença'), findsNothing);
+    });
 
     testWidgets('Triggers onTap when the card is tapped', (tester) async {
       var tapped = false;

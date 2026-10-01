@@ -45,3 +45,9 @@ class GroupNextEventFailure extends GroupFailure {
         'Não foi possível carregar o próximo evento. Tente novamente.',
   });
 }
+
+class GroupMeetingPresenceFailure extends GroupFailure {
+  const GroupMeetingPresenceFailure({
+    super.message = 'Não foi possível atualizar sua presença. Tente novamente.',
+  });
+}

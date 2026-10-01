@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
@@ -19,6 +20,7 @@ class AppGroupCard extends StatelessWidget {
   final VoidCallback? onToggleExpanded;
   final VoidCallback? onConfirmPresence;
   final VoidCallback? onDeclinePresence;
+  final bool showPresenceActions;
 
   const AppGroupCard({
     super.key,
@@ -33,6 +35,7 @@ class AppGroupCard extends StatelessWidget {
     this.onToggleExpanded,
     this.onConfirmPresence,
     this.onDeclinePresence,
+    this.showPresenceActions = true,
   });
 
   @override
@@ -70,10 +73,11 @@ class AppGroupCard extends StatelessWidget {
               SizedBox(height: spacing.s8),
               _MeetingDetailsGrid(meeting: meeting),
               SizedBox(height: spacing.s16),
-              _MeetingActionButtons(
-                onConfirmPresence: onConfirmPresence,
-                onDeclinePresence: onDeclinePresence,
-              ),
+              if (showPresenceActions)
+                _MeetingActionButtons(
+                  onConfirmPresence: onConfirmPresence,
+                  onDeclinePresence: onDeclinePresence,
+                ),
             ],
           ],
         ],
@@ -173,6 +177,8 @@ class _MeetingDetailsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
+    final formattedDate = _formatMeetingDate(meeting.date);
+    final l10n = context.l10n;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -199,13 +205,15 @@ class _MeetingDetailsGrid extends StatelessWidget {
             Expanded(
               child: AppGroupInfoRow(
                 icon: AppIcons.calendar,
-                label: meeting.date,
+                label: formattedDate,
               ),
             ),
             Expanded(
               child: AppGroupInfoRow(
                 icon: AppIcons.location,
-                label: meeting.location,
+                label: meeting.location.isEmpty
+                    ? l10n.groupNextEventNoLocation
+                    : meeting.location,
               ),
             ),
           ],
@@ -213,6 +221,13 @@ class _MeetingDetailsGrid extends StatelessWidget {
       ],
     );
   }
+}
+
+String _formatMeetingDate(String value) {
+  final date = DateTime.tryParse(value);
+  if (date == null) return value;
+
+  return DateFormat('dd/MM/yyyy', 'pt_BR').format(date.toLocal());
 }
 
 class _MeetingActionButtons extends StatelessWidget {
