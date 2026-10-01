@@ -172,6 +172,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
 
   @override
+  String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
+
+  @override
+  String groupNextEventBookCoverSemanticLabel(String title) {
+    return 'Capa do livro $title';
+  }
+
+  @override
+  String get groupNextEventBookUndefined => 'Livro ainda não definido';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -630,6 +641,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
+  String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
+
+  @override
+  String groupNextEventBookCoverSemanticLabel(String title) {
+    return 'Capa do livro $title';
+  }
+
+  @override
+  String get groupNextEventBookUndefined => 'Livro ainda não definido';
 
   @override
   String get groupParticipantsTitle => 'Participantes';

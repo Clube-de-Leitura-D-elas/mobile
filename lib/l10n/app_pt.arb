@@ -217,6 +217,21 @@
   "@groupNextEventHistoryLink": {
     "description": "Link exibido abaixo do próximo evento para acessar o histórico de encontros"
   },
+  "groupNextEventCurrentBookLabel": "O livro da vez é:",
+  "@groupNextEventCurrentBookLabel": {
+    "description": "Rótulo exibido acima da capa do livro do próximo evento do grupo"
+  },
+  "groupNextEventBookCoverSemanticLabel": "Capa do livro {title}",
+  "@groupNextEventBookCoverSemanticLabel": {
+    "description": "Rótulo de acessibilidade da capa do livro do próximo evento",
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "groupNextEventBookUndefined": "Livro ainda não definido",
+  "@groupNextEventBookUndefined": {
+    "description": "Exibido no lugar da capa quando o próximo evento ainda não tem livro definido"
+  },
   "groupParticipantsTitle": "Participantes",
   "@groupParticipantsTitle": {
     "description": "Título da seção de participantes nos detalhes do grupo"

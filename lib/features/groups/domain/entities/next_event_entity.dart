@@ -8,6 +8,8 @@ class NextEventEntity extends Equatable {
     required this.location,
     required this.date,
     required this.hostName,
+    this.bookTitle,
+    this.bookCoverUrl,
   });
 
   final String location;
@@ -16,6 +18,16 @@ class NextEventEntity extends Equatable {
 
   final String hostName;
 
+  final String? bookTitle;
+
+  final String? bookCoverUrl;
+
   @override
-  List<Object?> get props => [location, date, hostName];
+  List<Object?> get props => [
+    location,
+    date,
+    hostName,
+    bookTitle,
+    bookCoverUrl,
+  ];
 }

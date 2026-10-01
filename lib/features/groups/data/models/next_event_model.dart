@@ -5,6 +5,8 @@ class NextEventModel extends NextEventEntity {
     required super.location,
     required super.date,
     required super.hostName,
+    super.bookTitle,
+    super.bookCoverUrl,
   });
 
   /// Desempacota o envelope `{ next_event: { ... } }` retornado pela edge
@@ -30,8 +32,13 @@ class NextEventModel extends NextEventEntity {
     final locationName = json['location_name'];
     final date = json['date'];
     final hostName = json['host_name'];
+    final bookTitle = json['book_title'];
+    final bookCoverUrl = json['book_cover_url'];
 
-    if (date is! String || hostName is! String) {
+    if (date is! String ||
+        hostName is! String ||
+        (bookTitle != null && bookTitle is! String) ||
+        (bookCoverUrl != null && bookCoverUrl is! String)) {
       throw const FormatException('Invalid next event response.');
     }
     final parsedDate = DateTime.tryParse(date);
@@ -44,10 +51,18 @@ class NextEventModel extends NextEventEntity {
       location: locationName is String ? locationName : '',
       date: parsedDate,
       hostName: hostName,
+      bookTitle: bookTitle as String?,
+      bookCoverUrl: bookCoverUrl as String?,
     );
   }
 
   NextEventEntity toDomain() {
-    return NextEventEntity(location: location, date: date, hostName: hostName);
+    return NextEventEntity(
+      location: location,
+      date: date,
+      hostName: hostName,
+      bookTitle: bookTitle,
+      bookCoverUrl: bookCoverUrl,
+    );
   }
 }
