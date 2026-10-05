@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
-import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
+import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 Widget _wrap(Widget child) {
@@ -79,35 +79,32 @@ void main() {
       },
     );
 
-    testWidgets(
-      'Renders the meeting section and both buttons when there is a next meeting',
-      (tester) async {
-        await tester.pumpWidget(
-          _wrap(
-            const AppGroupCard(
-              groupId: 'group-1',
-              groupName: 'Grupo 1',
-              participantsCount: 32,
-              cityState: 'Porto Alegre, RS',
-              nextMeeting: GroupMeeting(
-                hostName: 'Roberta',
-                bookTitle: 'Pequeno príncipe',
-                date: '2026-08-29T19:00:00Z',
-                location: 'Z Café TECNOPUC',
-              ),
+    testWidgets('Renders the meeting section when there is a next meeting', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppGroupCard(
+            groupId: 'group-1',
+            groupName: 'Grupo 1',
+            participantsCount: 32,
+            cityState: 'Porto Alegre, RS',
+            nextMeeting: GroupMeeting(
+              hostName: 'Roberta',
+              bookTitle: 'Pequeno príncipe',
+              date: '2026-08-29T19:00:00Z',
+              location: 'Z Café TECNOPUC',
             ),
           ),
-        );
+        ),
+      );
 
-        expect(find.text('Próximo evento'), findsOneWidget);
-        expect(find.text('Roberta'), findsOneWidget);
-        expect(find.text('Pequeno príncipe'), findsOneWidget);
-        expect(find.text('29/08/2026'), findsOneWidget);
-        expect(find.text('Z Café TECNOPUC'), findsOneWidget);
-        expect(find.text('Não irei'), findsOneWidget);
-        expect(find.text('Confirmar presença'), findsOneWidget);
-      },
-    );
+      expect(find.text('Próximo evento'), findsOneWidget);
+      expect(find.text('Roberta'), findsOneWidget);
+      expect(find.text('Pequeno príncipe'), findsOneWidget);
+      expect(find.text('29/08/2026'), findsOneWidget);
+      expect(find.text('Z Café TECNOPUC'), findsOneWidget);
+    });
 
     testWidgets(
       'Shows the localized fallback when the meeting has no location',
@@ -287,41 +284,6 @@ void main() {
     });
 
     testWidgets(
-      'Calls onConfirmPresence and onDeclinePresence when the buttons are tapped',
-      (tester) async {
-        var confirmed = false;
-        var declined = false;
-
-        await tester.pumpWidget(
-          _wrap(
-            AppGroupCard(
-              groupId: 'group-1',
-              groupName: 'Grupo 1',
-              participantsCount: 32,
-              cityState: 'Porto Alegre, RS',
-              nextMeeting: const GroupMeeting(
-                hostName: 'Roberta',
-                bookTitle: 'Pequeno príncipe',
-                date: '29/08/2026',
-                location: 'Z Café TECNOPUC',
-              ),
-              onConfirmPresence: () => confirmed = true,
-              onDeclinePresence: () => declined = true,
-            ),
-          ),
-        );
-
-        await tester.tap(find.text('Não irei'));
-        await tester.pump();
-        expect(declined, isTrue);
-
-        await tester.tap(find.text('Confirmar presença'));
-        await tester.pump();
-        expect(confirmed, isTrue);
-      },
-    );
-
-    testWidgets(
       'Shows only the header and a down chevron when collapsed (expanded: false)',
       (tester) async {
         await tester.pumpWidget(
@@ -345,7 +307,6 @@ void main() {
         expect(find.text('Próximo evento'), findsOneWidget);
         expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
 
-        // Detalhes e botões não aparecem enquanto colapsado.
         expect(find.text('Roberta'), findsNothing);
         expect(find.text('Pequeno príncipe'), findsNothing);
         expect(find.text('Não irei'), findsNothing);

@@ -12,8 +12,6 @@ class HomeGroupsList extends StatelessWidget {
   final bool Function(String groupId) isExpanded;
   final ValueChanged<String> onToggleExpanded;
   final VoidCallback onRetry;
-  final ValueChanged<String> onConfirmPresence;
-  final ValueChanged<String> onDeclinePresence;
 
   const HomeGroupsList({
     super.key,
@@ -23,8 +21,6 @@ class HomeGroupsList extends StatelessWidget {
     required this.isExpanded,
     required this.onToggleExpanded,
     required this.onRetry,
-    required this.onConfirmPresence,
-    required this.onDeclinePresence,
   });
 
   @override
@@ -61,8 +57,6 @@ class HomeGroupsList extends StatelessWidget {
           group: groups[index],
           isExpanded: isExpanded(groups[index].id),
           onToggle: () => onToggleExpanded(groups[index].id),
-          onConfirmPresence: onConfirmPresence,
-          onDeclinePresence: onDeclinePresence,
         ),
       ),
     );
@@ -102,21 +96,15 @@ class _GroupCardItem extends StatelessWidget {
   final GroupEntity group;
   final bool isExpanded;
   final VoidCallback onToggle;
-  final ValueChanged<String> onConfirmPresence;
-  final ValueChanged<String> onDeclinePresence;
 
   const _GroupCardItem({
     required this.group,
     required this.isExpanded,
     required this.onToggle,
-    required this.onConfirmPresence,
-    required this.onDeclinePresence,
   });
 
   @override
   Widget build(BuildContext context) {
-    final meetingId = group.nextMeeting?.id;
-
     return AppGroupCard(
       key: ValueKey('group_card_${group.id}'),
       groupId: group.id,
@@ -127,12 +115,6 @@ class _GroupCardItem extends StatelessWidget {
       nextMeeting: group.nextMeeting,
       expanded: isExpanded,
       onToggleExpanded: onToggle,
-      onConfirmPresence: meetingId == null
-          ? null
-          : () => onConfirmPresence(meetingId),
-      onDeclinePresence: meetingId == null
-          ? null
-          : () => onDeclinePresence(meetingId),
       showPresenceActions: group.hasPendingResponse,
     );
   }
