@@ -505,6 +505,12 @@ abstract class AppLocalizations {
   /// **'Confirmar presença'**
   String get groupConfirmMeetingButton;
 
+  /// Tentar responder a confirmação de presença no encontro novamente após um erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get groupMeetingRsvpRetryAction;
+
   /// Título da tela de histórico de eventos do grupo
   ///
   /// In pt, this message translates to:
