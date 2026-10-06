@@ -162,7 +162,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
 
   @override
   void dispose() {
-    _removeOverlay(); // Limpa os overlays sem chamar setState
+    _removeOverlay();
     super.dispose();
   }
 

@@ -24,6 +24,7 @@ class AppTextField extends StatefulWidget {
     this.helperText,
     this.errorText,
     this.controller,
+    this.initialValue,
     this.onChanged,
     this.onSubmitted,
     this.obscureText = false,
@@ -33,6 +34,7 @@ class AppTextField extends StatefulWidget {
     this.suffixIcon,
     this.enabled = true,
     this.autofocus = false,
+    this.maxLines = 1,
     this.size = AppTextFieldSize.md,
     this.validator,
   });
@@ -42,6 +44,7 @@ class AppTextField extends StatefulWidget {
   final String? helperText;
   final String? errorText;
   final TextEditingController? controller;
+  final String? initialValue;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final bool obscureText;
@@ -51,8 +54,10 @@ class AppTextField extends StatefulWidget {
   final Widget? suffixIcon;
   final bool enabled;
   final bool autofocus;
+  final int? maxLines;
   final AppTextFieldSize size;
   final String? Function(String?)? validator;
+
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -60,12 +65,24 @@ class AppTextField extends StatefulWidget {
 
 class _AppTextFieldState extends State<AppTextField> {
   late bool _isObscured;
+  late TextEditingController _effectiveController;
 
   @override
   void initState() {
     super.initState();
     _isObscured = widget.obscureText;
+    _effectiveController = widget.controller ??
+        TextEditingController(text: widget.initialValue);
   }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _effectiveController.dispose();
+    }
+    super.dispose();
+  }
+
 
   double get _height {
     switch (widget.size) {
@@ -145,9 +162,11 @@ class _AppTextFieldState extends State<AppTextField> {
               const Gap4(),
             ],
             SizedBox(
-              height: _height,
+              height: widget.maxLines != 1 ? null : _height,
               child: TextField(
-                controller: widget.controller,
+                controller: _effectiveController,
+                maxLines: widget.maxLines,
+
                 onChanged: (value) {
                   field.didChange(value);
                   widget.onChanged?.call(value);

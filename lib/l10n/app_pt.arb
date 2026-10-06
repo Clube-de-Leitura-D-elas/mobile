@@ -96,6 +96,10 @@
   "@registerButton": {
     "description": "Botão para submeter o cadastro"
   },
+  "accountCreatedSuccessMessage": "Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.",
+  "@accountCreatedSuccessMessage": {
+    "description": "Mensagem exibida após o cadastro bem-sucedido"
+  },
   "alreadyHaveAccountLink": "Já tenho uma conta",
   "@alreadyHaveAccountLink": {
     "description": "Link para quem já possui conta e quer ir para o login"
@@ -127,6 +131,18 @@
   "claimTokenRequiredError": "Por favor, informe o token de acesso.",
   "@claimTokenRequiredError": {
     "description": "Erro exibido ao tentar enviar o token em branco"
+  },
+  "claimTokenInvalidError": "Token de acesso inválido ou já utilizado. Por favor, verifique o código.",
+  "@claimTokenInvalidError": {
+    "description": "Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado"
+  },
+  "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
+  "@genericError": {
+    "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
+  },
+  "back": "Voltar",
+  "@back": {
+    "description": "Texto padrão para ação de retornar"
   },
 
   "@@Home": "--- Home ---",
@@ -182,6 +198,106 @@
   "@authUserIdLabel": {
     "description": "Rótulo do item de perfil para ID do usuário no Supabase"
   },
+
+  "@@Groups": "--- Groups ---",
+  "groupNextEventTitle": "Próximo evento",
+  "@groupNextEventTitle": {
+    "description": "Título da seção do próximo evento nos detalhes do grupo"
+  },
+  "groupParticipantsTitle": "Participantes",
+  "@groupParticipantsTitle": {
+    "description": "Título da seção de participantes nos detalhes do grupo"
+  },
+  "groupParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
+  "@groupParticipantsCount": {
+    "description": "Quantidade de participantes do grupo",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupOpenWhatsAppButton": "Abrir Whatsapp",
+  "@groupOpenWhatsAppButton": {
+    "description": "Botão para abrir o grupo no WhatsApp"
+  },
+  "groupRecommendBookButton": "Indicar livro",
+  "@groupRecommendBookButton": {
+    "description": "Botão para indicar um livro ao grupo"
+  },
+  "groupCoverSemanticLabel": "Foto do grupo {name}",
+  "@groupCoverSemanticLabel": {
+    "description": "Descrição acessível da foto de capa do grupo",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupNextMeetingLabel": "Próximo evento",
+  "@groupNextMeetingLabel": {
+    "description": "Rótulo da seção de próximo encontro no card de grupo"
+  },
+  "groupDeclineMeetingButton": "Não irei",
+  "@groupDeclineMeetingButton": {
+    "description": "Botão para recusar presença no próximo encontro do grupo"
+  },
+  "groupConfirmMeetingButton": "Confirmar presença",
+  "@groupConfirmMeetingButton": {
+    "description": "Botão para confirmar presença no próximo encontro do grupo"
+  },
+
+  "@@Onboarding": "--- Onboarding ---",
+  "onboardingReviewTitle": "Verifique os seus dados",
+  "@onboardingReviewTitle": { "description": "Título principal do review de cadastro" },
+  "onboardingNameLabel": "Nome",
+  "@onboardingNameLabel": {
+    "description": "Rótulo do campo Nome"
+  },
+  "onboardingEmailLabel": "E-mail",
+  "@onboardingEmailLabel": { "description": "Rótulo e-mail" },
+  "onboardingPhoneLabel": "Celular",
+  "@onboardingPhoneLabel": { "description": "Rótulo celular" },
+  "onboardingBirthDateLabel": "Data de nascimento",
+  "@onboardingBirthDateLabel": { "description": "Rótulo data de nascimento" },
+  "onboardingCityLabel": "Cidade",
+  "@onboardingCityLabel": { "description": "Rótulo cidade" },
+  "onboardingCityHint": "Selecione uma cidade",
+  "@onboardingCityHint": { "description": "Dica de seleção de cidade" },
+  "onboardingRegionLabel": "Região",
+  "@onboardingRegionLabel": { "description": "Rótulo região" },
+  "onboardingJobLabel": "Qual sua profissão?",
+  "@onboardingJobLabel": { "description": "Rótulo profissão" },
+  "onboardingEducationLabel": "Nível de escolaridade",
+  "@onboardingEducationLabel": { "description": "Rótulo escolaridade" },
+  "onboardingEducationHint": "Selecione um nível",
+  "@onboardingEducationHint": { "description": "Dica seleção de escolaridade" },
+  "onboardingOtherGroupLabel": "Você participa de outro grupo de leitura?",
+  "@onboardingOtherGroupLabel": { "description": "Rótulo grupo de leitura" },
+  "onboardingVolunteerLabel": "Teria interesse em se voluntariar como coordenadora de grupo?",
+  "@onboardingVolunteerLabel": { "description": "Rótulo voluntariado" },
+  "onboardingBookIndicationLabel": "Qual livro de ficção você indicaria para a leitura coletiva?",
+  "@onboardingBookIndicationLabel": { "description": "Rótulo indicação livro" },
+  "onboardingBookIndicationHint": "Digite sua resposta",
+  "@onboardingBookIndicationHint": { "description": "Dica indicação livro" },
+  "onboardingExpectationsLabel": "O que você espera ao participar do Clube de Leitura D'Elas?",
+  "@onboardingExpectationsLabel": { "description": "Rótulo expectativas" },
+  "onboardingExpectationsHint": "Digite sua resposta",
+  "@onboardingExpectationsHint": { "description": "Dica expectativas" },
+  "onboardingBackButton": "Voltar",
+  "@onboardingBackButton": { "description": "Botão voltar" },
+  "onboardingContinueButton": "Continuar",
+  "@onboardingContinueButton": { "description": "Botão continuar" },
+  "onboardingWelcomeTitle": "Seja Bem-vinda",
+  "@onboardingWelcomeTitle": { "description": "Título de boas-vindas" },
+  "onboardingWelcomeSubtitle": "Sua inscrição foi realizada com sucesso!",
+  "@onboardingWelcomeSubtitle": { "description": "Subtítulo de boas-vindas" },
+  "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
+  "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
+  "selectOptionHint": "Selecione",
+  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
+
+  "@@Dropdown": "--- Dropdown demo strings ---",
   "genreRomance": "Romance",
   "@genreRomance": {
     "description": "Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown"

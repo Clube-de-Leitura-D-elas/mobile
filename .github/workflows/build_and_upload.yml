@@ -1,0 +1,60 @@
+name: Build & Upload Release APK
+
+on:
+  workflow_dispatch: # Disparo manual na aba Actions
+  release:
+    types: [published] # Disparo automático ao publicar uma release no GitHub
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Java / JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Instalar Dependências
+        run: flutter pub get
+
+      - name: Gerar Arquivos de Localização (ARB / l10n)
+        run: flutter gen-l10n
+
+      - name: Rodar build_runner (se houver geradores de código)
+        run: |
+          if grep -q "build_runner" pubspec.yaml; then
+            dart run build_runner build --delete-conflicting-outputs
+          fi
+
+      - name: Compilar APK (Release)
+        run: flutter build apk --release
+
+      - name: Autenticar no Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Configurar Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload do APK para o Google Cloud Storage
+        run: |
+          # Extrai a versão definida no pubspec.yaml
+          VERSION=$(grep 'version:' pubspec.yaml | awk '{print $2}' | tr '+' '-')
+          RELEASE_NAME="app-release-${VERSION}-${GITHUB_SHA::7}.apk"
+          
+          echo "Fazendo upload de app-release.apk como $RELEASE_NAME..."
+          gsutil cp build/app/outputs/flutter-apk/app-release.apk gs://${{ secrets.GCP_BUCKET_NAME }}/$RELEASE_NAME
+          
+          echo "Upload concluído! Arquivo enviado para gs://${{ secrets.GCP_BUCKET_NAME }}/$RELEASE_NAME"

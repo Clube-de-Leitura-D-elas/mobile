@@ -79,6 +79,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get registerButton => 'Cadastrar';
 
   @override
+  String get accountCreatedSuccessMessage =>
+      'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.';
+
+  @override
   String get alreadyHaveAccountLink => 'Já tenho uma conta';
 
   @override
@@ -102,6 +106,17 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
+
+  @override
+  String get claimTokenInvalidError =>
+      'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
+  String get back => 'Voltar';
 
   @override
   String get logoutTooltip => 'Sair';
@@ -141,6 +156,118 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
+
+  @override
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
 
   @override
   String get genreRomance => 'Romance';
@@ -233,6 +360,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get registerButton => 'Cadastrar';
 
   @override
+  String get accountCreatedSuccessMessage =>
+      'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.';
+
+  @override
   String get alreadyHaveAccountLink => 'Já tenho uma conta';
 
   @override
@@ -256,6 +387,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get claimTokenRequiredError => 'Por favor, informe o token de acesso.';
+
+  @override
+  String get claimTokenInvalidError =>
+      'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
+  String get back => 'Voltar';
 
   @override
   String get logoutTooltip => 'Sair';
@@ -295,6 +437,109 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
 
   @override
   String get genreRomance => 'Romance';

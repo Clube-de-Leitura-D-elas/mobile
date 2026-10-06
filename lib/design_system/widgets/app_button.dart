@@ -224,7 +224,11 @@ class AppButton extends StatelessWidget {
       );
     }
 
-    final labelWidget = Text(label, textAlign: TextAlign.center);
+    final labelWidget = Text(
+      label,
+      textAlign: TextAlign.center,
+    );
+
 
     if (icon == null) {
       return labelWidget;

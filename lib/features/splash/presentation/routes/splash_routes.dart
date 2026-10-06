@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/splash/presentation/pages/splash_screen.dart';
+
+import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 
 abstract class SplashRoutes {
   static const String splash = '/splash';
@@ -9,7 +12,10 @@ abstract class SplashRoutes {
   static List<RouteBase> get routes => [
         GoRoute(
           path: splash,
-          builder: (context, state) => const SplashScreen(),
+          pageBuilder: (context, state) => AppPageTransitions.createFadePage(
+            state: state,
+            child: const SplashScreen(),
+          ),
         ),
       ];
 
@@ -26,7 +32,7 @@ abstract class SplashRoutes {
         return '/home';
       }
       if (sessionState is NeedsClaimSession) {
-        return '/claim-token';
+        return OnboardingRoutes.claimToken;
       }
       if (sessionState is GuestSession) {
         return '/login';
@@ -36,3 +42,5 @@ abstract class SplashRoutes {
     return null;
   }
 }
+
+
