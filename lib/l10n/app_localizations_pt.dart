@@ -161,6 +161,28 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
+  String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
+
+  @override
+  String groupNextEventBookCoverSemanticLabel(String title) {
+    return 'Capa do livro $title';
+  }
+
+  @override
+  String get groupNextEventBookUndefined => 'Livro ainda não definido';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -179,12 +201,30 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
 
   @override
+  String get whatsappLaunchError =>
+      'Não foi possível abrir o link do WhatsApp.';
+
+  @override
   String get groupRecommendBookButton => 'Indicar livro';
 
   @override
   String groupCoverSemanticLabel(String name) {
     return 'Foto do grupo $name';
   }
+
+  @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
 
   @override
   String get groupNextMeetingLabel => 'Próximo evento';
@@ -194,6 +234,139 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
+  String get meetingDetailsTitleFallback => 'Encontro';
+
+  @override
+  String meetingDetailsDate(String date) {
+    return 'Data: $date';
+  }
+
+  @override
+  String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsBook(String title) {
+    return 'Livro: $title';
+  }
+
+  @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
+  }
+
+  @override
+  String get meetingDetailsLocationUndefined => 'Local: a definir';
+
+  @override
+  String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
+  }
+
+  @override
+  String get meetingPhotosTitle => 'Fotos do encontro';
+
+  @override
+  String get meetingPhotosAdd => 'Adicionar fotos';
+
+  @override
+  String get meetingPhotosAddMoreSemanticLabel => 'Adicionar mais fotos';
+
+  @override
+  String meetingPhotoSemanticLabel(int index) {
+    return 'Foto $index do encontro';
+  }
+
+  @override
+  String meetingPhotosUploading(int current, int total) {
+    return 'Enviando $current de $total';
+  }
+
+  @override
+  String meetingPhotosUploadFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Não foi possível enviar $count fotos.',
+      one: 'Não foi possível enviar 1 foto.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meetingPhotosRetryButton => 'Tentar novamente';
+
+  @override
+  String get meetingPhotosLoadError =>
+      'Não foi possível carregar as fotos do encontro.';
+
+  @override
+  String get meetingPhotosAccessDenied =>
+      'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
+
+  @override
+  String get meetingPhotosPickerFailed =>
+      'Não foi possível abrir a galeria. Tente novamente.';
+
+  @override
+  String meetingPhotosSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.',
+      one: '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String meetingPhotosLimitReached(int max) {
+    return 'Este encontro já tem o máximo de $max fotos.';
+  }
+
+  @override
+  String meetingPhotosRejected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fotos foram recusadas e não podem ser enviadas.',
+      one: '1 foto foi recusada e não pode ser enviada.',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
@@ -474,6 +647,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
+  String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
+
+  @override
+  String groupNextEventBookCoverSemanticLabel(String title) {
+    return 'Capa do livro $title';
+  }
+
+  @override
+  String get groupNextEventBookUndefined => 'Livro ainda não definido';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -492,11 +687,162 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
 
   @override
+  String get whatsappLaunchError =>
+      'Não foi possível abrir o link do WhatsApp.';
+
+  @override
   String get groupRecommendBookButton => 'Indicar livro';
 
   @override
   String groupCoverSemanticLabel(String name) {
     return 'Foto do grupo $name';
+  }
+
+  @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
+  String get meetingDetailsTitleFallback => 'Encontro';
+
+  @override
+  String meetingDetailsDate(String date) {
+    return 'Data: $date';
+  }
+
+  @override
+  String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsBook(String title) {
+    return 'Livro: $title';
+  }
+
+  @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
+  }
+
+  @override
+  String get meetingDetailsLocationUndefined => 'Local: a definir';
+
+  @override
+  String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
+  }
+
+  @override
+  String get meetingPhotosTitle => 'Fotos do encontro';
+
+  @override
+  String get meetingPhotosAdd => 'Adicionar fotos';
+
+  @override
+  String get meetingPhotosAddMoreSemanticLabel => 'Adicionar mais fotos';
+
+  @override
+  String meetingPhotoSemanticLabel(int index) {
+    return 'Foto $index do encontro';
+  }
+
+  @override
+  String meetingPhotosUploading(int current, int total) {
+    return 'Enviando $current de $total';
+  }
+
+  @override
+  String meetingPhotosUploadFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Não foi possível enviar $count fotos.',
+      one: 'Não foi possível enviar 1 foto.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meetingPhotosRetryButton => 'Tentar novamente';
+
+  @override
+  String get meetingPhotosLoadError =>
+      'Não foi possível carregar as fotos do encontro.';
+
+  @override
+  String get meetingPhotosAccessDenied =>
+      'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
+
+  @override
+  String get meetingPhotosPickerFailed =>
+      'Não foi possível abrir a galeria. Tente novamente.';
+
+  @override
+  String meetingPhotosSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.',
+      one: '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String meetingPhotosLimitReached(int max) {
+    return 'Este encontro já tem o máximo de $max fotos.';
+  }
+
+  @override
+  String meetingPhotosRejected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fotos foram recusadas e não podem ser enviadas.',
+      one: '1 foto foi recusada e não pode ser enviada.',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -572,21 +918,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get selectOptionHint => 'Selecione';
-
-  @override
-  String get genreRomance => 'Romance';
-
-  @override
-  String get genreFantasy => 'Fantasia';
-
-  @override
-  String get genreSuspense => 'Suspense';
-
-  @override
-  String get genreNonFiction => 'Não Ficção';
-
-  @override
-  String get genreFieldHint => 'Selecione um gênero';
 
   @override
   String get myGroupsTitle => 'Meus grupos';
