@@ -1,6 +1,5 @@
 {
   "@@locale": "pt",
-
   "@@Common": "--- Common ---",
   "appTitle": "Clube de Leitura D'elas",
   "@appTitle": {
@@ -18,7 +17,6 @@
   "@notProvided": {
     "description": "Valor padrão quando uma informação não foi preenchida"
   },
-
   "@@Auth": "--- Auth ---",
   "loginTitle": "Faça o seu login",
   "@loginTitle": {
@@ -144,7 +142,6 @@
   "@back": {
     "description": "Texto padrão para ação de retornar"
   },
-
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",
   "@logoutTooltip": {
@@ -198,16 +195,19 @@
   "@authUserIdLabel": {
     "description": "Rótulo do item de perfil para ID do usuário no Supabase"
   },
-
   "@@Groups": "--- Groups ---",
   "groupNextEventTitle": "Próximo evento",
   "groupNextEventEmpty": "Nenhum próximo evento agendado",
-  "@groupNextEventEmpty": { "description": "Mensagem exibida quando o grupo não possui próximo evento" },
+  "@groupNextEventEmpty": {
+    "description": "Mensagem exibida quando o grupo não possui próximo evento"
+  },
   "groupNextEventHost": "Anfitriã: {name}",
   "@groupNextEventHost": {
     "description": "Nome da anfitriã do próximo evento",
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "@groupNextEventTitle": {
@@ -225,7 +225,9 @@
   "@groupNextEventBookCoverSemanticLabel": {
     "description": "Rótulo de acessibilidade da capa do livro do próximo evento",
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "groupNextEventBookUndefined": "Livro ainda não definido",
@@ -474,56 +476,99 @@
       }
     }
   },
-
   "@@Onboarding": "--- Onboarding ---",
   "onboardingReviewTitle": "Verifique os seus dados",
-  "@onboardingReviewTitle": { "description": "Título principal do review de cadastro" },
+  "@onboardingReviewTitle": {
+    "description": "Título principal do review de cadastro"
+  },
   "onboardingNameLabel": "Nome",
   "@onboardingNameLabel": {
     "description": "Rótulo do campo Nome"
   },
   "onboardingEmailLabel": "E-mail",
-  "@onboardingEmailLabel": { "description": "Rótulo e-mail" },
+  "@onboardingEmailLabel": {
+    "description": "Rótulo e-mail"
+  },
   "onboardingPhoneLabel": "Celular",
-  "@onboardingPhoneLabel": { "description": "Rótulo celular" },
+  "@onboardingPhoneLabel": {
+    "description": "Rótulo celular"
+  },
   "onboardingBirthDateLabel": "Data de nascimento",
-  "@onboardingBirthDateLabel": { "description": "Rótulo data de nascimento" },
+  "@onboardingBirthDateLabel": {
+    "description": "Rótulo data de nascimento"
+  },
   "onboardingCityLabel": "Cidade",
-  "@onboardingCityLabel": { "description": "Rótulo cidade" },
+  "@onboardingCityLabel": {
+    "description": "Rótulo cidade"
+  },
   "onboardingCityHint": "Selecione uma cidade",
-  "@onboardingCityHint": { "description": "Dica de seleção de cidade" },
+  "@onboardingCityHint": {
+    "description": "Dica de seleção de cidade"
+  },
   "onboardingRegionLabel": "Região",
-  "@onboardingRegionLabel": { "description": "Rótulo região" },
+  "@onboardingRegionLabel": {
+    "description": "Rótulo região"
+  },
   "onboardingJobLabel": "Qual sua profissão?",
-  "@onboardingJobLabel": { "description": "Rótulo profissão" },
+  "@onboardingJobLabel": {
+    "description": "Rótulo profissão"
+  },
   "onboardingEducationLabel": "Nível de escolaridade",
-  "@onboardingEducationLabel": { "description": "Rótulo escolaridade" },
+  "@onboardingEducationLabel": {
+    "description": "Rótulo escolaridade"
+  },
   "onboardingEducationHint": "Selecione um nível",
-  "@onboardingEducationHint": { "description": "Dica seleção de escolaridade" },
+  "@onboardingEducationHint": {
+    "description": "Dica seleção de escolaridade"
+  },
   "onboardingOtherGroupLabel": "Você participa de outro grupo de leitura?",
-  "@onboardingOtherGroupLabel": { "description": "Rótulo grupo de leitura" },
+  "@onboardingOtherGroupLabel": {
+    "description": "Rótulo grupo de leitura"
+  },
   "onboardingVolunteerLabel": "Teria interesse em se voluntariar como coordenadora de grupo?",
-  "@onboardingVolunteerLabel": { "description": "Rótulo voluntariado" },
+  "@onboardingVolunteerLabel": {
+    "description": "Rótulo voluntariado"
+  },
   "onboardingBookIndicationLabel": "Qual livro de ficção você indicaria para a leitura coletiva?",
-  "@onboardingBookIndicationLabel": { "description": "Rótulo indicação livro" },
+  "@onboardingBookIndicationLabel": {
+    "description": "Rótulo indicação livro"
+  },
   "onboardingBookIndicationHint": "Digite sua resposta",
-  "@onboardingBookIndicationHint": { "description": "Dica indicação livro" },
+  "@onboardingBookIndicationHint": {
+    "description": "Dica indicação livro"
+  },
   "onboardingExpectationsLabel": "O que você espera ao participar do Clube de Leitura D'Elas?",
-  "@onboardingExpectationsLabel": { "description": "Rótulo expectativas" },
+  "@onboardingExpectationsLabel": {
+    "description": "Rótulo expectativas"
+  },
   "onboardingExpectationsHint": "Digite sua resposta",
-  "@onboardingExpectationsHint": { "description": "Dica expectativas" },
+  "@onboardingExpectationsHint": {
+    "description": "Dica expectativas"
+  },
   "onboardingBackButton": "Voltar",
-  "@onboardingBackButton": { "description": "Botão voltar" },
+  "@onboardingBackButton": {
+    "description": "Botão voltar"
+  },
   "onboardingContinueButton": "Continuar",
-  "@onboardingContinueButton": { "description": "Botão continuar" },
+  "@onboardingContinueButton": {
+    "description": "Botão continuar"
+  },
   "onboardingWelcomeTitle": "Seja Bem-vinda",
-  "@onboardingWelcomeTitle": { "description": "Título de boas-vindas" },
+  "@onboardingWelcomeTitle": {
+    "description": "Título de boas-vindas"
+  },
   "onboardingWelcomeSubtitle": "Sua inscrição foi realizada com sucesso!",
-  "@onboardingWelcomeSubtitle": { "description": "Subtítulo de boas-vindas" },
+  "@onboardingWelcomeSubtitle": {
+    "description": "Subtítulo de boas-vindas"
+  },
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
-  "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
+  "@onboardingWelcomeButton": {
+    "description": "Botão concluir onboarding"
+  },
   "selectOptionHint": "Selecione",
-  "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
+  "@selectOptionHint": {
+    "description": "Dica genérica de seleção em dropdown"
+  },
   "myGroupsTitle": "Meus grupos",
   "@myGroupsTitle": {
     "description": "Título principal da tela de grupos"
@@ -557,11 +602,25 @@
   "@emptyGroupsMessage": {
     "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
   },
+  "emptyGroupsSearch": "Nenhum grupo encontrado",
+  "@emptyGroupsSearch": {
+    "description": "Mensagem exibida quando a busca por nome não retorna grupos"
+  },
+  "emptyGroupsUnanswered": "Nenhum grupo com resposta pendente",
+  "@emptyGroupsUnanswered": {
+    "description": "Mensagem exibida quando o filtro Não respondidos não tem grupos"
+  },
+  "emptyGroupsAnswered": "Você ainda não respondeu a nenhum encontro",
+  "@emptyGroupsAnswered": {
+    "description": "Mensagem exibida quando o filtro Respondidos não tem grupos"
+  },
   "groupDetailsNumberLabel": "Grupo {number}",
   "@groupDetailsNumberLabel": {
     "description": "Título da tela de detalhes do grupo, com o número do grupo",
     "placeholders": {
-      "number": { "type": "int" }
+      "number": {
+        "type": "int"
+      }
     }
   },
   "groupNextEventNoLocation": "Sem localização",

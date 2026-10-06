@@ -467,6 +467,16 @@ class AppLocalizationsPt extends AppLocalizations {
       'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 
   @override
+  String get emptyGroupsSearch => 'Nenhum grupo encontrado';
+
+  @override
+  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
+
+  @override
+  String get emptyGroupsAnswered =>
+      'Você ainda não respondeu a nenhum encontro';
+
+  @override
   String groupDetailsNumberLabel(int number) {
     return 'Grupo $number';
   }
