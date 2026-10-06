@@ -8,6 +8,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
     required super.city,
     required super.stateCode,
     super.coverImageUrl,
+    super.whatsappUrl,
   });
 
   factory GroupDetailsModel.fromJson(dynamic json) {
@@ -21,6 +22,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
     final city = json['city'];
     final stateCode = json['state_code'];
     final coverImageUrl = json['cover_image_url'];
+    final whatsappUrl = json['whatsapp_url'];
 
     if (name is! String ||
         genres is! List ||
@@ -28,7 +30,8 @@ class GroupDetailsModel extends GroupDetailsEntity {
         participantCount is! int ||
         (city != null && city is! String) ||
         (stateCode != null && stateCode is! String) ||
-        (coverImageUrl != null && coverImageUrl is! String)) {
+        (coverImageUrl != null && coverImageUrl is! String) ||
+        (whatsappUrl != null && whatsappUrl is! String)) {
       throw const FormatException('Invalid group details response.');
     }
 
@@ -39,6 +42,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
       city: city as String? ?? '',
       stateCode: stateCode as String? ?? '',
       coverImageUrl: coverImageUrl as String?,
+      whatsappUrl: whatsappUrl as String?,
     );
   }
 
@@ -50,6 +54,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
       city: city,
       stateCode: stateCode,
       coverImageUrl: coverImageUrl,
+      whatsappUrl: whatsappUrl,
     );
   }
 }

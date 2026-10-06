@@ -70,6 +70,21 @@ void main() {
       expect(tapped, isTrue);
     });
 
+    testWidgets('Back variant centers its title', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          Scaffold(
+            appBar: ScreenHeader.back(title: 'Detalhe', onBackPressed: () {}),
+          ),
+        ),
+      );
+
+      final titleCenter = tester.getCenter(find.text('Detalhe'));
+      final screenCenter = tester.getCenter(find.byType(Scaffold));
+
+      expect(titleCenter.dx, screenCenter.dx);
+    });
+
     testWidgets(
       'Back variant pops the navigator when onBackPressed is not provided',
       (tester) async {

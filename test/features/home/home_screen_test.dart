@@ -1,57 +1,36 @@
+import 'dart:async';
+
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/auth/domain/entities/user_entity.dart';
-import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockSessionCubit extends Mock implements SessionCubit {}
+class MockGroupRepository extends Mock implements GroupRepository {}
+
+class MockSessionCubit extends MockCubit<SessionState>
+    implements SessionCubit {}
 
 void main() {
-  late MockSessionCubit mockSessionCubit;
-
-  const testUser = UserEntity(
-    name: 'Jane User',
-    mail: 'jane@example.com',
-    birthday: '01/01/1990',
-    phoneNumber: '555-1234',
-    instagramUser: '@jane',
-    educationDegree: 'Bachelor',
-    jobPosition: 'Engineer',
-    cityZone: (id: '1', name: 'Porto Alegre', acronym: 'POA'),
+  const group = GroupEntity(
+    id: 'group-1',
+    number: 1,
+    participantsCount: 3,
+    cityState: 'Porto Alegre, RS',
   );
 
-  const testProfile = UserProfileEntity(
-    id: 'p-1',
-    name: 'Jane Profile',
-    email: 'jane@example.com',
-    address: 'Street 1',
-    phoneNumber: '555-1234',
-    birthday: '01/01/1990',
-    instagram: '@jane',
-    educationDegree: 'Bachelor',
-    jobPosition: 'Engineer',
-    userId: 'user-123',
-    isActive: true,
-  );
-
-  setUp(() {
-    mockSessionCubit = MockSessionCubit();
-    when(() => mockSessionCubit.stream).thenAnswer((_) => const Stream.empty());
-    when(() => mockSessionCubit.state).thenReturn(const GuestSession());
-    when(() => mockSessionCubit.logOut()).thenAnswer((_) async {});
-  });
-
-  Widget buildSubject({
-    required UserEntity user,
-    UserProfileEntity? profile,
-  }) {
+  Widget buildSubject(HomeCubit homeCubit, SessionCubit sessionCubit) {
     return MaterialApp(
       theme: AppTheme.light,
       localizationsDelegates: const [
@@ -61,72 +40,98 @@ void main() {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: BlocProvider<SessionCubit>.value(
-        value: mockSessionCubit,
-        child: HomeScreen(user: user, profile: profile),
+      home: BlocProvider.value(
+        value: sessionCubit,
+        child: BlocProvider.value(value: homeCubit, child: const HomeScreen()),
       ),
     );
   }
 
-  group('HomeScreen Widget', () {
-    testWidgets('renders profile data correctly when profile is provided', (
-      tester,
-    ) async {
-      await tester.pumpWidget(buildSubject(user: testUser, profile: testProfile));
+  testWidgets('renders groups loaded from the repository', (tester) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Success([group]));
+    final cubit = HomeCubit(groupRepository: repository);
+    final sessionCubit = MockSessionCubit();
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(buildSubject(cubit, sessionCubit));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Meus grupos'), findsOneWidget);
+    expect(find.text('Grupo 1'), findsOneWidget);
+    expect(find.text('3 participantes'), findsOneWidget);
+    expect(find.text('Porto Alegre, RS'), findsOneWidget);
+    expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
+  });
+
+  testWidgets(
+    'shows loading instead of the empty state while fetching groups',
+    (tester) async {
+      final pending = Completer<Result<List<GroupEntity>, GroupFailure>>();
+      final repository = MockGroupRepository();
+      when(() => repository.getMyGroups()).thenAnswer((_) => pending.future);
+      final cubit = HomeCubit(groupRepository: repository);
+      final sessionCubit = MockSessionCubit();
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(buildSubject(cubit, sessionCubit));
+      unawaited(cubit.loadGroups());
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(
+        find.text('Você ainda não participa de nenhum grupo'),
+        findsNothing,
+      );
+
+      pending.complete(const Success([]));
       await tester.pumpAndSettle();
+    },
+  );
 
-      expect(find.text("Clube de Leitura D'elas"), findsOneWidget);
-      expect(find.text('Jane Profile'), findsNWidgets(2));
-      expect(find.text('jane@example.com'), findsNWidgets(2));
-      expect(find.text('Perfil Vinculado & Ativo'), findsOneWidget);
-      expect(find.text('Street 1'), findsOneWidget);
-      expect(find.text('555-1234'), findsOneWidget);
-      expect(find.text('01/01/1990'), findsOneWidget);
-      expect(find.text('@jane'), findsOneWidget);
-      expect(find.text('Bachelor'), findsOneWidget);
-      expect(find.text('Engineer'), findsOneWidget);
-      expect(find.text('user-123'), findsOneWidget);
-    });
+  testWidgets('renders the empty state when the participant has no groups', (
+    tester,
+  ) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Success(<GroupEntity>[]));
+    final cubit = HomeCubit(groupRepository: repository);
+    final sessionCubit = MockSessionCubit();
+    addTearDown(cubit.close);
 
-    testWidgets('renders user entity fallbacks when profile is null', (
-      tester,
-    ) async {
-      await tester.pumpWidget(buildSubject(user: testUser));
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(buildSubject(cubit, sessionCubit));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
 
-      expect(find.text('Jane User'), findsNWidgets(2));
-      expect(find.text('jane@example.com'), findsNWidgets(2));
-    });
+    expect(
+      find.text('Você ainda não participa de nenhum grupo'),
+      findsOneWidget,
+    );
+  });
 
-    testWidgets('tapping logout button in AppBar calls logOut on SessionCubit', (
-      tester,
-    ) async {
-      await tester.pumpWidget(buildSubject(user: testUser, profile: testProfile));
-      await tester.pumpAndSettle();
+  testWidgets('renders a retry action when loading groups fails', (
+    tester,
+  ) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Failure(GroupListFailure()));
+    final cubit = HomeCubit(groupRepository: repository);
+    final sessionCubit = MockSessionCubit();
+    addTearDown(cubit.close);
 
-      final logoutIconButton = find.byIcon(Icons.logout);
-      expect(logoutIconButton, findsOneWidget);
+    await tester.pumpWidget(buildSubject(cubit, sessionCubit));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
 
-      await tester.tap(logoutIconButton);
-      await tester.pumpAndSettle();
-
-      verify(() => mockSessionCubit.logOut()).called(1);
-    });
-
-    testWidgets('tapping Sair da Conta button calls logOut on SessionCubit', (
-      tester,
-    ) async {
-      await tester.pumpWidget(buildSubject(user: testUser, profile: testProfile));
-      await tester.pumpAndSettle();
-
-      final logoutButton = find.text('Sair da Conta');
-      expect(logoutButton, findsOneWidget);
-
-      await tester.ensureVisible(logoutButton);
-      await tester.tap(logoutButton);
-      await tester.pumpAndSettle();
-
-      verify(() => mockSessionCubit.logOut()).called(1);
-    });
+    expect(
+      find.text('Não foi possível carregar seus grupos. Tente novamente.'),
+      findsOneWidget,
+    );
+    expect(find.text('Tentar novamente'), findsOneWidget);
   });
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
 
@@ -144,6 +145,39 @@ void main() {
       final indicator = find.byType(CircularProgressIndicator);
       expect(indicator, findsOneWidget);
       expect(tester.getSize(indicator), const Size(16.0, 16.0));
+    });
+
+    testWidgets('Centers the label without stretching or clipping it', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: Scaffold(
+            body: Column(
+              children: [
+                for (final size in AppButtonSize.values) ...[
+                  AppButton.primary(size: size, label: 'Primary $size', onPressed: () {}),
+                  AppButton.secondary(size: size, label: 'Secondary $size', onPressed: () {}),
+                ],
+              ],
+            ),
+          ),
+        ),
+      );
+
+      for (final size in AppButtonSize.values) {
+        for (final label in ['Primary $size', 'Secondary $size']) {
+          // A caixa do Text deve ter exatamente a altura do texto: maior indica
+          // label esticado e desenhado no topo; menor indica label cortado.
+          final paragraph = tester.renderObject<RenderParagraph>(find.text(label));
+          expect(paragraph.size.height, paragraph.textSize.height, reason: label);
+
+          final text = tester.getRect(find.text(label));
+          final button = tester.getRect(
+            find.ancestor(of: find.text(label), matching: find.byType(InkWell)),
+          );
+          expect(text.center.dy, moreOrLessEquals(button.center.dy, epsilon: 0.5), reason: label);
+        }
+      }
     });
   });
 }
