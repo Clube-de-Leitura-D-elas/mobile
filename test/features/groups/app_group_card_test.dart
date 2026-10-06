@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockGroupRepository extends Mock implements GroupRepository {}
 
 Widget _wrap(Widget child) {
   return MaterialApp(
@@ -38,7 +45,24 @@ Widget _wrapRouter(GoRouter router) {
   );
 }
 
+Widget _wrapWithRepository(GroupRepository repository, Widget child) {
+  return RepositoryProvider<GroupRepository>.value(
+    value: repository,
+    child: _wrap(child),
+  );
+}
+
 void main() {
+  late MockGroupRepository repository;
+
+  setUpAll(() {
+    registerFallbackValue(MeetingInvitationStatus.pending);
+  });
+
+  setUp(() {
+    repository = MockGroupRepository();
+  });
+
   group('AppGroupCard', () {
     testWidgets('Renders group name, participants count and city/state', (
       tester,
@@ -154,6 +178,124 @@ void main() {
       expect(find.text('Não irei'), findsNothing);
       expect(find.text('Confirmar presença'), findsNothing);
     });
+    testWidgets(
+      'Shows presence action buttons when the meeting has an id and actions are enabled',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrapWithRepository(
+            repository,
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Não irei'), findsOneWidget);
+        expect(find.text('Confirmar presença'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Does not show presence actions when the meeting has no id, even with showPresenceActions true',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrapWithRepository(
+            repository,
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Não irei'), findsNothing);
+        expect(find.text('Confirmar presença'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'Creates the MeetingInvitationCubit with the meeting\'s current invitationStatus',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrapWithRepository(
+            repository,
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                invitationStatus: MeetingInvitationStatus.confirmed,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Não irei'), findsOneWidget);
+        expect(find.text('Confirmar presença'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'Tapping Confirmar presença calls setMeetingInvitationResponse with the meeting id',
+      (tester) async {
+        when(
+          () => repository.setMeetingInvitationResponse(any(), any()),
+        ).thenAnswer((_) async => const Success(null));
+
+        await tester.pumpWidget(
+          _wrapWithRepository(
+            repository,
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+              ),
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Confirmar presença'));
+        await tester.pumpAndSettle();
+
+        verify(
+          () => repository.setMeetingInvitationResponse(
+            'meeting-1',
+            MeetingInvitationStatus.confirmed,
+          ),
+        ).called(1);
+      },
+    );
 
     testWidgets('Triggers onTap when the card is tapped', (tester) async {
       var tapped = false;

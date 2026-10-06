@@ -1,35 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_state.dart';
 
-enum _Choice { confirmed, declined }
+class AppMeetingResponseButtons extends StatelessWidget {
+  const AppMeetingResponseButtons({super.key});
 
-class AppMeetingResponseButtons extends StatefulWidget {
-  const AppMeetingResponseButtons({
-    super.key,
-    this.onConfirmPresence,
-    this.onDeclinePresence,
-  });
-
-  final VoidCallback? onConfirmPresence;
-  final VoidCallback? onDeclinePresence;
-
-  @override
-  State<AppMeetingResponseButtons> createState() =>
-      _AppMeetingResponseButtonsState();
-}
-
-class _AppMeetingResponseButtonsState extends State<AppMeetingResponseButtons> {
-  _Choice? _choice;
-
-  void _handleConfirm() {
-    setState(() => _choice = _Choice.confirmed);
-    widget.onConfirmPresence?.call();
+  void _handleConfirm(BuildContext context) {
+    context.read<MeetingInvitationCubit>().respond(
+      MeetingInvitationStatus.confirmed,
+    );
   }
 
-  void _handleDecline() {
-    setState(() => _choice = _Choice.declined);
-    widget.onDeclinePresence?.call();
+  void _handleDecline(BuildContext context) {
+    context.read<MeetingInvitationCubit>().respond(
+      MeetingInvitationStatus.declined,
+    );
   }
 
   @override
@@ -37,54 +26,51 @@ class _AppMeetingResponseButtonsState extends State<AppMeetingResponseButtons> {
     final spacing = context.spacing;
     final l10n = context.l10n;
 
-    Widget content;
+    return BlocBuilder<MeetingInvitationCubit, MeetingInvitationState>(
+      builder: (context, state) {
+        switch (state.currentStatus) {
+          case MeetingInvitationStatus.pending:
+            return Row(
+              children: [
+                Expanded(
+                  child: AppButton.secondary(
+                    size: AppButtonSize.sm,
+                    label: l10n.groupDeclineMeetingButton,
+                    onPressed: () => _handleDecline(context),
+                  ),
+                ),
+                SizedBox(width: spacing.s8),
+                Expanded(
+                  child: AppButton.primary(
+                    size: AppButtonSize.sm,
+                    label: l10n.groupConfirmMeetingButton,
+                    onPressed: () => _handleConfirm(context),
+                  ),
+                ),
+              ],
+            );
 
-    switch (_choice) {
-      case null:
-        content = Row(
-          children: [
-            Expanded(
+          case MeetingInvitationStatus.confirmed:
+            return SizedBox(
+              width: double.infinity,
               child: AppButton.secondary(
                 size: AppButtonSize.sm,
                 label: l10n.groupDeclineMeetingButton,
-                onPressed: _handleDecline,
+                onPressed: () => _handleDecline(context),
               ),
-            ),
-            SizedBox(width: spacing.s8),
-            Expanded(
+            );
+
+          case MeetingInvitationStatus.declined:
+            return SizedBox(
+              width: double.infinity,
               child: AppButton.primary(
                 size: AppButtonSize.sm,
                 label: l10n.groupConfirmMeetingButton,
-                onPressed: _handleConfirm,
+                onPressed: () => _handleConfirm(context),
               ),
-            ),
-          ],
-        );
-        break;
-
-      case _Choice.confirmed:
-        content = SizedBox(
-          width: double.infinity,
-          child: AppButton.secondary(
-            size: AppButtonSize.sm,
-            label: l10n.groupDeclineMeetingButton,
-            onPressed: _handleDecline,
-          ),
-        );
-        break;
-
-      case _Choice.declined:
-        content = SizedBox(
-          width: double.infinity,
-          child: AppButton.primary(
-            size: AppButtonSize.sm,
-            label: l10n.groupConfirmMeetingButton,
-            onPressed: _handleConfirm,
-          ),
-        );
-        break;
-    }
-
-    return Padding(padding: const EdgeInsets.only(bottom: 2.0), child: content);
+            );
+        }
+      },
+    );
   }
 }
