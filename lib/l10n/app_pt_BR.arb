@@ -94,5 +94,13 @@
   "genreFantasy": "Fantasia",
   "genreSuspense": "Suspense",
   "genreNonFiction": "Não Ficção",
-  "genreFieldHint": "Selecione um gênero"
+  "genreFieldHint": "Selecione um gênero",
+
+  "myGroupsTitle": "Meus grupos",
+  "searchGroupPlaceholder": "Buscar grupo",
+  "filterAll": "Todos",
+  "filterUnanswered": "Não respondidos ({count})",
+  "filterAnswered": "Respondidos",
+  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui."
 }

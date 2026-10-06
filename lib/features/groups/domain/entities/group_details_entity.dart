@@ -7,6 +7,7 @@ class GroupDetailsEntity extends Equatable {
   final String city;
   final String stateCode;
   final String? coverImageUrl;
+  final String? whatsappUrl;
 
   const GroupDetailsEntity({
     required this.name,
@@ -15,8 +16,17 @@ class GroupDetailsEntity extends Equatable {
     required this.city,
     required this.stateCode,
     this.coverImageUrl,
+    this.whatsappUrl,
   });
 
   @override
-  List<Object?> get props => [name, genres, participantCount, city, stateCode, coverImageUrl];
+  List<Object?> get props => [
+    name,
+    genres,
+    participantCount,
+    city,
+    stateCode,
+    coverImageUrl,
+    whatsappUrl,
+  ];
 }
