@@ -86,4 +86,52 @@ void main() {
       ).called(1);
     },
   );
+
+  testWidgets(
+    'Deve chamar respond(declined) ao clicar em recusa quando status for confirmed',
+    (tester) async {
+      when(() => mockCubit.state).thenReturn(
+        const MeetingInvitationIdle(MeetingInvitationStatus.confirmed),
+      );
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final BuildContext context = tester.element(
+        find.byType(AppMeetingResponseButtons),
+      );
+      final l10n = AppLocalizations.of(context);
+
+      final declineBtn = find.text(l10n.groupDeclineMeetingButton);
+      await tester.tap(declineBtn);
+
+      verify(
+        () => mockCubit.respond(MeetingInvitationStatus.declined),
+      ).called(1);
+    },
+  );
+
+  testWidgets(
+    'Deve chamar respond(confirmed) ao clicar em confirmar quando status for declined',
+    (tester) async {
+      when(() => mockCubit.state).thenReturn(
+        const MeetingInvitationIdle(MeetingInvitationStatus.declined),
+      );
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final BuildContext context = tester.element(
+        find.byType(AppMeetingResponseButtons),
+      );
+      final l10n = AppLocalizations.of(context);
+
+      final confirmBtn = find.text(l10n.groupConfirmMeetingButton);
+      await tester.tap(confirmBtn);
+
+      verify(
+        () => mockCubit.respond(MeetingInvitationStatus.confirmed),
+      ).called(1);
+    },
+  );
 }

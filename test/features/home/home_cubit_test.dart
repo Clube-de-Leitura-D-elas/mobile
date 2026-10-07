@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_state.dart';
@@ -88,6 +89,76 @@ void main() {
       build: build,
       act: (cubit) => cubit.updateSearch('Porto Alegre'),
       expect: () => [const HomeState(searchQuery: 'Porto Alegre')],
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'recarrega grupos com sucesso ao responder convite de reunião',
+      build: () {
+        when(
+          () => repository.setMeetingInvitationResponse(
+            'meeting-1',
+            MeetingInvitationStatus.confirmed,
+          ),
+        ).thenAnswer((_) async => const Success(null));
+
+        when(
+          () => repository.getMyGroups(),
+        ).thenAnswer((_) async => const Success([testGroup1]));
+
+        return build();
+      },
+      act: (cubit) => cubit.setMeetingInvitationResponse(
+        'meeting-1',
+        MeetingInvitationStatus.confirmed,
+      ),
+      expect: () => [
+        const HomeState(status: HomeStatus.loading),
+        const HomeState(status: HomeStatus.loaded, groups: [testGroup1]),
+      ],
+      verify: (_) {
+        verify(
+          () => repository.setMeetingInvitationResponse(
+            'meeting-1',
+            MeetingInvitationStatus.confirmed,
+          ),
+        ).called(1);
+        verify(() => repository.getMyGroups()).called(1);
+      },
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'emite erro quando falha ao responder convite de reunião',
+      build: () {
+        when(
+          () => repository.setMeetingInvitationResponse(
+            'meeting-1',
+            MeetingInvitationStatus.declined,
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(GroupMeetingInvitationResponseFailure()),
+        );
+        return build();
+      },
+      act: (cubit) => cubit.setMeetingInvitationResponse(
+        'meeting-1',
+        MeetingInvitationStatus.declined,
+      ),
+      expect: () => [
+        const HomeState(
+          status: HomeStatus.error,
+          errorMessage:
+              'Não foi possível atualizar sua resposta. Tente novamente.',
+        ),
+      ],
+      verify: (_) {
+        verify(
+          () => repository.setMeetingInvitationResponse(
+            'meeting-1',
+            MeetingInvitationStatus.declined,
+          ),
+        ).called(1);
+        verifyNever(() => repository.getMyGroups());
+      },
     );
   });
 }
