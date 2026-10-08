@@ -29,12 +29,10 @@ class ReviewStepThreeForm extends StatelessWidget {
             value: profile.otherReadingGroup.isNotEmpty
                 ? profile.otherReadingGroup
                 : null,
-            items: const [
-              DropdownMenuItem(value: 'SIM', child: Text('Sim')),
-              DropdownMenuItem(value: 'NAO', child: Text('Não')),
-            ],
+            items: const ['SIM', 'NAO'],
+            itemLabelBuilder: (item) => item == 'SIM' ? 'Sim' : 'Não',
             onChanged: (val) =>
-                onChanged(profile.copyWith(otherReadingGroup: val ?? '')),
+                onChanged(profile.copyWith(otherReadingGroup: val)),
           ),
           const Gap16(),
           AppDropdown<String>(
@@ -43,13 +41,12 @@ class ReviewStepThreeForm extends StatelessWidget {
             value: profile.volunteerCoordinator.isNotEmpty
                 ? profile.volunteerCoordinator
                 : null,
-            items: const [
-              DropdownMenuItem(value: 'SIM', child: Text('Sim')),
-              DropdownMenuItem(value: 'NAO', child: Text('Não')),
-            ],
+            items: const ['SIM', 'NAO'],
+            itemLabelBuilder: (item) => item == 'SIM' ? 'Sim' : 'Não',
             onChanged: (val) =>
-                onChanged(profile.copyWith(volunteerCoordinator: val ?? '')),
+                onChanged(profile.copyWith(volunteerCoordinator: val)),
           ),
+
           const Gap16(),
           AppTextField(
             label: l10n.onboardingBookIndicationLabel,
