@@ -47,7 +47,6 @@ Future<void> mainAsync() async {
   FlutterNativeSplash.remove();
 }
 
-
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
@@ -80,3 +79,18 @@ class MainApp extends StatelessWidget {
     );
   }
 }
+
+/*
+import 'package:flutter/material.dart';
+
+import 'dropdown_showcase.dart'; // Import da tela criada
+
+void main() {
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: DropdownShowcaseScreen(),
+    ),
+  );
+}
+*/

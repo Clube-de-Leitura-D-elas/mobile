@@ -36,26 +36,22 @@ class ReviewStepTwoForm extends StatelessWidget {
                 ? profile.levelOfEducation
                 : null,
             items: const [
-              DropdownMenuItem(
-                value: 'ELEMENTARY',
-                child: Text('Ensino fundamental'),
-              ),
-              DropdownMenuItem(
-                value: 'HIGH_SCHOOL',
-                child: Text('Ensino médio'),
-              ),
-              DropdownMenuItem(
-                value: 'UNDERGRADUATE',
-                child: Text('Ensino superior'),
-              ),
-              DropdownMenuItem(
-                value: 'POSTGRADUATE',
-                child: Text('Pós-graduação'),
-              ),
+              'ELEMENTARY',
+              'HIGH_SCHOOL',
+              'UNDERGRADUATE',
+              'POSTGRADUATE',
             ],
+            itemLabelBuilder: (item) => switch (item) {
+              'ELEMENTARY' => 'Ensino fundamental',
+              'HIGH_SCHOOL' => 'Ensino médio',
+              'UNDERGRADUATE' => 'Ensino superior',
+              'POSTGRADUATE' => 'Pós-graduação',
+              _ => item,
+            },
             onChanged: (val) =>
-                onChanged(profile.copyWith(levelOfEducation: val ?? '')),
+                onChanged(profile.copyWith(levelOfEducation: val)),
           ),
+
         ],
       ),
     );

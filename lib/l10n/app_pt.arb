@@ -569,6 +569,27 @@
   "@selectOptionHint": {
     "description": "Dica genérica de seleção em dropdown"
   },
+  "@@Dropdown": "--- Dropdown demo strings ---",
+  "genreRomance": "Romance",
+  "@genreRomance": {
+    "description": "Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown"
+  },
+  "genreFantasy": "Fantasia",
+  "@genreFantasy": {
+    "description": "Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown"
+  },
+  "genreSuspense": "Suspense",
+  "@genreSuspense": {
+    "description": "Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown"
+  },
+  "genreNonFiction": "Não Ficção",
+  "@genreNonFiction": {
+    "description": "Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown"
+  },
+  "genreFieldHint": "Selecione um gênero",
+  "@genreFieldHint": {
+    "description": "Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown"
+  },
   "myGroupsTitle": "Meus grupos",
   "@myGroupsTitle": {
     "description": "Título principal da tela de grupos"

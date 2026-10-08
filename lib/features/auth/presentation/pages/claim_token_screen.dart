@@ -58,6 +58,7 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
                     msg.contains('claimTokenInvalidError'))
                 ? l10n.claimTokenInvalidError
                 : (msg.startsWith('Erro') ? l10n.genericError : msg);
+
             context.showAppToast(userMsg);
             return;
           }
