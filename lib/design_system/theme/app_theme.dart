@@ -70,9 +70,22 @@ abstract final class AppTheme {
         foregroundColor: colorTokens.textDefault,
         elevation: 0,
       ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: colorTokens.surfaceDefault,
+        contentTextStyle: typographyTokens.bodyDefault.copyWith(
+          color: colorTokens.textDefault,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          side: BorderSide(color: colorTokens.borderDefault, width: 1.0),
+        ),
+        elevation: 4,
+      ),
       dividerColor: colorTokens.borderDefault,
       disabledColor: colorTokens.actionDisabledFg,
       extensions: [colorTokens, typographyTokens, spacingTokens],
     );
   }
 }
+

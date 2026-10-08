@@ -92,6 +92,8 @@ class AppButton extends StatelessWidget {
     }
   }
 
+  static const double _borderWidth = 1.0;
+
   EdgeInsets get _padding {
     switch (size) {
       case AppButtonSize.sm:
@@ -163,7 +165,7 @@ class AppButton extends StatelessWidget {
     if (variant == AppButtonVariant.secondary) {
       return Border.all(
         color: _isEnabled ? colors.actionPrimary : colors.actionDisabledBg,
-        width: 1.0,
+        width: _borderWidth,
       );
     }
     return null;
@@ -177,6 +179,11 @@ class AppButton extends StatelessWidget {
     final foregroundColor = _getForegroundColor(colors);
     final splashColor = _getSplashColor(colors);
     final border = _getBorder(colors);
+    // A borda do Container já consome espaço; descontá-la do padding mantém a
+    // área do label igual à dos botões sem borda (sem cortar o texto no md).
+    final padding = border == null
+        ? _padding
+        : _padding - const EdgeInsets.all(_borderWidth);
 
     final borderRadius = BorderRadius.circular(999.0);
 
@@ -193,7 +200,7 @@ class AppButton extends StatelessWidget {
           highlightColor: splashColor.withValues(alpha: 0.1),
           onTap: _isEnabled ? onPressed : null,
           child: Padding(
-            padding: _padding,
+            padding: padding,
             child: DefaultTextStyle(
               style: textStyle.copyWith(color: foregroundColor),
               child: IconTheme(
@@ -226,8 +233,10 @@ class AppButton extends StatelessWidget {
 
     final labelWidget = Text(label, textAlign: TextAlign.center);
 
+    // Sem Center, o Text ocupa toda a altura fixa do botão e é desenhado no
+    // topo, deixando o label acima do centro (visível nos botões sm).
     if (icon == null) {
-      return labelWidget;
+      return Center(child: labelWidget);
     }
 
     return Row(

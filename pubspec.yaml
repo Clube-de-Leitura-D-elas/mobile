@@ -25,11 +25,13 @@ dependencies:
   google_sign_in: ^7.2.0
   image_picker: ^1.1.2
   intl: ^0.20.2
+  jovial_svg: 1.1.29
   marionette_flutter: ^0.6.0
   shared_preferences: ^2.5.2
   shimmer: ^3.0.0
   sign_in_button: ^3.2.0
   supabase_flutter: ^2.17.2
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   bloc_test: ^10.0.0
@@ -44,6 +46,7 @@ flutter:
   assets:
     - .env
     - assets/icons/
+    - assets/icons/si/
     - assets/images/
 
 flutter_native_splash:

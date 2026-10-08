@@ -8,6 +8,7 @@ import 'package:mobile/main.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
+
 class MockSupabaseService extends Mock implements SupabaseService {}
 
 void main() {
@@ -17,7 +18,9 @@ void main() {
     final mockSupabase = MockSupabaseService();
 
     when(() => mockSupabase.currentUser).thenReturn(null);
-    when(() => mockSupabase.authStateChanges).thenAnswer((_) => const Stream.empty());
+    when(
+      () => mockSupabase.authStateChanges,
+    ).thenAnswer((_) => const Stream.empty());
 
     serviceLocator.registerFactory<SessionCubit>(
       () => SessionCubit(

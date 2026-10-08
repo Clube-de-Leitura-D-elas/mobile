@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
@@ -15,10 +16,8 @@ class SessionCubit extends Cubit<SessionState> {
 
   StreamSubscription<AuthState>? _authStateSubscription;
 
-  SessionCubit({
-    required this.authRepository,
-    required this.supabaseService,
-  }) : super(const GuestSession()) {
+  SessionCubit({required this.authRepository, required this.supabaseService})
+    : super(const LoadingSession()) {
     _listenToAuthState();
     _checkCurrentSession();
   }
@@ -26,14 +25,19 @@ class SessionCubit extends Cubit<SessionState> {
   void _checkCurrentSession() {
     final user = supabaseService.currentUser;
     debugPrint('[SessionCubit] Initial currentUser check: ${user?.id}');
-    if (user == null) return;
+    if (user == null) {
+      emit(const GuestSession());
+      return;
+    }
 
     checkUserProfile(user.id);
   }
 
   void _listenToAuthState() {
     _authStateSubscription = supabaseService.authStateChanges.listen((data) {
-      debugPrint('[SessionCubit] AuthState change event: ${data.event}, user: ${data.session?.user.id}');
+      debugPrint(
+        '[SessionCubit] AuthState change event: ${data.event}, user: ${data.session?.user.id}',
+      );
 
       if (data.event == AuthChangeEvent.signedOut) {
         debugPrint('[SessionCubit] User signed out -> emitting GuestSession');
@@ -41,7 +45,8 @@ class SessionCubit extends Cubit<SessionState> {
         return;
       }
 
-      final isSignInEvent = data.event == AuthChangeEvent.signedIn ||
+      final isSignInEvent =
+          data.event == AuthChangeEvent.signedIn ||
           data.event == AuthChangeEvent.initialSession;
       final session = data.session;
 
@@ -66,7 +71,9 @@ class SessionCubit extends Cubit<SessionState> {
 
     final userEntity = result.unwrap();
     final currentUser = supabaseService.currentUser;
-    debugPrint('[SessionCubit] Google Sign-In success for user: ${currentUser?.id}');
+    debugPrint(
+      '[SessionCubit] Google Sign-In success for user: ${currentUser?.id}',
+    );
     if (currentUser == null) {
       emit(const GuestSession());
       return;
@@ -79,7 +86,9 @@ class SessionCubit extends Cubit<SessionState> {
     required String email,
     required String password,
   }) async {
-    debugPrint('[SessionCubit] Triggering Email+Password authentication for email: $email');
+    debugPrint(
+      '[SessionCubit] Triggering Email+Password authentication for email: $email',
+    );
     emit(const LoadingSession());
 
     final result = await authRepository.signInWithEmailAndPassword(
@@ -96,7 +105,9 @@ class SessionCubit extends Cubit<SessionState> {
 
     final userEntity = result.unwrap();
     final currentUser = supabaseService.currentUser;
-    debugPrint('[SessionCubit] Email Sign-In success for user: ${currentUser?.id}');
+    debugPrint(
+      '[SessionCubit] Email Sign-In success for user: ${currentUser?.id}',
+    );
     if (currentUser == null) {
       emit(const GuestSession());
       return;
@@ -109,7 +120,9 @@ class SessionCubit extends Cubit<SessionState> {
     required String email,
     required String password,
   }) async {
-    debugPrint('[SessionCubit] Triggering Email+Password sign up for email: $email');
+    debugPrint(
+      '[SessionCubit] Triggering Email+Password sign up for email: $email',
+    );
     emit(const LoadingSession());
 
     final result = await authRepository.signUpWithEmailAndPassword(
@@ -124,15 +137,13 @@ class SessionCubit extends Cubit<SessionState> {
       return Failure(failure);
     }
 
-    final userEntity = result.unwrap();
     final currentUser = supabaseService.currentUser;
-    debugPrint('[SessionCubit] Email Sign-Up success for user: ${currentUser?.id}');
-    if (currentUser == null) {
-      emit(const GuestSession());
-      return const Failure(UserFailure(message: 'Usuário nulo após registro'));
-    }
+    debugPrint(
+      '[SessionCubit] Email Sign-Up success for user: ${currentUser?.id}',
+    );
 
-    await checkUserProfile(currentUser.id, userEntity);
+    // Reset session state to GuestSession so user returns to LoginScreen and completes email verification/login
+    emit(const GuestSession());
     return const Success(null);
   }
 
@@ -150,12 +161,15 @@ class SessionCubit extends Cubit<SessionState> {
 
     final data = profileResult.unwrap();
     if (data == null) {
-      debugPrint('[SessionCubit] Profile is null -> emitting NeedsClaimSession for userId: $userId');
+      debugPrint(
+        '[SessionCubit] Profile is null -> emitting NeedsClaimSession for userId: $userId',
+      );
       emit(NeedsClaimSession(userId: userId, user: userEntity));
       return;
     }
 
-    final user = userEntity ??
+    final user =
+        userEntity ??
         UserEntity(
           name: data.name,
           mail: data.email,
@@ -167,7 +181,9 @@ class SessionCubit extends Cubit<SessionState> {
           cityZone: (id: '', name: '', acronym: ''),
         );
 
-    debugPrint('[SessionCubit] Profile found! Emitting AuthenticatedSession for ${user.name}');
+    debugPrint(
+      '[SessionCubit] Profile found! Emitting AuthenticatedSession for ${user.name}',
+    );
     emit(AuthenticatedSession(user: user, profile: data));
   }
 

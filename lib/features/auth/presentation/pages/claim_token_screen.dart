@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_state.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 
 class ClaimTokenScreen extends StatefulWidget {
   final String userId;
@@ -49,25 +51,28 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
       body: BlocListener<ClaimTokenCubit, ClaimTokenState>(
         listener: (context, state) {
           if (state is ClaimTokenFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: colors.actionDanger,
-              ),
-            );
+            final msg = state.message;
+            final userMsg = (msg.contains('Token inválido') ||
+                    msg.contains('já utilizado') ||
+                    msg.contains('FunctionsHttpException') ||
+                    msg.contains('claimTokenInvalidError'))
+                ? l10n.claimTokenInvalidError
+                : (msg.startsWith('Erro') ? l10n.genericError : msg);
+            context.showAppToast(userMsg);
             return;
           }
 
           if (state is ClaimTokenSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.claimTokenSuccessMessage),
-                backgroundColor: colors.actionPrimary,
-              ),
-            );
-            context.read<SessionCubit>().checkUserProfile(widget.userId);
+            context.showAppToast(l10n.claimTokenSuccessMessage);
+            try {
+              context.go(OnboardingRoutes.reviewProfile);
+            } catch (_) {
+              // Context without GoRouter in unit tests
+            }
           }
         },
+
+
         child: Padding(
           padding: EdgeInsets.all(spacing.s24),
           child: Column(
@@ -101,10 +106,22 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
               BlocBuilder<ClaimTokenCubit, ClaimTokenState>(
                 builder: (context, state) {
                   final isLoading = state is ClaimTokenLoading;
-                  return AppButton.primary(
-                    label: context.l10n.confirm,
-                    isLoading: isLoading,
-                    onPressed: isLoading ? null : () => _onConfirm(context),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppButton.primary(
+                        label: context.l10n.confirm,
+                        isLoading: isLoading,
+                        onPressed: isLoading ? null : () => _onConfirm(context),
+                      ),
+                      const Gap12(),
+                      AppButton.secondary(
+                        label: context.l10n.logoutTooltip,
+                        onPressed: isLoading
+                            ? null
+                            : () => context.read<SessionCubit>().logOut(),
+                      ),
+                    ],
                   );
                 },
               ),

@@ -164,6 +164,39 @@ void main() {
           )).called(1);
     });
 
+    testWidgets('triggers onLoginPressed callback on successful registration', (tester) async {
+      bool loginPressedCalled = false;
+      when(() => mockSessionCubit.signUpWithEmail(
+        email: any(named: 'email'),
+        password: any(named: 'password'),
+      )).thenAnswer((_) async => const Success(null));
+
+      await tester.pumpWidget(MaterialApp(
+        theme: AppTheme.light,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: BlocProvider<SessionCubit>.value(
+          value: mockSessionCubit,
+          child: RegisterScreen(onLoginPressed: () {
+            loginPressedCalled = true;
+          }),
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      final textFields = find.byType(TextField);
+      await tester.enterText(textFields.at(0), 'test@example.com');
+      await tester.enterText(textFields.at(1), 'Password1');
+      await tester.enterText(textFields.at(2), 'Password1');
+      await tester.pumpAndSettle();
+
+      final button = find.byType(AppButton);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+
+      expect(loginPressedCalled, isTrue);
+    });
+
     testWidgets('displays error SnackBar on SessionError state', (tester) async {
       whenListen(
         mockSessionCubit,

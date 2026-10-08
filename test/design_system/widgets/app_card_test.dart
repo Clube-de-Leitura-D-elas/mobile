@@ -190,6 +190,65 @@ void main() {
       },
     );
 
+    testWidgets('Keeps the card geometry with a transparent border', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: const Scaffold(
+            body: AppCard(showBorder: false, child: Text('Conteúdo')),
+          ),
+        ),
+      );
+
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration;
+
+      final border = decoration.border as Border;
+
+      expect(border.top.color, Colors.transparent);
+      expect(border.top.width, 1);
+      expect(decoration.color, AppColorTokens.light.surfaceDefault);
+      expect(decoration.borderRadius, BorderRadius.circular(16));
+    });
+
+    testWidgets(
+      'Keeps no border on tap when showBorder is false, even for highlighted',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: AppCard(
+                showBorder: false,
+                variant: CardVariant.highlighted,
+                onTap: () {},
+                child: const Text('Conteúdo'),
+              ),
+            ),
+          ),
+        );
+
+        BoxDecoration decorationOf(WidgetTester t) {
+          final ink = t.widget<Ink>(find.byType(Ink));
+          return ink.decoration as BoxDecoration;
+        }
+
+        final initialBorder = decorationOf(tester).border as Border;
+        expect(initialBorder.top.color, Colors.transparent);
+        expect(initialBorder.top.width, 1);
+
+        await tester.tap(find.byType(InkWell));
+        await tester.pump();
+
+        final toggledBorder = decorationOf(tester).border as Border;
+        expect(toggledBorder.top.color, Colors.transparent);
+        expect(toggledBorder.top.width, 1);
+        expect(decorationOf(tester).color, AppColorTokens.light.surfaceDefault);
+      },
+    );
+
     testWidgets(
       'AppCard.titled renders title and support text with the right styles',
       (tester) async {
