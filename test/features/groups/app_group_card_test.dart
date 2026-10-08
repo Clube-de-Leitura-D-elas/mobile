@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
@@ -45,13 +45,6 @@ Widget _wrapRouter(GoRouter router) {
   );
 }
 
-Widget _wrapWithRepository(GroupRepository repository, Widget child) {
-  return RepositoryProvider<GroupRepository>.value(
-    value: repository,
-    child: _wrap(child),
-  );
-}
-
 void main() {
   late MockGroupRepository repository;
 
@@ -61,6 +54,18 @@ void main() {
 
   setUp(() {
     repository = MockGroupRepository();
+
+    serviceLocator.allowReassignment = true;
+    if (serviceLocator.isRegistered<GroupRepository>()) {
+      serviceLocator.unregister<GroupRepository>();
+    }
+    serviceLocator.registerFactory<GroupRepository>(() => repository);
+  });
+
+  tearDown(() {
+    if (serviceLocator.isRegistered<GroupRepository>()) {
+      serviceLocator.unregister<GroupRepository>();
+    }
   });
 
   group('AppGroupCard', () {
@@ -178,12 +183,12 @@ void main() {
       expect(find.text('Não irei'), findsNothing);
       expect(find.text('Confirmar presença'), findsNothing);
     });
+
     testWidgets(
       'Shows presence action buttons when the meeting has an id and actions are enabled',
       (tester) async {
         await tester.pumpWidget(
-          _wrapWithRepository(
-            repository,
+          _wrap(
             const AppGroupCard(
               groupId: 'group-1',
               groupName: 'Grupo 1',
@@ -209,8 +214,7 @@ void main() {
       'Does not show presence actions when the meeting has no id, even with showPresenceActions true',
       (tester) async {
         await tester.pumpWidget(
-          _wrapWithRepository(
-            repository,
+          _wrap(
             const AppGroupCard(
               groupId: 'group-1',
               groupName: 'Grupo 1',
@@ -235,8 +239,7 @@ void main() {
       'Creates the MeetingInvitationCubit with the meeting\'s current invitationStatus',
       (tester) async {
         await tester.pumpWidget(
-          _wrapWithRepository(
-            repository,
+          _wrap(
             const AppGroupCard(
               groupId: 'group-1',
               groupName: 'Grupo 1',
@@ -267,8 +270,7 @@ void main() {
         ).thenAnswer((_) async => const Success(null));
 
         await tester.pumpWidget(
-          _wrapWithRepository(
-            repository,
+          _wrap(
             const AppGroupCard(
               groupId: 'group-1',
               groupName: 'Grupo 1',

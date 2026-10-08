@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
@@ -76,7 +77,7 @@ class AppGroupCard extends StatelessWidget {
               if (showPresenceActions && meeting.id != null)
                 BlocProvider(
                   create: (context) => MeetingInvitationCubit(
-                    groupRepository: context.read<GroupRepository>(),
+                    groupRepository: serviceLocator<GroupRepository>(),
                     meetingId: meeting.id!,
                     initialStatus: meeting.invitationStatus,
                   ),
