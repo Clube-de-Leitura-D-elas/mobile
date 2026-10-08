@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
@@ -14,9 +16,7 @@ class GoRouterRefreshStream extends ChangeNotifier {
 
   GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
-    _subscription = stream.asBroadcastStream().listen(
-          (_) => notifyListeners(),
-        );
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
   }
 
   @override
@@ -37,17 +37,26 @@ abstract class AppRoutes {
         ...OnboardingRoutes.routes,
         ...HomeRoutes.routes,
         ...GroupRoutes.routes,
+        ...QuickAccessRoutes.routes,
       ],
       redirect: (context, state) {
         final sessionState = sessionCubit.state;
 
-        final splashRedirect = SplashRoutes.splashGuard(context, state, sessionState);
+        final splashRedirect = SplashRoutes.splashGuard(
+          context,
+          state,
+          sessionState,
+        );
         if (splashRedirect != null) return splashRedirect;
 
         final authRedirect = AuthRoutes.authGuard(context, state, sessionState);
         if (authRedirect != null) return authRedirect;
 
-        final onboardingRedirect = OnboardingRoutes.onboardingGuard(context, state, sessionState);
+        final onboardingRedirect = OnboardingRoutes.onboardingGuard(
+          context,
+          state,
+          sessionState,
+        );
         if (onboardingRedirect != null) return onboardingRedirect;
 
         final homeRedirect = HomeRoutes.homeGuard(context, state, sessionState);

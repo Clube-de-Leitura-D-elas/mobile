@@ -3,10 +3,12 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
-import 'package:mobile/features/groups/presentation/widgets/groups_empty_state.dart';
+import 'package:mobile/features/home/presentation/cubit/home_state.dart';
+import 'package:mobile/features/home/presentation/widgets/home_empty_state.dart';
 
 class HomeGroupsList extends StatelessWidget {
   final List<GroupEntity> groups;
+  final HomeEmptyKind? emptyKind;
   final bool isLoading;
   final String? errorMessage;
   final bool Function(String groupId) isExpanded;
@@ -18,6 +20,7 @@ class HomeGroupsList extends StatelessWidget {
   const HomeGroupsList({
     super.key,
     required this.groups,
+    required this.emptyKind,
     required this.isLoading,
     required this.errorMessage,
     required this.isExpanded,
@@ -45,10 +48,11 @@ class HomeGroupsList extends StatelessWidget {
       );
     }
 
-    if (groups.isEmpty) {
-      return const SliverFillRemaining(
+    final kind = emptyKind;
+    if (kind != null) {
+      return SliverFillRemaining(
         hasScrollBody: false,
-        child: GroupsEmptyState(),
+        child: HomeEmptyState(kind: kind),
       );
     }
 

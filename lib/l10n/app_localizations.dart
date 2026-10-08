@@ -883,6 +883,24 @@ abstract class AppLocalizations {
   /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
   String get emptyGroupsMessage;
 
+  /// Mensagem exibida quando a busca por nome não retorna grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo encontrado'**
+  String get emptyGroupsSearch;
+
+  /// Mensagem exibida quando o filtro Não respondidos não tem grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo com resposta pendente'**
+  String get emptyGroupsUnanswered;
+
+  /// Mensagem exibida quando o filtro Respondidos não tem grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não respondeu a nenhum encontro'**
+  String get emptyGroupsAnswered;
+
   /// Título da tela de detalhes do grupo, com o número do grupo
   ///
   /// In pt, this message translates to:
