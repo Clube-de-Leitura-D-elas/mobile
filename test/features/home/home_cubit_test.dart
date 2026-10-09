@@ -89,5 +89,28 @@ void main() {
       act: (cubit) => cubit.updateSearch('Porto Alegre'),
       expect: () => [const HomeState(searchQuery: 'Porto Alegre')],
     );
+
+    test('filteredGroups filters by searchQuery correctly', () {
+      const state = HomeState(
+        groups: [testGroup1, testGroup27],
+        searchQuery: '27',
+      );
+      expect(state.filteredGroups, [testGroup27]);
+    });
+
+    test('filteredGroups filters by selectedFilterIndex correctly', () {
+      const groupWithPending = GroupEntity(
+        id: '2',
+        number: 2,
+        participantsCount: 10,
+        cityState: 'SP',
+        hasPendingResponse: true,
+      );
+      const state = HomeState(
+        groups: [testGroup1, groupWithPending],
+        selectedFilterIndex: 1,
+      );
+      expect(state.filteredGroups, [groupWithPending]);
+    });
   });
 }

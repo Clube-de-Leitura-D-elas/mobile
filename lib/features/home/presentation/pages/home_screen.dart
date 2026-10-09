@@ -12,8 +12,14 @@ import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 class HomeScreen extends StatelessWidget {
   final UserEntity? user;
   final UserProfileEntity? profile;
+  final ValueChanged<int>? onNavigationItemSelected;
 
-  const HomeScreen({super.key, this.user, this.profile});
+  const HomeScreen({
+    super.key,
+    this.user,
+    this.profile,
+    this.onNavigationItemSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,7 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 0,
-        onItemSelected: (_) {},
+        onItemSelected: onNavigationItemSelected ?? (_) {},
       ),
     );
   }
@@ -54,7 +60,7 @@ class _HomeContent extends StatelessWidget {
           ),
         ),
         HomeGroupsList(
-          groups: state.groups,
+          groups: state.filteredGroups,
           isLoading: state.status == HomeStatus.loading,
           errorMessage: state.status == HomeStatus.error
               ? state.errorMessage

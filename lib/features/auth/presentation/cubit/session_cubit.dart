@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
@@ -185,6 +185,13 @@ class SessionCubit extends Cubit<SessionState> {
       '[SessionCubit] Profile found! Emitting AuthenticatedSession for ${user.name}',
     );
     emit(AuthenticatedSession(user: user, profile: data));
+  }
+
+  Future<void> refreshProfile() async {
+    final user = supabaseService.currentUser;
+    if (user != null) {
+      await checkUserProfile(user.id);
+    }
   }
 
   Future<void> logOut() async {

@@ -42,6 +42,38 @@ class HomeState extends Equatable {
 
   int get unansweredCount => groups.where((g) => g.hasPendingResponse).length;
 
+  List<GroupEntity> get filteredGroups {
+    return groups.where((group) {
+      if (selectedFilterIndex == 1 && !group.hasPendingResponse) {
+        return false;
+      }
+      if (selectedFilterIndex == 2 &&
+          (group.nextMeeting == null || group.hasPendingResponse)) {
+        return false;
+      }
+
+      final query = searchQuery.trim().toLowerCase();
+      if (query.isEmpty) return true;
+
+      final matchesCity = group.cityState.toLowerCase().contains(query);
+      final matchesNumber =
+          group.number.toString().contains(query) ||
+          'grupo ${group.number}'.toLowerCase().contains(query);
+      final matchesBook =
+          group.nextMeeting?.bookTitle.toLowerCase().contains(query) ?? false;
+      final matchesHost =
+          group.nextMeeting?.hostName.toLowerCase().contains(query) ?? false;
+      final matchesLocation =
+          group.nextMeeting?.location.toLowerCase().contains(query) ?? false;
+
+      return matchesCity ||
+          matchesNumber ||
+          matchesBook ||
+          matchesHost ||
+          matchesLocation;
+    }).toList();
+  }
+
   @override
   List<Object?> get props => [
         status,
