@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -73,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
               }
             }
           },
-
 
           builder: (context, state) {
             final isLoading = state is LoadingSession;
@@ -169,7 +168,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             // Actions Block (#879:1797) - 35px horizontal padding (320px width on 390px frame)
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 35.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 35.0,
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
@@ -219,8 +220,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: colors.bgDefault.withValues(alpha: 0.6),
                       child: Center(
                         child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(colors.actionPrimary),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            colors.actionPrimary,
+                          ),
                         ),
                       ),
                     ),
@@ -233,4 +235,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

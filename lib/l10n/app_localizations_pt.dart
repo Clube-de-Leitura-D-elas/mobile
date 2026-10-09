@@ -446,6 +446,21 @@ class AppLocalizationsPt extends AppLocalizations {
   String get selectOptionHint => 'Selecione';
 
   @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
+
+  @override
+  String get genreNonFiction => 'Não Ficção';
+
+  @override
+  String get genreFieldHint => 'Selecione um gênero';
+
+  @override
   String get myGroupsTitle => 'Meus grupos';
 
   @override

@@ -175,7 +175,6 @@ void main() {
 
       expect(find.text('Credenciais inválidas'), findsOneWidget);
     });
-
     testWidgets('displays CircularProgressIndicator overlay when session state is LoadingSession', (tester) async {
       await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
 
@@ -186,3 +185,4 @@ void main() {
     });
   });
 }
+
