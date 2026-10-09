@@ -235,8 +235,41 @@ void main() {
 
       expect(find.byKey(const ValueKey('meeting-photo-error')), findsOneWidget);
 
+      final retrySemantics = find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            w.properties.label == 'Tentar novamente' &&
+            w.properties.button == true,
+      );
+      expect(retrySemantics, findsOneWidget);
+
       await tester.tap(find.byKey(const ValueKey('meeting-photo-error')));
       verify(() => cubit.reload()).called(1);
+    },
+  );
+
+  testWidgets(
+    'renders loading state of MeetingPhotoPlaceholder with circular progress indicator',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          locale: const Locale('pt', 'BR'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: const Scaffold(
+            body: MeetingPhotoPlaceholder(),
+          ),
+        ),
+      );
+
+      expect(find.byKey(const ValueKey('meeting-photo-loading')), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
     },
   );
 }
