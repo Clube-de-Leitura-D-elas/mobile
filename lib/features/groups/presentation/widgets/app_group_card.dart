@@ -149,21 +149,26 @@ class _MeetingHeaderRow extends StatelessWidget {
     final typography = context.typography;
     final l10n = context.l10n;
 
-    return InkWell(
-      onTap: onToggleExpanded,
-      borderRadius: BorderRadius.circular(8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            l10n.groupNextMeetingLabel,
-            style: typography.bodyLarge.copyWith(color: colors.textMuted),
-          ),
-          Icon(
-            expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-            color: colors.textMuted,
-          ),
-        ],
+    return Semantics(
+      button: true,
+      expanded: expanded,
+      label: l10n.groupNextMeetingLabel,
+      child: InkWell(
+        onTap: onToggleExpanded,
+        borderRadius: BorderRadius.circular(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              l10n.groupNextMeetingLabel,
+              style: typography.bodyLarge.copyWith(color: colors.textMuted),
+            ),
+            Icon(
+              expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+              color: colors.textMuted,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -65,6 +65,35 @@ void main() {
       },
     );
 
+    testWidgets(
+      'Exibe check icon e semântica de selecionado quando item já está selecionado ao abrir overlay',
+      (tester) async {
+        await tester.pumpWidget(
+          buildTestableWidget(
+            AppDropdown<String>(
+              hintText: 'Escolha',
+              value: 'Opção B',
+              items: options,
+              onChanged: (_) {},
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Opção B'));
+        await tester.pumpAndSettle();
+
+        expect(find.byIcon(Icons.check), findsOneWidget);
+
+        final semanticsFinder = find.byWidgetPredicate(
+          (w) =>
+              w is Semantics &&
+              w.properties.label == 'Opção B' &&
+              w.properties.selected == true,
+        );
+        expect(semanticsFinder, findsOneWidget);
+      },
+    );
+
     testWidgets('Fecha o overlay ao tocar fora do menu (barrier)', (
       tester,
     ) async {

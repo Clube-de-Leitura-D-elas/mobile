@@ -15,21 +15,25 @@ class AppStepIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
 
-    return Row(
-      children: List.generate(totalSteps, (index) {
-        final isActive = index <= currentStep;
-        return Expanded(
-          child: Container(
-            margin: EdgeInsets.only(right: index < totalSteps - 1 ? 8.0 : 0.0),
-            height: 3.0,
-            decoration: BoxDecoration(
-              color: isActive ? colors.actionPrimary : colors.borderDefault,
-              borderRadius: BorderRadius.circular(2.0),
-            ),
-
-          ),
-        );
-      }),
+    return Semantics(
+      label: 'Passo ${currentStep + 1} de $totalSteps',
+      child: ExcludeSemantics(
+        child: Row(
+          children: List.generate(totalSteps, (index) {
+            final isActive = index <= currentStep;
+            return Expanded(
+              child: Container(
+                margin: EdgeInsets.only(right: index < totalSteps - 1 ? 8.0 : 0.0),
+                height: 3.0,
+                decoration: BoxDecoration(
+                  color: isActive ? colors.actionPrimary : colors.borderDefault,
+                  borderRadius: BorderRadius.circular(2.0),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
     );
   }
 }

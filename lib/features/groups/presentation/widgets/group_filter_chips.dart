@@ -63,20 +63,25 @@ class _FilterChipItem extends StatelessWidget {
     final borderColor = isSelected ? colors.borderBrand : colors.borderStrong;
     final textColor = isSelected ? colors.textBrand : colors.textMuted;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(62),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(62),
-          border: Border.all(color: borderColor),
-        ),
-        child: Text(
-          label,
-          style: typography.labelTag.copyWith(
-            color: textColor,
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(62),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(62),
+            border: Border.all(color: borderColor),
+          ),
+          child: Text(
+            label,
+            style: typography.labelTag.copyWith(
+              color: textColor,
+            ),
           ),
         ),
       ),

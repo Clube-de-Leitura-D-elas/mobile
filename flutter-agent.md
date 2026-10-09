@@ -149,6 +149,29 @@ class ValidationFailure extends Failure {
 * **Method Size:** Keep methods and functions modularized, small, and tightly scoped (aim for fewer than 30 lines).
 * **UI Cleanliness:** Never return widgets directly from helper methods inside a page class. Instead, isolate them into autonomous `StatelessWidget` implementations or separate dedicated widget files to optimize element tree composition.
 
+### Accessibility (a11y), Semantics & Marionette MCP Guidelines
+
+Accessibility is not an afterthought; it is a core quality requirement for both human inclusion (VoiceOver on iOS, TalkBack on Android) and automated agentic testing via the **Marionette MCP** (`marionette_flutter` / `marionette_mcp`).
+
+1. **Mandatory Semantics on Interactive Elements:**
+   * Every custom interactive widget (`InkWell`, `GestureDetector`, custom clickable containers, filter chips, links) **MUST** be wrapped in a `Semantics` widget (or use accessible design system widgets like `AppButton` and `IconButton` with `tooltip`).
+   * **Buttons and Links:** Configure `Semantics(button: true, enabled: isEnabled, label: label, child: ...)`.
+   * **Selectable Items & Chips:** Configure `Semantics(button: true, selected: isSelected, label: label, child: ...)`.
+   * **Expandable Headers / Accordions:** Configure `Semantics(button: true, expanded: isExpanded, label: label, child: ...)`.
+   * **Checkboxes & Toggles:** Configure `Semantics(container: true, checked: isChecked, enabled: isEnabled, label: label, child: ExcludeSemantics(child: ...))`.
+   * **Dynamic Alerts & Toasts:** Configure `Semantics(liveRegion: true, label: message, child: ...)`.
+   * **Informative Images:** Configure `Semantics(image: true, label: description, child: ...)`.
+   * **Purely Decorative Elements:** Use `ExcludeSemantics` to prevent noise in the accessibility tree (e.g. background shapes, redundant decorative icons next to text).
+
+2. **Marionette MCP Compatibility:**
+   * Marionette 0.6.0+ relies on Flutter's semantic and widget hierarchy for discovery (`get_interactive_elements`) and interaction (`tap`, `enter_text`).
+   * Semantic nodes expose labels and states directly to Marionette as accessible text tokens (`text: "label: value"`, `isInteractive: true`).
+   * Clear semantic labeling allows AI agents and automation scripts to interact deterministically with widgets without brittle coordinate offsets or OCR approximations.
+
+3. **Safe Localization in Semantics:**
+   * Always source labels from `AppLocalizations` (`l10n`).
+   * For reusable Design System widgets that may be tested in headless or isolated unit widget tests without `localizationsDelegates`, use safe lookups (`Localizations.of<AppLocalizations>(context, AppLocalizations)?.labelKey ?? 'Fallback'`) to avoid test runtime failures.
+
 ---
 
 ## 4. Complete Implementation Templates

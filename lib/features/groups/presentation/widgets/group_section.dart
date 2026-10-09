@@ -29,6 +29,7 @@ class GroupSection extends StatelessWidget {
         Semantics(
           button: true,
           expanded: expanded,
+          label: count != null ? '$title, $count' : title,
           child: InkWell(
             key: ValueKey('section-$title'),
             onTap: onToggle,

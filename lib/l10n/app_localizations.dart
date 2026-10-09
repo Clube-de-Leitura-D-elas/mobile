@@ -894,6 +894,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Sem localização'**
   String get groupNextEventNoLocation;
+
+  /// Tooltip e acessibilidade para exibir senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostrar senha'**
+  String get showPasswordTooltip;
+
+  /// Tooltip e acessibilidade para ocultar senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocultar senha'**
+  String get hidePasswordTooltip;
+
+  /// Descrição de acessibilidade do logotipo do aplicativo
+  ///
+  /// In pt, this message translates to:
+  /// **'Logo do Clube de Leitura D\'Elas'**
+  String get appLogoSemanticLabel;
 }
 
 class _AppLocalizationsDelegate

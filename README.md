@@ -191,6 +191,32 @@ genhtml coverage/lcov.info -o coverage/html
 
 ---
 
+## ♿ Acessibilidade e Automação (VoiceOver, TalkBack & Marionette MCP)
+
+O aplicativo adota a árvore semântica nativa do Flutter (`Semantics`) como requisito de primeira classe em todos os componentes e telas. Isso garante dois pilares fundamentais:
+
+1. **Acessibilidade Inclusiva (Leitores de Tela):**
+   - Total compatibilidade com **VoiceOver** (iOS) e **TalkBack** (Android).
+   - Usuárias com deficiência visual ou baixa visão recebem anúncios sonoros precisos de botões, links, campos de formulário, checklists de validação de senha e alertas dinâmicos.
+
+2. **Automação Inteligente via Marionette MCP:**
+   - O projeto integra o [`marionette_flutter`](https://pub.dev/packages/marionette_flutter) e o **Marionette MCP Server**.
+   - Agentes de IA e ferramentas de automação inspecionam os nós semânticos da árvore de widgets através de `get_interactive_elements`, descobrindo componentes por rótulos descritivos (`label`), estados (`button`, `selected`, `expanded`, `checked`) e disparando interações (`tap`, `enter_text`) de forma determinística, sem depender de coordenadas de tela ou OCR.
+
+### Padrões e Boas Práticas Adotados
+
+| Elemento | Configuração de Semantics | Propósito |
+| :--- | :--- | :--- |
+| **Botões & Links** | `Semantics(button: true, enabled: isEnabled, label: '...')` | Identifica a ação e informa se o botão está ativo |
+| **Itens Selecionáveis / Chips** | `Semantics(button: true, selected: isSelected, label: '...')` | Informa qual filtro ou opção está ativo |
+| **Seções Expansíveis (Accordions)** | `Semantics(button: true, expanded: isExpanded, label: '...')` | Informa se o bloco de conteúdo está aberto ou recolhido |
+| **Checklists & Validações** | `Semantics(checked: isValid, label: '...')` | Anuncia se o critério de validação foi satisfeito |
+| **Toasts & Avisos Dinâmicos** | `Semantics(liveRegion: true, label: message)` | Garante leitura prioritária e imediata quando o aviso aparece |
+| **Imagens Informativas** | `Semantics(image: true, label: description)` | Descreve visualmente logos, capas de livros e fotos |
+| **Ícones e Shapes Decorativos** | `ExcludeSemantics(child: ...)` | Evita ruído e poluição sonora na navegação acessível |
+
+---
+
 ## 🌿 Branches e commits
 
 Branch padrão: **`develop`**. `main` fica reservada para versões apresentadas aos stakeholders.
