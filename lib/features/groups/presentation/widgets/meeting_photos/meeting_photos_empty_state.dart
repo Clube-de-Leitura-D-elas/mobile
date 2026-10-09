@@ -25,24 +25,29 @@ class MeetingPhotosEmptyState extends StatelessWidget {
       child: Material(
         color: colors.surfaceBrandSoft.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(_radius),
-        child: InkWell(
-          key: const ValueKey('meeting-photos-empty-state'),
-          borderRadius: BorderRadius.circular(_radius),
-          onTap: onTap,
-          child: SizedBox(
-            height: _height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AppIcon(icon: AppIcons.camera, size: 32, color: foreground),
-                SizedBox(height: spacing.s8),
-                Text(
-                  context.l10n.meetingPhotosAdd,
-                  style: context.typography.bodyDefaultEmphasis.copyWith(
-                    color: foreground,
+        child: Semantics(
+          button: true,
+          enabled: onTap != null,
+          label: context.l10n.meetingPhotosAdd,
+          child: InkWell(
+            key: const ValueKey('meeting-photos-empty-state'),
+            borderRadius: BorderRadius.circular(_radius),
+            onTap: onTap,
+            child: SizedBox(
+              height: _height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppIcon(icon: AppIcons.camera, size: 32, color: foreground),
+                  SizedBox(height: spacing.s8),
+                  Text(
+                    context.l10n.meetingPhotosAdd,
+                    style: context.typography.bodyDefaultEmphasis.copyWith(
+                      color: foreground,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -145,15 +145,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                         },
                                       ),
                                       const Gap4(),
-                                      GestureDetector(
-                                        onTap: isLoading
-                                            ? null
-                                            : widget.onForgotPasswordPressed,
-                                        child: Text(
-                                          l10n.forgotPasswordLink,
-                                          style: typography.labelTag.copyWith(
-                                            color: colors.textBrand,
-                                            height: 24.0 / 12.0,
+                                      Semantics(
+                                        button: true,
+                                        enabled: !isLoading,
+                                        label: l10n.forgotPasswordLink,
+                                        child: GestureDetector(
+                                          onTap: isLoading
+                                              ? null
+                                              : widget.onForgotPasswordPressed,
+                                          child: Text(
+                                            l10n.forgotPasswordLink,
+                                            style: typography.labelTag.copyWith(
+                                              color: colors.textBrand,
+                                              height: 24.0 / 12.0,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -188,19 +193,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   const Gap16(),
                                   Center(
-                                    child: GestureDetector(
-                                      onTap: isLoading
-                                          ? null
-                                          : widget.onCreateAccountPressed,
-                                      child: Text(
-                                        l10n.createAccountLink,
-                                        textAlign: TextAlign.center,
-                                        style: typography.bodySmallEmphasis
-                                            .copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              color: colors.textBrand,
-                                              height: 24.0 / 14.0,
-                                            ),
+                                    child: Semantics(
+                                      button: true,
+                                      enabled: !isLoading,
+                                      label: l10n.createAccountLink,
+                                      child: GestureDetector(
+                                        onTap: isLoading
+                                            ? null
+                                            : widget.onCreateAccountPressed,
+                                        child: Text(
+                                          l10n.createAccountLink,
+                                          textAlign: TextAlign.center,
+                                          style: typography.bodySmallEmphasis
+                                              .copyWith(
+                                                fontWeight: FontWeight.w700,
+                                                color: colors.textBrand,
+                                                height: 24.0 / 14.0,
+                                              ),
+                                        ),
                                       ),
                                     ),
                                   ),

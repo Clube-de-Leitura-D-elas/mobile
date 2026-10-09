@@ -32,9 +32,13 @@ class GoogleSignInButton extends StatelessWidget {
         color: Colors.transparent,
         borderRadius: borderRadius,
         clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          borderRadius: borderRadius,
-          onTap: onPressed,
+        child: Semantics(
+          button: true,
+          enabled: onPressed != null && !isLoading,
+          label: l10n.signInWithGoogle,
+          child: InkWell(
+            borderRadius: borderRadius,
+            onTap: onPressed,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
             child: Row(
@@ -71,6 +75,7 @@ class GoogleSignInButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
