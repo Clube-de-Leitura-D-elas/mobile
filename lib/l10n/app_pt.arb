@@ -316,6 +316,7 @@
     "description": "Mensagem exibida quando o grupo não possui encontros realizados"
   },
   "meetingDetailsHeader": "Detalhes do encontro",
+  "meetingEditAction": "Editar encontro",
   "@meetingDetailsHeader": {
     "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
   },
@@ -380,6 +381,22 @@
   "@meetingDetailsDescriptionTitle": {
     "description": "Título da seção de descrição do encontro"
   },
+  "meetingEditTitle": "Editar encontro",
+  "meetingEditDateLabel": "Data",
+  "meetingEditDateHint": "DD/MM/AAAA",
+  "meetingEditDateError": "Informe a data.",
+  "meetingEditTimeLabel": "Horário",
+  "meetingEditTimeHint": "HH:MM",
+  "meetingEditTimeError": "Informe o horário.",
+  "meetingEditLocationLabel": "Local",
+  "meetingEditLocationHint": "Nome do local",
+  "meetingEditLocationError": "Informe o local.",
+  "meetingEditDescriptionLabel": "Observações",
+  "meetingEditDescriptionHint": "Adicione observações (opcional)",
+  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
+  "meetingEditBookLabel": "Livro da vez",
+  "meetingEditHostLabel": "Anfitriã",
+  "meetingEditSaveButton": "Salvar alterações",
   "meetingCoverSemanticLabel": "Foto do {title}",
   "@meetingCoverSemanticLabel": {
     "description": "Rótulo de acessibilidade da foto de capa do encontro",

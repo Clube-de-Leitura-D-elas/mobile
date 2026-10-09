@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
@@ -11,12 +12,15 @@ import 'package:mobile/features/groups/presentation/pages/event_history_page.dar
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
+import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 
 abstract class GroupRoutes {
   static const groupDetails = GroupRoutePaths.groupDetails;
   static const eventHistory = GroupRoutePaths.eventHistory;
   static const meetingDetails = GroupRoutePaths.meetingDetails;
+  static const meetingEdit = GroupRoutePaths.meetingEdit;
 
   static List<RouteBase> get routes => [
     GoRoute(
@@ -38,6 +42,22 @@ abstract class GroupRoutes {
             ],
             child: const MeetingDetailsPage(),
           ),
+        );
+      },
+    ),
+    GoRoute(
+      path: meetingEdit,
+      pageBuilder: (context, state) {
+        final meeting = state.extra;
+        if (meeting is! MeetingDetailsEntity) {
+          return AppPageTransitions.createPushPage(
+            state: state,
+            child: const Scaffold(body: SizedBox.shrink()),
+          );
+        }
+        return AppPageTransitions.createPushPage(
+          state: state,
+          child: MeetingEditPage(meeting: meeting),
         );
       },
     ),
@@ -67,8 +87,7 @@ abstract class GroupRoutes {
                     serviceLocator<GroupDetailsCubit>()..load(groupId),
               ),
               BlocProvider(
-                create: (_) =>
-                    serviceLocator<NextEventCubit>()..load(groupId),
+                create: (_) => serviceLocator<NextEventCubit>()..load(groupId),
               ),
               BlocProvider(
                 create: (_) =>
