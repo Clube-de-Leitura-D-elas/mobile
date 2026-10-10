@@ -488,6 +488,31 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupNextEventNoLocation => 'Sem localização';
+
+  @override
+  String get rafflePreparationTitle => 'Realizar sorteio';
+
+  @override
+  String get rafflePreparationSubtitle => 'Selecione as participantes';
+
+  @override
+  String get raffleTableHeaderName => 'Nome';
+
+  @override
+  String get raffleTableHeaderInclude => 'Incluir no sorteio';
+
+  @override
+  String get raffleConfirmDialogTitle => 'Confirmar sorteio';
+
+  @override
+  String get raffleConfirmDialogMessage =>
+      'Você deseja mesmo confirmar o sorteio?';
+
+  @override
+  String get raffleConfirmDialogCancel => 'Cancelar';
+
+  @override
+  String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -942,4 +967,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get emptyGroupsMessage =>
       'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String get rafflePreparationTitle => 'Realizar sorteio';
+
+  @override
+  String get rafflePreparationSubtitle => 'Selecione as participantes';
+
+  @override
+  String get raffleTableHeaderName => 'Nome';
+
+  @override
+  String get raffleTableHeaderInclude => 'Incluir no sorteio';
+
+  @override
+  String get raffleConfirmDialogTitle => 'Confirmar sorteio';
+
+  @override
+  String get raffleConfirmDialogMessage =>
+      'Você deseja mesmo confirmar o sorteio?';
+
+  @override
+  String get raffleConfirmDialogCancel => 'Cancelar';
+
+  @override
+  String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
 }

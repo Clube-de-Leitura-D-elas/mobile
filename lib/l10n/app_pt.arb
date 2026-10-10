@@ -590,5 +590,39 @@
   "groupNextEventNoLocation": "Sem localização",
   "@groupNextEventNoLocation": {
     "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
+  },
+
+  "@@Raffles": "--- Raffles ---",
+  "rafflePreparationTitle": "Realizar sorteio",
+  "@rafflePreparationTitle": {
+    "description": "Título principal da tela de preparação do sorteio"
+  },
+  "rafflePreparationSubtitle": "Selecione as participantes",
+  "@rafflePreparationSubtitle": {
+    "description": "Subtítulo de instrução da tela de preparação do sorteio"
+  },
+  "raffleTableHeaderName": "Nome",
+  "@raffleTableHeaderName": {
+    "description": "Rótulo do cabeçalho de nome na tabela de participantes"
+  },
+  "raffleTableHeaderInclude": "Incluir no sorteio",
+  "@raffleTableHeaderInclude": {
+    "description": "Rótulo do cabeçalho de seleção/presença na tabela de participantes"
+  },
+  "raffleConfirmDialogTitle": "Confirmar sorteio",
+  "@raffleConfirmDialogTitle": {
+    "description": "Título da caixa de diálogo de confirmação do sorteio"
+  },
+  "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",
+  "@raffleConfirmDialogMessage": {
+    "description": "Mensagem de confirmação na caixa de diálogo do sorteio"
+  },
+  "raffleConfirmDialogCancel": "Cancelar",
+  "@raffleConfirmDialogCancel": {
+    "description": "Texto do botão de cancelamento na caixa de diálogo do sorteio"
+  },
+  "raffleSuccessToast": "Sorteio realizado com sucesso!",
+  "@raffleSuccessToast": {
+    "description": "Mensagem de sucesso exibida no toast após a realização do sorteio"
   }
 }

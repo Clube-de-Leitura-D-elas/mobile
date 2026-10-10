@@ -133,5 +133,15 @@
   "filterUnanswered": "Não respondidos ({count})",
   "filterAnswered": "Respondidos",
   "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
-  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui."
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
+
+  "@@Raffles": "--- Raffles ---",
+  "rafflePreparationTitle": "Realizar sorteio",
+  "rafflePreparationSubtitle": "Selecione as participantes",
+  "raffleTableHeaderName": "Nome",
+  "raffleTableHeaderInclude": "Incluir no sorteio",
+  "raffleConfirmDialogTitle": "Confirmar sorteio",
+  "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",
+  "raffleConfirmDialogCancel": "Cancelar",
+  "raffleSuccessToast": "Sorteio realizado com sucesso!"
 }
