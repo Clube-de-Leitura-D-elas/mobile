@@ -894,6 +894,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Sem localização'**
   String get groupNextEventNoLocation;
+
+  /// Título principal da tela de preparação do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar sorteio'**
+  String get rafflePreparationTitle;
+
+  /// Subtítulo de instrução da tela de preparação do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione as participantes'**
+  String get rafflePreparationSubtitle;
+
+  /// Rótulo do cabeçalho de nome na tabela de participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome'**
+  String get raffleTableHeaderName;
+
+  /// Rótulo do cabeçalho de seleção/presença na tabela de participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Incluir no sorteio'**
+  String get raffleTableHeaderInclude;
+
+  /// Título da caixa de diálogo de confirmação do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar sorteio'**
+  String get raffleConfirmDialogTitle;
+
+  /// Mensagem de confirmação na caixa de diálogo do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Você deseja mesmo confirmar o sorteio?'**
+  String get raffleConfirmDialogMessage;
+
+  /// Texto do botão de cancelamento na caixa de diálogo do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get raffleConfirmDialogCancel;
+
+  /// Mensagem de sucesso exibida no toast após a realização do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio realizado com sucesso!'**
+  String get raffleSuccessToast;
 }
 
 class _AppLocalizationsDelegate
