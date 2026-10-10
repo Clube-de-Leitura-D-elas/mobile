@@ -505,6 +505,18 @@ abstract class AppLocalizations {
   /// **'Confirmar presença'**
   String get groupConfirmMeetingButton;
 
+  /// Rótulo exibido acima do botão 'Não irei' quando a presença no próximo encontro já foi confirmada
+  ///
+  /// In pt, this message translates to:
+  /// **'Presença confirmada'**
+  String get groupMeetingConfirmedLabel;
+
+  /// Rótulo exibido acima do botão 'Confirmar presença' quando a ausência no próximo encontro já foi confirmada
+  ///
+  /// In pt, this message translates to:
+  /// **'Ausência confirmada'**
+  String get groupMeetingDeclinedLabel;
+
   /// Tentar responder a confirmação de presença no encontro novamente após um erro
   ///
   /// In pt, this message translates to:

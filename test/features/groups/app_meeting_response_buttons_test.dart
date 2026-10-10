@@ -55,6 +55,8 @@ void main() {
       final l10n = AppLocalizations.of(context);
 
       final confirmBtn = find.text(l10n.groupConfirmMeetingButton);
+      expect(find.text(l10n.groupMeetingConfirmedLabel), findsNothing);
+      expect(find.text(l10n.groupMeetingDeclinedLabel), findsNothing);
       await tester.tap(confirmBtn);
 
       verify(
@@ -79,6 +81,8 @@ void main() {
       final l10n = AppLocalizations.of(context);
 
       final declineBtn = find.text(l10n.groupDeclineMeetingButton);
+      expect(find.text(l10n.groupMeetingConfirmedLabel), findsNothing);
+      expect(find.text(l10n.groupMeetingDeclinedLabel), findsNothing);
       await tester.tap(declineBtn);
 
       verify(
@@ -103,6 +107,8 @@ void main() {
       final l10n = AppLocalizations.of(context);
 
       final declineBtn = find.text(l10n.groupDeclineMeetingButton);
+      expect(find.text(l10n.groupMeetingConfirmedLabel), findsOneWidget);
+      expect(find.text(l10n.groupMeetingDeclinedLabel), findsNothing);
       await tester.tap(declineBtn);
 
       verify(
@@ -127,6 +133,8 @@ void main() {
       final l10n = AppLocalizations.of(context);
 
       final confirmBtn = find.text(l10n.groupConfirmMeetingButton);
+      expect(find.text(l10n.groupMeetingDeclinedLabel), findsOneWidget);
+      expect(find.text(l10n.groupMeetingConfirmedLabel), findsNothing);
       await tester.tap(confirmBtn);
 
       verify(

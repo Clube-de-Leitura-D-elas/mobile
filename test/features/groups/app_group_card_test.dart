@@ -159,7 +159,7 @@ void main() {
       },
     );
 
-    testWidgets('Hides presence actions after the member responds', (
+    testWidgets('Shows presence action buttons when the meeting has an id', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -169,7 +169,31 @@ void main() {
             groupName: 'Grupo 1',
             participantsCount: 32,
             cityState: 'Porto Alegre, RS',
-            showPresenceActions: false,
+            nextMeeting: GroupMeeting(
+              id: 'meeting-1',
+              hostName: 'Roberta',
+              bookTitle: 'Pequeno príncipe',
+              date: '2026-08-29T19:00:00Z',
+              location: 'Z Café TECNOPUC',
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Não irei'), findsOneWidget);
+      expect(find.text('Confirmar presença'), findsOneWidget);
+    });
+
+    testWidgets('Does not show presence actions when the meeting has no id', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppGroupCard(
+            groupId: 'group-1',
+            groupName: 'Grupo 1',
+            participantsCount: 32,
+            cityState: 'Porto Alegre, RS',
             nextMeeting: GroupMeeting(
               hostName: 'Roberta',
               bookTitle: 'Pequeno príncipe',
@@ -183,57 +207,6 @@ void main() {
       expect(find.text('Não irei'), findsNothing);
       expect(find.text('Confirmar presença'), findsNothing);
     });
-
-    testWidgets(
-      'Shows presence action buttons when the meeting has an id and actions are enabled',
-      (tester) async {
-        await tester.pumpWidget(
-          _wrap(
-            const AppGroupCard(
-              groupId: 'group-1',
-              groupName: 'Grupo 1',
-              participantsCount: 32,
-              cityState: 'Porto Alegre, RS',
-              nextMeeting: GroupMeeting(
-                id: 'meeting-1',
-                hostName: 'Roberta',
-                bookTitle: 'Pequeno príncipe',
-                date: '2026-08-29T19:00:00Z',
-                location: 'Z Café TECNOPUC',
-              ),
-            ),
-          ),
-        );
-
-        expect(find.text('Não irei'), findsOneWidget);
-        expect(find.text('Confirmar presença'), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'Does not show presence actions when the meeting has no id, even with showPresenceActions true',
-      (tester) async {
-        await tester.pumpWidget(
-          _wrap(
-            const AppGroupCard(
-              groupId: 'group-1',
-              groupName: 'Grupo 1',
-              participantsCount: 32,
-              cityState: 'Porto Alegre, RS',
-              nextMeeting: GroupMeeting(
-                hostName: 'Roberta',
-                bookTitle: 'Pequeno príncipe',
-                date: '2026-08-29T19:00:00Z',
-                location: 'Z Café TECNOPUC',
-              ),
-            ),
-          ),
-        );
-
-        expect(find.text('Não irei'), findsNothing);
-        expect(find.text('Confirmar presença'), findsNothing);
-      },
-    );
 
     testWidgets(
       'Creates the MeetingInvitationCubit with the meeting\'s current invitationStatus',
@@ -259,6 +232,7 @@ void main() {
 
         expect(find.text('Não irei'), findsOneWidget);
         expect(find.text('Confirmar presença'), findsNothing);
+        expect(find.text('Presença confirmada'), findsOneWidget);
       },
     );
 

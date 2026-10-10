@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 
 void main() {
   test('maps a group returned by get-my-groups', () {
@@ -70,5 +71,82 @@ void main() {
       ),
     );
     expect(group.hasPendingResponse, isTrue);
+  });
+
+  Map<String, dynamic> groupJson({
+    Object? invitationStatus,
+    bool includeStatus = true,
+  }) {
+    return {
+      'id': 'group-1',
+      'number': 1,
+      'participant_count': 3,
+      'city_state': 'Porto Alegre, RS',
+      'photo_url': null,
+      'has_pending_response': false,
+      'next_meeting': {
+        'id': 'meeting-1',
+        'host_name': 'Ana',
+        'book_title': 'Quarto de Despejo',
+        'date': '2026-10-12T19:00:00Z',
+        'location': 'Porto Alegre, RS',
+        if (includeStatus) 'invitation_status': invitationStatus,
+      },
+    };
+  }
+
+  test('maps invitation_status CONFIRMED from the next meeting', () {
+    final group = GroupModel.fromJson(groupJson(invitationStatus: 'CONFIRMED'));
+
+    expect(
+      group.toDomain().nextMeeting?.invitationStatus,
+      MeetingInvitationStatus.confirmed,
+    );
+  });
+
+  test('maps invitation_status DECLINED from the next meeting', () {
+    final group = GroupModel.fromJson(groupJson(invitationStatus: 'DECLINED'));
+
+    expect(
+      group.toDomain().nextMeeting?.invitationStatus,
+      MeetingInvitationStatus.declined,
+    );
+  });
+
+  test('maps invitation_status PENDING from the next meeting', () {
+    final group = GroupModel.fromJson(groupJson(invitationStatus: 'PENDING'));
+
+    expect(
+      group.toDomain().nextMeeting?.invitationStatus,
+      MeetingInvitationStatus.pending,
+    );
+  });
+
+  test('falls back to pending when invitation_status is missing', () {
+    final group = GroupModel.fromJson(groupJson(includeStatus: false));
+
+    expect(
+      group.toDomain().nextMeeting?.invitationStatus,
+      MeetingInvitationStatus.pending,
+    );
+  });
+
+  test('falls back to pending when invitation_status is unknown', () {
+    final group = GroupModel.fromJson(groupJson(invitationStatus: 'MAYBE'));
+
+    expect(
+      group.toDomain().nextMeeting?.invitationStatus,
+      MeetingInvitationStatus.pending,
+    );
+  });
+
+  test('keeps the meeting status when the response was already given', () {
+    final group = GroupModel.fromJson(groupJson(invitationStatus: 'CONFIRMED'));
+
+    expect(group.hasPendingResponse, isFalse);
+    expect(
+      group.toDomain().nextMeeting?.invitationStatus,
+      MeetingInvitationStatus.confirmed,
+    );
   });
 }

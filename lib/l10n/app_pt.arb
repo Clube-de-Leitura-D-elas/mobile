@@ -294,6 +294,14 @@
     "@groupConfirmMeetingButton": {
       "description": "Botão para confirmar presença no próximo encontro do grupo"
     },
+    "groupMeetingConfirmedLabel": "Presença confirmada",
+    "@groupMeetingConfirmedLabel": {
+      "description": "Rótulo exibido acima do botão 'Não irei' quando a presença no próximo encontro já foi confirmada"
+    },
+    "groupMeetingDeclinedLabel": "Ausência confirmada",
+    "@groupMeetingDeclinedLabel": {
+      "description": "Rótulo exibido acima do botão 'Confirmar presença' quando a ausência no próximo encontro já foi confirmada"
+    },
     "groupMeetingRsvpRetryAction": "Tentar novamente",
     "@groupMeetingRsvpRetryAction": {
       "description": "Tentar responder a confirmação de presença no encontro novamente após um erro"

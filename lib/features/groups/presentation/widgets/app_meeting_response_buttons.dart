@@ -5,6 +5,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_state.dart';
+import 'package:mobile/features/groups/presentation/widgets/status_with_action_label.dart';
 
 class AppMeetingResponseButtons extends StatelessWidget {
   const AppMeetingResponseButtons({super.key});
@@ -25,6 +26,7 @@ class AppMeetingResponseButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.spacing;
     final l10n = context.l10n;
+    final colors = context.colors;
 
     return BlocBuilder<MeetingInvitationCubit, MeetingInvitationState>(
       builder: (context, state) {
@@ -51,9 +53,11 @@ class AppMeetingResponseButtons extends StatelessWidget {
             );
 
           case MeetingInvitationStatus.confirmed:
-            return SizedBox(
-              width: double.infinity,
-              child: AppButton.secondary(
+            return StatusWithActionLabel(
+              statusLabel: l10n.groupMeetingConfirmedLabel,
+              statusIcon: Icons.check_circle_outline,
+              statusColor: colors.feedbackSuccess,
+              action: AppButton.secondary(
                 size: AppButtonSize.sm,
                 label: l10n.groupDeclineMeetingButton,
                 onPressed: () => _handleDecline(context),
@@ -61,9 +65,11 @@ class AppMeetingResponseButtons extends StatelessWidget {
             );
 
           case MeetingInvitationStatus.declined:
-            return SizedBox(
-              width: double.infinity,
-              child: AppButton.primary(
+            return StatusWithActionLabel(
+              statusLabel: l10n.groupMeetingDeclinedLabel,
+              statusIcon: Icons.cancel_outlined,
+              statusColor: colors.textMuted,
+              action: AppButton.primary(
                 size: AppButtonSize.sm,
                 label: l10n.groupConfirmMeetingButton,
                 onPressed: () => _handleConfirm(context),
