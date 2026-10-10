@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
@@ -27,7 +28,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    _passwordCubit = PasswordValidationCubit();
+    _passwordCubit = serviceLocator.isRegistered<PasswordValidationCubit>()
+        ? serviceLocator<PasswordValidationCubit>()
+        : PasswordValidationCubit();
     _passwordController.addListener(_onPasswordChanged);
     _confirmPasswordController.addListener(_onPasswordChanged);
   }
@@ -78,33 +81,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
       }
     }
-  }
-
-  Widget _buildCheckItem(bool isValid, String text) {
-    final colors = context.colors;
-    final typography = context.text;
-    return Semantics(
-      checked: isValid,
-      label: text,
-      child: ExcludeSemantics(
-        child: Row(
-          children: [
-            Icon(
-              isValid ? Icons.check_circle : Icons.cancel,
-              color: isValid ? colors.feedbackSuccess : colors.feedbackError,
-              size: 16,
-            ),
-            const Gap4(),
-            Text(
-              text,
-              style: typography.bodySmall.copyWith(
-                color: isValid ? colors.feedbackSuccess : colors.feedbackError,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
@@ -206,30 +182,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      _buildCheckItem(
-                                        passState.hasMinLength,
-                                        l10n.passwordMinLengthRequirement,
+                                      _PasswordCheckItem(
+                                        isValid: passState.hasMinLength,
+                                        text: l10n.passwordMinLengthRequirement,
                                       ),
                                       const Gap4(),
-                                      _buildCheckItem(
-                                        passState.hasUpperCase,
-                                        l10n.passwordUppercaseRequirement,
+                                      _PasswordCheckItem(
+                                        isValid: passState.hasUpperCase,
+                                        text: l10n.passwordUppercaseRequirement,
                                       ),
                                       const Gap4(),
-                                      _buildCheckItem(
-                                        passState.hasLowerCase,
-                                        l10n.passwordLowercaseRequirement,
+                                      _PasswordCheckItem(
+                                        isValid: passState.hasLowerCase,
+                                        text: l10n.passwordLowercaseRequirement,
                                       ),
                                       const Gap4(),
-                                      _buildCheckItem(
-                                        passState.hasNumber,
-                                        l10n.passwordNumberRequirement,
+                                      _PasswordCheckItem(
+                                        isValid: passState.hasNumber,
+                                        text: l10n.passwordNumberRequirement,
                                       ),
                                       const Gap4(),
-                                      _buildCheckItem(
-                                        passState.passwordsMatch &&
+                                      _PasswordCheckItem(
+                                        isValid: passState.passwordsMatch &&
                                             !passState.isConfirmEmpty,
-                                        l10n.passwordsMatchRequirement,
+                                        text: l10n.passwordsMatchRequirement,
                                       ),
                                     ],
                                   );
@@ -299,6 +275,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _PasswordCheckItem extends StatelessWidget {
+  final bool isValid;
+  final String text;
+
+  const _PasswordCheckItem({
+    required this.isValid,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final typography = context.text;
+
+    return Semantics(
+      checked: isValid,
+      label: text,
+      child: ExcludeSemantics(
+        child: Row(
+          children: [
+            Icon(
+              isValid ? Icons.check_circle : Icons.cancel,
+              color: isValid ? colors.feedbackSuccess : colors.feedbackError,
+              size: 16,
+            ),
+            const Gap4(),
+            Text(
+              text,
+              style: typography.bodySmall.copyWith(
+                color: isValid ? colors.feedbackSuccess : colors.feedbackError,
+              ),
+            ),
+          ],
         ),
       ),
     );

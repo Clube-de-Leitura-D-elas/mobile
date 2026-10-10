@@ -4,10 +4,16 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 
 class GroupActions extends StatelessWidget {
-  const GroupActions({super.key, this.whatsappUrl, this.onOpenWhatsApp});
+  const GroupActions({
+    super.key,
+    this.whatsappUrl,
+    this.onOpenWhatsApp,
+    this.onRecommendBook,
+  });
 
   final String? whatsappUrl;
   final Future<bool> Function(Uri url)? onOpenWhatsApp;
+  final VoidCallback? onRecommendBook;
 
   bool get _hasWhatsAppUrl =>
       whatsappUrl != null && whatsappUrl!.trim().isNotEmpty;
@@ -62,7 +68,7 @@ class GroupActions extends StatelessWidget {
           AppButton.primary(
             label: l10n.groupRecommendBookButton,
             size: AppButtonSize.sm,
-            onPressed: () {},
+            onPressed: onRecommendBook,
           ),
         ];
 

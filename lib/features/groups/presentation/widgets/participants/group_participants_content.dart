@@ -26,7 +26,7 @@ class GroupParticipantsContent extends StatelessWidget {
           onRetry: context.read<GroupParticipantsCubit>().retry,
         ),
         GroupParticipantsEmpty() => const _GroupParticipantsEmptyView(),
-        GroupParticipantsLoaded(:final participants) => GroupParticipantsList(
+        GroupParticipantsLoaded(:final participants) => _GroupParticipantsList(
           participants: participants,
         ),
       },
@@ -34,10 +34,10 @@ class GroupParticipantsContent extends StatelessWidget {
   }
 }
 
-class GroupParticipantsList extends StatelessWidget {
+class _GroupParticipantsList extends StatelessWidget {
   final List<GroupParticipantEntity> participants;
 
-  const GroupParticipantsList({super.key, required this.participants});
+  const _GroupParticipantsList({required this.participants});
 
   @override
   Widget build(BuildContext context) {

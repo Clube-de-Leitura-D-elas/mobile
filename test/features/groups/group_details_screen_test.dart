@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 void main() {

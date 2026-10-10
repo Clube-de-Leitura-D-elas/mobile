@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/presentation/widgets/participants/participant_avatar_placeholder.dart';
 
 /// Circular participant photo with a placeholder when there is no photo or
 /// the image fails to load. Decorative: the name next to it carries meaning.
@@ -34,20 +34,6 @@ class ParticipantAvatar extends StatelessWidget {
                 ),
         ),
       ),
-    );
-  }
-}
-
-class ParticipantAvatarPlaceholder extends StatelessWidget {
-  const ParticipantAvatarPlaceholder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return ColoredBox(
-      color: colors.surfaceSunken,
-      child: Icon(Icons.person_outline, color: colors.textMuted, size: 28),
     );
   }
 }
