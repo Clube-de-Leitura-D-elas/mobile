@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_avatar.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_info_row.dart';
+import 'package:mobile/features/groups/presentation/widgets/app_meeting_response_buttons.dart';
 
 class AppGroupCard extends StatelessWidget {
   final String groupId;
@@ -18,9 +23,6 @@ class AppGroupCard extends StatelessWidget {
   final bool expanded;
   final VoidCallback? onTap;
   final VoidCallback? onToggleExpanded;
-  final VoidCallback? onConfirmPresence;
-  final VoidCallback? onDeclinePresence;
-  final bool showPresenceActions;
 
   const AppGroupCard({
     super.key,
@@ -33,9 +35,6 @@ class AppGroupCard extends StatelessWidget {
     this.expanded = true,
     this.onTap,
     this.onToggleExpanded,
-    this.onConfirmPresence,
-    this.onDeclinePresence,
-    this.showPresenceActions = true,
   });
 
   @override
@@ -73,10 +72,14 @@ class AppGroupCard extends StatelessWidget {
               SizedBox(height: spacing.s8),
               _MeetingDetailsGrid(meeting: meeting),
               SizedBox(height: spacing.s16),
-              if (showPresenceActions)
-                _MeetingActionButtons(
-                  onConfirmPresence: onConfirmPresence,
-                  onDeclinePresence: onDeclinePresence,
+              if (meeting.id != null)
+                BlocProvider(
+                  create: (context) => MeetingInvitationCubit(
+                    groupRepository: serviceLocator<GroupRepository>(),
+                    meetingId: meeting.id!,
+                    initialStatus: meeting.invitationStatus,
+                  ),
+                  child: const AppMeetingResponseButtons(),
                 ),
             ],
           ],
@@ -228,40 +231,4 @@ String _formatMeetingDate(String value) {
   if (date == null) return value;
 
   return DateFormat('dd/MM/yyyy', 'pt_BR').format(date.toLocal());
-}
-
-class _MeetingActionButtons extends StatelessWidget {
-  final VoidCallback? onConfirmPresence;
-  final VoidCallback? onDeclinePresence;
-
-  const _MeetingActionButtons({
-    required this.onConfirmPresence,
-    required this.onDeclinePresence,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.spacing;
-    final l10n = context.l10n;
-
-    return Row(
-      children: [
-        Expanded(
-          child: AppButton.secondary(
-            size: AppButtonSize.sm,
-            label: l10n.groupDeclineMeetingButton,
-            onPressed: onDeclinePresence ?? () {},
-          ),
-        ),
-        SizedBox(width: spacing.s8),
-        Expanded(
-          child: AppButton.primary(
-            size: AppButtonSize.sm,
-            label: l10n.groupConfirmMeetingButton,
-            onPressed: onConfirmPresence ?? () {},
-          ),
-        ),
-      ],
-    );
-  }
 }

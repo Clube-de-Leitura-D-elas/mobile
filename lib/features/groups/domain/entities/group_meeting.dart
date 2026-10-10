@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-
-enum MeetingPresenceResponse { present, absent }
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 
 class GroupMeeting extends Equatable {
   final String? id;
@@ -9,6 +8,7 @@ class GroupMeeting extends Equatable {
   final String date;
   final String location;
   final String? bookCoverUrl;
+  final MeetingInvitationStatus invitationStatus;
 
   const GroupMeeting({
     this.id,
@@ -17,6 +17,7 @@ class GroupMeeting extends Equatable {
     required this.date,
     required this.location,
     this.bookCoverUrl,
+    this.invitationStatus = MeetingInvitationStatus.pending,
   });
 
   @override

@@ -1,5 +1,6 @@
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 
 class GroupModel extends GroupEntity {
   const GroupModel({
@@ -64,6 +65,7 @@ class GroupModel extends GroupEntity {
     final bookTitle = json['book_title'];
     final date = json['date'];
     final location = json['location'];
+    final invitationStatus = json['invitation_status'];
 
     if (id is! String ||
         hostName is! String ||
@@ -79,6 +81,7 @@ class GroupModel extends GroupEntity {
       bookTitle: bookTitle,
       date: date,
       location: location,
+      invitationStatus: _parseInvitationStatus(invitationStatus),
     );
   }
 
@@ -100,5 +103,13 @@ class GroupModel extends GroupEntity {
       nextMeeting: nextMeeting,
       hasPendingResponse: hasPendingResponse,
     );
+  }
+
+  static MeetingInvitationStatus _parseInvitationStatus(dynamic value) {
+    return switch (value) {
+      'CONFIRMED' => MeetingInvitationStatus.confirmed,
+      'DECLINED' => MeetingInvitationStatus.declined,
+      _ => MeetingInvitationStatus.pending,
+    };
   }
 }

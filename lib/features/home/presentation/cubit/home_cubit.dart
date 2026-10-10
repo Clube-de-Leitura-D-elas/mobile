@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/groups/domain/repository/group_repository.dart';
-import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -56,11 +57,11 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(searchQuery: query));
   }
 
-  Future<void> setMeetingPresence(
+  Future<void> setMeetingInvitationResponse(
     String meetingId,
-    MeetingPresenceResponse response,
+    MeetingInvitationStatus response,
   ) async {
-    final result = await groupRepository.setMeetingPresence(
+    final result = await groupRepository.setMeetingInvitationResponse(
       meetingId,
       response,
     );
