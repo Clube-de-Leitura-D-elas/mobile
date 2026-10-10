@@ -115,7 +115,6 @@ class _GroupCardItem extends StatelessWidget {
       nextMeeting: group.nextMeeting,
       expanded: isExpanded,
       onToggleExpanded: onToggle,
-      showPresenceActions: group.hasPendingResponse,
     );
   }
 }

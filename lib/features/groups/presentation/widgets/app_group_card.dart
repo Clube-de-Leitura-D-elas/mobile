@@ -23,7 +23,6 @@ class AppGroupCard extends StatelessWidget {
   final bool expanded;
   final VoidCallback? onTap;
   final VoidCallback? onToggleExpanded;
-  final bool showPresenceActions;
 
   const AppGroupCard({
     super.key,
@@ -36,7 +35,6 @@ class AppGroupCard extends StatelessWidget {
     this.expanded = true,
     this.onTap,
     this.onToggleExpanded,
-    this.showPresenceActions = true,
   });
 
   @override
@@ -74,7 +72,7 @@ class AppGroupCard extends StatelessWidget {
               SizedBox(height: spacing.s8),
               _MeetingDetailsGrid(meeting: meeting),
               SizedBox(height: spacing.s16),
-              if (showPresenceActions && meeting.id != null)
+              if (meeting.id != null)
                 BlocProvider(
                   create: (context) => MeetingInvitationCubit(
                     groupRepository: serviceLocator<GroupRepository>(),
