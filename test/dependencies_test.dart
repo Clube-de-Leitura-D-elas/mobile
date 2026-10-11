@@ -14,8 +14,8 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
-import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -34,6 +34,7 @@ void main() {
   setUp(() async {
     dotenv.testLoad(fileInput: 'BASE_URL=http://localhost:8080');
     GoogleSignInPlatform.instance = MockGoogleSignInPlatform();
+    GoogleSignInPlatform.instance = MockGoogleSignInPlatform();
     await serviceLocator.reset();
   });
 
@@ -48,6 +49,9 @@ void main() {
         url: 'http://localhost:54321',
         publishableKey: 'test-key',
         accessToken: () async => 'test-token',
+        authOptions: const FlutterAuthClientOptions(
+          localStorage: EmptyLocalStorage(),
+        ),
         debug: false,
       );
 
