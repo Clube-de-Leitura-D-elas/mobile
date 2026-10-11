@@ -142,4 +142,32 @@ void main() {
       ).called(1);
     },
   );
+
+  testWidgets('Exibe erro e permite tentar novamente a resposta que falhou', (
+    tester,
+  ) async {
+    const failureMessage = 'Não foi possível atualizar sua resposta.';
+    when(() => mockCubit.state).thenReturn(
+      const MeetingInvitationError(
+        MeetingInvitationStatus.pending,
+        failureMessage,
+        MeetingInvitationStatus.confirmed,
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final BuildContext context = tester.element(
+      find.byType(AppMeetingResponseButtons),
+    );
+    final l10n = AppLocalizations.of(context);
+
+    expect(find.text(failureMessage), findsOneWidget);
+    await tester.tap(find.text(l10n.groupMeetingRsvpRetryAction));
+
+    verify(
+      () => mockCubit.respond(MeetingInvitationStatus.confirmed),
+    ).called(1);
+  });
 }

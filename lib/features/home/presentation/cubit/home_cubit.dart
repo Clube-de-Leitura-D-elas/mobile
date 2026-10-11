@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
 import 'home_state.dart';
@@ -55,28 +54,5 @@ class HomeCubit extends Cubit<HomeState> {
 
   void updateSearch(String query) {
     emit(state.copyWith(searchQuery: query));
-  }
-
-  Future<void> setMeetingInvitationResponse(
-    String meetingId,
-    MeetingInvitationStatus response,
-  ) async {
-    final result = await groupRepository.setMeetingInvitationResponse(
-      meetingId,
-      response,
-    );
-    if (isClosed) return;
-
-    switch (result) {
-      case Failure(:final failure):
-        emit(
-          state.copyWith(
-            status: HomeStatus.error,
-            errorMessage: failure.message,
-          ),
-        );
-      case Success():
-        await loadGroups();
-    }
   }
 }

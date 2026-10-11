@@ -273,6 +273,39 @@ void main() {
       },
     );
 
+    testWidgets('Atualiza a Home após responder presença com sucesso', (
+      tester,
+    ) async {
+      var responseUpdated = false;
+      when(
+        () => repository.setMeetingInvitationResponse(any(), any()),
+      ).thenAnswer((_) async => const Success(null));
+
+      await tester.pumpWidget(
+        _wrap(
+          AppGroupCard(
+            groupId: 'group-1',
+            groupName: 'Grupo 1',
+            participantsCount: 32,
+            cityState: 'Porto Alegre, RS',
+            nextMeeting: const GroupMeeting(
+              id: 'meeting-1',
+              hostName: 'Roberta',
+              bookTitle: 'Pequeno príncipe',
+              date: '2026-08-29T19:00:00Z',
+              location: 'Z Café TECNOPUC',
+            ),
+            onMeetingResponseSuccess: () => responseUpdated = true,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Confirmar presença'));
+      await tester.pumpAndSettle();
+
+      expect(responseUpdated, isTrue);
+    });
+
     testWidgets('Triggers onTap when the card is tapped', (tester) async {
       var tapped = false;
 

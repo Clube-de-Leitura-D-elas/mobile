@@ -61,6 +61,7 @@ class _HomeContent extends StatelessWidget {
           isExpanded: state.isGroupExpanded,
           onToggleExpanded: cubit.toggleCardExpansion,
           onRetry: cubit.loadGroups,
+          onMeetingResponseSuccess: cubit.loadGroups,
         ),
       ],
     );

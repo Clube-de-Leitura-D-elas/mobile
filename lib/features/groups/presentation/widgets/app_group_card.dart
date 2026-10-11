@@ -23,6 +23,7 @@ class AppGroupCard extends StatelessWidget {
   final bool expanded;
   final VoidCallback? onTap;
   final VoidCallback? onToggleExpanded;
+  final VoidCallback? onMeetingResponseSuccess;
 
   const AppGroupCard({
     super.key,
@@ -35,6 +36,7 @@ class AppGroupCard extends StatelessWidget {
     this.expanded = true,
     this.onTap,
     this.onToggleExpanded,
+    this.onMeetingResponseSuccess,
   });
 
   @override
@@ -79,7 +81,9 @@ class AppGroupCard extends StatelessWidget {
                     meetingId: meeting.id!,
                     initialStatus: meeting.invitationStatus,
                   ),
-                  child: const AppMeetingResponseButtons(),
+                  child: AppMeetingResponseButtons(
+                    onResponseSuccess: onMeetingResponseSuccess,
+                  ),
                 ),
             ],
           ],

@@ -12,6 +12,7 @@ class HomeGroupsList extends StatelessWidget {
   final bool Function(String groupId) isExpanded;
   final ValueChanged<String> onToggleExpanded;
   final VoidCallback onRetry;
+  final VoidCallback onMeetingResponseSuccess;
 
   const HomeGroupsList({
     super.key,
@@ -21,6 +22,7 @@ class HomeGroupsList extends StatelessWidget {
     required this.isExpanded,
     required this.onToggleExpanded,
     required this.onRetry,
+    required this.onMeetingResponseSuccess,
   });
 
   @override
@@ -57,6 +59,7 @@ class HomeGroupsList extends StatelessWidget {
           group: groups[index],
           isExpanded: isExpanded(groups[index].id),
           onToggle: () => onToggleExpanded(groups[index].id),
+          onMeetingResponseSuccess: onMeetingResponseSuccess,
         ),
       ),
     );
@@ -96,11 +99,13 @@ class _GroupCardItem extends StatelessWidget {
   final GroupEntity group;
   final bool isExpanded;
   final VoidCallback onToggle;
+  final VoidCallback onMeetingResponseSuccess;
 
   const _GroupCardItem({
     required this.group,
     required this.isExpanded,
     required this.onToggle,
+    required this.onMeetingResponseSuccess,
   });
 
   @override
@@ -115,6 +120,7 @@ class _GroupCardItem extends StatelessWidget {
       nextMeeting: group.nextMeeting,
       expanded: isExpanded,
       onToggleExpanded: onToggle,
+      onMeetingResponseSuccess: onMeetingResponseSuccess,
     );
   }
 }
