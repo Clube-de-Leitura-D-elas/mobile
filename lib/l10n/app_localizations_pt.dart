@@ -236,6 +236,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupConfirmMeetingButton => 'Confirmar presença';
 
   @override
+  String get groupMeetingConfirmedLabel => 'Presença confirmada';
+
+  @override
+  String get groupMeetingDeclinedLabel => 'Ausência confirmada';
+
+  @override
+  String get groupMeetingRsvpRetryAction => 'Tentar novamente';
+
+  @override
   String get groupEventHistoryTitle => 'Histórico de eventos';
 
   @override

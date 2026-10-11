@@ -42,12 +42,12 @@ class GroupEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        number,
-        participantsCount,
-        cityState,
-        photoUrl,
-        nextMeeting,
-        hasPendingResponse,
-      ];
+    id,
+    number,
+    participantsCount,
+    cityState,
+    photoUrl,
+    nextMeeting,
+    hasPendingResponse,
+  ];
 }
