@@ -602,8 +602,7 @@
     "groupNextEventNoLocation": "Sem localização",
     "@groupNextEventNoLocation": {
       "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
-    }
-  },
+    },
   "filterAnswered": "Respondidos",
   "@filterAnswered": {
     "description": "Chip de filtro Respondidos"
