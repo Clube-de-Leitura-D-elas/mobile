@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_cover.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_info_card.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_section.dart';
@@ -34,6 +36,33 @@ class MeetingDetailsScreen extends StatelessWidget {
               padding: EdgeInsets.all(spacing.s24),
               child: MeetingInfoCard(meeting: meeting, title: title),
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: spacing.s24),
+              child: AppButton.secondary(
+                label: 'Ver lista de participantes',
+                onPressed: () {
+                  final meetingDate = meeting.date;
+                  final isFuture =
+                      meetingDate != null &&
+                      meetingDate.isAfter(DateTime.now());
+
+                  context.push(
+                    '${GroupRoutes.meetingAttendance}?meeting_id=${meeting.id}',
+                    extra: {
+                      'meetingName': title,
+                      'formattedDate': meetingDate != null
+                          ? '${meetingDate.day.toString().padLeft(2, '0')}/${meetingDate.month.toString().padLeft(2, '0')}/${meetingDate.year}'
+                          : '',
+                      'isFutureMeeting': isFuture,
+                      'hasAttendanceRegistered':
+                          !isFuture, // Se já passou, assume-se que pode ter registro; ajuste se houver outro campo específico na entity
+                    },
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: spacing.s16),
+            SizedBox(height: spacing.s16),
             Padding(
               padding: EdgeInsets.fromLTRB(
                 spacing.s24,
