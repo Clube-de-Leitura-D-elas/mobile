@@ -9,17 +9,13 @@ import 'package:mobile/features/groups/presentation/pages/meeting_attendance_scr
 class MeetingAttendancePage extends StatelessWidget {
   final String meetingId;
   final String meetingName;
-  final bool isFutureMeeting;
   final String formattedDate;
-  final bool hasAttendanceRegistered;
 
   const MeetingAttendancePage({
     super.key,
     required this.meetingId,
     required this.meetingName,
     required this.formattedDate,
-    required this.isFutureMeeting,
-    required this.hasAttendanceRegistered,
   });
 
   @override
@@ -68,8 +64,6 @@ class MeetingAttendancePage extends StatelessWidget {
               MeetingAttendanceScreen(
                 meetingName: meetingName,
                 formattedDate: formattedDate,
-                isFutureMeeting: isFutureMeeting,
-                hasAttendanceRegistered: hasAttendanceRegistered,
                 participants: participants,
               ),
             _ => const SizedBox.shrink(),

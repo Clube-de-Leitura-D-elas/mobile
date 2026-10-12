@@ -7,15 +7,8 @@ import 'package:mobile/features/groups/presentation/widgets/app_participant_avat
 
 class AppParticipantAttendanceCard extends StatelessWidget {
   final MeetingAttendanceEntity participant;
-  final bool isFutureMeeting;
-  final bool hasAttendanceRegistered;
 
-  const AppParticipantAttendanceCard({
-    super.key,
-    required this.participant,
-    required this.isFutureMeeting,
-    required this.hasAttendanceRegistered,
-  });
+  const AppParticipantAttendanceCard({super.key, required this.participant});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +36,6 @@ class AppParticipantAttendanceCard extends StatelessWidget {
                 Wrap(
                   spacing: spacing.s8,
                   runSpacing: spacing.s4,
-
                   children: [
                     AppTag(
                       label: _invitationLabel(participant.invitationStatus),

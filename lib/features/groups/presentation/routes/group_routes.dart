@@ -93,9 +93,6 @@ abstract class GroupRoutes {
             meetingId: meetingId,
             meetingName: extra?['meetingName'] as String? ?? '',
             formattedDate: extra?['formattedDate'] as String? ?? '',
-            isFutureMeeting: extra?['isFutureMeeting'] as bool? ?? false,
-            hasAttendanceRegistered:
-                extra?['hasAttendanceRegistered'] as bool? ?? false,
           ),
         );
       },

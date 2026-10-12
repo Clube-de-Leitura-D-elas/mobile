@@ -40,22 +40,19 @@ class MeetingDetailsScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: spacing.s24),
               child: AppButton.secondary(
                 label: 'Ver lista de participantes',
+
                 onPressed: () {
                   final meetingDate = meeting.date;
-                  final isFuture =
-                      meetingDate != null &&
-                      meetingDate.isAfter(DateTime.now());
 
                   context.push(
                     '${GroupRoutes.meetingAttendance}?meeting_id=${meeting.id}',
                     extra: {
                       'meetingName': title,
                       'formattedDate': meetingDate != null
-                          ? '${meetingDate.day.toString().padLeft(2, '0')}/${meetingDate.month.toString().padLeft(2, '0')}/${meetingDate.year}'
+                          ? '${meetingDate.day.toString().padLeft(2, '0')}/'
+                                '${meetingDate.month.toString().padLeft(2, '0')}/'
+                                '${meetingDate.year}'
                           : '',
-                      'isFutureMeeting': isFuture,
-                      'hasAttendanceRegistered':
-                          !isFuture, // Se já passou, assume-se que pode ter registro; ajuste se houver outro campo específico na entity
                     },
                   );
                 },
