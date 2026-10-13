@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
-import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -133,5 +135,101 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Tentar novamente'), findsOneWidget);
+  });
+
+  testWidgets('navigates to the selected tab from the home screen', (
+    tester,
+  ) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Success(<GroupEntity>[]));
+
+    final cubit = HomeCubit(groupRepository: repository);
+    addTearDown(cubit.close);
+
+    final router = GoRouter(
+      initialLocation: QuickAccessRoutes.home,
+      routes: [
+        GoRoute(
+          path: QuickAccessRoutes.home,
+          builder: (context, state) =>
+              BlocProvider.value(value: cubit, child: const HomeScreen()),
+        ),
+        ...QuickAccessRoutes.routes,
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(router.routeInformationProvider.value.uri.path, '/home');
+
+    await tester.tap(find.bySemanticsLabel('Perfil'));
+    await tester.pumpAndSettle();
+
+    expect(router.routeInformationProvider.value.uri.path, '/profile');
+    expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
+  });
+
+  testWidgets('returns to the home tab from a placeholder screen', (
+    tester,
+  ) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Success(<GroupEntity>[]));
+
+    final cubit = HomeCubit(groupRepository: repository);
+    addTearDown(cubit.close);
+
+    final router = GoRouter(
+      initialLocation: '/profile',
+      routes: [
+        GoRoute(
+          path: QuickAccessRoutes.home,
+          builder: (context, state) =>
+              BlocProvider.value(value: cubit, child: const HomeScreen()),
+        ),
+        ...QuickAccessRoutes.routes,
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(router.routeInformationProvider.value.uri.path, '/profile');
+
+    await tester.tap(find.bySemanticsLabel('Início'));
+    await tester.pumpAndSettle();
+
+    expect(router.routeInformationProvider.value.uri.path, '/home');
+    expect(find.byType(HomeScreen), findsOneWidget);
   });
 }

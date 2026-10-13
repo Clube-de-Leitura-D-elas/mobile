@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 
 abstract class QuickAccessRoutes {
   static const String home = '/home';
@@ -40,24 +41,5 @@ extension QuickAccessNavigation on BuildContext {
     if (index == currentIndex) return;
     final item = QuickAccessItem.values[index];
     GoRouter.of(this).go(QuickAccessRoutes.pathFor(item));
-  }
-}
-
-class QuickAccessPlaceholderScreen extends StatelessWidget {
-  final QuickAccessItem item;
-
-  const QuickAccessPlaceholderScreen({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.bgDefault,
-      body: const SizedBox.shrink(),
-      bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: item.index,
-        onItemSelected: (index) =>
-            context.goToQuickAccessTab(index, currentIndex: item.index),
-      ),
-    );
   }
 }
