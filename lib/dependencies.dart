@@ -19,6 +19,7 @@ import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.da
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
@@ -64,6 +65,9 @@ class DependenciesContainer {
 
     serviceLocator.registerLazySingleton<GroupRepository>(
       _createGroupRepository,
+    );
+    serviceLocator.registerFactory(
+      () => MeetingPresenceCubit(repository: serviceLocator()),
     );
     serviceLocator.registerFactory<GroupDetailsCubit>(
       () =>

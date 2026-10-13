@@ -50,6 +50,30 @@ class MeetingNotFoundFailure extends GroupFailure {
   const MeetingNotFoundFailure({super.message = 'Encontro não encontrado.'});
 }
 
+class MeetingAttendanceFailure extends GroupFailure {
+  const MeetingAttendanceFailure({
+    super.message = 'Não foi possível carregar a lista de presença.',
+  });
+}
+
+class MeetingPresenceFailure extends GroupFailure {
+  const MeetingPresenceFailure({
+    super.message = 'Não foi possível registrar a presença. Tente novamente.',
+  });
+}
+
+class MeetingPresenceForbiddenFailure extends GroupFailure {
+  const MeetingPresenceForbiddenFailure({
+    super.message = 'Você não tem permissão para registrar a presença.',
+  });
+}
+
+class MeetingPresenceAlreadyRegisteredFailure extends GroupFailure {
+  const MeetingPresenceAlreadyRegisteredFailure({
+    super.message = 'A presença deste encontro já foi registrada.',
+  });
+}
+
 class GroupNextEventFailure extends GroupFailure {
   const GroupNextEventFailure({
     super.message =

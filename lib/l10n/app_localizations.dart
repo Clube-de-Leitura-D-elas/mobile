@@ -523,6 +523,30 @@ abstract class AppLocalizations {
   /// **'Tentar novamente'**
   String get groupMeetingRsvpRetryAction;
 
+  /// Título do cabeçalho da tela de registro de presença do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de Presença'**
+  String get meetingPresenceHeader;
+
+  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela confirmou que iria ao encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Nonfirmou'**
+  String get invitationConfirmed;
+
+  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela não respondeu à confirmação de presença
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondeu'**
+  String get invitationNoResponse;
+
+  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela recusou a confirmação de presença
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusou'**
+  String get invitationDeclined;
+
   /// Título da tela de histórico de eventos do grupo
   ///
   /// In pt, this message translates to:

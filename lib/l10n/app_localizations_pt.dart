@@ -245,6 +245,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupMeetingRsvpRetryAction => 'Tentar novamente';
 
   @override
+  String get meetingPresenceHeader => 'Lista de Presença';
+
+  @override
+  String get invitationConfirmed => 'Nonfirmou';
+
+  @override
+  String get invitationNoResponse => 'Não respondeu';
+
+  @override
+  String get invitationDeclined => 'Recusou';
+
+  @override
   String get groupEventHistoryTitle => 'Histórico de eventos';
 
   @override

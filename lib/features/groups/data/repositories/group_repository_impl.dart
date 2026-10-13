@@ -7,6 +7,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_attendee_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_details_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_photo_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
@@ -14,6 +15,7 @@ import 'package:mobile/features/groups/domain/entities/group_details_entity.dart
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
@@ -152,6 +154,50 @@ class GroupRepositoryImpl implements GroupRepository {
 
     return switch (result) {
       Failure() => const Failure(GroupMeetingInvitationResponseFailure()),
+      Success() => const Success(null),
+    };
+  }
+
+  @override
+  Future<Result<List<MeetingAttendee>, GroupFailure>> getMeetingAttendance(
+    String meetingId,
+  ) async {
+    final result = await supabaseService
+        .invokeFunction<List<MeetingAttendeeModel>>(
+          functionName: 'get-meeting-attendance?meeting_id=$meetingId',
+          decoder: MeetingAttendeeModel.listFromEnvelope,
+        );
+
+    switch (result) {
+      case Failure():
+        return const Failure(MeetingAttendanceFailure());
+      case Success(:final data):
+        final attendees = data.data;
+        if (attendees == null) return const Failure(MeetingAttendanceFailure());
+        return Success(
+          attendees.map((a) => a.toDomain()).toList(growable: false),
+        );
+    }
+  }
+
+  @override
+  Future<Result<void, GroupFailure>> setMeetingPresence(
+    String meetingId,
+    List<String> presentUserIds,
+  ) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'set-meeting-presence',
+      body: {'meeting_id': meetingId, 'present_group_user_ids': presentUserIds},
+    );
+
+    return switch (result) {
+      Failure(:final failure) when failure.code == '403' => const Failure(
+        MeetingPresenceForbiddenFailure(),
+      ),
+      Failure(:final failure) when failure.code == '409' => const Failure(
+        MeetingPresenceAlreadyRegisteredFailure(),
+      ),
+      Failure() => const Failure(MeetingPresenceFailure()),
       Success() => const Success(null),
     };
   }

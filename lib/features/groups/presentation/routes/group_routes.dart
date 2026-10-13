@@ -2,21 +2,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
-import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_page.dart';
-import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
+import 'package:mobile/features/groups/presentation/pages/meeting_presence_page.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 
 abstract class GroupRoutes {
   static const groupDetails = GroupRoutePaths.groupDetails;
   static const eventHistory = GroupRoutePaths.eventHistory;
   static const meetingDetails = GroupRoutePaths.meetingDetails;
+  static const meetingPresence = GroupRoutePaths.meetingPresence;
 
   static List<RouteBase> get routes => [
     GoRoute(
@@ -67,8 +70,7 @@ abstract class GroupRoutes {
                     serviceLocator<GroupDetailsCubit>()..load(groupId),
               ),
               BlocProvider(
-                create: (_) =>
-                    serviceLocator<NextEventCubit>()..load(groupId),
+                create: (_) => serviceLocator<NextEventCubit>()..load(groupId),
               ),
               BlocProvider(
                 create: (_) =>
@@ -76,6 +78,21 @@ abstract class GroupRoutes {
               ),
             ],
             child: GroupDetailsPage(groupId: groupId),
+          ),
+        );
+      },
+    ),
+    // dentro de routes:
+    GoRoute(
+      path: meetingPresence,
+      pageBuilder: (context, state) {
+        final meetingId = state.uri.queryParameters['meeting_id'] ?? '';
+        return AppPageTransitions.createPushPage(
+          state: state,
+          child: BlocProvider(
+            create: (_) =>
+                serviceLocator<MeetingPresenceCubit>()..load(meetingId),
+            child: const MeetingPresencePage(),
           ),
         );
       },
