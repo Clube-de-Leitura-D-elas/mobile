@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 
 void main() {
   group('QuickAccessRoutes', () {
