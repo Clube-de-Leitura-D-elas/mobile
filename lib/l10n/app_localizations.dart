@@ -661,6 +661,12 @@ abstract class AppLocalizations {
   /// **'Não foi possível carregar as fotos do encontro.'**
   String get meetingPhotosLoadError;
 
+  /// Encontro sem fotos, para quem não pode adicionar (nem coordenadora nem anfitriã)
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há fotos deste encontro.'**
+  String get meetingPhotosEmpty;
+
   /// Exibido quando o acesso à galeria foi negado
   ///
   /// In pt, this message translates to:

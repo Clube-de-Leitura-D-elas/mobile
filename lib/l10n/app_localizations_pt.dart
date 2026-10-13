@@ -342,6 +342,9 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível carregar as fotos do encontro.';
 
   @override
+  String get meetingPhotosEmpty => 'Ainda não há fotos deste encontro.';
+
+  @override
   String get meetingPhotosAccessDenied =>
       'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
 
@@ -817,6 +820,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get meetingPhotosLoadError =>
       'Não foi possível carregar as fotos do encontro.';
+
+  @override
+  String get meetingPhotosEmpty => 'Ainda não há fotos deste encontro.';
 
   @override
   String get meetingPhotosAccessDenied =>
