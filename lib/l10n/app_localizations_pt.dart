@@ -198,6 +198,24 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String get meetingEditAction => 'Editar encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
   String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
 
   @override
@@ -253,24 +271,6 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get meetingDetailsHeader => 'Detalhes do encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String meetingDetailsTitle(int number) {
-    return 'Encontro $number';
-  }
-
-  @override
   String get meetingDetailsTitleFallback => 'Encontro';
 
   @override
@@ -284,16 +284,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String meetingDetailsBook(String title) {
     return 'Livro: $title';
-  }
-
-  @override
-  String meetingDetailsHost(String name) {
-    return 'Anfitriã: $name';
-  }
-
-  @override
-  String meetingDetailsLocation(String location) {
-    return 'Local: $location';
   }
 
   @override
@@ -353,6 +343,16 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String meetingCoverSemanticLabel(String title) {
     return 'Foto do $title';
+  }
+
+  @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
   }
 
   @override
@@ -744,6 +744,24 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String get meetingEditAction => 'Editar encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
   String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
 
   @override
@@ -781,24 +799,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get meetingDetailsHeader => 'Detalhes do encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String meetingDetailsTitle(int number) {
-    return 'Encontro $number';
-  }
-
-  @override
   String get meetingDetailsTitleFallback => 'Encontro';
 
   @override
@@ -812,16 +812,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String meetingDetailsBook(String title) {
     return 'Livro: $title';
-  }
-
-  @override
-  String meetingDetailsHost(String name) {
-    return 'Anfitriã: $name';
-  }
-
-  @override
-  String meetingDetailsLocation(String location) {
-    return 'Local: $location';
   }
 
   @override
@@ -881,6 +871,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String meetingCoverSemanticLabel(String title) {
     return 'Foto do $title';
+  }
+
+  @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
   }
 
   @override

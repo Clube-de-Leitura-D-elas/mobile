@@ -439,6 +439,36 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
   String groupParticipantsCount(int count);
 
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
+  /// Mensagem exibida quando o grupo não possui encontros realizados
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo ainda não realizou encontros.'**
+  String get groupEventHistoryEmpty;
+
+  /// Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do encontro'**
+  String get meetingDetailsHeader;
+
+  /// No description provided for @meetingEditAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar encontro'**
+  String get meetingEditAction;
+
+  /// Título do encontro com a numeração sequencial no grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro {number}'**
+  String meetingDetailsTitle(int number);
+
   /// Botão para abrir o grupo no WhatsApp
   ///
   /// In pt, this message translates to:
@@ -535,36 +565,6 @@ abstract class AppLocalizations {
   /// **'Anfitriã: {hostName}'**
   String groupEventHistoryHost(String hostName);
 
-  /// Link para abrir os detalhes de um evento realizado
-  ///
-  /// In pt, this message translates to:
-  /// **'Confira mais detalhes'**
-  String get groupEventHistoryDetailsLink;
-
-  /// Mensagem exibida quando o grupo não possui encontros realizados
-  ///
-  /// In pt, this message translates to:
-  /// **'Este grupo ainda não realizou encontros.'**
-  String get groupEventHistoryEmpty;
-
-  /// Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro
-  ///
-  /// In pt, this message translates to:
-  /// **'Detalhes do encontro'**
-  String get meetingDetailsHeader;
-
-  /// No description provided for @meetingEditAction.
-  ///
-  /// In pt, this message translates to:
-  /// **'Editar encontro'**
-  String get meetingEditAction;
-
-  /// Título do encontro com a numeração sequencial no grupo
-  ///
-  /// In pt, this message translates to:
-  /// **'Encontro {number}'**
-  String meetingDetailsTitle(int number);
-
   /// Título do encontro quando ele ainda não tem numeração (sem data)
   ///
   /// In pt, this message translates to:
@@ -588,18 +588,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Livro: {title}'**
   String meetingDetailsBook(String title);
-
-  /// Anfitriã do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Anfitriã: {name}'**
-  String meetingDetailsHost(String name);
-
-  /// Nome e endereço do local do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Local: {location}'**
-  String meetingDetailsLocation(String location);
 
   /// Exibido quando o encontro ainda não tem local
   ///
@@ -714,6 +702,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Foto do {title}'**
   String meetingCoverSemanticLabel(String title);
+
+  /// Anfitriã do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String meetingDetailsHost(String name);
+
+  /// Nome e endereço do local do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Local: {location}'**
+  String meetingDetailsLocation(String location);
 
   /// Título da seção de fotos na tela de detalhes do encontro
   ///

@@ -242,7 +242,6 @@
       "placeholders": {
         "count": {
           "type": "int"
-        }
       }
     }
   },
@@ -259,12 +258,14 @@
   "@meetingDetailsHeader": {
     "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
   },
-  "meetingDetailsTitle": "Encontro {number}",
-  "@meetingDetailsTitle": {
-    "description": "Título do encontro com a numeração sequencial no grupo",
-    "placeholders": {
-      "number": {
-        "type": "int"
+    "meetingDetailsTitle": "Encontro {number}",
+    "@meetingDetailsTitle": {
+      "description": "Título do encontro com a numeração sequencial no grupo",
+      "placeholders": {
+        "number": {
+          "type": "int"
+        }
+      }
     },
     "groupOpenWhatsAppButton": "Abrir Whatsapp",
     "@groupOpenWhatsAppButton": {
@@ -386,8 +387,7 @@
           "type": "String"
         }
       }
-    }
-  },
+    },
   "meetingDetailsLocationUndefined": "Local: a definir",
   "@meetingDetailsLocationUndefined": {
     "description": "Exibido quando o encontro ainda não tem local"
@@ -418,7 +418,9 @@
     "placeholders": {
       "title": {
         "type": "String"
-    },
+      }
+    }
+  },
     "meetingDetailsHost": "Anfitriã: {name}",
     "@meetingDetailsHost": {
       "description": "Anfitriã do encontro",
@@ -649,7 +651,9 @@
     "@groupDetailsNumberLabel": {
       "description": "Título da tela de detalhes do grupo, com o número do grupo",
       "placeholders": {
-        "number": { "type": "int" }
+        "number": {
+          "type": "int"
+        }
       }
     },
     "groupNextEventNoLocation": "Sem localização",
