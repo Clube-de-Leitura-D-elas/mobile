@@ -4,7 +4,7 @@ import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
-enum TagVariant { primary, neutral }
+enum TagVariant { primary, neutral, success, error, warning }
 
 class AppTag extends StatelessWidget {
   final String label;
@@ -24,6 +24,12 @@ class AppTag extends StatelessWidget {
         return colors.surfaceBrandSoft;
       case TagVariant.neutral:
         return colors.surfaceSunken;
+      case TagVariant.success:
+        return colors.feedbackSuccessLight;
+      case TagVariant.error:
+        return colors.feedbackErrorLight;
+      case TagVariant.warning:
+        return colors.feedbackWarningLight;
     }
   }
 
@@ -33,6 +39,12 @@ class AppTag extends StatelessWidget {
         return colors.textBrand;
       case TagVariant.neutral:
         return colors.textDefault;
+      case TagVariant.success:
+        return colors.feedbackSuccessDark;
+      case TagVariant.error:
+        return colors.feedbackErrorDark;
+      case TagVariant.warning:
+        return colors.feedbackWarningDark;
     }
   }
 
@@ -43,6 +55,7 @@ class AppTag extends StatelessWidget {
     final textStyle = context.typography.labelTag.copyWith(
       color: _getTextColor(colors),
     );
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: spacing.s16,
@@ -60,7 +73,7 @@ class AppTag extends StatelessWidget {
               data: IconThemeData(color: _getTextColor(colors), size: 16),
               child: icon!,
             ),
-            const SizedBox(width: 4),
+            SizedBox(width: spacing.s4),
           ],
           Text(label, style: textStyle),
         ],
