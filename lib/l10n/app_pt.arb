@@ -962,6 +962,7 @@
       "count": {
         "type": "int"
       }
+    }
     },
     "groupNextEventNoLocation": "Sem localização",
     "@groupNextEventNoLocation": {
