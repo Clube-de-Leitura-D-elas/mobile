@@ -5,6 +5,7 @@ import 'package:mobile/features/groups/domain/entities/group_details_entity.dart
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
@@ -44,4 +45,7 @@ abstract class GroupRepository {
     Uint8List bytes,
     String contentType,
   );
+
+  Future<Result<List<MeetingAttendanceEntity>, GroupFailure>>
+  getMeetingAttendance(String meetingId);
 }

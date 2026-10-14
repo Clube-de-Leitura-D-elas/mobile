@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
-
-import 'home_state.dart';
+import 'package:mobile/features/home/presentation/cubit/home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GroupRepository groupRepository;
@@ -49,7 +48,8 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void selectFilter(int index) {
-    emit(state.copyWith(selectedFilterIndex: index));
+    if (index < 0 || index >= HomeFilter.values.length) return;
+    emit(state.copyWith(filter: HomeFilter.values[index]));
   }
 
   void updateSearch(String query) {

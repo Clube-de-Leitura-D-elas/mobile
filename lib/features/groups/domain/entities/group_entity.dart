@@ -40,6 +40,8 @@ class GroupEntity extends Equatable {
     );
   }
 
+  bool get hasAnsweredNextMeeting => nextMeeting != null && !hasPendingResponse;
+
   @override
   List<Object?> get props => [
     id,
