@@ -12,6 +12,7 @@ import 'package:mobile/features/groups/domain/entities/group_details_entity.dart
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -353,5 +354,84 @@ void main() {
       result,
       const Failure<NextEventEntity?, GroupFailure>(GroupNextEventFailure()),
     );
+  });
+
+  group('setMeetingInvitationResponse', () {
+    test('envia o status CONFIRMED corretamente e retorna Success', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'set-meeting-attendance-response',
+          body: {'meeting_id': 'meeting-1', 'invitation_status': 'CONFIRMED'},
+        ),
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<void>(data: null)),
+      );
+
+      final result = await repository.setMeetingInvitationResponse(
+        'meeting-1',
+        MeetingInvitationStatus.confirmed,
+      );
+
+      expect(result, const Success<void, GroupFailure>(null));
+    });
+
+    test('envia o status DECLINED corretamente e retorna Success', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'set-meeting-attendance-response',
+          body: {'meeting_id': 'meeting-1', 'invitation_status': 'DECLINED'},
+        ),
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<void>(data: null)),
+      );
+
+      final result = await repository.setMeetingInvitationResponse(
+        'meeting-1',
+        MeetingInvitationStatus.declined,
+      );
+
+      expect(result, const Success<void, GroupFailure>(null));
+    });
+
+    test('envia o status PENDING corretamente e retorna Success', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'set-meeting-attendance-response',
+          body: {'meeting_id': 'meeting-1', 'invitation_status': 'PENDING'},
+        ),
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<void>(data: null)),
+      );
+
+      final result = await repository.setMeetingInvitationResponse(
+        'meeting-1',
+        MeetingInvitationStatus.pending,
+      );
+
+      expect(result, const Success<void, GroupFailure>(null));
+    });
+
+    test('retorna GroupMeetingInvitationResponseFailure ao falhar', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'set-meeting-attendance-response',
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(FunctionSupabaseFailure(message: 'Error')),
+      );
+
+      final result = await repository.setMeetingInvitationResponse(
+        'meeting-1',
+        MeetingInvitationStatus.confirmed,
+      );
+
+      expect(
+        result,
+        const Failure<void, GroupFailure>(
+          GroupMeetingInvitationResponseFailure(),
+        ),
+      );
+    });
   });
 }
