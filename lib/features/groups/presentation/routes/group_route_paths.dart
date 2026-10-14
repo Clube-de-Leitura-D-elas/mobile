@@ -3,4 +3,5 @@ abstract final class GroupRoutePaths {
   static const eventHistory = '/detalhes/encontros';
   static const meetingDetails = '/detalhes/encontro';
   static const meetingAttendance = '/groups/meeting/attendance';
+  static const meetingEdit = '/detalhes/encontro/editar';
 }
