@@ -242,6 +242,28 @@
       "placeholders": {
         "count": {
           "type": "int"
+      }
+    }
+  },
+  "groupEventHistoryDetailsLink": "Confira mais detalhes",
+  "@groupEventHistoryDetailsLink": {
+    "description": "Link para abrir os detalhes de um evento realizado"
+  },
+  "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
+  "@groupEventHistoryEmpty": {
+    "description": "Mensagem exibida quando o grupo não possui encontros realizados"
+  },
+  "meetingDetailsHeader": "Detalhes do encontro",
+  "meetingEditAction": "Editar encontro",
+  "@meetingDetailsHeader": {
+    "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
+  },
+    "meetingDetailsTitle": "Encontro {number}",
+    "@meetingDetailsTitle": {
+      "description": "Título do encontro com a numeração sequencial no grupo",
+      "placeholders": {
+        "number": {
+          "type": "int"
         }
       }
     },
@@ -366,6 +388,39 @@
         }
       }
     },
+  "meetingDetailsLocationUndefined": "Local: a definir",
+  "@meetingDetailsLocationUndefined": {
+    "description": "Exibido quando o encontro ainda não tem local"
+  },
+  "meetingDetailsDescriptionTitle": "Descrição",
+  "@meetingDetailsDescriptionTitle": {
+    "description": "Título da seção de descrição do encontro"
+  },
+  "meetingEditTitle": "Editar encontro",
+  "meetingEditDateLabel": "Data",
+  "meetingEditDateHint": "DD/MM/AAAA",
+  "meetingEditDateError": "Informe a data.",
+  "meetingEditTimeLabel": "Horário",
+  "meetingEditTimeHint": "HH:MM",
+  "meetingEditTimeError": "Informe o horário.",
+  "meetingEditLocationLabel": "Local",
+  "meetingEditLocationHint": "Nome do local",
+  "meetingEditLocationError": "Informe o local.",
+  "meetingEditDescriptionLabel": "Observações",
+  "meetingEditDescriptionHint": "Adicione observações (opcional)",
+  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
+  "meetingEditBookLabel": "Livro da vez",
+  "meetingEditHostLabel": "Anfitriã",
+  "meetingEditSaveButton": "Salvar alterações",
+  "meetingCoverSemanticLabel": "Foto do {title}",
+  "@meetingCoverSemanticLabel": {
+    "description": "Rótulo de acessibilidade da foto de capa do encontro",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
     "meetingDetailsHost": "Anfitriã: {name}",
     "@meetingDetailsHost": {
       "description": "Anfitriã do encontro",
@@ -596,7 +651,9 @@
     "@groupDetailsNumberLabel": {
       "description": "Título da tela de detalhes do grupo, com o número do grupo",
       "placeholders": {
-        "number": { "type": "int" }
+        "number": {
+          "type": "int"
+        }
       }
     },
     "groupNextEventNoLocation": "Sem localização",
