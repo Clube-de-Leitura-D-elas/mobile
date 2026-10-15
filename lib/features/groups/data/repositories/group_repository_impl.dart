@@ -10,6 +10,7 @@ import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_attendance_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_details_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_photo_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_photos_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
@@ -19,6 +20,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
@@ -159,14 +161,13 @@ class GroupRepositoryImpl implements GroupRepository {
   }
 
   @override
-  Future<Result<List<MeetingPhotoEntity>, GroupFailure>> getMeetingPhotos(
+  Future<Result<MeetingPhotosEntity, GroupFailure>> getMeetingPhotos(
     String meetingId,
   ) async {
-    final result = await supabaseService
-        .invokeFunction<List<MeetingPhotoModel>>(
-          functionName: 'get-meeting-photos?meeting_id=$meetingId',
-          decoder: MeetingPhotoModel.listFromEnvelope,
-        );
+    final result = await supabaseService.invokeFunction<MeetingPhotosModel>(
+      functionName: 'get-meeting-photos?meeting_id=$meetingId',
+      decoder: MeetingPhotosModel.fromEnvelope,
+    );
 
     switch (result) {
       case Failure():
@@ -174,9 +175,7 @@ class GroupRepositoryImpl implements GroupRepository {
       case Success(:final data):
         final photos = data.data;
         if (photos == null) return const Failure(MeetingPhotosFailure());
-        return Success(
-          photos.map((photo) => photo.toDomain()).toList(growable: false),
-        );
+        return Success(photos.toDomain());
     }
   }
 

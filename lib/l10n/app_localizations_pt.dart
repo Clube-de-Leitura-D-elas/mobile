@@ -158,6 +158,177 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
+  }
+
+  @override
+  String get meetingDetailsLocationUndefined => 'Local: a definir';
+
+  @override
+  String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
+  }
+
+  @override
+  String get meetingPhotosTitle => 'Fotos do encontro';
+
+  @override
+  String get meetingPhotosAdd => 'Adicionar fotos';
+
+  @override
+  String get meetingPhotosAddMoreSemanticLabel => 'Adicionar mais fotos';
+
+  @override
+  String meetingPhotoSemanticLabel(int index) {
+    return 'Foto $index do encontro';
+  }
+
+  @override
+  String meetingPhotosUploading(int current, int total) {
+    return 'Enviando $current de $total';
+  }
+
+  @override
+  String meetingPhotosUploadFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Não foi possível enviar $count fotos.',
+      one: 'Não foi possível enviar 1 foto.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meetingPhotosRetryButton => 'Tentar novamente';
+
+  @override
+  String get meetingPhotosLoadError =>
+      'Não foi possível carregar as fotos do encontro.';
+
+  @override
+  String get meetingPhotosEmpty => 'Ainda não há fotos deste encontro.';
+
+  @override
+  String get meetingPhotosAccessDenied =>
+      'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
+
+  @override
+  String get meetingPhotosPickerFailed =>
+      'Não foi possível abrir a galeria. Tente novamente.';
+
+  @override
+  String meetingPhotosSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.',
+      one: '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String meetingPhotosLimitReached(int max) {
+    return 'Este encontro já tem o máximo de $max fotos.';
+  }
+
+  @override
+  String meetingPhotosRejected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fotos foram recusadas e não podem ser enviadas.',
+      one: '1 foto foi recusada e não pode ser enviada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
+
+  @override
   String get genreRomance => 'Romance';
 
   @override
@@ -341,22 +512,6 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String meetingDetailsHost(String name) {
-    return 'Anfitriã: $name';
-  }
-
-  @override
-  String meetingDetailsLocation(String location) {
-    return 'Local: $location';
-  }
-
-  @override
-  String get meetingDetailsLocationUndefined => 'Local: a definir';
-
-  @override
-  String get meetingDetailsDescriptionTitle => 'Descrição';
-
-  @override
   String get meetingEditTitle => 'Editar encontro';
 
   @override
@@ -405,159 +560,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingEditSaveButton => 'Salvar alterações';
 
   @override
-  String meetingCoverSemanticLabel(String title) {
-    return 'Foto do $title';
-  }
-
-  @override
-  String get meetingPhotosTitle => 'Fotos do encontro';
-
-  @override
-  String get meetingPhotosAdd => 'Adicionar fotos';
-
-  @override
-  String get meetingPhotosAddMoreSemanticLabel => 'Adicionar mais fotos';
-
-  @override
-  String meetingPhotoSemanticLabel(int index) {
-    return 'Foto $index do encontro';
-  }
-
-  @override
-  String meetingPhotosUploading(int current, int total) {
-    return 'Enviando $current de $total';
-  }
-
-  @override
-  String meetingPhotosUploadFailed(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Não foi possível enviar $count fotos.',
-      one: 'Não foi possível enviar 1 foto.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get meetingPhotosRetryButton => 'Tentar novamente';
-
-  @override
-  String get meetingPhotosLoadError =>
-      'Não foi possível carregar as fotos do encontro.';
-
-  @override
-  String get meetingPhotosAccessDenied =>
-      'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
-
-  @override
-  String get meetingPhotosPickerFailed =>
-      'Não foi possível abrir a galeria. Tente novamente.';
-
-  @override
-  String meetingPhotosSkipped(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          '$count fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.',
-      one: '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String meetingPhotosLimitReached(int max) {
-    return 'Este encontro já tem o máximo de $max fotos.';
-  }
-
-  @override
-  String meetingPhotosRejected(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count fotos foram recusadas e não podem ser enviadas.',
-      one: '1 foto foi recusada e não pode ser enviada.',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String get onboardingReviewTitle => 'Verifique os seus dados';
-
-  @override
-  String get onboardingNameLabel => 'Nome';
-
-  @override
-  String get onboardingEmailLabel => 'E-mail';
-
-  @override
-  String get onboardingPhoneLabel => 'Celular';
-
-  @override
-  String get onboardingBirthDateLabel => 'Data de nascimento';
-
-  @override
-  String get onboardingCityLabel => 'Cidade';
-
-  @override
-  String get onboardingCityHint => 'Selecione uma cidade';
-
-  @override
-  String get onboardingRegionLabel => 'Região';
-
-  @override
-  String get onboardingJobLabel => 'Qual sua profissão?';
-
-  @override
-  String get onboardingEducationLabel => 'Nível de escolaridade';
-
-  @override
-  String get onboardingEducationHint => 'Selecione um nível';
-
-  @override
-  String get onboardingOtherGroupLabel =>
-      'Você participa de outro grupo de leitura?';
-
-  @override
-  String get onboardingVolunteerLabel =>
-      'Teria interesse em se voluntariar como coordenadora de grupo?';
-
-  @override
-  String get onboardingBookIndicationLabel =>
-      'Qual livro de ficção você indicaria para a leitura coletiva?';
-
-  @override
-  String get onboardingBookIndicationHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingExpectationsLabel =>
-      'O que você espera ao participar do Clube de Leitura D\'Elas?';
-
-  @override
-  String get onboardingExpectationsHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingBackButton => 'Voltar';
-
-  @override
-  String get onboardingContinueButton => 'Continuar';
-
-  @override
-  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
-
-  @override
-  String get onboardingWelcomeSubtitle =>
-      'Sua inscrição foi realizada com sucesso!';
-
-  @override
-  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
-
-  @override
-  String get selectOptionHint => 'Selecione';
 
   @override
   String get rafflePreparationTitle => 'Realizar sorteio';
@@ -739,6 +742,177 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
+  }
+
+  @override
+  String get meetingDetailsLocationUndefined => 'Local: a definir';
+
+  @override
+  String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
+  }
+
+  @override
+  String get meetingPhotosTitle => 'Fotos do encontro';
+
+  @override
+  String get meetingPhotosAdd => 'Adicionar fotos';
+
+  @override
+  String get meetingPhotosAddMoreSemanticLabel => 'Adicionar mais fotos';
+
+  @override
+  String meetingPhotoSemanticLabel(int index) {
+    return 'Foto $index do encontro';
+  }
+
+  @override
+  String meetingPhotosUploading(int current, int total) {
+    return 'Enviando $current de $total';
+  }
+
+  @override
+  String meetingPhotosUploadFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Não foi possível enviar $count fotos.',
+      one: 'Não foi possível enviar 1 foto.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meetingPhotosRetryButton => 'Tentar novamente';
+
+  @override
+  String get meetingPhotosLoadError =>
+      'Não foi possível carregar as fotos do encontro.';
+
+  @override
+  String get meetingPhotosEmpty => 'Ainda não há fotos deste encontro.';
+
+  @override
+  String get meetingPhotosAccessDenied =>
+      'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
+
+  @override
+  String get meetingPhotosPickerFailed =>
+      'Não foi possível abrir a galeria. Tente novamente.';
+
+  @override
+  String meetingPhotosSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.',
+      one: '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String meetingPhotosLimitReached(int max) {
+    return 'Este encontro já tem o máximo de $max fotos.';
+  }
+
+  @override
+  String meetingPhotosRejected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fotos foram recusadas e não podem ser enviadas.',
+      one: '1 foto foi recusada e não pode ser enviada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
+
+  @override
   String get myGroupsTitle => 'Meus grupos';
 
   @override
@@ -871,22 +1045,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String meetingDetailsHost(String name) {
-    return 'Anfitriã: $name';
-  }
-
-  @override
-  String meetingDetailsLocation(String location) {
-    return 'Local: $location';
-  }
-
-  @override
-  String get meetingDetailsLocationUndefined => 'Local: a definir';
-
-  @override
-  String get meetingDetailsDescriptionTitle => 'Descrição';
-
-  @override
   String get meetingEditTitle => 'Editar encontro';
 
   @override
@@ -935,159 +1093,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get meetingEditSaveButton => 'Salvar alterações';
 
   @override
-  String meetingCoverSemanticLabel(String title) {
-    return 'Foto do $title';
-  }
-
-  @override
-  String get meetingPhotosTitle => 'Fotos do encontro';
-
-  @override
-  String get meetingPhotosAdd => 'Adicionar fotos';
-
-  @override
-  String get meetingPhotosAddMoreSemanticLabel => 'Adicionar mais fotos';
-
-  @override
-  String meetingPhotoSemanticLabel(int index) {
-    return 'Foto $index do encontro';
-  }
-
-  @override
-  String meetingPhotosUploading(int current, int total) {
-    return 'Enviando $current de $total';
-  }
-
-  @override
-  String meetingPhotosUploadFailed(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Não foi possível enviar $count fotos.',
-      one: 'Não foi possível enviar 1 foto.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get meetingPhotosRetryButton => 'Tentar novamente';
-
-  @override
-  String get meetingPhotosLoadError =>
-      'Não foi possível carregar as fotos do encontro.';
-
-  @override
-  String get meetingPhotosAccessDenied =>
-      'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.';
-
-  @override
-  String get meetingPhotosPickerFailed =>
-      'Não foi possível abrir a galeria. Tente novamente.';
-
-  @override
-  String meetingPhotosSkipped(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          '$count fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.',
-      one: '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String meetingPhotosLimitReached(int max) {
-    return 'Este encontro já tem o máximo de $max fotos.';
-  }
-
-  @override
-  String meetingPhotosRejected(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count fotos foram recusadas e não podem ser enviadas.',
-      one: '1 foto foi recusada e não pode ser enviada.',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String get onboardingReviewTitle => 'Verifique os seus dados';
-
-  @override
-  String get onboardingNameLabel => 'Nome';
-
-  @override
-  String get onboardingEmailLabel => 'E-mail';
-
-  @override
-  String get onboardingPhoneLabel => 'Celular';
-
-  @override
-  String get onboardingBirthDateLabel => 'Data de nascimento';
-
-  @override
-  String get onboardingCityLabel => 'Cidade';
-
-  @override
-  String get onboardingCityHint => 'Selecione uma cidade';
-
-  @override
-  String get onboardingRegionLabel => 'Região';
-
-  @override
-  String get onboardingJobLabel => 'Qual sua profissão?';
-
-  @override
-  String get onboardingEducationLabel => 'Nível de escolaridade';
-
-  @override
-  String get onboardingEducationHint => 'Selecione um nível';
-
-  @override
-  String get onboardingOtherGroupLabel =>
-      'Você participa de outro grupo de leitura?';
-
-  @override
-  String get onboardingVolunteerLabel =>
-      'Teria interesse em se voluntariar como coordenadora de grupo?';
-
-  @override
-  String get onboardingBookIndicationLabel =>
-      'Qual livro de ficção você indicaria para a leitura coletiva?';
-
-  @override
-  String get onboardingBookIndicationHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingExpectationsLabel =>
-      'O que você espera ao participar do Clube de Leitura D\'Elas?';
-
-  @override
-  String get onboardingExpectationsHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingBackButton => 'Voltar';
-
-  @override
-  String get onboardingContinueButton => 'Continuar';
-
-  @override
-  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
-
-  @override
-  String get onboardingWelcomeSubtitle =>
-      'Sua inscrição foi realizada com sucesso!';
-
-  @override
-  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
-
-  @override
-  String get selectOptionHint => 'Selecione';
 
   @override
   String get rafflePreparationTitle => 'Realizar sorteio';

@@ -385,6 +385,258 @@ abstract class AppLocalizations {
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
 
+  /// Anfitriã do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String meetingDetailsHost(String name);
+
+  /// Nome e endereço do local do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Local: {location}'**
+  String meetingDetailsLocation(String location);
+
+  /// Exibido quando o encontro ainda não tem local
+  ///
+  /// In pt, this message translates to:
+  /// **'Local: a definir'**
+  String get meetingDetailsLocationUndefined;
+
+  /// Título da seção de descrição do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição'**
+  String get meetingDetailsDescriptionTitle;
+
+  /// Rótulo de acessibilidade da foto de capa do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto do {title}'**
+  String meetingCoverSemanticLabel(String title);
+
+  /// Título da seção de fotos na tela de detalhes do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Fotos do encontro'**
+  String get meetingPhotosTitle;
+
+  /// Texto do estado vazio da seção de fotos; ao tocar abre a galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar fotos'**
+  String get meetingPhotosAdd;
+
+  /// Rótulo de acessibilidade do botão de adicionar fotos ao final da galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar mais fotos'**
+  String get meetingPhotosAddMoreSemanticLabel;
+
+  /// Rótulo de acessibilidade de uma miniatura da galeria do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto {index} do encontro'**
+  String meetingPhotoSemanticLabel(int index);
+
+  /// Progresso do envio das fotos selecionadas
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviando {current} de {total}'**
+  String meetingPhotosUploading(int current, int total);
+
+  /// Mensagem exibida quando parte das fotos não foi enviada
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{Não foi possível enviar 1 foto.} other{Não foi possível enviar {count} fotos.}}'**
+  String meetingPhotosUploadFailed(int count);
+
+  /// Ação para reenviar só as fotos que falharam ou recarregar a galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get meetingPhotosRetryButton;
+
+  /// Erro ao carregar a galeria do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar as fotos do encontro.'**
+  String get meetingPhotosLoadError;
+
+  /// Encontro sem fotos, para quem não pode adicionar (nem coordenadora nem anfitriã)
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há fotos deste encontro.'**
+  String get meetingPhotosEmpty;
+
+  /// Exibido quando o acesso à galeria foi negado
+  ///
+  /// In pt, this message translates to:
+  /// **'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.'**
+  String get meetingPhotosAccessDenied;
+
+  /// Exibido quando a galeria não abre por um erro inesperado
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir a galeria. Tente novamente.'**
+  String get meetingPhotosPickerFailed;
+
+  /// Fotos descartadas antes do envio por tamanho ou formato
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.} other{{count} fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.}}'**
+  String meetingPhotosSkipped(int count);
+
+  /// Exibido quando o encontro atingiu o limite de fotos
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro já tem o máximo de {max} fotos.'**
+  String meetingPhotosLimitReached(int max);
+
+  /// Fotos recusadas pelo servidor (sem nova tentativa), por exemplo tamanho, formato ou permissão
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}'**
+  String meetingPhotosRejected(int count);
+
+  /// Título principal do review de cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique os seus dados'**
+  String get onboardingReviewTitle;
+
+  /// Rótulo do campo Nome
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome'**
+  String get onboardingNameLabel;
+
+  /// Rótulo e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get onboardingEmailLabel;
+
+  /// Rótulo celular
+  ///
+  /// In pt, this message translates to:
+  /// **'Celular'**
+  String get onboardingPhoneLabel;
+
+  /// Rótulo data de nascimento
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de nascimento'**
+  String get onboardingBirthDateLabel;
+
+  /// Rótulo cidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Cidade'**
+  String get onboardingCityLabel;
+
+  /// Dica de seleção de cidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma cidade'**
+  String get onboardingCityHint;
+
+  /// Rótulo região
+  ///
+  /// In pt, this message translates to:
+  /// **'Região'**
+  String get onboardingRegionLabel;
+
+  /// Rótulo profissão
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual sua profissão?'**
+  String get onboardingJobLabel;
+
+  /// Rótulo escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Nível de escolaridade'**
+  String get onboardingEducationLabel;
+
+  /// Dica seleção de escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um nível'**
+  String get onboardingEducationHint;
+
+  /// Rótulo grupo de leitura
+  ///
+  /// In pt, this message translates to:
+  /// **'Você participa de outro grupo de leitura?'**
+  String get onboardingOtherGroupLabel;
+
+  /// Rótulo voluntariado
+  ///
+  /// In pt, this message translates to:
+  /// **'Teria interesse em se voluntariar como coordenadora de grupo?'**
+  String get onboardingVolunteerLabel;
+
+  /// Rótulo indicação livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual livro de ficção você indicaria para a leitura coletiva?'**
+  String get onboardingBookIndicationLabel;
+
+  /// Dica indicação livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get onboardingBookIndicationHint;
+
+  /// Rótulo expectativas
+  ///
+  /// In pt, this message translates to:
+  /// **'O que você espera ao participar do Clube de Leitura D\'Elas?'**
+  String get onboardingExpectationsLabel;
+
+  /// Dica expectativas
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get onboardingExpectationsHint;
+
+  /// Botão voltar
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get onboardingBackButton;
+
+  /// Botão continuar
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get onboardingContinueButton;
+
+  /// Título de boas-vindas
+  ///
+  /// In pt, this message translates to:
+  /// **'Seja Bem-vinda'**
+  String get onboardingWelcomeTitle;
+
+  /// Subtítulo de boas-vindas
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua inscrição foi realizada com sucesso!'**
+  String get onboardingWelcomeSubtitle;
+
+  /// Botão concluir onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Pronta para o próximo capítulo?'**
+  String get onboardingWelcomeButton;
+
+  /// Dica genérica de seleção em dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione'**
+  String get selectOptionHint;
+
   /// Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown
   ///
   /// In pt, this message translates to:
@@ -685,30 +937,6 @@ abstract class AppLocalizations {
   /// **'Livro: {title}'**
   String meetingDetailsBook(String title);
 
-  /// Anfitriã do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Anfitriã: {name}'**
-  String meetingDetailsHost(String name);
-
-  /// Nome e endereço do local do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Local: {location}'**
-  String meetingDetailsLocation(String location);
-
-  /// Exibido quando o encontro ainda não tem local
-  ///
-  /// In pt, this message translates to:
-  /// **'Local: a definir'**
-  String get meetingDetailsLocationUndefined;
-
-  /// Título da seção de descrição do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Descrição'**
-  String get meetingDetailsDescriptionTitle;
-
   /// No description provided for @meetingEditTitle.
   ///
   /// In pt, this message translates to:
@@ -805,233 +1033,11 @@ abstract class AppLocalizations {
   /// **'Salvar alterações'**
   String get meetingEditSaveButton;
 
-  /// Rótulo de acessibilidade da foto de capa do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Foto do {title}'**
-  String meetingCoverSemanticLabel(String title);
-
-  /// Título da seção de fotos na tela de detalhes do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Fotos do encontro'**
-  String get meetingPhotosTitle;
-
-  /// Texto do estado vazio da seção de fotos; ao tocar abre a galeria
-  ///
-  /// In pt, this message translates to:
-  /// **'Adicionar fotos'**
-  String get meetingPhotosAdd;
-
-  /// Rótulo de acessibilidade do botão de adicionar fotos ao final da galeria
-  ///
-  /// In pt, this message translates to:
-  /// **'Adicionar mais fotos'**
-  String get meetingPhotosAddMoreSemanticLabel;
-
-  /// Rótulo de acessibilidade de uma miniatura da galeria do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Foto {index} do encontro'**
-  String meetingPhotoSemanticLabel(int index);
-
-  /// Progresso do envio das fotos selecionadas
-  ///
-  /// In pt, this message translates to:
-  /// **'Enviando {current} de {total}'**
-  String meetingPhotosUploading(int current, int total);
-
-  /// Mensagem exibida quando parte das fotos não foi enviada
-  ///
-  /// In pt, this message translates to:
-  /// **'{count, plural, =1{Não foi possível enviar 1 foto.} other{Não foi possível enviar {count} fotos.}}'**
-  String meetingPhotosUploadFailed(int count);
-
-  /// Ação para reenviar só as fotos que falharam ou recarregar a galeria
-  ///
-  /// In pt, this message translates to:
-  /// **'Tentar novamente'**
-  String get meetingPhotosRetryButton;
-
-  /// Erro ao carregar a galeria do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Não foi possível carregar as fotos do encontro.'**
-  String get meetingPhotosLoadError;
-
-  /// Exibido quando o acesso à galeria foi negado
-  ///
-  /// In pt, this message translates to:
-  /// **'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.'**
-  String get meetingPhotosAccessDenied;
-
-  /// Exibido quando a galeria não abre por um erro inesperado
-  ///
-  /// In pt, this message translates to:
-  /// **'Não foi possível abrir a galeria. Tente novamente.'**
-  String get meetingPhotosPickerFailed;
-
-  /// Fotos descartadas antes do envio por tamanho ou formato
-  ///
-  /// In pt, this message translates to:
-  /// **'{count, plural, =1{1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.} other{{count} fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.}}'**
-  String meetingPhotosSkipped(int count);
-
-  /// Exibido quando o encontro atingiu o limite de fotos
-  ///
-  /// In pt, this message translates to:
-  /// **'Este encontro já tem o máximo de {max} fotos.'**
-  String meetingPhotosLimitReached(int max);
-
-  /// Fotos recusadas pelo servidor (sem nova tentativa), por exemplo tamanho, formato ou permissão
-  ///
-  /// In pt, this message translates to:
-  /// **'{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}'**
-  String meetingPhotosRejected(int count);
-
   /// No description provided for @meetingEditAction.
   ///
   /// In pt, this message translates to:
   /// **'Editar encontro'**
   String get meetingEditAction;
-
-  /// Título principal do review de cadastro
-  ///
-  /// In pt, this message translates to:
-  /// **'Verifique os seus dados'**
-  String get onboardingReviewTitle;
-
-  /// Rótulo do campo Nome
-  ///
-  /// In pt, this message translates to:
-  /// **'Nome'**
-  String get onboardingNameLabel;
-
-  /// Rótulo e-mail
-  ///
-  /// In pt, this message translates to:
-  /// **'E-mail'**
-  String get onboardingEmailLabel;
-
-  /// Rótulo celular
-  ///
-  /// In pt, this message translates to:
-  /// **'Celular'**
-  String get onboardingPhoneLabel;
-
-  /// Rótulo data de nascimento
-  ///
-  /// In pt, this message translates to:
-  /// **'Data de nascimento'**
-  String get onboardingBirthDateLabel;
-
-  /// Rótulo cidade
-  ///
-  /// In pt, this message translates to:
-  /// **'Cidade'**
-  String get onboardingCityLabel;
-
-  /// Dica de seleção de cidade
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecione uma cidade'**
-  String get onboardingCityHint;
-
-  /// Rótulo região
-  ///
-  /// In pt, this message translates to:
-  /// **'Região'**
-  String get onboardingRegionLabel;
-
-  /// Rótulo profissão
-  ///
-  /// In pt, this message translates to:
-  /// **'Qual sua profissão?'**
-  String get onboardingJobLabel;
-
-  /// Rótulo escolaridade
-  ///
-  /// In pt, this message translates to:
-  /// **'Nível de escolaridade'**
-  String get onboardingEducationLabel;
-
-  /// Dica seleção de escolaridade
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecione um nível'**
-  String get onboardingEducationHint;
-
-  /// Rótulo grupo de leitura
-  ///
-  /// In pt, this message translates to:
-  /// **'Você participa de outro grupo de leitura?'**
-  String get onboardingOtherGroupLabel;
-
-  /// Rótulo voluntariado
-  ///
-  /// In pt, this message translates to:
-  /// **'Teria interesse em se voluntariar como coordenadora de grupo?'**
-  String get onboardingVolunteerLabel;
-
-  /// Rótulo indicação livro
-  ///
-  /// In pt, this message translates to:
-  /// **'Qual livro de ficção você indicaria para a leitura coletiva?'**
-  String get onboardingBookIndicationLabel;
-
-  /// Dica indicação livro
-  ///
-  /// In pt, this message translates to:
-  /// **'Digite sua resposta'**
-  String get onboardingBookIndicationHint;
-
-  /// Rótulo expectativas
-  ///
-  /// In pt, this message translates to:
-  /// **'O que você espera ao participar do Clube de Leitura D\'Elas?'**
-  String get onboardingExpectationsLabel;
-
-  /// Dica expectativas
-  ///
-  /// In pt, this message translates to:
-  /// **'Digite sua resposta'**
-  String get onboardingExpectationsHint;
-
-  /// Botão voltar
-  ///
-  /// In pt, this message translates to:
-  /// **'Voltar'**
-  String get onboardingBackButton;
-
-  /// Botão continuar
-  ///
-  /// In pt, this message translates to:
-  /// **'Continuar'**
-  String get onboardingContinueButton;
-
-  /// Título de boas-vindas
-  ///
-  /// In pt, this message translates to:
-  /// **'Seja Bem-vinda'**
-  String get onboardingWelcomeTitle;
-
-  /// Subtítulo de boas-vindas
-  ///
-  /// In pt, this message translates to:
-  /// **'Sua inscrição foi realizada com sucesso!'**
-  String get onboardingWelcomeSubtitle;
-
-  /// Botão concluir onboarding
-  ///
-  /// In pt, this message translates to:
-  /// **'Pronta para o próximo capítulo?'**
-  String get onboardingWelcomeButton;
-
-  /// Dica genérica de seleção em dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecione'**
-  String get selectOptionHint;
 
   /// Título principal da tela de preparação do sorteio
   ///
