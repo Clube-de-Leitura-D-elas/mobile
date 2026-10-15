@@ -4,6 +4,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_actions.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_cover.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_identity.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_section.dart';
 
 /// Presentation-only shell for the group details feature.
@@ -24,6 +25,7 @@ class GroupDetailsScreen extends StatefulWidget {
     this.nextEventCount,
     this.nextEvent = const GroupNextEvent(),
     this.participantsContent,
+    this.onRecommendBook,
   });
 
   final String name;
@@ -36,6 +38,7 @@ class GroupDetailsScreen extends StatefulWidget {
   final int? nextEventCount;
   final Widget nextEvent;
   final Widget? participantsContent;
+  final VoidCallback? onRecommendBook;
 
   @override
   State<GroupDetailsScreen> createState() => _GroupDetailsScreenState();
@@ -74,7 +77,10 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                     stateCode: widget.stateCode,
                   ),
                   SizedBox(height: spacing.s32),
-                  GroupActions(whatsappUrl: widget.whatsappUrl),
+                  GroupActions(
+                    whatsappUrl: widget.whatsappUrl,
+                    onRecommendBook: widget.onRecommendBook,
+                  ),
                   SizedBox(height: spacing.s24),
                   GroupSection(
                     title: l10n.groupNextEventTitle,

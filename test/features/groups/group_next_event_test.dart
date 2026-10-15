@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 final _transparentPng = base64Decode(

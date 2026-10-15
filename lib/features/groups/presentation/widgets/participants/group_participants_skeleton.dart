@@ -22,7 +22,7 @@ class GroupParticipantsSkeleton extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: context.spacing.s16,
-            children: List.filled(rowCount, const ParticipantSkeletonTile()),
+            children: List.filled(rowCount, const _ParticipantSkeletonTile()),
           ),
         ),
       ),
@@ -30,8 +30,8 @@ class GroupParticipantsSkeleton extends StatelessWidget {
   }
 }
 
-class ParticipantSkeletonTile extends StatelessWidget {
-  const ParticipantSkeletonTile({super.key});
+class _ParticipantSkeletonTile extends StatelessWidget {
+  const _ParticipantSkeletonTile();
 
   @override
   Widget build(BuildContext context) {
