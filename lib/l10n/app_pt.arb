@@ -506,6 +506,10 @@
     "@meetingPhotosLoadError": {
       "description": "Erro ao carregar a galeria do encontro"
     },
+    "meetingPhotosEmpty": "Ainda não há fotos deste encontro.",
+    "@meetingPhotosEmpty": {
+      "description": "Encontro sem fotos, para quem não pode adicionar (nem coordenadora nem anfitriã)"
+    },
     "meetingPhotosAccessDenied": "Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.",
     "@meetingPhotosAccessDenied": {
       "description": "Exibido quando o acesso à galeria foi negado"

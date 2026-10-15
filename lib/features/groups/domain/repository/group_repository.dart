@@ -9,6 +9,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 
 abstract class GroupRepository {
@@ -34,7 +35,7 @@ abstract class GroupRepository {
     MeetingInvitationStatus response,
   );
 
-  Future<Result<List<MeetingPhotoEntity>, GroupFailure>> getMeetingPhotos(
+  Future<Result<MeetingPhotosEntity, GroupFailure>> getMeetingPhotos(
     String meetingId,
   );
 
