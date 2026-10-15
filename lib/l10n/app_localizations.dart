@@ -385,6 +385,102 @@ abstract class AppLocalizations {
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
 
+  /// Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Romance'**
+  String get genreRomance;
+
+  /// Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Fantasia'**
+  String get genreFantasy;
+
+  /// Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Suspense'**
+  String get genreSuspense;
+
+  /// Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Não Ficção'**
+  String get genreNonFiction;
+
+  /// Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um gênero'**
+  String get genreFieldHint;
+
+  /// Título principal da tela de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Meus grupos'**
+  String get myGroupsTitle;
+
+  /// Placeholder do campo de busca de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar grupo'**
+  String get searchGroupPlaceholder;
+
+  /// Chip de filtro Todos
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get filterAll;
+
+  /// Chip de filtro Não respondidos com contagem
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondidos ({count})'**
+  String filterUnanswered(int count);
+
+  /// Chip de filtro Respondidos
+  ///
+  /// In pt, this message translates to:
+  /// **'Respondidos'**
+  String get filterAnswered;
+
+  /// Título exibido quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo'**
+  String get emptyGroupsTitle;
+
+  /// Mensagem detalhada exibida quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
+  String get emptyGroupsMessage;
+
+  /// Mensagem exibida quando a busca por nome não retorna grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo encontrado'**
+  String get emptyGroupsSearch;
+
+  /// Mensagem exibida quando o filtro Não respondidos não tem grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo com resposta pendente'**
+  String get emptyGroupsUnanswered;
+
+  /// Mensagem exibida quando o filtro Respondidos não tem grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não respondeu a nenhum encontro'**
+  String get emptyGroupsAnswered;
+
+  /// Título da tela de detalhes do grupo, com o número do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupDetailsNumberLabel(int number);
+
   /// Título da seção do próximo evento nos detalhes do grupo
   ///
   /// In pt, this message translates to:
@@ -427,6 +523,12 @@ abstract class AppLocalizations {
   /// **'Livro ainda não definido'**
   String get groupNextEventBookUndefined;
 
+  /// Exibido no próximo evento do grupo quando nenhum local foi definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem localização'**
+  String get groupNextEventNoLocation;
+
   /// Título da seção de participantes nos detalhes do grupo
   ///
   /// In pt, this message translates to:
@@ -438,36 +540,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
   String groupParticipantsCount(int count);
-
-  /// Link para abrir os detalhes de um evento realizado
-  ///
-  /// In pt, this message translates to:
-  /// **'Confira mais detalhes'**
-  String get groupEventHistoryDetailsLink;
-
-  /// Mensagem exibida quando o grupo não possui encontros realizados
-  ///
-  /// In pt, this message translates to:
-  /// **'Este grupo ainda não realizou encontros.'**
-  String get groupEventHistoryEmpty;
-
-  /// Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro
-  ///
-  /// In pt, this message translates to:
-  /// **'Detalhes do encontro'**
-  String get meetingDetailsHeader;
-
-  /// No description provided for @meetingEditAction.
-  ///
-  /// In pt, this message translates to:
-  /// **'Editar encontro'**
-  String get meetingEditAction;
-
-  /// Título do encontro com a numeração sequencial no grupo
-  ///
-  /// In pt, this message translates to:
-  /// **'Encontro {number}'**
-  String meetingDetailsTitle(int number);
 
   /// Botão para abrir o grupo no WhatsApp
   ///
@@ -565,6 +637,30 @@ abstract class AppLocalizations {
   /// **'Anfitriã: {hostName}'**
   String groupEventHistoryHost(String hostName);
 
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
+  /// Mensagem exibida quando o grupo não possui encontros realizados
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo ainda não realizou encontros.'**
+  String get groupEventHistoryEmpty;
+
+  /// Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do encontro'**
+  String get meetingDetailsHeader;
+
+  /// Título do encontro com a numeração sequencial no grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro {number}'**
+  String meetingDetailsTitle(int number);
+
   /// Título do encontro quando ele ainda não tem numeração (sem data)
   ///
   /// In pt, this message translates to:
@@ -588,6 +684,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Livro: {title}'**
   String meetingDetailsBook(String title);
+
+  /// Anfitriã do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String meetingDetailsHost(String name);
+
+  /// Nome e endereço do local do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Local: {location}'**
+  String meetingDetailsLocation(String location);
 
   /// Exibido quando o encontro ainda não tem local
   ///
@@ -703,18 +811,6 @@ abstract class AppLocalizations {
   /// **'Foto do {title}'**
   String meetingCoverSemanticLabel(String title);
 
-  /// Anfitriã do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Anfitriã: {name}'**
-  String meetingDetailsHost(String name);
-
-  /// Nome e endereço do local do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Local: {location}'**
-  String meetingDetailsLocation(String location);
-
   /// Título da seção de fotos na tela de detalhes do encontro
   ///
   /// In pt, this message translates to:
@@ -792,6 +888,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}'**
   String meetingPhotosRejected(int count);
+
+  /// No description provided for @meetingEditAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar encontro'**
+  String get meetingEditAction;
 
   /// Título principal do review de cadastro
   ///
@@ -930,108 +1032,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Selecione'**
   String get selectOptionHint;
-
-  /// Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Romance'**
-  String get genreRomance;
-
-  /// Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Fantasia'**
-  String get genreFantasy;
-
-  /// Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Suspense'**
-  String get genreSuspense;
-
-  /// Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Não Ficção'**
-  String get genreNonFiction;
-
-  /// Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecione um gênero'**
-  String get genreFieldHint;
-
-  /// Título principal da tela de grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Meus grupos'**
-  String get myGroupsTitle;
-
-  /// Placeholder do campo de busca de grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Buscar grupo'**
-  String get searchGroupPlaceholder;
-
-  /// Chip de filtro Todos
-  ///
-  /// In pt, this message translates to:
-  /// **'Todos'**
-  String get filterAll;
-
-  /// Chip de filtro Não respondidos com contagem
-  ///
-  /// In pt, this message translates to:
-  /// **'Não respondidos ({count})'**
-  String filterUnanswered(int count);
-
-  /// Chip de filtro Respondidos
-  ///
-  /// In pt, this message translates to:
-  /// **'Respondidos'**
-  String get filterAnswered;
-
-  /// Título exibido quando a lista de grupos está vazia
-  ///
-  /// In pt, this message translates to:
-  /// **'Você ainda não participa de nenhum grupo'**
-  String get emptyGroupsTitle;
-
-  /// Mensagem detalhada exibida quando a lista de grupos está vazia
-  ///
-  /// In pt, this message translates to:
-  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
-  String get emptyGroupsMessage;
-
-  /// Mensagem exibida quando a busca por nome não retorna grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhum grupo encontrado'**
-  String get emptyGroupsSearch;
-
-  /// Mensagem exibida quando o filtro Não respondidos não tem grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhum grupo com resposta pendente'**
-  String get emptyGroupsUnanswered;
-
-  /// Mensagem exibida quando o filtro Respondidos não tem grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Você ainda não respondeu a nenhum encontro'**
-  String get emptyGroupsAnswered;
-
-  /// Título da tela de detalhes do grupo, com o número do grupo
-  ///
-  /// In pt, this message translates to:
-  /// **'Grupo {number}'**
-  String groupDetailsNumberLabel(int number);
-
-  /// Exibido no próximo evento do grupo quando nenhum local foi definido
-  ///
-  /// In pt, this message translates to:
-  /// **'Sem localização'**
-  String get groupNextEventNoLocation;
 
   /// Título principal da tela de preparação do sorteio
   ///

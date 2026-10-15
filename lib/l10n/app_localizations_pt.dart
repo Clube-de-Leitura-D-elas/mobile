@@ -158,6 +158,60 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
+
+  @override
+  String get genreNonFiction => 'Não Ficção';
+
+  @override
+  String get genreFieldHint => 'Selecione um gênero';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String get emptyGroupsSearch => 'Nenhum grupo encontrado';
+
+  @override
+  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
+
+  @override
+  String get emptyGroupsAnswered =>
+      'Você ainda não respondeu a nenhum encontro';
+
+  @override
+  String groupDetailsNumberLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
@@ -183,6 +237,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventBookUndefined => 'Livro ainda não definido';
 
   @override
+  String get groupNextEventNoLocation => 'Sem localização';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -195,24 +252,6 @@ class AppLocalizationsPt extends AppLocalizations {
       zero: 'Nenhum participante',
     );
     return '$_temp0';
-  }
-
-  @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get meetingDetailsHeader => 'Detalhes do encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String meetingDetailsTitle(int number) {
-    return 'Encontro $number';
   }
 
   @override
@@ -271,6 +310,21 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
   String get meetingDetailsTitleFallback => 'Encontro';
 
   @override
@@ -284,6 +338,16 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String meetingDetailsBook(String title) {
     return 'Livro: $title';
+  }
+
+  @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
   }
 
   @override
@@ -343,16 +407,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String meetingCoverSemanticLabel(String title) {
     return 'Foto do $title';
-  }
-
-  @override
-  String meetingDetailsHost(String name) {
-    return 'Anfitriã: $name';
-  }
-
-  @override
-  String meetingDetailsLocation(String location) {
-    return 'Local: $location';
   }
 
   @override
@@ -429,6 +483,9 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get meetingEditAction => 'Editar encontro';
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -501,63 +558,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get selectOptionHint => 'Selecione';
-
-  @override
-  String get genreRomance => 'Romance';
-
-  @override
-  String get genreFantasy => 'Fantasia';
-
-  @override
-  String get genreSuspense => 'Suspense';
-
-  @override
-  String get genreNonFiction => 'Não Ficção';
-
-  @override
-  String get genreFieldHint => 'Selecione um gênero';
-
-  @override
-  String get myGroupsTitle => 'Meus grupos';
-
-  @override
-  String get searchGroupPlaceholder => 'Buscar grupo';
-
-  @override
-  String get filterAll => 'Todos';
-
-  @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
-
-  @override
-  String get filterAnswered => 'Respondidos';
-
-  @override
-  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
-
-  @override
-  String get emptyGroupsMessage =>
-      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
-
-  @override
-  String get emptyGroupsSearch => 'Nenhum grupo encontrado';
-
-  @override
-  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
-
-  @override
-  String get emptyGroupsAnswered =>
-      'Você ainda não respondeu a nenhum encontro';
-
-  @override
-  String groupDetailsNumberLabel(int number) {
-    return 'Grupo $number';
-  }
-
-  @override
-  String get groupNextEventNoLocation => 'Sem localização';
 
   @override
   String get rafflePreparationTitle => 'Realizar sorteio';
@@ -739,6 +739,30 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
@@ -779,24 +803,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get meetingDetailsHeader => 'Detalhes do encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String meetingDetailsTitle(int number) {
-    return 'Encontro $number';
-  }
-
-  @override
   String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
 
   @override
@@ -834,6 +840,21 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
   String get meetingDetailsTitleFallback => 'Encontro';
 
   @override
@@ -847,6 +868,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String meetingDetailsBook(String title) {
     return 'Livro: $title';
+  }
+
+  @override
+  String meetingDetailsHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
   }
 
   @override
@@ -906,16 +937,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String meetingCoverSemanticLabel(String title) {
     return 'Foto do $title';
-  }
-
-  @override
-  String meetingDetailsHost(String name) {
-    return 'Anfitriã: $name';
-  }
-
-  @override
-  String meetingDetailsLocation(String location) {
-    return 'Local: $location';
   }
 
   @override
@@ -992,6 +1013,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String get meetingEditAction => 'Editar encontro';
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -1064,30 +1088,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get selectOptionHint => 'Selecione';
-
-  @override
-  String get myGroupsTitle => 'Meus grupos';
-
-  @override
-  String get searchGroupPlaceholder => 'Buscar grupo';
-
-  @override
-  String get filterAll => 'Todos';
-
-  @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
-
-  @override
-  String get filterAnswered => 'Respondidos';
-
-  @override
-  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
-
-  @override
-  String get emptyGroupsMessage =>
-      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 
   @override
   String get rafflePreparationTitle => 'Realizar sorteio';
