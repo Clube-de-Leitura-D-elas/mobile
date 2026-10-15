@@ -20,7 +20,8 @@ class MeetingPhotosContent extends StatelessWidget {
           previous.status != current.status ||
           previous.photos != current.photos ||
           previous.progress != current.progress ||
-          previous.failedPhotos != current.failedPhotos,
+          previous.failedPhotos != current.failedPhotos ||
+          previous.canAddPhotos != current.canAddPhotos,
       builder: (context, state) => switch (state.status) {
         MeetingPhotosStatus.loading => const Center(
           key: ValueKey('meeting-photos-loading'),
@@ -51,12 +52,22 @@ class _MeetingPhotosLoadedContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (state.photos.isEmpty)
+        if (state.photos.isEmpty && state.canAddPhotos)
           MeetingPhotosEmptyState(onTap: onAdd)
+        else if (state.photos.isEmpty)
+          Text(
+            context.l10n.meetingPhotosEmpty,
+            key: const ValueKey('meeting-photos-empty-read-only'),
+            style: context.typography.bodySmall.copyWith(
+              color: context.colors.textMuted,
+            ),
+          )
         else
           MeetingPhotosGrid(
             photos: state.photos,
-            showAddTile: state.photos.length < MeetingPhotoLimits.perMeeting,
+            showAddTile:
+                state.canAddPhotos &&
+                state.photos.length < MeetingPhotoLimits.perMeeting,
             onAdd: onAdd,
             onReload: cubit.reload,
           ),

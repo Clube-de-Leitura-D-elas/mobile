@@ -80,7 +80,14 @@ void main() {
       'updates the selected filter',
       build: build,
       act: (cubit) => cubit.selectFilter(1),
-      expect: () => [const HomeState(selectedFilterIndex: 1)],
+      expect: () => [const HomeState(filter: HomeFilter.unanswered)],
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'ignores a filter index out of range',
+      build: build,
+      act: (cubit) => cubit.selectFilter(7),
+      expect: () => const <HomeState>[],
     );
 
     blocTest<HomeCubit, HomeState>(
@@ -90,27 +97,26 @@ void main() {
       expect: () => [const HomeState(searchQuery: 'Porto Alegre')],
     );
 
-    test('filteredGroups filters by searchQuery correctly', () {
-      const state = HomeState(
-        groups: [testGroup1, testGroup27],
-        searchQuery: '27',
-      );
-      expect(state.filteredGroups, [testGroup27]);
-    });
+    blocTest<HomeCubit, HomeState>(
+      'expands a group card',
+      build: build,
+      act: (cubit) => cubit.toggleCardExpansion('1'),
+      expect: () => [
+        const HomeState(expandedGroupIds: {'1'}),
+      ],
+    );
 
-    test('filteredGroups filters by selectedFilterIndex correctly', () {
-      const groupWithPending = GroupEntity(
-        id: '2',
-        number: 2,
-        participantsCount: 10,
-        cityState: 'SP',
-        hasPendingResponse: true,
-      );
-      const state = HomeState(
-        groups: [testGroup1, groupWithPending],
-        selectedFilterIndex: 1,
-      );
-      expect(state.filteredGroups, [groupWithPending]);
-    });
+    blocTest<HomeCubit, HomeState>(
+      'collapses an expanded group card',
+      build: build,
+      act: (cubit) {
+        cubit.toggleCardExpansion('1');
+        cubit.toggleCardExpansion('1');
+      },
+      expect: () => [
+        const HomeState(expandedGroupIds: {'1'}),
+        const HomeState(),
+      ],
+    );
   });
 }

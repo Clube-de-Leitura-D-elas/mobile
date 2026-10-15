@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
@@ -7,7 +9,6 @@ import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_state.dart';
 import 'package:mobile/features/home/presentation/widgets/home_groups_list.dart';
 import 'package:mobile/features/home/presentation/widgets/home_header.dart';
-import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserEntity? user;
@@ -31,8 +32,12 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: 0,
-        onItemSelected: onNavigationItemSelected ?? (_) {},
+        currentIndex: QuickAccessItem.home.index,
+        onItemSelected: onNavigationItemSelected ??
+            (index) => context.goToQuickAccessTab(
+                  index,
+                  currentIndex: QuickAccessItem.home.index,
+                ),
       ),
     );
   }
@@ -46,6 +51,10 @@ class _HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<HomeCubit>();
+    final l10n = context.l10n;
+    final visibleGroups = state.filteredGroups(
+      (group) => l10n.groupDetailsNumberLabel(group.number),
+    );
 
     return CustomScrollView(
       physics: const ClampingScrollPhysics(),
@@ -60,7 +69,8 @@ class _HomeContent extends StatelessWidget {
           ),
         ),
         HomeGroupsList(
-          groups: state.filteredGroups,
+          groups: visibleGroups,
+          emptyKind: state.emptyKindFor(visibleGroups),
           isLoading: state.status == HomeStatus.loading,
           errorMessage: state.status == HomeStatus.error
               ? state.errorMessage
@@ -68,14 +78,7 @@ class _HomeContent extends StatelessWidget {
           isExpanded: state.isGroupExpanded,
           onToggleExpanded: cubit.toggleCardExpansion,
           onRetry: cubit.loadGroups,
-          onConfirmPresence: (meetingId) => cubit.setMeetingPresence(
-            meetingId,
-            MeetingPresenceResponse.present,
-          ),
-          onDeclinePresence: (meetingId) => cubit.setMeetingPresence(
-            meetingId,
-            MeetingPresenceResponse.absent,
-          ),
+          onMeetingResponseSuccess: cubit.loadGroups,
         ),
       ],
     );

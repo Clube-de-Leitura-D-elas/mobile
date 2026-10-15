@@ -57,9 +57,9 @@ class GroupNextEventFailure extends GroupFailure {
   });
 }
 
-class GroupMeetingPresenceFailure extends GroupFailure {
-  const GroupMeetingPresenceFailure({
-    super.message = 'Não foi possível atualizar sua presença. Tente novamente.',
+class GroupMeetingInvitationResponseFailure extends GroupFailure {
+  const GroupMeetingInvitationResponseFailure({
+    super.message = 'Não foi possível atualizar sua resposta. Tente novamente.',
   });
 }
 

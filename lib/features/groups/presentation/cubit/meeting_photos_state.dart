@@ -61,6 +61,7 @@ class MeetingPhotosState extends Equatable {
     this.progress,
     this.failedPhotos = const [],
     this.notice,
+    this.canAddPhotos = true,
   });
 
   final MeetingPhotosStatus status;
@@ -68,6 +69,10 @@ class MeetingPhotosState extends Equatable {
   final MeetingPhotosUploadProgress? progress;
   final List<PickedPhoto> failedPhotos;
   final MeetingPhotosNotice? notice;
+
+  /// Coordenadora do grupo ou anfitriã do encontro. Controla se o botão de
+  /// adicionar foto aparece; o envio é validado de novo no backend.
+  final bool canAddPhotos;
 
   bool get isUploading => progress != null;
 
@@ -79,6 +84,7 @@ class MeetingPhotosState extends Equatable {
     List<PickedPhoto>? failedPhotos,
     MeetingPhotosNotice? notice,
     bool clearNotice = false,
+    bool? canAddPhotos,
   }) {
     return MeetingPhotosState(
       status: status ?? this.status,
@@ -86,9 +92,17 @@ class MeetingPhotosState extends Equatable {
       progress: clearProgress ? null : progress ?? this.progress,
       failedPhotos: failedPhotos ?? this.failedPhotos,
       notice: clearNotice ? null : notice ?? this.notice,
+      canAddPhotos: canAddPhotos ?? this.canAddPhotos,
     );
   }
 
   @override
-  List<Object?> get props => [status, photos, progress, failedPhotos, notice];
+  List<Object?> get props => [
+    status,
+    photos,
+    progress,
+    failedPhotos,
+    notice,
+    canAddPhotos,
+  ];
 }

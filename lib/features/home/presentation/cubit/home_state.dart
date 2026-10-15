@@ -3,11 +3,15 @@ import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 
 enum HomeStatus { initial, loading, loaded, error }
 
+enum HomeFilter { all, unanswered, answered }
+
+enum HomeEmptyKind { noGroups, noSearchResults, noUnanswered, noAnswered }
+
 class HomeState extends Equatable {
   final HomeStatus status;
   final List<GroupEntity> groups;
   final Set<String> expandedGroupIds;
-  final int selectedFilterIndex;
+  final HomeFilter filter;
   final String searchQuery;
   final String? errorMessage;
 
@@ -15,7 +19,7 @@ class HomeState extends Equatable {
     this.status = HomeStatus.initial,
     this.groups = const [],
     this.expandedGroupIds = const {},
-    this.selectedFilterIndex = 0,
+    this.filter = HomeFilter.all,
     this.searchQuery = '',
     this.errorMessage,
   });
@@ -24,7 +28,7 @@ class HomeState extends Equatable {
     HomeStatus? status,
     List<GroupEntity>? groups,
     Set<String>? expandedGroupIds,
-    int? selectedFilterIndex,
+    HomeFilter? filter,
     String? searchQuery,
     String? errorMessage,
   }) {
@@ -32,7 +36,7 @@ class HomeState extends Equatable {
       status: status ?? this.status,
       groups: groups ?? this.groups,
       expandedGroupIds: expandedGroupIds ?? this.expandedGroupIds,
-      selectedFilterIndex: selectedFilterIndex ?? this.selectedFilterIndex,
+      filter: filter ?? this.filter,
       searchQuery: searchQuery ?? this.searchQuery,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -40,47 +44,44 @@ class HomeState extends Equatable {
 
   bool isGroupExpanded(String groupId) => expandedGroupIds.contains(groupId);
 
+  int get selectedFilterIndex => filter.index;
+
+  /// Total de grupos pendentes, independente da busca.
   int get unansweredCount => groups.where((g) => g.hasPendingResponse).length;
 
-  List<GroupEntity> get filteredGroups {
-    return groups.where((group) {
-      if (selectedFilterIndex == 1 && !group.hasPendingResponse) {
-        return false;
-      }
-      if (selectedFilterIndex == 2 &&
-          (group.nextMeeting == null || group.hasPendingResponse)) {
-        return false;
-      }
+  List<GroupEntity> _groupsByFilter() => switch (filter) {
+    HomeFilter.all => groups,
+    HomeFilter.unanswered => groups.where((g) => g.hasPendingResponse).toList(),
+    HomeFilter.answered =>
+      groups.where((g) => g.hasAnsweredNextMeeting).toList(),
+  };
 
-      final query = searchQuery.trim().toLowerCase();
-      if (query.isEmpty) return true;
+  List<GroupEntity> filteredGroups(String Function(GroupEntity) nameOf) {
+    final query = searchQuery.trim().toLowerCase();
+    final byFilter = _groupsByFilter();
+    if (query.isEmpty) return byFilter;
+    return byFilter
+        .where((g) => nameOf(g).toLowerCase().contains(query))
+        .toList();
+  }
 
-      final matchesCity = group.cityState.toLowerCase().contains(query);
-      final matchesNumber =
-          group.number.toString().contains(query) ||
-          'grupo ${group.number}'.toLowerCase().contains(query);
-      final matchesBook =
-          group.nextMeeting?.bookTitle.toLowerCase().contains(query) ?? false;
-      final matchesHost =
-          group.nextMeeting?.hostName.toLowerCase().contains(query) ?? false;
-      final matchesLocation =
-          group.nextMeeting?.location.toLowerCase().contains(query) ?? false;
-
-      return matchesCity ||
-          matchesNumber ||
-          matchesBook ||
-          matchesHost ||
-          matchesLocation;
-    }).toList();
+  HomeEmptyKind? emptyKindFor(List<GroupEntity> visibleGroups) {
+    if (visibleGroups.isNotEmpty) return null;
+    if (_groupsByFilter().isNotEmpty) return HomeEmptyKind.noSearchResults;
+    return switch (filter) {
+      HomeFilter.all => HomeEmptyKind.noGroups,
+      HomeFilter.unanswered => HomeEmptyKind.noUnanswered,
+      HomeFilter.answered => HomeEmptyKind.noAnswered,
+    };
   }
 
   @override
   List<Object?> get props => [
-        status,
-        groups,
-        expandedGroupIds,
-        selectedFilterIndex,
-        searchQuery,
-        errorMessage,
-      ];
+    status,
+    groups,
+    expandedGroupIds,
+    filter,
+    searchQuery,
+    errorMessage,
+  ];
 }
