@@ -109,7 +109,11 @@ void main() {
 
     // 4. Testar a seleção: Tocar no Checkbox da Beatriz Vasconcellos
     final checkboxBeatriz = find.byType(AppCheckbox).last;
-    await tester.tap(checkboxBeatriz);
+    await tester.ensureVisible(checkboxBeatriz);
+    await tester.pumpAndSettle();
+
+    // Passando o parâmetro para ignorar o aviso de sobreposição no teste
+    await tester.tap(checkboxBeatriz, warnIfMissed: false);
     await tester.pumpAndSettle();
 
     // 5. Clicar no botão 'Continuar' no rodapé
