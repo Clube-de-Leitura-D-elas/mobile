@@ -7,6 +7,7 @@ import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_screen.dart';
@@ -107,7 +108,11 @@ void main() {
     final repository = MockGroupRepository();
     when(
       () => repository.getMeetingPhotos(any()),
-    ).thenAnswer((_) async => const Success([]));
+    ).thenAnswer(
+      (_) async => const Success(
+        MeetingPhotosEntity(photos: [], canAddPhotos: true),
+      ),
+    );
 
     await tester.pumpWidget(
       _localizedApp(
@@ -173,7 +178,11 @@ void main() {
     final repository = MockGroupRepository();
     when(
       () => repository.getMeetingPhotos(any()),
-    ).thenAnswer((_) async => const Success([]));
+    ).thenAnswer(
+      (_) async => const Success(
+        MeetingPhotosEntity(photos: [], canAddPhotos: true),
+      ),
+    );
 
     final router = GoRouter(
       initialLocation: '/details',

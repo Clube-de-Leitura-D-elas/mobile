@@ -385,240 +385,6 @@ abstract class AppLocalizations {
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
 
-  /// Título principal do review de cadastro
-  ///
-  /// In pt, this message translates to:
-  /// **'Verifique os seus dados'**
-  String get onboardingReviewTitle;
-
-  /// Rótulo do campo Nome
-  ///
-  /// In pt, this message translates to:
-  /// **'Nome'**
-  String get onboardingNameLabel;
-
-  /// Rótulo e-mail
-  ///
-  /// In pt, this message translates to:
-  /// **'E-mail'**
-  String get onboardingEmailLabel;
-
-  /// Rótulo celular
-  ///
-  /// In pt, this message translates to:
-  /// **'Celular'**
-  String get onboardingPhoneLabel;
-
-  /// Rótulo data de nascimento
-  ///
-  /// In pt, this message translates to:
-  /// **'Data de nascimento'**
-  String get onboardingBirthDateLabel;
-
-  /// Rótulo cidade
-  ///
-  /// In pt, this message translates to:
-  /// **'Cidade'**
-  String get onboardingCityLabel;
-
-  /// Dica de seleção de cidade
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecione uma cidade'**
-  String get onboardingCityHint;
-
-  /// Rótulo região
-  ///
-  /// In pt, this message translates to:
-  /// **'Região'**
-  String get onboardingRegionLabel;
-
-  /// Rótulo profissão
-  ///
-  /// In pt, this message translates to:
-  /// **'Qual sua profissão?'**
-  String get onboardingJobLabel;
-
-  /// Rótulo escolaridade
-  ///
-  /// In pt, this message translates to:
-  /// **'Nível de escolaridade'**
-  String get onboardingEducationLabel;
-
-  /// Dica seleção de escolaridade
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecione um nível'**
-  String get onboardingEducationHint;
-
-  /// Rótulo grupo de leitura
-  ///
-  /// In pt, this message translates to:
-  /// **'Você participa de outro grupo de leitura?'**
-  String get onboardingOtherGroupLabel;
-
-  /// Rótulo voluntariado
-  ///
-  /// In pt, this message translates to:
-  /// **'Teria interesse em se voluntariar como coordenadora de grupo?'**
-  String get onboardingVolunteerLabel;
-
-  /// Rótulo indicação livro
-  ///
-  /// In pt, this message translates to:
-  /// **'Qual livro de ficção você indicaria para a leitura coletiva?'**
-  String get onboardingBookIndicationLabel;
-
-  /// Dica indicação livro
-  ///
-  /// In pt, this message translates to:
-  /// **'Digite sua resposta'**
-  String get onboardingBookIndicationHint;
-
-  /// Rótulo expectativas
-  ///
-  /// In pt, this message translates to:
-  /// **'O que você espera ao participar do Clube de Leitura D\'Elas?'**
-  String get onboardingExpectationsLabel;
-
-  /// Dica expectativas
-  ///
-  /// In pt, this message translates to:
-  /// **'Digite sua resposta'**
-  String get onboardingExpectationsHint;
-
-  /// Botão voltar
-  ///
-  /// In pt, this message translates to:
-  /// **'Voltar'**
-  String get onboardingBackButton;
-
-  /// Botão continuar
-  ///
-  /// In pt, this message translates to:
-  /// **'Continuar'**
-  String get onboardingContinueButton;
-
-  /// Título de boas-vindas
-  ///
-  /// In pt, this message translates to:
-  /// **'Seja Bem-vinda'**
-  String get onboardingWelcomeTitle;
-
-  /// Subtítulo de boas-vindas
-  ///
-  /// In pt, this message translates to:
-  /// **'Sua inscrição foi realizada com sucesso!'**
-  String get onboardingWelcomeSubtitle;
-
-  /// Botão concluir onboarding
-  ///
-  /// In pt, this message translates to:
-  /// **'Pronta para o próximo capítulo?'**
-  String get onboardingWelcomeButton;
-
-  /// Dica genérica de seleção em dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecione'**
-  String get selectOptionHint;
-
-  /// Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Romance'**
-  String get genreRomance;
-
-  /// Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Fantasia'**
-  String get genreFantasy;
-
-  /// Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Suspense'**
-  String get genreSuspense;
-
-  /// Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Não Ficção'**
-  String get genreNonFiction;
-
-  /// Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecione um gênero'**
-  String get genreFieldHint;
-
-  /// Título principal da tela de grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Meus grupos'**
-  String get myGroupsTitle;
-
-  /// Placeholder do campo de busca de grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Buscar grupo'**
-  String get searchGroupPlaceholder;
-
-  /// Chip de filtro Todos
-  ///
-  /// In pt, this message translates to:
-  /// **'Todos'**
-  String get filterAll;
-
-  /// Chip de filtro Não respondidos com contagem
-  ///
-  /// In pt, this message translates to:
-  /// **'Não respondidos ({count})'**
-  String filterUnanswered(int count);
-
-  /// Chip de filtro Respondidos
-  ///
-  /// In pt, this message translates to:
-  /// **'Respondidos'**
-  String get filterAnswered;
-
-  /// Título exibido quando a lista de grupos está vazia
-  ///
-  /// In pt, this message translates to:
-  /// **'Você ainda não participa de nenhum grupo'**
-  String get emptyGroupsTitle;
-
-  /// Mensagem detalhada exibida quando a lista de grupos está vazia
-  ///
-  /// In pt, this message translates to:
-  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
-  String get emptyGroupsMessage;
-
-  /// Mensagem exibida quando a busca por nome não retorna grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhum grupo encontrado'**
-  String get emptyGroupsSearch;
-
-  /// Mensagem exibida quando o filtro Não respondidos não tem grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhum grupo com resposta pendente'**
-  String get emptyGroupsUnanswered;
-
-  /// Mensagem exibida quando o filtro Respondidos não tem grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Você ainda não respondeu a nenhum encontro'**
-  String get emptyGroupsAnswered;
-
-  /// Título da tela de detalhes do grupo, com o número do grupo
-  ///
-  /// In pt, this message translates to:
-  /// **'Grupo {number}'**
-  String groupDetailsNumberLabel(int number);
-
   /// Título da seção do próximo evento nos detalhes do grupo
   ///
   /// In pt, this message translates to:
@@ -660,12 +426,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Livro ainda não definido'**
   String get groupNextEventBookUndefined;
-
-  /// Exibido no próximo evento do grupo quando nenhum local foi definido
-  ///
-  /// In pt, this message translates to:
-  /// **'Sem localização'**
-  String get groupNextEventNoLocation;
 
   /// Título da seção de participantes nos detalhes do grupo
   ///
@@ -1038,6 +798,246 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}'**
   String meetingPhotosRejected(int count);
+
+  /// Título principal do review de cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique os seus dados'**
+  String get onboardingReviewTitle;
+
+  /// Rótulo do campo Nome
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome'**
+  String get onboardingNameLabel;
+
+  /// Rótulo e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get onboardingEmailLabel;
+
+  /// Rótulo celular
+  ///
+  /// In pt, this message translates to:
+  /// **'Celular'**
+  String get onboardingPhoneLabel;
+
+  /// Rótulo data de nascimento
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de nascimento'**
+  String get onboardingBirthDateLabel;
+
+  /// Rótulo cidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Cidade'**
+  String get onboardingCityLabel;
+
+  /// Dica de seleção de cidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma cidade'**
+  String get onboardingCityHint;
+
+  /// Rótulo região
+  ///
+  /// In pt, this message translates to:
+  /// **'Região'**
+  String get onboardingRegionLabel;
+
+  /// Rótulo profissão
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual sua profissão?'**
+  String get onboardingJobLabel;
+
+  /// Rótulo escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Nível de escolaridade'**
+  String get onboardingEducationLabel;
+
+  /// Dica seleção de escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um nível'**
+  String get onboardingEducationHint;
+
+  /// Rótulo grupo de leitura
+  ///
+  /// In pt, this message translates to:
+  /// **'Você participa de outro grupo de leitura?'**
+  String get onboardingOtherGroupLabel;
+
+  /// Rótulo voluntariado
+  ///
+  /// In pt, this message translates to:
+  /// **'Teria interesse em se voluntariar como coordenadora de grupo?'**
+  String get onboardingVolunteerLabel;
+
+  /// Rótulo indicação livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual livro de ficção você indicaria para a leitura coletiva?'**
+  String get onboardingBookIndicationLabel;
+
+  /// Dica indicação livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get onboardingBookIndicationHint;
+
+  /// Rótulo expectativas
+  ///
+  /// In pt, this message translates to:
+  /// **'O que você espera ao participar do Clube de Leitura D\'Elas?'**
+  String get onboardingExpectationsLabel;
+
+  /// Dica expectativas
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get onboardingExpectationsHint;
+
+  /// Botão voltar
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get onboardingBackButton;
+
+  /// Botão continuar
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get onboardingContinueButton;
+
+  /// Título de boas-vindas
+  ///
+  /// In pt, this message translates to:
+  /// **'Seja Bem-vinda'**
+  String get onboardingWelcomeTitle;
+
+  /// Subtítulo de boas-vindas
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua inscrição foi realizada com sucesso!'**
+  String get onboardingWelcomeSubtitle;
+
+  /// Botão concluir onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Pronta para o próximo capítulo?'**
+  String get onboardingWelcomeButton;
+
+  /// Dica genérica de seleção em dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione'**
+  String get selectOptionHint;
+
+  /// Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Romance'**
+  String get genreRomance;
+
+  /// Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Fantasia'**
+  String get genreFantasy;
+
+  /// Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Suspense'**
+  String get genreSuspense;
+
+  /// Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Não Ficção'**
+  String get genreNonFiction;
+
+  /// Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um gênero'**
+  String get genreFieldHint;
+
+  /// Título principal da tela de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Meus grupos'**
+  String get myGroupsTitle;
+
+  /// Placeholder do campo de busca de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar grupo'**
+  String get searchGroupPlaceholder;
+
+  /// Chip de filtro Todos
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get filterAll;
+
+  /// Chip de filtro Não respondidos com contagem
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondidos ({count})'**
+  String filterUnanswered(int count);
+
+  /// Chip de filtro Respondidos
+  ///
+  /// In pt, this message translates to:
+  /// **'Respondidos'**
+  String get filterAnswered;
+
+  /// Título exibido quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo'**
+  String get emptyGroupsTitle;
+
+  /// Mensagem detalhada exibida quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
+  String get emptyGroupsMessage;
+
+  /// Mensagem exibida quando a busca por nome não retorna grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo encontrado'**
+  String get emptyGroupsSearch;
+
+  /// Mensagem exibida quando o filtro Não respondidos não tem grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo com resposta pendente'**
+  String get emptyGroupsUnanswered;
+
+  /// Mensagem exibida quando o filtro Respondidos não tem grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não respondeu a nenhum encontro'**
+  String get emptyGroupsAnswered;
+
+  /// Título da tela de detalhes do grupo, com o número do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupDetailsNumberLabel(int number);
+
+  /// Exibido no próximo evento do grupo quando nenhum local foi definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem localização'**
+  String get groupNextEventNoLocation;
 }
 
 class _AppLocalizationsDelegate

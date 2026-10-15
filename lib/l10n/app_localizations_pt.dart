@@ -158,134 +158,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
-  String get onboardingReviewTitle => 'Verifique os seus dados';
-
-  @override
-  String get onboardingNameLabel => 'Nome';
-
-  @override
-  String get onboardingEmailLabel => 'E-mail';
-
-  @override
-  String get onboardingPhoneLabel => 'Celular';
-
-  @override
-  String get onboardingBirthDateLabel => 'Data de nascimento';
-
-  @override
-  String get onboardingCityLabel => 'Cidade';
-
-  @override
-  String get onboardingCityHint => 'Selecione uma cidade';
-
-  @override
-  String get onboardingRegionLabel => 'Região';
-
-  @override
-  String get onboardingJobLabel => 'Qual sua profissão?';
-
-  @override
-  String get onboardingEducationLabel => 'Nível de escolaridade';
-
-  @override
-  String get onboardingEducationHint => 'Selecione um nível';
-
-  @override
-  String get onboardingOtherGroupLabel =>
-      'Você participa de outro grupo de leitura?';
-
-  @override
-  String get onboardingVolunteerLabel =>
-      'Teria interesse em se voluntariar como coordenadora de grupo?';
-
-  @override
-  String get onboardingBookIndicationLabel =>
-      'Qual livro de ficção você indicaria para a leitura coletiva?';
-
-  @override
-  String get onboardingBookIndicationHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingExpectationsLabel =>
-      'O que você espera ao participar do Clube de Leitura D\'Elas?';
-
-  @override
-  String get onboardingExpectationsHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingBackButton => 'Voltar';
-
-  @override
-  String get onboardingContinueButton => 'Continuar';
-
-  @override
-  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
-
-  @override
-  String get onboardingWelcomeSubtitle =>
-      'Sua inscrição foi realizada com sucesso!';
-
-  @override
-  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
-
-  @override
-  String get selectOptionHint => 'Selecione';
-
-  @override
-  String get genreRomance => 'Romance';
-
-  @override
-  String get genreFantasy => 'Fantasia';
-
-  @override
-  String get genreSuspense => 'Suspense';
-
-  @override
-  String get genreNonFiction => 'Não Ficção';
-
-  @override
-  String get genreFieldHint => 'Selecione um gênero';
-
-  @override
-  String get myGroupsTitle => 'Meus grupos';
-
-  @override
-  String get searchGroupPlaceholder => 'Buscar grupo';
-
-  @override
-  String get filterAll => 'Todos';
-
-  @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
-
-  @override
-  String get filterAnswered => 'Respondidos';
-
-  @override
-  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
-
-  @override
-  String get emptyGroupsMessage =>
-      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
-
-  @override
-  String get emptyGroupsSearch => 'Nenhum grupo encontrado';
-
-  @override
-  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
-
-  @override
-  String get emptyGroupsAnswered =>
-      'Você ainda não respondeu a nenhum encontro';
-
-  @override
-  String groupDetailsNumberLabel(int number) {
-    return 'Grupo $number';
-  }
-
-  @override
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
@@ -309,9 +181,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupNextEventBookUndefined => 'Livro ainda não definido';
-
-  @override
-  String get groupNextEventNoLocation => 'Sem localização';
 
   @override
   String get groupParticipantsTitle => 'Participantes';
@@ -561,6 +430,137 @@ class AppLocalizationsPt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
+
+  @override
+  String get genreRomance => 'Romance';
+
+  @override
+  String get genreFantasy => 'Fantasia';
+
+  @override
+  String get genreSuspense => 'Suspense';
+
+  @override
+  String get genreNonFiction => 'Não Ficção';
+
+  @override
+  String get genreFieldHint => 'Selecione um gênero';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String get emptyGroupsSearch => 'Nenhum grupo encontrado';
+
+  @override
+  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
+
+  @override
+  String get emptyGroupsAnswered =>
+      'Você ainda não respondeu a nenhum encontro';
+
+  @override
+  String groupDetailsNumberLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get groupNextEventNoLocation => 'Sem localização';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -715,104 +715,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
-
-  @override
-  String get onboardingReviewTitle => 'Verifique os seus dados';
-
-  @override
-  String get onboardingNameLabel => 'Nome';
-
-  @override
-  String get onboardingEmailLabel => 'E-mail';
-
-  @override
-  String get onboardingPhoneLabel => 'Celular';
-
-  @override
-  String get onboardingBirthDateLabel => 'Data de nascimento';
-
-  @override
-  String get onboardingCityLabel => 'Cidade';
-
-  @override
-  String get onboardingCityHint => 'Selecione uma cidade';
-
-  @override
-  String get onboardingRegionLabel => 'Região';
-
-  @override
-  String get onboardingJobLabel => 'Qual sua profissão?';
-
-  @override
-  String get onboardingEducationLabel => 'Nível de escolaridade';
-
-  @override
-  String get onboardingEducationHint => 'Selecione um nível';
-
-  @override
-  String get onboardingOtherGroupLabel =>
-      'Você participa de outro grupo de leitura?';
-
-  @override
-  String get onboardingVolunteerLabel =>
-      'Teria interesse em se voluntariar como coordenadora de grupo?';
-
-  @override
-  String get onboardingBookIndicationLabel =>
-      'Qual livro de ficção você indicaria para a leitura coletiva?';
-
-  @override
-  String get onboardingBookIndicationHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingExpectationsLabel =>
-      'O que você espera ao participar do Clube de Leitura D\'Elas?';
-
-  @override
-  String get onboardingExpectationsHint => 'Digite sua resposta';
-
-  @override
-  String get onboardingBackButton => 'Voltar';
-
-  @override
-  String get onboardingContinueButton => 'Continuar';
-
-  @override
-  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
-
-  @override
-  String get onboardingWelcomeSubtitle =>
-      'Sua inscrição foi realizada com sucesso!';
-
-  @override
-  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
-
-  @override
-  String get selectOptionHint => 'Selecione';
-
-  @override
-  String get myGroupsTitle => 'Meus grupos';
-
-  @override
-  String get searchGroupPlaceholder => 'Buscar grupo';
-
-  @override
-  String get filterAll => 'Todos';
-
-  @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
-
-  @override
-  String get filterAnswered => 'Respondidos';
-
-  @override
-  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
-
-  @override
-  String get emptyGroupsMessage =>
-      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 
   @override
   String get groupNextEventTitle => 'Próximo evento';
@@ -1069,4 +971,102 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
     );
     return '$_temp0';
   }
+
+  @override
+  String get onboardingReviewTitle => 'Verifique os seus dados';
+
+  @override
+  String get onboardingNameLabel => 'Nome';
+
+  @override
+  String get onboardingEmailLabel => 'E-mail';
+
+  @override
+  String get onboardingPhoneLabel => 'Celular';
+
+  @override
+  String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingCityLabel => 'Cidade';
+
+  @override
+  String get onboardingCityHint => 'Selecione uma cidade';
+
+  @override
+  String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingJobLabel => 'Qual sua profissão?';
+
+  @override
+  String get onboardingEducationLabel => 'Nível de escolaridade';
+
+  @override
+  String get onboardingEducationHint => 'Selecione um nível';
+
+  @override
+  String get onboardingOtherGroupLabel =>
+      'Você participa de outro grupo de leitura?';
+
+  @override
+  String get onboardingVolunteerLabel =>
+      'Teria interesse em se voluntariar como coordenadora de grupo?';
+
+  @override
+  String get onboardingBookIndicationLabel =>
+      'Qual livro de ficção você indicaria para a leitura coletiva?';
+
+  @override
+  String get onboardingBookIndicationHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingExpectationsLabel =>
+      'O que você espera ao participar do Clube de Leitura D\'Elas?';
+
+  @override
+  String get onboardingExpectationsHint => 'Digite sua resposta';
+
+  @override
+  String get onboardingBackButton => 'Voltar';
+
+  @override
+  String get onboardingContinueButton => 'Continuar';
+
+  @override
+  String get onboardingWelcomeTitle => 'Seja Bem-vinda';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sua inscrição foi realizada com sucesso!';
+
+  @override
+  String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get selectOptionHint => 'Selecione';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }
