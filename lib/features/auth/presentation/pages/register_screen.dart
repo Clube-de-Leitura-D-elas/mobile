@@ -28,9 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    _passwordCubit = serviceLocator.isRegistered<PasswordValidationCubit>()
-        ? serviceLocator<PasswordValidationCubit>()
-        : PasswordValidationCubit();
+    _passwordCubit = serviceLocator<PasswordValidationCubit>();
     _passwordController.addListener(_onPasswordChanged);
     _confirmPasswordController.addListener(_onPasswordChanged);
   }
