@@ -1,21 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
+import 'package:mobile/features/groups/data/models/group_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_attendance_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_details_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_photo_model.dart';
-import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
@@ -134,23 +136,24 @@ class GroupRepositoryImpl implements GroupRepository {
   }
 
   @override
-  Future<Result<void, GroupFailure>> setMeetingPresence(
+  Future<Result<void, GroupFailure>> setMeetingInvitationResponse(
     String meetingId,
-    MeetingPresenceResponse response,
+    MeetingInvitationStatus response,
   ) async {
     final result = await supabaseService.invokeFunction<void>(
       functionName: 'set-meeting-attendance-response',
       body: {
         'meeting_id': meetingId,
-        'presence_status': switch (response) {
-          MeetingPresenceResponse.present => 'PRESENT',
-          MeetingPresenceResponse.absent => 'ABSENT',
+        'invitation_status': switch (response) {
+          MeetingInvitationStatus.confirmed => 'CONFIRMED',
+          MeetingInvitationStatus.declined => 'DECLINED',
+          MeetingInvitationStatus.pending => 'PENDING',
         },
       },
     );
 
     return switch (result) {
-      Failure() => const Failure(GroupMeetingPresenceFailure()),
+      Failure() => const Failure(GroupMeetingInvitationResponseFailure()),
       Success() => const Success(null),
     };
   }
@@ -213,5 +216,44 @@ class GroupRepositoryImpl implements GroupRepository {
       return const MeetingPhotoRejectedFailure();
     }
     return const MeetingPhotoUploadFailure();
+  }
+
+  @override
+  Future<Result<List<MeetingAttendanceEntity>, GroupFailure>>
+  getMeetingAttendance(String meetingId) async {
+    final result = await supabaseService
+        .invokeFunction<List<MeetingAttendanceModel>>(
+          functionName:
+              'get-meeting-attendance?meeting_id=${Uri.encodeQueryComponent(meetingId)}',
+          decoder: MeetingAttendanceModel.listFromJson,
+        );
+
+    switch (result) {
+      case Failure():
+        return const Failure(
+          GroupDetailsFailure(),
+        ); // Reutilizando uma falha existente no GroupFailure
+      case Success(:final data):
+        final items = data.data;
+        if (items == null) {
+          return const Failure(GroupDetailsFailure());
+        }
+        final entities = items.map((m) => m.toDomain()).toList()
+          ..sort((a, b) => _sortKey(a.name).compareTo(_sortKey(b.name)));
+        return Success(entities);
+    }
+  }
+
+  /// Ordenação alfabética insensível a acentos ("Ágata" junto de "Ana").
+  static String _sortKey(String name) {
+    const accented = 'áàâãäéèêëíìîïóòôõöúùûüçñ';
+    const plain = 'aaaaaeeeeiiiiooooouuuucn';
+    final buffer = StringBuffer();
+    for (final rune in name.toLowerCase().runes) {
+      final char = String.fromCharCode(rune);
+      final index = accented.indexOf(char);
+      buffer.write(index == -1 ? char : plain[index]);
+    }
+    return buffer.toString();
   }
 }
