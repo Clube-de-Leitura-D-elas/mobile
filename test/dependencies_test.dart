@@ -14,9 +14,12 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
-import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
+import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -34,6 +37,7 @@ void main() {
   setUp(() async {
     dotenv.testLoad(fileInput: 'BASE_URL=http://localhost:8080');
     GoogleSignInPlatform.instance = MockGoogleSignInPlatform();
+    GoogleSignInPlatform.instance = MockGoogleSignInPlatform();
     await serviceLocator.reset();
   });
 
@@ -48,6 +52,9 @@ void main() {
         url: 'http://localhost:54321',
         publishableKey: 'test-key',
         accessToken: () async => 'test-token',
+        authOptions: const FlutterAuthClientOptions(
+          localStorage: EmptyLocalStorage(),
+        ),
         debug: false,
       );
 
@@ -66,6 +73,9 @@ void main() {
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
       expect(serviceLocator<MeetingPhotosCubit>(), isA<MeetingPhotosCubit>());
+      expect(serviceLocator.isRegistered<RaffleRemoteDataSource>(), isTrue);
+      expect(serviceLocator.isRegistered<RaffleRepository>(), isTrue);
+      expect(serviceLocator.isRegistered<RafflePreparationCubit>(), isTrue);
     },
   );
 }
