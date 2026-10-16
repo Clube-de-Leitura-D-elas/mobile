@@ -586,6 +586,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
+
+  @override
+  String get showPasswordTooltip => 'Mostrar senha';
+
+  @override
+  String get hidePasswordTooltip => 'Ocultar senha';
+
+  @override
+  String get appLogoSemanticLabel => 'Logo do Clube de Leitura D\'Elas';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
