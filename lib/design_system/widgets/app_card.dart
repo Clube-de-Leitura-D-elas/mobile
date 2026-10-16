@@ -126,13 +126,16 @@ class _AppCardState extends State<AppCard> {
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(AppCard.borderRadius),
-      child: InkWell(
-        onTap: _handleTap,
-        borderRadius: BorderRadius.circular(AppCard.borderRadius),
-        child: Ink(
-          padding: EdgeInsets.all(spacing.s16),
-          decoration: decoration,
-          child: widget.child,
+      child: Semantics(
+        button: true,
+        child: InkWell(
+          onTap: _handleTap,
+          borderRadius: BorderRadius.circular(AppCard.borderRadius),
+          child: Ink(
+            padding: EdgeInsets.all(spacing.s16),
+            decoration: decoration,
+            child: widget.child,
+          ),
         ),
       ),
     );

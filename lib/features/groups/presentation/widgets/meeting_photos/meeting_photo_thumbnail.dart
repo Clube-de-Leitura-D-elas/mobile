@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 
 class MeetingPhotoThumbnail extends StatelessWidget {
   const MeetingPhotoThumbnail({
@@ -42,6 +43,7 @@ class MeetingPhotoThumbnail extends StatelessWidget {
   }
 }
 
+
 class MeetingPhotoPlaceholder extends StatelessWidget {
   const MeetingPhotoPlaceholder({super.key, this.onReload});
 
@@ -51,26 +53,38 @@ class MeetingPhotoPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isLoading = onReload == null;
+    final l10n = Localizations.of<AppLocalizations>(context, AppLocalizations);
+    final retryLabel = l10n?.meetingPhotosRetryButton ?? 'Tentar novamente';
+
+    Widget content = Center(
+      child: isLoading
+          ? SizedBox.square(
+              dimension: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: colors.textMuted,
+              ),
+            )
+          : Icon(Icons.refresh, color: colors.textMuted),
+    );
+
+    if (!isLoading) {
+      content = Semantics(
+        button: true,
+        label: retryLabel,
+        child: InkWell(
+          onTap: onReload,
+          child: content,
+        ),
+      );
+    }
 
     return Material(
       key: ValueKey(
         isLoading ? 'meeting-photo-loading' : 'meeting-photo-error',
       ),
       color: colors.surfaceSunken,
-      child: InkWell(
-        onTap: onReload,
-        child: Center(
-          child: isLoading
-              ? SizedBox.square(
-                  dimension: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: colors.textMuted,
-                  ),
-                )
-              : Icon(Icons.refresh, color: colors.textMuted),
-        ),
-      ),
+      child: content,
     );
   }
 }

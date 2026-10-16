@@ -194,21 +194,26 @@ class AppButton extends StatelessWidget {
         color: backgroundColor,
         borderRadius: borderRadius,
         clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          borderRadius: borderRadius,
-          splashColor: splashColor,
-          highlightColor: splashColor.withValues(alpha: 0.1),
-          onTap: _isEnabled ? onPressed : null,
-          child: Padding(
-            padding: padding,
-            child: DefaultTextStyle(
-              style: textStyle.copyWith(color: foregroundColor),
-              child: IconTheme(
-                data: IconThemeData(
-                  color: foregroundColor,
-                  size: textStyle.fontSize,
+        child: Semantics(
+          button: true,
+          enabled: _isEnabled,
+          label: label,
+          child: InkWell(
+            borderRadius: borderRadius,
+            splashColor: splashColor,
+            highlightColor: splashColor.withValues(alpha: 0.1),
+            onTap: _isEnabled ? onPressed : null,
+            child: Padding(
+              padding: padding,
+              child: DefaultTextStyle(
+                style: textStyle.copyWith(color: foregroundColor),
+                child: IconTheme(
+                  data: IconThemeData(
+                    color: foregroundColor,
+                    size: textStyle.fontSize,
+                  ),
+                  child: _buildChild(context, foregroundColor),
                 ),
-                child: _buildChild(context, foregroundColor),
               ),
             ),
           ),

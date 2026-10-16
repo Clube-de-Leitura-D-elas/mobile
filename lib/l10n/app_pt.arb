@@ -967,5 +967,17 @@
         "type": "int"
       }
     }
+  },
+  "showPasswordTooltip": "Mostrar senha",
+  "@showPasswordTooltip": {
+    "description": "Tooltip e acessibilidade para exibir senha"
+  },
+  "hidePasswordTooltip": "Ocultar senha",
+  "@hidePasswordTooltip": {
+    "description": "Tooltip e acessibilidade para ocultar senha"
+  },
+  "appLogoSemanticLabel": "Logo do Clube de Leitura D'Elas",
+  "@appLogoSemanticLabel": {
+    "description": "Descrição de acessibilidade do logotipo do aplicativo"
   }
 }
