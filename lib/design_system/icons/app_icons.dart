@@ -37,5 +37,6 @@ abstract final class AppIcons {
     search,
     settings,
     user,
+    leave,
   ];
 }

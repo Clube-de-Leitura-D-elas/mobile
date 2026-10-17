@@ -179,10 +179,10 @@ void main() {
 
     expect(router.routeInformationProvider.value.uri.path, '/home');
 
-    await tester.tap(find.bySemanticsLabel('Perfil'));
+    await tester.tap(find.bySemanticsLabel('Busca'));
     await tester.pumpAndSettle();
 
-    expect(router.routeInformationProvider.value.uri.path, '/profile');
+    expect(router.routeInformationProvider.value.uri.path, '/search');
     expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
   });
 
@@ -198,7 +198,7 @@ void main() {
     addTearDown(cubit.close);
 
     final router = GoRouter(
-      initialLocation: '/profile',
+      initialLocation: '/search',
       routes: [
         GoRoute(
           path: QuickAccessRoutes.home,
@@ -225,7 +225,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(router.routeInformationProvider.value.uri.path, '/profile');
+    expect(router.routeInformationProvider.value.uri.path, '/search');
 
     await tester.tap(find.bySemanticsLabel('Início'));
     await tester.pumpAndSettle();
