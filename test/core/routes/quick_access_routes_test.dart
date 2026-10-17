@@ -3,7 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockGoRouter extends Mock implements GoRouter {}
 
 void main() {
   group('QuickAccessRoutes', () {
@@ -45,25 +49,100 @@ void main() {
       ]);
     });
 
-    testWidgets('renders a placeholder with the selected tab', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light,
-          home: const QuickAccessPlaceholderScreen(
-            item: QuickAccessItem.calendar,
+    testWidgets(
+      'renders a placeholder with the selected tab for non-profile routes',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: const QuickAccessPlaceholderScreen(
+              item: QuickAccessItem.calendar,
+            ),
           ),
+        );
+        await tester.pump();
+
+        expect(find.byType(Scaffold), findsOneWidget);
+        expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
+
+        final navigationBar = tester.widget<BottomNavigationBarWidget>(
+          find.byType(BottomNavigationBarWidget),
+        );
+
+        expect(navigationBar.currentIndex, QuickAccessItem.calendar.index);
+      },
+    );
+
+    testWidgets(
+      'renders ProfilePage for the profile route and Placeholder for others',
+      (tester) async {
+        final router = GoRouter(
+          initialLocation: '/search',
+          routes: QuickAccessRoutes.routes,
+        );
+
+        await tester.pumpWidget(
+          MaterialApp.router(theme: AppTheme.light, routerConfig: router),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
+        expect(find.byType(ProfilePage), findsNothing);
+
+        router.go('/profile');
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ProfilePage), findsOneWidget);
+        expect(find.byType(QuickAccessPlaceholderScreen), findsNothing);
+      },
+    );
+  });
+
+  group('QuickAccessNavigation Extension', () {
+    late MockGoRouter mockGoRouter;
+
+    setUp(() {
+      mockGoRouter = MockGoRouter();
+    });
+
+    Widget buildSubject(int currentIndex) {
+      return InheritedGoRouter(
+        goRouter: mockGoRouter,
+        child: Builder(
+          builder: (context) {
+            return ElevatedButton(
+              onPressed: () => context.goToQuickAccessTab(
+                QuickAccessItem.profile.index,
+                currentIndex: currentIndex,
+              ),
+              child: const Text('Go'),
+            );
+          },
         ),
       );
-      await tester.pump();
+    }
 
-      expect(find.byType(Scaffold), findsOneWidget);
-      expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
+    testWidgets(
+      'does not navigate if target index is the same as current index',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(home: buildSubject(QuickAccessItem.profile.index)),
+        );
 
-      final navigationBar = tester.widget<BottomNavigationBarWidget>(
-        find.byType(BottomNavigationBarWidget),
+        await tester.tap(find.text('Go'));
+        verifyNever(() => mockGoRouter.go(any()));
+      },
+    );
+
+    testWidgets('navigates to the correct path if target index is different', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(home: buildSubject(QuickAccessItem.home.index)),
       );
 
-      expect(navigationBar.currentIndex, QuickAccessItem.calendar.index);
+      await tester.tap(find.text('Go'));
+      verify(() => mockGoRouter.go('/profile')).called(1);
     });
   });
 }
