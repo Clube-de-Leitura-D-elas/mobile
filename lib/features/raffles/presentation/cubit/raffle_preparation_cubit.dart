@@ -13,6 +13,7 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     emit(const RafflePreparationLoading());
 
     final result = await repository.getEligibleParticipants(meetingId);
+    if (isClosed) return;
 
     result.match(
       (participants) =>
@@ -27,6 +28,7 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     final currentState = state as RafflePreparationLoaded;
     final updatedList = currentState.participants.map((participant) {
       if (participant.id == participantId) {
+        if (participant.isExcludedByRule) return participant;
         return participant.copyWith(isSelected: !participant.isSelected);
       }
       return participant;
@@ -39,17 +41,21 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     if (state is! RafflePreparationLoaded) return;
 
     final currentState = state as RafflePreparationLoaded;
-    emit(currentState.copyWith(isSubmitting: true));
 
     final selectedIds = currentState.participants
         .where((p) => p.isSelected)
         .map((p) => p.id)
         .toList();
 
+    if (selectedIds.isEmpty) return;
+
+    emit(currentState.copyWith(isSubmitting: true));
+
     final result = await repository.confirmRaffle(
       meetingId: meetingId,
       selectedParticipantIds: selectedIds,
     );
+    if (isClosed) return;
 
     result.match((_) => emit(const RafflePreparationSuccess()), (failure) {
       emit(RafflePreparationError(failure.message));

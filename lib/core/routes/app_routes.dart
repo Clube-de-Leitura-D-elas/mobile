@@ -8,6 +8,7 @@ import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
 
 /// Helper to convert a Stream into a Listenable for GoRouter refresh.
@@ -37,6 +38,7 @@ abstract class AppRoutes {
         ...OnboardingRoutes.routes,
         ...HomeRoutes.routes,
         ...GroupRoutes.routes,
+        ...RaffleRoutes.routes,
         ...QuickAccessRoutes.routes,
       ],
       redirect: (context, state) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
 import 'package:mobile/features/raffles/presentation/widgets/confirm_raffle_dialog.dart';
@@ -15,7 +16,6 @@ class RafflePreparationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final typography = context.typography;
     final spacing = context.spacing;
 
     return Scaffold(
@@ -26,7 +26,7 @@ class RafflePreparationScreen extends StatelessWidget {
             if (state is RafflePreparationError) {
               context.showAppToast(state.message);
             } else if (state is RafflePreparationSuccess) {
-              context.showAppToast('Sorteio realizado com sucesso!');
+              context.showAppToast(context.l10n.raffleSuccessToast);
               Navigator.of(context).pop();
             }
           },
@@ -42,110 +42,45 @@ class RafflePreparationScreen extends StatelessWidget {
             }
 
             if (state is RafflePreparationLoaded) {
+              final hasSelected = state.participants.any((p) => p.isSelected);
+
               return Column(
                 children: [
                   Expanded(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(horizontal: spacing.s24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Gap(32),
-                          Text(
-                            context
-                                .l10n
-                                .rafflePreparationTitle, // "Realizar sorteio"
-                            style: typography.headingH2.copyWith(
-                              color: colors.textDefault,
-                            ),
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: spacing.s24,
                           ),
-                          const Gap4(),
-                          Text(
-                            context
-                                .l10n
-                                .rafflePreparationSubtitle, // "Selecione as participantes"
-                            style: typography.bodyDefault.copyWith(
-                              color: colors.textMuted,
-                            ),
-                          ),
-                          const Gap24(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                context.l10n.raffleTableHeaderName, // "Nome"
-                                style: typography.bodySmall.copyWith(
-                                  color: colors.textDefault,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              Text(
-                                context
-                                    .l10n
-                                    .raffleTableHeaderInclude, // "Incluir no sorteio"
-                                style: typography.bodySmall.copyWith(
-                                  color: colors.textDefault,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap12(),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: state.participants.length,
-                            itemBuilder: (context, index) {
-                              final participant = state.participants[index];
-                              return RaffleParticipantTile(
-                                participant: participant,
-                                onChanged: (_) {
-                                  context
-                                      .read<RafflePreparationCubit>()
-                                      .toggleParticipantSelection(
-                                        participant.id,
-                                      );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(spacing.s24),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: AppButton.secondary(
-                            label: context
-                                .l10n
-                                .back, // "Voltar" (chave já existente no @@Auth/Common)
-                            onPressed: () => Navigator.of(context).pop(),
+                          sliver: const SliverToBoxAdapter(
+                            child: _RaffleHeader(),
                           ),
                         ),
-                        const Gap16(),
-                        Expanded(
-                          child: AppButton.primary(
-                            label: context
-                                .l10n
-                                .continueAction, // "Continuar" (chave já existente no @@Common)
-                            onPressed: state.isSubmitting
-                                ? null
-                                : () async {
-                                    final confirmed =
-                                        await ConfirmRaffleDialog.show(context);
-                                    if (confirmed == true && context.mounted) {
-                                      await context
-                                          .read<RafflePreparationCubit>()
-                                          .confirmRaffle(meetingId);
-                                    }
-                                  },
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: spacing.s24,
+                          ),
+                          sliver: _ParticipantsTable(
+                            participants: state.participants,
                           ),
                         ),
                       ],
                     ),
+                  ),
+                  _ActionButtons(
+                    isSubmitting: state.isSubmitting,
+                    canConfirm: hasSelected,
+                    onBack: () => Navigator.of(context).pop(),
+                    onContinue: () async {
+                      final confirmed =
+                          await ConfirmRaffleDialog.show(context);
+                      if (confirmed == true && context.mounted) {
+                        await context
+                            .read<RafflePreparationCubit>()
+                            .confirmRaffle(meetingId);
+                      }
+                    },
                   ),
                 ],
               );
@@ -158,3 +93,119 @@ class RafflePreparationScreen extends StatelessWidget {
     );
   }
 }
+
+class _RaffleHeader extends StatelessWidget {
+  const _RaffleHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final typography = context.typography;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Gap(32),
+        Text(
+          context.l10n.rafflePreparationTitle,
+          style: typography.headingH2.copyWith(
+            color: colors.textDefault,
+          ),
+        ),
+        const Gap4(),
+        Text(
+          context.l10n.rafflePreparationSubtitle,
+          style: typography.bodyDefault.copyWith(
+            color: colors.textMuted,
+          ),
+        ),
+        const Gap24(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              context.l10n.raffleTableHeaderName,
+              style: typography.bodySmall.copyWith(
+                color: colors.textDefault,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Text(
+              context.l10n.raffleTableHeaderInclude,
+              style: typography.bodySmall.copyWith(
+                color: colors.textDefault,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        const Gap12(),
+      ],
+    );
+  }
+}
+
+class _ParticipantsTable extends StatelessWidget {
+  final List<RaffleParticipant> participants;
+
+  const _ParticipantsTable({required this.participants});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList.builder(
+      itemCount: participants.length,
+      itemBuilder: (context, index) {
+        final participant = participants[index];
+        return RaffleParticipantTile(
+          participant: participant,
+          onChanged: (_) {
+            context
+                .read<RafflePreparationCubit>()
+                .toggleParticipantSelection(participant.id);
+          },
+        );
+      },
+    );
+  }
+}
+
+class _ActionButtons extends StatelessWidget {
+  final bool isSubmitting;
+  final bool canConfirm;
+  final VoidCallback onBack;
+  final VoidCallback onContinue;
+
+  const _ActionButtons({
+    required this.isSubmitting,
+    required this.canConfirm,
+    required this.onBack,
+    required this.onContinue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.spacing;
+
+    return Padding(
+      padding: EdgeInsets.all(spacing.s24),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppButton.secondary(
+              label: context.l10n.back,
+              onPressed: onBack,
+            ),
+          ),
+          const Gap16(),
+          Expanded(
+            child: AppButton.primary(
+              label: context.l10n.continueAction,
+              onPressed: isSubmitting || !canConfirm ? null : onContinue,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

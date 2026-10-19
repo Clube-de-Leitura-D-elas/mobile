@@ -45,9 +45,14 @@ class ConfirmRaffleDialog extends StatelessWidget {
                   ),
                 ),
                 const Gap16(),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(false),
-                  child: Icon(Icons.close, color: colors.textDefault, size: 20),
+                SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () => Navigator.of(context).pop(false),
+                    icon: Icon(Icons.close, color: colors.textDefault, size: 20),
+                  ),
                 ),
               ],
             ),
