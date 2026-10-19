@@ -3,11 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
-import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/claim_token_screen.dart';
-import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/pages/onboarding_review_screen.dart';
 import 'package:mobile/features/onboarding/presentation/pages/onboarding_welcome_screen.dart';
@@ -25,9 +23,7 @@ abstract class OnboardingRoutes {
             return AppPageTransitions.createPushPage(
               state: state,
               child: BlocProvider(
-                create: (context) => ClaimTokenCubit(
-                  authRepository: serviceLocator<AuthRepository>(),
-                ),
+                create: (context) => serviceLocator<ClaimTokenCubit>(),
                 child: ClaimTokenScreen(userId: userId),
               ),
             );
@@ -38,9 +34,7 @@ abstract class OnboardingRoutes {
           pageBuilder: (context, state) => AppPageTransitions.createPushPage(
             state: state,
             child: BlocProvider(
-              create: (context) => OnboardingReviewCubit(
-                onboardingRepository: serviceLocator<OnboardingRepository>(),
-              ),
+              create: (context) => serviceLocator<OnboardingReviewCubit>(),
               child: const OnboardingReviewScreen(),
             ),
           ),

@@ -9,6 +9,8 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/supabase/supabase_service_impl.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
+import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
@@ -23,6 +25,7 @@ import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart'
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
+import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 GroupRepository _createGroupRepository() =>
@@ -107,6 +110,21 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<HomeCubit>(
       () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
+
+    serviceLocator.registerFactory<ClaimTokenCubit>(
+      () =>
+          ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
+    );
+
+    serviceLocator.registerFactory<OnboardingReviewCubit>(
+      () => OnboardingReviewCubit(
+        onboardingRepository: serviceLocator<OnboardingRepository>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<PasswordValidationCubit>(
+      () => PasswordValidationCubit(),
     );
   }
 }

@@ -13,8 +13,14 @@ import 'package:mobile/features/home/presentation/widgets/home_header.dart';
 class HomeScreen extends StatelessWidget {
   final UserEntity? user;
   final UserProfileEntity? profile;
+  final ValueChanged<int>? onNavigationItemSelected;
 
-  const HomeScreen({super.key, this.user, this.profile});
+  const HomeScreen({
+    super.key,
+    this.user,
+    this.profile,
+    this.onNavigationItemSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +33,11 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: QuickAccessItem.home.index,
-        onItemSelected: (index) => context.goToQuickAccessTab(
-          index,
-          currentIndex: QuickAccessItem.home.index,
-        ),
+        onItemSelected: onNavigationItemSelected ??
+            (index) => context.goToQuickAccessTab(
+                  index,
+                  currentIndex: QuickAccessItem.home.index,
+                ),
       ),
     );
   }
