@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/domain/entities/user_entity.dart';
+import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
@@ -233,4 +235,101 @@ void main() {
     expect(router.routeInformationProvider.value.uri.path, '/home');
     expect(find.byType(HomeScreen), findsOneWidget);
   });
+
+  testWidgets(
+    'filters groups using group details label when search query is entered',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(
+        () => repository.getMyGroups(),
+      ).thenAnswer((_) async => const Success([group]));
+
+      final cubit = HomeCubit(groupRepository: repository);
+      final sessionCubit = MockSessionCubit();
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(buildSubject(cubit, sessionCubit));
+      await cubit.loadGroups();
+      await tester.pumpAndSettle();
+
+      cubit.updateSearch('Grupo 1');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Grupo 1'), findsOneWidget);
+
+      cubit.updateSearch('Inexistente');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nenhum grupo encontrado'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'uses onNavigationItemSelected callback and accepts user/profile',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(
+        () => repository.getMyGroups(),
+      ).thenAnswer((_) async => const Success(<GroupEntity>[]));
+
+      final cubit = HomeCubit(groupRepository: repository);
+      final sessionCubit = MockSessionCubit();
+      addTearDown(cubit.close);
+
+      int? selectedIndex;
+      const testUser = UserEntity(
+        name: 'Ana',
+        mail: 'ana@example.com',
+        birthday: '01/01/2000',
+        phoneNumber: '123',
+        instagramUser: '@ana',
+        educationDegree: 'Degree',
+        jobPosition: 'Dev',
+        cityZone: (id: '', name: '', acronym: ''),
+      );
+      const testProfile = UserProfileEntity(
+        id: '1',
+        name: 'Ana',
+        email: 'ana@example.com',
+        address: 'Rua A',
+        phoneNumber: '123',
+        birthday: '01/01/2000',
+        instagram: '@ana',
+        educationDegree: 'Degree',
+        jobPosition: 'Dev',
+        userId: 'u1',
+        isActive: true,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: BlocProvider<SessionCubit>.value(
+            value: sessionCubit,
+            child: BlocProvider<HomeCubit>.value(
+              value: cubit,
+              child: HomeScreen(
+                user: testUser,
+                profile: testProfile,
+                onNavigationItemSelected: (index) => selectedIndex = index,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.bySemanticsLabel('Perfil'));
+      await tester.pumpAndSettle();
+
+      expect(selectedIndex, QuickAccessItem.profile.index);
+    },
+  );
 }

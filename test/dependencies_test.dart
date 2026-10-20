@@ -69,9 +69,15 @@ void main() {
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
       expect(serviceLocator<MeetingPhotosCubit>(), isA<MeetingPhotosCubit>());
-      expect(serviceLocator.isRegistered<ClaimTokenCubit>(), isTrue);
-      expect(serviceLocator.isRegistered<OnboardingReviewCubit>(), isTrue);
-      expect(serviceLocator.isRegistered<PasswordValidationCubit>(), isTrue);
+      expect(serviceLocator<ClaimTokenCubit>(), isA<ClaimTokenCubit>());
+      expect(
+        serviceLocator<OnboardingReviewCubit>(),
+        isA<OnboardingReviewCubit>(),
+      );
+      expect(
+        serviceLocator<PasswordValidationCubit>(),
+        isA<PasswordValidationCubit>(),
+      );
     },
   );
 }
