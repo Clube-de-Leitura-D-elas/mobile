@@ -652,7 +652,7 @@ abstract class AppLocalizations {
   /// No description provided for @meetingEditLocationHint.
   ///
   /// In pt, this message translates to:
-  /// **'Nome do local'**
+  /// **'Busque pelo nome ou endereço'**
   String get meetingEditLocationHint;
 
   /// No description provided for @meetingEditLocationError.
@@ -660,6 +660,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Informe o local.'**
   String get meetingEditLocationError;
+
+  /// No description provided for @meetingEditLocationSelectError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um local da lista.'**
+  String get meetingEditLocationSelectError;
+
+  /// No description provided for @meetingEditLocationSearchError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível buscar locais. Tente novamente.'**
+  String get meetingEditLocationSearchError;
+
+  /// No description provided for @meetingEditDateInvalidError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe uma data válida (DD/MM/AAAA).'**
+  String get meetingEditDateInvalidError;
+
+  /// No description provided for @meetingEditTimeInvalidError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe um horário válido (HH:MM).'**
+  String get meetingEditTimeInvalidError;
 
   /// No description provided for @meetingEditDescriptionLabel.
   ///

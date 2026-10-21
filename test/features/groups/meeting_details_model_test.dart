@@ -77,6 +77,24 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test('reads can_edit and keeps it in the domain entity', () {
+    final model = MeetingDetailsModel.fromJson(withFields({'can_edit': true}));
+
+    expect(model.canEdit, isTrue);
+    expect(model.toDomain().canEdit, isTrue);
+  });
+
+  test('hides editing when can_edit is missing', () {
+    expect(MeetingDetailsModel.fromJson(_fullJson).canEdit, isFalse);
+  });
+
+  test('throws when can_edit is not a boolean', () {
+    expect(
+      () => MeetingDetailsModel.fromJson(withFields({'can_edit': 'yes'})),
+      throwsFormatException,
+    );
+  });
 }
 
 Map<String, dynamic> withFields(Map<String, Object?> overrides) =>

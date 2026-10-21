@@ -317,10 +317,25 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingEditLocationLabel => 'Local';
 
   @override
-  String get meetingEditLocationHint => 'Nome do local';
+  String get meetingEditLocationHint => 'Busque pelo nome ou endereço';
 
   @override
   String get meetingEditLocationError => 'Informe o local.';
+
+  @override
+  String get meetingEditLocationSelectError => 'Selecione um local da lista.';
+
+  @override
+  String get meetingEditLocationSearchError =>
+      'Não foi possível buscar locais. Tente novamente.';
+
+  @override
+  String get meetingEditDateInvalidError =>
+      'Informe uma data válida (DD/MM/AAAA).';
+
+  @override
+  String get meetingEditTimeInvalidError =>
+      'Informe um horário válido (HH:MM).';
 
   @override
   String get meetingEditDescriptionLabel => 'Observações';
@@ -867,10 +882,25 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get meetingEditLocationLabel => 'Local';
 
   @override
-  String get meetingEditLocationHint => 'Nome do local';
+  String get meetingEditLocationHint => 'Busque pelo nome ou endereço';
 
   @override
   String get meetingEditLocationError => 'Informe o local.';
+
+  @override
+  String get meetingEditLocationSelectError => 'Selecione um local da lista.';
+
+  @override
+  String get meetingEditLocationSearchError =>
+      'Não foi possível buscar locais. Tente novamente.';
+
+  @override
+  String get meetingEditDateInvalidError =>
+      'Informe uma data válida (DD/MM/AAAA).';
+
+  @override
+  String get meetingEditTimeInvalidError =>
+      'Informe um horário válido (HH:MM).';
 
   @override
   String get meetingEditDescriptionLabel => 'Observações';

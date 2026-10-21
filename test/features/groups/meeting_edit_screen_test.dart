@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/media/photo_picker.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
+import 'package:mobile/features/groups/domain/entities/place_suggestion_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_screen.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
@@ -25,6 +29,7 @@ class MockPhotoPicker extends Mock implements PhotoPicker {}
 Widget _wrap({
   required MeetingDetailsEntity meeting,
   ValueChanged<MeetingEditResult>? onSaved,
+  GroupRepository? repository,
 }) {
   return MaterialApp(
     theme: AppTheme.light,
@@ -37,7 +42,10 @@ Widget _wrap({
       GlobalCupertinoLocalizations.delegate,
     ],
     home: Scaffold(
-      body: MeetingEditScreen(meeting: meeting, onSaved: onSaved),
+      body: _withEditCubits(
+        repository ?? MockGroupRepository(),
+        MeetingEditScreen(meeting: meeting, onSaved: onSaved),
+      ),
     ),
   );
 }
@@ -90,9 +98,123 @@ void main() {
     },
   );
 
+  const place = PlaceSuggestionEntity(
+    googlePlaceId: 'place-1',
+    name: 'Café Paris',
+    address: 'R. A, 10',
+  );
+
+  Future<void> fillDateAndTime(WidgetTester tester, String date) async {
+    final fields = find.byType(TextField);
+    await tester.enterText(fields.at(0), date);
+    await tester.enterText(fields.at(1), '19:30');
+  }
+
+  Future<void> tapSave(WidgetTester tester) async {
+    final saveButton = find.text('Salvar alterações');
+    await tester.ensureVisible(saveButton);
+    await tester.tap(saveButton);
+    await tester.pump();
+  }
+
+  testWidgets('given an impossible date, when saving, then shows the error', (
+    tester,
+  ) async {
+    MeetingEditResult? saved;
+    await tester.pumpWidget(
+      _wrap(meeting: meeting, onSaved: (result) => saved = result),
+    );
+
+    await fillDateAndTime(tester, '32/13/2026');
+    await tapSave(tester);
+
+    expect(find.text('Informe uma data válida (DD/MM/AAAA).'), findsOneWidget);
+    expect(saved, isNull);
+  });
+
+  testWidgets(
+    'given the location was not changed, when saving, then keeps the current place',
+    (tester) async {
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(meeting: meeting, onSaved: (result) => saved = result),
+      );
+
+      await fillDateAndTime(tester, '30/10/2026');
+      await tapSave(tester);
+
+      expect(saved?.date, DateTime(2026, 10, 30, 19, 30));
+      expect(saved?.googlePlaceId, isNull);
+      expect(saved?.description, 'Discussão dos principais temas do livro.');
+    },
+  );
+
+  testWidgets(
+    'given a typed location without a suggestion, when saving, then asks to pick one',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(
+        () => repository.searchPlaces(any()),
+      ).thenAnswer((_) async => const Success([]));
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(
+          meeting: meeting,
+          repository: repository,
+          onSaved: (result) => saved = result,
+        ),
+      );
+
+      await fillDateAndTime(tester, '30/10/2026');
+      await tester.enterText(find.byType(TextField).at(2), 'Café Paris');
+      await tester.pump(const Duration(milliseconds: 1));
+      await tapSave(tester);
+
+      expect(find.text('Selecione um local da lista.'), findsOneWidget);
+      expect(saved, isNull);
+    },
+  );
+
+  testWidgets(
+    'given a chosen suggestion, when saving, then returns the place id',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(
+        () => repository.searchPlaces('Café Paris'),
+      ).thenAnswer((_) async => const Success([place]));
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(
+          meeting: meeting,
+          repository: repository,
+          onSaved: (result) => saved = result,
+        ),
+      );
+
+      await fillDateAndTime(tester, '30/10/2026');
+      await tester.enterText(find.byType(TextField).at(2), 'Café Paris');
+      await tester.pump(const Duration(milliseconds: 1));
+      await tester.pump();
+
+      final suggestion = find.byKey(const ValueKey('place-suggestion-place-1'));
+      await tester.ensureVisible(suggestion);
+      await tester.tap(suggestion);
+      await tester.pump();
+      await tapSave(tester);
+
+      expect(find.text('Café Paris - R. A, 10'), findsOneWidget);
+      expect(saved?.googlePlaceId, 'place-1');
+    },
+  );
+
   testWidgets('renders the edit page with its back header', (tester) async {
     await tester.pumpWidget(
-      _localizedApp(const MeetingEditPage(meeting: meeting)),
+      _localizedApp(
+        _withEditCubits(
+          MockGroupRepository(),
+          const MeetingEditPage(meeting: meeting),
+        ),
+      ),
     );
 
     expect(find.byType(MeetingEditScreen), findsOneWidget);
@@ -106,12 +228,9 @@ void main() {
 
   testWidgets('shows edit action only when editing is allowed', (tester) async {
     final repository = MockGroupRepository();
-    when(
-      () => repository.getMeetingPhotos(any()),
-    ).thenAnswer(
-      (_) async => const Success(
-        MeetingPhotosEntity(photos: [], canAddPhotos: true),
-      ),
+    when(() => repository.getMeetingPhotos(any())).thenAnswer(
+      (_) async =>
+          const Success(MeetingPhotosEntity(photos: [], canAddPhotos: true)),
     );
 
     await tester.pumpWidget(
@@ -138,6 +257,19 @@ void main() {
   testWidgets('group edit route renders the edit page from state extra', (
     tester,
   ) async {
+    final repository = MockGroupRepository();
+    serviceLocator.allowReassignment = true;
+    serviceLocator.registerFactory<MeetingEditCubit>(
+      () => MeetingEditCubit(groupRepository: repository),
+    );
+    serviceLocator.registerFactory<PlaceSearchCubit>(
+      () => PlaceSearchCubit(groupRepository: repository),
+    );
+    addTearDown(() {
+      serviceLocator.unregister<MeetingEditCubit>();
+      serviceLocator.unregister<PlaceSearchCubit>();
+    });
+
     final router = GoRouter(
       initialLocation: '/start',
       routes: [
@@ -176,12 +308,9 @@ void main() {
 
   testWidgets('edit action navigates to the edit page', (tester) async {
     final repository = MockGroupRepository();
-    when(
-      () => repository.getMeetingPhotos(any()),
-    ).thenAnswer(
-      (_) async => const Success(
-        MeetingPhotosEntity(photos: [], canAddPhotos: true),
-      ),
+    when(() => repository.getMeetingPhotos(any())).thenAnswer(
+      (_) async =>
+          const Success(MeetingPhotosEntity(photos: [], canAddPhotos: true)),
     );
 
     final router = GoRouter(
@@ -196,8 +325,10 @@ void main() {
         ),
         GoRoute(
           path: GroupRoutePaths.meetingEdit,
-          builder: (context, state) =>
-              MeetingEditPage(meeting: state.extra! as MeetingDetailsEntity),
+          builder: (context, state) => _withEditCubits(
+            repository,
+            MeetingEditPage(meeting: state.extra! as MeetingDetailsEntity),
+          ),
         ),
       ],
     );
@@ -247,5 +378,22 @@ Widget _localizedApp(Widget child) {
       GlobalCupertinoLocalizations.delegate,
     ],
     home: child,
+  );
+}
+
+Widget _withEditCubits(GroupRepository repository, Widget child) {
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (_) => MeetingEditCubit(groupRepository: repository),
+      ),
+      BlocProvider(
+        create: (_) => PlaceSearchCubit(
+          groupRepository: repository,
+          debounce: Duration.zero,
+        ),
+      ),
+    ],
+    child: child,
   );
 }
