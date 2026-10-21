@@ -23,6 +23,10 @@ import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart'
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
+import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
+import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
+import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 GroupRepository _createGroupRepository() =>
@@ -107,6 +111,24 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<HomeCubit>(
       () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
+    // --- Raffles Feature ---
+    serviceLocator.registerLazySingleton<RaffleRemoteDataSource>(
+      () => RaffleRemoteDataSourceImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerLazySingleton<RaffleRepository>(
+      () => RaffleRepositoryImpl(
+        remoteDataSource: serviceLocator<RaffleRemoteDataSource>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<RafflePreparationCubit>(
+      () => RafflePreparationCubit(
+        repository: serviceLocator<RaffleRepository>(),
+      ),
     );
   }
 }
