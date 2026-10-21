@@ -371,6 +371,12 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get meetingDetailsOpenMapHint => 'Abrir no Google Maps';
+
+  @override
+  String get meetingDetailsMapLaunchError => 'Não foi possível abrir o mapa.';
+
+  @override
   String get meetingPhotosTitle => 'Fotos do encontro';
 
   @override
@@ -934,6 +940,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String meetingDetailsLocation(String location) {
     return 'Local: $location';
   }
+
+  @override
+  String get meetingDetailsOpenMapHint => 'Abrir no Google Maps';
+
+  @override
+  String get meetingDetailsMapLaunchError => 'Não foi possível abrir o mapa.';
 
   @override
   String get meetingPhotosTitle => 'Fotos do encontro';

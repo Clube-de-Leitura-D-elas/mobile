@@ -451,6 +451,8 @@
     "@meetingDetailsDescriptionTitle": {
       "description": "Título da seção de descrição do encontro"
     },
+    "meetingDetailsOpenMapHint": "Abrir no Google Maps",
+    "meetingDetailsMapLaunchError": "Não foi possível abrir o mapa.",
     "meetingCoverSemanticLabel": "Foto do {title}",
     "@meetingCoverSemanticLabel": {
       "description": "Rótulo de acessibilidade da foto de capa do encontro",

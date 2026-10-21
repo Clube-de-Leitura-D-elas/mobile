@@ -95,6 +95,23 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test('reads the Google place id of the location', () {
+    final model = MeetingDetailsModel.fromJson(
+      withFields({'location_google_place_id': 'place-1'}),
+    );
+
+    expect(model.toDomain().locationGooglePlaceId, 'place-1');
+  });
+
+  test('throws when the Google place id is not a string', () {
+    expect(
+      () => MeetingDetailsModel.fromJson(
+        withFields({'location_google_place_id': 123}),
+      ),
+      throwsFormatException,
+    );
+  });
 }
 
 Map<String, dynamic> withFields(Map<String, Object?> overrides) =>

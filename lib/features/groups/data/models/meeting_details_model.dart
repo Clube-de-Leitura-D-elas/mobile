@@ -9,6 +9,7 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
     super.date,
     super.locationName,
     super.locationAddress,
+    super.locationGooglePlaceId,
     super.description,
     super.coverPhotoUrl,
     super.canEdit,
@@ -26,6 +27,7 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
     final hostName = json['host_name'];
     final locationName = json['location_name'];
     final locationAddress = json['location_address'];
+    final locationGooglePlaceId = json['location_google_place_id'];
     final description = json['description'];
     final coverPhotoUrl = json['cover_photo_url'];
     final canEdit = json['can_edit'];
@@ -37,6 +39,7 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
         hostName is! String ||
         (locationName != null && locationName is! String) ||
         (locationAddress != null && locationAddress is! String) ||
+        (locationGooglePlaceId != null && locationGooglePlaceId is! String) ||
         (description != null && description is! String) ||
         (coverPhotoUrl != null && coverPhotoUrl is! String) ||
         (canEdit != null && canEdit is! bool)) {
@@ -56,6 +59,7 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
       hostName: hostName,
       locationName: locationName as String?,
       locationAddress: locationAddress as String?,
+      locationGooglePlaceId: locationGooglePlaceId as String?,
       description: description as String?,
       coverPhotoUrl: coverPhotoUrl as String?,
       canEdit: canEdit as bool? ?? false,
@@ -71,6 +75,7 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
       hostName: hostName,
       locationName: locationName,
       locationAddress: locationAddress,
+      locationGooglePlaceId: locationGooglePlaceId,
       description: description,
       coverPhotoUrl: coverPhotoUrl,
       canEdit: canEdit,

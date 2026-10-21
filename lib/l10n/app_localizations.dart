@@ -739,6 +739,18 @@ abstract class AppLocalizations {
   /// **'Local: {location}'**
   String meetingDetailsLocation(String location);
 
+  /// No description provided for @meetingDetailsOpenMapHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir no Google Maps'**
+  String get meetingDetailsOpenMapHint;
+
+  /// No description provided for @meetingDetailsMapLaunchError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o mapa.'**
+  String get meetingDetailsMapLaunchError;
+
   /// Título da seção de fotos na tela de detalhes do encontro
   ///
   /// In pt, this message translates to:

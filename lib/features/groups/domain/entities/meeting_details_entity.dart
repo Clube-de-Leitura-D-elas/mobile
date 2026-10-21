@@ -8,6 +8,7 @@ class MeetingDetailsEntity extends Equatable {
   final String hostName;
   final String? locationName;
   final String? locationAddress;
+  final String? locationGooglePlaceId;
   final String? description;
   final String? coverPhotoUrl;
   final bool canEdit;
@@ -20,6 +21,7 @@ class MeetingDetailsEntity extends Equatable {
     this.date,
     this.locationName,
     this.locationAddress,
+    this.locationGooglePlaceId,
     this.description,
     this.coverPhotoUrl,
     this.canEdit = false,
@@ -34,6 +36,7 @@ class MeetingDetailsEntity extends Equatable {
     hostName,
     locationName,
     locationAddress,
+    locationGooglePlaceId,
     description,
     coverPhotoUrl,
     canEdit,

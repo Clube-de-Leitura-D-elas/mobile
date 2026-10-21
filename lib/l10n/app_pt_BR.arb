@@ -85,6 +85,8 @@
   "meetingDetailsLocation": "Local: {location}",
   "meetingDetailsLocationUndefined": "Local: a definir",
   "meetingDetailsDescriptionTitle": "Descrição",
+  "meetingDetailsOpenMapHint": "Abrir no Google Maps",
+  "meetingDetailsMapLaunchError": "Não foi possível abrir o mapa.",
   "meetingEditTitle": "Editar encontro",
   "meetingEditDateLabel": "Data",
   "meetingEditDateHint": "DD/MM/AAAA",
