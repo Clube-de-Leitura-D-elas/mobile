@@ -15,6 +15,8 @@ import 'package:mobile/features/groups/data/repositories/group_participants_repo
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mocktail/mocktail.dart';
@@ -66,6 +68,8 @@ void main() {
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
       expect(serviceLocator<MeetingPhotosCubit>(), isA<MeetingPhotosCubit>());
+      expect(serviceLocator<MeetingEditCubit>(), isA<MeetingEditCubit>());
+      expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
     },
   );
 }

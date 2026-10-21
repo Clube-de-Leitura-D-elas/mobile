@@ -101,6 +101,23 @@ void main() {
   );
 
   testWidgets(
+    'given the map launcher throws, when tapping the location, then shows an error',
+    (tester) async {
+      await tester.pumpWidget(
+        _wrap(_meeting, onOpenMap: (_) async => throw Exception('no browser')),
+      );
+
+      await tester.tap(find.text(_locationLabel));
+      await tester.pump();
+
+      expect(find.text('Não foi possível abrir o mapa.'), findsOneWidget);
+
+      // Deixa o toast terminar antes de encerrar o teste.
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  testWidgets(
     'given no location, when the card is shown, then there is no link',
     (tester) async {
       await tester.pumpWidget(
