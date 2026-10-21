@@ -18,6 +18,10 @@
     "@notProvided": {
       "description": "Valor padrão quando uma informação não foi preenchida"
     },
+    "close": "Fechar",
+    "@close": {
+      "description": "Texto padrão para ação de fechar"
+    },
 
     "@@Auth": "--- Auth ---",
     "loginTitle": "Faça o seu login",
@@ -197,6 +201,26 @@
     "authUserIdLabel": "ID Auth (Supabase User ID)",
     "@authUserIdLabel": {
       "description": "Rótulo do item de perfil para ID do usuário no Supabase"
+    },
+    "profileLogoutButtonLabel": "Sair da conta",
+    "@profileLogoutButtonLabel": {
+      "description": "Rótulo de acessibilidade para o botão de logout no perfil"
+    },
+    "logoutDialogTitle": "Sair da conta",
+    "@logoutDialogTitle": {
+      "description": "Título do modal de confirmação de logout"
+    },
+    "logoutDialogMessage": "Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.",
+    "@logoutDialogMessage": {
+      "description": "Mensagem do modal de confirmação de logout"
+    },
+    "logoutDialogCancel": "Cancelar",
+    "@logoutDialogCancel": {
+      "description": "Botão de cancelar no modal de logout"
+    },
+    "logoutDialogConfirm": "Sair",
+    "@logoutDialogConfirm": {
+      "description": "Botão de confirmar no modal de logout"
     },
 
     "@@Groups": "--- Groups ---",

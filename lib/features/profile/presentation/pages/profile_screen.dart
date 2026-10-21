@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/profile/presentation/widgets/logout_confirm_dialog.dart';
 
@@ -8,7 +9,7 @@ class ProfileScreen extends StatelessWidget {
   void _showLogoutConfirmation(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: true, // Permite fechar clicando fora
+      barrierDismissible: true,
       builder: (BuildContext dialogContext) {
         return const LogoutConfirmDialog();
       },
@@ -24,15 +25,19 @@ class ProfileScreen extends StatelessWidget {
       padding: EdgeInsets.only(right: spacing.s16, top: spacing.s16),
       child: Align(
         alignment: Alignment.topRight,
-        child: InkWell(
-          onTap: () => _showLogoutConfirmation(context),
-          borderRadius: BorderRadius.circular(spacing.s8),
-          child: Padding(
-            padding: EdgeInsets.all(spacing.s8),
-            child: AppIcon(
-              icon: AppIcons.leave,
-              size: spacing.s24,
-              color: colors.textDefault,
+        child: Semantics(
+          label: context.l10n.profileLogoutButtonLabel,
+          button: true,
+          child: InkWell(
+            onTap: () => _showLogoutConfirmation(context),
+            borderRadius: BorderRadius.circular(spacing.s8),
+            child: Padding(
+              padding: EdgeInsets.all(spacing.s8),
+              child: AppIcon(
+                icon: AppIcons.leave,
+                size: spacing.s24,
+                color: colors.textDefault,
+              ),
             ),
           ),
         ),

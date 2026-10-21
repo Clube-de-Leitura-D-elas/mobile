@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // Importe para usar o context.read
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart'; // Ajuste o caminho se necessário
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 
 class LogoutConfirmDialog extends StatelessWidget {
   const LogoutConfirmDialog({super.key});
@@ -11,6 +12,7 @@ class LogoutConfirmDialog extends StatelessWidget {
     final colors = context.colors;
     final spacing = context.spacing;
     final typography = context.typography;
+    final l10n = context.l10n;
 
     return Dialog(
       backgroundColor: colors.surfaceDefault,
@@ -27,26 +29,29 @@ class LogoutConfirmDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Sair da conta',
+                    l10n.logoutDialogTitle,
                     style: typography.headingH3.copyWith(
                       color: colors.textDefault,
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: () => Navigator.of(context).pop(),
-                  borderRadius: BorderRadius.circular(spacing.s8),
-                  child: Icon(
-                    Icons.close,
-                    color: colors.textMuted,
-                    size: spacing.s24,
+                Tooltip(
+                  message: l10n.close,
+                  child: InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    borderRadius: BorderRadius.circular(spacing.s8),
+                    child: Icon(
+                      Icons.close,
+                      color: colors.textMuted,
+                      size: spacing.s24,
+                    ),
                   ),
                 ),
               ],
             ),
             SizedBox(height: spacing.s16),
             Text(
-              'Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.',
+              l10n.logoutDialogMessage,
               style: typography.bodyDefault.copyWith(color: colors.textMuted),
             ),
             SizedBox(height: spacing.s32),
@@ -54,12 +59,12 @@ class LogoutConfirmDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 AppButton.ghost(
-                  label: 'Cancelar',
+                  label: l10n.logoutDialogCancel,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 SizedBox(width: spacing.s8),
                 AppButton.primary(
-                  label: 'Sair',
+                  label: l10n.logoutDialogConfirm,
                   onPressed: () {
                     context.read<SessionCubit>().logOut();
                     Navigator.of(context).pop();

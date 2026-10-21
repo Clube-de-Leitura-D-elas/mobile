@@ -21,6 +21,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get notProvided => 'Não informado';
 
   @override
+  String get close => 'Fechar';
+
+  @override
   String get loginTitle => 'Faça o seu login';
 
   @override
@@ -156,6 +159,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get profileLogoutButtonLabel => 'Sair da conta';
+
+  @override
+  String get logoutDialogTitle => 'Sair da conta';
+
+  @override
+  String get logoutDialogMessage =>
+      'Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.';
+
+  @override
+  String get logoutDialogCancel => 'Cancelar';
+
+  @override
+  String get logoutDialogConfirm => 'Sair';
 
   @override
   String get groupNextEventTitle => 'Próximo evento';
@@ -580,6 +599,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get notProvided => 'Não informado';
 
   @override
+  String get close => 'Fechar';
+
+  @override
   String get loginTitle => 'Faça o seu login';
 
   @override
@@ -715,6 +737,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get profileLogoutButtonLabel => 'Sair da conta';
+
+  @override
+  String get logoutDialogTitle => 'Sair da conta';
+
+  @override
+  String get logoutDialogMessage =>
+      'Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.';
+
+  @override
+  String get logoutDialogCancel => 'Cancelar';
+
+  @override
+  String get logoutDialogConfirm => 'Sair';
 
   @override
   String get groupNextEventTitle => 'Próximo evento';
