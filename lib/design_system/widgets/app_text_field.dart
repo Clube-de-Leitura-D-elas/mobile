@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'gap.dart';
@@ -124,7 +125,15 @@ class _AppTextFieldState extends State<AppTextField> {
 
     Widget? effectiveSuffixIcon = widget.suffixIcon;
     if (widget.obscureText && widget.suffixIcon == null) {
+      final l10n = Localizations.of<AppLocalizations>(
+        context,
+        AppLocalizations,
+      );
+      final tooltip = _isObscured
+          ? (l10n?.showPasswordTooltip ?? 'Mostrar senha')
+          : (l10n?.hidePasswordTooltip ?? 'Ocultar senha');
       effectiveSuffixIcon = IconButton(
+        tooltip: tooltip,
         icon: Icon(
           _isObscured
               ? Icons.visibility_outlined

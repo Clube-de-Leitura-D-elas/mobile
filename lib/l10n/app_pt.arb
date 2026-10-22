@@ -1,5 +1,5 @@
-  {
-    "@@locale": "pt",
+{
+  "@@locale": "pt",
 
     "@@Common": "--- Common ---",
     "appTitle": "Clube de Leitura D'elas",
@@ -223,227 +223,58 @@
       "description": "Botão de confirmar no modal de logout"
     },
 
-    "@@Groups": "--- Groups ---",
-    "groupNextEventTitle": "Próximo evento",
-    "groupNextEventEmpty": "Nenhum próximo evento agendado",
-    "@groupNextEventEmpty": { "description": "Mensagem exibida quando o grupo não possui próximo evento" },
-    "groupNextEventHost": "Anfitriã: {name}",
-    "@groupNextEventHost": {
-      "description": "Nome da anfitriã do próximo evento",
-      "placeholders": {
-        "name": { "type": "String" }
-      }
-    },
-    "@groupNextEventTitle": {
-      "description": "Título da seção do próximo evento nos detalhes do grupo"
-    },
-    "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
-    "@groupNextEventHistoryLink": {
-      "description": "Link exibido abaixo do próximo evento para acessar o histórico de encontros"
-    },
-    "groupNextEventCurrentBookLabel": "O livro da vez é:",
-    "@groupNextEventCurrentBookLabel": {
-      "description": "Rótulo exibido acima da capa do livro do próximo evento do grupo"
-    },
-    "groupNextEventBookCoverSemanticLabel": "Capa do livro {title}",
-    "@groupNextEventBookCoverSemanticLabel": {
-      "description": "Rótulo de acessibilidade da capa do livro do próximo evento",
-      "placeholders": {
-        "title": { "type": "String" }
-      }
-    },
-    "groupNextEventBookUndefined": "Livro ainda não definido",
-    "@groupNextEventBookUndefined": {
-      "description": "Exibido no lugar da capa quando o próximo evento ainda não tem livro definido"
-    },
-    "groupParticipantsTitle": "Participantes",
-    "@groupParticipantsTitle": {
-      "description": "Título da seção de participantes nos detalhes do grupo"
-    },
-    "groupParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
-    "@groupParticipantsCount": {
-      "description": "Quantidade de participantes do grupo",
-      "placeholders": {
-        "count": {
-          "type": "int"
-      }
-    }
+  "@@Home": "--- Home ---",
+  "logoutTooltip": "Sair",
+  "@logoutTooltip": {
+    "description": "Tooltip do botão de logout no app bar"
   },
-  "groupEventHistoryDetailsLink": "Confira mais detalhes",
-  "@groupEventHistoryDetailsLink": {
-    "description": "Link para abrir os detalhes de um evento realizado"
+  "logoutButton": "Sair da Conta",
+  "@logoutButton": {
+    "description": "Texto do botão principal de sair da conta"
   },
-  "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
-  "@groupEventHistoryEmpty": {
-    "description": "Mensagem exibida quando o grupo não possui encontros realizados"
+  "defaultUserName": "Usuária",
+  "@defaultUserName": {
+    "description": "Nome genérico exibido quando o usuário não possui nome cadastrado"
   },
-  "meetingDetailsHeader": "Detalhes do encontro",
-  "meetingEditAction": "Editar encontro",
-  "@meetingDetailsHeader": {
-    "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
+  "profileStatusActive": "Perfil Vinculado & Ativo",
+  "@profileStatusActive": {
+    "description": "Badge de status de perfil ativado"
   },
-    "meetingDetailsTitle": "Encontro {number}",
-    "@meetingDetailsTitle": {
-      "description": "Título do encontro com a numeração sequencial no grupo",
-      "placeholders": {
-        "number": {
-          "type": "int"
-        }
-      }
-    },
-    "groupOpenWhatsAppButton": "Abrir Whatsapp",
-    "@groupOpenWhatsAppButton": {
-      "description": "Botão para abrir o grupo no WhatsApp"
-    },
-    "whatsappLaunchError": "Não foi possível abrir o link do WhatsApp.",
-    "@whatsappLaunchError": {
-      "description": "Mensagem de erro exibida quando falha a abertura do link do WhatsApp"
-    },
-    "groupRecommendBookButton": "Indicar livro",
-    "@groupRecommendBookButton": {
-      "description": "Botão para indicar um livro ao grupo"
-    },
-    "groupCoverSemanticLabel": "Foto do grupo {name}",
-    "@groupCoverSemanticLabel": {
-      "description": "Descrição acessível da foto de capa do grupo",
-      "placeholders": {
-        "name": {
-          "type": "String"
-        }
-      }
-    },
-    "groupParticipantsEmpty": "Ainda não há participantes neste grupo.",
-    "@groupParticipantsEmpty": {
-      "description": "Mensagem quando o grupo não tem participantes"
-    },
-    "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
-    "@groupParticipantsLoadError": {
-      "description": "Erro ao buscar a lista de participantes do grupo"
-    },
-    "groupParticipantsRetryButton": "Tentar novamente",
-    "@groupParticipantsRetryButton": {
-      "description": "Botão para buscar de novo a lista de participantes após erro"
-    },
-    "groupParticipantsLoading": "Carregando participantes",
-    "@groupParticipantsLoading": {
-      "description": "Rótulo acessível do estado de carregamento da lista de participantes"
-    },
-    "groupNextMeetingLabel": "Próximo evento",
-    "@groupNextMeetingLabel": {
-      "description": "Rótulo da seção de próximo encontro no card de grupo"
-    },
-    "groupDeclineMeetingButton": "Não irei",
-    "@groupDeclineMeetingButton": {
-      "description": "Botão para recusar presença no próximo encontro do grupo"
-    },
-    "groupConfirmMeetingButton": "Confirmar presença",
-    "@groupConfirmMeetingButton": {
-      "description": "Botão para confirmar presença no próximo encontro do grupo"
-    },
-    "groupMeetingConfirmedLabel": "Presença confirmada",
-    "@groupMeetingConfirmedLabel": {
-      "description": "Rótulo exibido acima do botão 'Não irei' quando a presença no próximo encontro já foi confirmada"
-    },
-    "groupMeetingDeclinedLabel": "Ausência confirmada",
-    "@groupMeetingDeclinedLabel": {
-      "description": "Rótulo exibido acima do botão 'Confirmar presença' quando a ausência no próximo encontro já foi confirmada"
-    },
-    "groupMeetingRsvpRetryAction": "Tentar novamente",
-    "@groupMeetingRsvpRetryAction": {
-      "description": "Tentar responder a confirmação de presença no encontro novamente após um erro"
-    },
-    "groupEventHistoryTitle": "Histórico de eventos",
-    "@groupEventHistoryTitle": {
-      "description": "Título da tela de histórico de eventos do grupo"
-    },
-    "groupEventHistoryHost": "Anfitriã: {hostName}",
-    "@groupEventHistoryHost": {
-      "description": "Identificação da anfitriã de um evento realizado",
-      "placeholders": {
-        "hostName": {
-          "type": "String"
-        }
-      }
-    },
-    "groupEventHistoryDetailsLink": "Confira mais detalhes",
-    "@groupEventHistoryDetailsLink": {
-      "description": "Link para abrir os detalhes de um evento realizado"
-    },
-    "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
-    "@groupEventHistoryEmpty": {
-      "description": "Mensagem exibida quando o grupo não possui encontros realizados"
-    },
-    "meetingDetailsHeader": "Detalhes do encontro",
-    "@meetingDetailsHeader": {
-      "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
-    },
-    "meetingDetailsTitle": "Encontro {number}",
-    "@meetingDetailsTitle": {
-      "description": "Título do encontro com a numeração sequencial no grupo",
-      "placeholders": {
-        "number": {
-          "type": "int"
-        }
-      }
-    },
-    "meetingDetailsTitleFallback": "Encontro",
-    "@meetingDetailsTitleFallback": {
-      "description": "Título do encontro quando ele ainda não tem numeração (sem data)"
-    },
-    "meetingDetailsDate": "Data: {date}",
-    "@meetingDetailsDate": {
-      "description": "Data do encontro já formatada",
-      "placeholders": {
-        "date": {
-          "type": "String"
-        }
-      }
-    },
-    "meetingDetailsDateUndefined": "Data: a definir",
-    "@meetingDetailsDateUndefined": {
-      "description": "Exibido quando o encontro ainda não tem data"
-    },
-    "meetingDetailsBook": "Livro: {title}",
-    "@meetingDetailsBook": {
-      "description": "Livro lido no encontro",
-      "placeholders": {
-        "title": {
-          "type": "String"
-        }
-      }
-    },
-  "meetingDetailsLocationUndefined": "Local: a definir",
-  "@meetingDetailsLocationUndefined": {
-    "description": "Exibido quando o encontro ainda não tem local"
+  "profileDataSectionTitle": "Dados do Perfil Cadastrado",
+  "@profileDataSectionTitle": {
+    "description": "Título da seção de dados do perfil na home"
   },
-  "meetingDetailsDescriptionTitle": "Descrição",
-  "@meetingDetailsDescriptionTitle": {
-    "description": "Título da seção de descrição do encontro"
+  "fullNameLabel": "Nome Completo",
+  "@fullNameLabel": {
+    "description": "Rótulo do item de perfil para o nome completo"
   },
-  "meetingEditTitle": "Editar encontro",
-  "meetingEditDateLabel": "Data",
-  "meetingEditDateHint": "DD/MM/AAAA",
-  "meetingEditDateError": "Informe a data.",
-  "meetingEditTimeLabel": "Horário",
-  "meetingEditTimeHint": "HH:MM",
-  "meetingEditTimeError": "Informe o horário.",
-  "meetingEditLocationLabel": "Local",
-  "meetingEditLocationHint": "Nome do local",
-  "meetingEditLocationError": "Informe o local.",
-  "meetingEditDescriptionLabel": "Observações",
-  "meetingEditDescriptionHint": "Adicione observações (opcional)",
-  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
-  "meetingEditBookLabel": "Livro da vez",
-  "meetingEditHostLabel": "Anfitriã",
-  "meetingEditSaveButton": "Salvar alterações",
-  "meetingCoverSemanticLabel": "Foto do {title}",
-  "@meetingCoverSemanticLabel": {
-    "description": "Rótulo de acessibilidade da foto de capa do encontro",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
+  "phoneLabel": "Telefone",
+  "@phoneLabel": {
+    "description": "Rótulo do item de perfil para número de telefone"
+  },
+  "addressLabel": "Endereço",
+  "@addressLabel": {
+    "description": "Rótulo do item de perfil para endereço"
+  },
+  "birthdayLabel": "Data de Nascimento",
+  "@birthdayLabel": {
+    "description": "Rótulo do item de perfil para data de nascimento"
+  },
+  "instagramLabel": "Instagram",
+  "@instagramLabel": {
+    "description": "Rótulo do item de perfil para conta do instagram"
+  },
+  "educationLabel": "Escolaridade",
+  "@educationLabel": {
+    "description": "Rótulo do item de perfil para grau de escolaridade"
+  },
+  "jobPositionLabel": "Cargo / Profissão",
+  "@jobPositionLabel": {
+    "description": "Rótulo do item de perfil para cargo ou profissão"
+  },
+  "authUserIdLabel": "ID Auth (Supabase User ID)",
+  "@authUserIdLabel": {
+    "description": "Rótulo do item de perfil para ID do usuário no Supabase"
   },
     "meetingDetailsHost": "Anfitriã: {name}",
     "@meetingDetailsHost": {
@@ -641,6 +472,7 @@
   "@genreFieldHint": {
     "description": "Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown"
   },
+
   "@@Groups": "--- Groups ---",
   "myGroupsTitle": "Meus grupos",
   "@myGroupsTitle": {
@@ -898,6 +730,22 @@
   "@meetingDetailsDescriptionTitle": {
     "description": "Título da seção de descrição do encontro"
   },
+  "meetingEditTitle": "Editar encontro",
+  "meetingEditDateLabel": "Data",
+  "meetingEditDateHint": "DD/MM/AAAA",
+  "meetingEditDateError": "Informe a data.",
+  "meetingEditTimeLabel": "Horário",
+  "meetingEditTimeHint": "HH:MM",
+  "meetingEditTimeError": "Informe o horário.",
+  "meetingEditLocationLabel": "Local",
+  "meetingEditLocationHint": "Nome do local",
+  "meetingEditLocationError": "Informe o local.",
+  "meetingEditDescriptionLabel": "Observações",
+  "meetingEditDescriptionHint": "Adicione observações (opcional)",
+  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
+  "meetingEditBookLabel": "Livro da vez",
+  "meetingEditHostLabel": "Anfitriã",
+  "meetingEditSaveButton": "Salvar alterações",
   "meetingCoverSemanticLabel": "Foto do {title}",
   "@meetingCoverSemanticLabel": {
     "description": "Rótulo de acessibilidade da foto de capa do encontro",
@@ -991,5 +839,54 @@
         "type": "int"
       }
     }
+  },
+  
+ "meetingEditAction": "Editar encontro",
+
+  "@@Raffles": "--- Raffles ---",
+  "rafflePreparationTitle": "Realizar sorteio",
+  "@rafflePreparationTitle": {
+    "description": "Título principal da tela de preparação do sorteio"
+  },
+  "rafflePreparationSubtitle": "Selecione as participantes",
+  "@rafflePreparationSubtitle": {
+    "description": "Subtítulo de instrução da tela de preparação do sorteio"
+  },
+  "raffleTableHeaderName": "Nome",
+  "@raffleTableHeaderName": {
+    "description": "Rótulo do cabeçalho de nome na tabela de participantes"
+  },
+  "raffleTableHeaderInclude": "Incluir no sorteio",
+  "@raffleTableHeaderInclude": {
+    "description": "Rótulo do cabeçalho de seleção/presença na tabela de participantes"
+  },
+  "raffleConfirmDialogTitle": "Confirmar sorteio",
+  "@raffleConfirmDialogTitle": {
+    "description": "Título da caixa de diálogo de confirmação do sorteio"
+  },
+  "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",
+  "@raffleConfirmDialogMessage": {
+    "description": "Mensagem de confirmação na caixa de diálogo do sorteio"
+  },
+  "raffleConfirmDialogCancel": "Cancelar",
+  "@raffleConfirmDialogCancel": {
+    "description": "Texto do botão de cancelamento na caixa de diálogo do sorteio"
+  },
+  "raffleSuccessToast": "Sorteio realizado com sucesso!",
+  "@raffleSuccessToast": {
+    "description": "Mensagem de sucesso exibida no toast após a realização do sorteio"
+  },
+
+  "showPasswordTooltip": "Mostrar senha",
+  "@showPasswordTooltip": {
+    "description": "Tooltip e acessibilidade para exibir senha"
+  },
+  "hidePasswordTooltip": "Ocultar senha",
+  "@hidePasswordTooltip": {
+    "description": "Tooltip e acessibilidade para ocultar senha"
+  },
+  "appLogoSemanticLabel": "Logo do Clube de Leitura D'Elas",
+  "@appLogoSemanticLabel": {
+    "description": "Descrição de acessibilidade do logotipo do aplicativo"
   }
 }

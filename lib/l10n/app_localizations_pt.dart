@@ -183,126 +183,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
 
   @override
-  String groupNextEventHost(String name) {
+  String meetingDetailsHost(String name) {
     return 'Anfitriã: $name';
   }
 
   @override
-  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
-
-  @override
-  String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
-
-  @override
-  String groupNextEventBookCoverSemanticLabel(String title) {
-    return 'Capa do livro $title';
-  }
-
-  @override
-  String get groupNextEventBookUndefined => 'Livro ainda não definido';
-
-  @override
-  String get groupParticipantsTitle => 'Participantes';
-
-  @override
-  String groupParticipantsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count participantes',
-      one: '1 participante',
-      zero: 'Nenhum participante',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get meetingDetailsHeader => 'Detalhes do encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String meetingDetailsTitle(int number) {
-    return 'Encontro $number';
-  }
-
-  @override
-  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
-
-  @override
-  String get whatsappLaunchError =>
-      'Não foi possível abrir o link do WhatsApp.';
-
-  @override
-  String get groupRecommendBookButton => 'Indicar livro';
-
-  @override
-  String groupCoverSemanticLabel(String name) {
-    return 'Foto do grupo $name';
-  }
-
-  @override
-  String get groupParticipantsEmpty =>
-      'Ainda não há participantes neste grupo.';
-
-  @override
-  String get groupParticipantsLoadError =>
-      'Não foi possível carregar as participantes.';
-
-  @override
-  String get groupParticipantsRetryButton => 'Tentar novamente';
-
-  @override
-  String get groupParticipantsLoading => 'Carregando participantes';
-
-  @override
-  String get groupNextMeetingLabel => 'Próximo evento';
-
-  @override
-  String get groupDeclineMeetingButton => 'Não irei';
-
-  @override
-  String get groupConfirmMeetingButton => 'Confirmar presença';
-
-  @override
-  String get groupMeetingConfirmedLabel => 'Presença confirmada';
-
-  @override
-  String get groupMeetingDeclinedLabel => 'Ausência confirmada';
-
-  @override
-  String get groupMeetingRsvpRetryAction => 'Tentar novamente';
-
-  @override
-  String get groupEventHistoryTitle => 'Histórico de eventos';
-
-  @override
-  String groupEventHistoryHost(String hostName) {
-    return 'Anfitriã: $hostName';
-  }
-
-  @override
-  String get meetingDetailsTitleFallback => 'Encontro';
-
-  @override
-  String meetingDetailsDate(String date) {
-    return 'Data: $date';
-  }
-
-  @override
-  String get meetingDetailsDateUndefined => 'Data: a definir';
-
-  @override
-  String meetingDetailsBook(String title) {
-    return 'Livro: $title';
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
   }
 
   @override
@@ -312,66 +199,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingDetailsDescriptionTitle => 'Descrição';
 
   @override
-  String get meetingEditTitle => 'Editar encontro';
-
-  @override
-  String get meetingEditDateLabel => 'Data';
-
-  @override
-  String get meetingEditDateHint => 'DD/MM/AAAA';
-
-  @override
-  String get meetingEditDateError => 'Informe a data.';
-
-  @override
-  String get meetingEditTimeLabel => 'Horário';
-
-  @override
-  String get meetingEditTimeHint => 'HH:MM';
-
-  @override
-  String get meetingEditTimeError => 'Informe o horário.';
-
-  @override
-  String get meetingEditLocationLabel => 'Local';
-
-  @override
-  String get meetingEditLocationHint => 'Nome do local';
-
-  @override
-  String get meetingEditLocationError => 'Informe o local.';
-
-  @override
-  String get meetingEditDescriptionLabel => 'Observações';
-
-  @override
-  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
-
-  @override
-  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
-
-  @override
-  String get meetingEditBookLabel => 'Livro da vez';
-
-  @override
-  String get meetingEditHostLabel => 'Anfitriã';
-
-  @override
-  String get meetingEditSaveButton => 'Salvar alterações';
-
-  @override
   String meetingCoverSemanticLabel(String title) {
     return 'Foto do $title';
-  }
-
-  @override
-  String meetingDetailsHost(String name) {
-    return 'Anfitriã: $name';
-  }
-
-  @override
-  String meetingDetailsLocation(String location) {
-    return 'Local: $location';
   }
 
   @override
@@ -579,7 +408,237 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
+  String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
+
+  @override
+  String groupNextEventBookCoverSemanticLabel(String title) {
+    return 'Capa do livro $title';
+  }
+
+  @override
+  String get close => 'Fechar';
+
+  @override
+  String get loginTitle => 'Faça o seu login';
+
+  @override
   String get groupNextEventNoLocation => 'Sem localização';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get whatsappLaunchError =>
+      'Não foi possível abrir o link do WhatsApp.';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
+
+  @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
+  String get groupNextMeetingLabel => 'Próximo evento';
+
+  @override
+  String get groupDeclineMeetingButton => 'Não irei';
+
+  @override
+  String get groupConfirmMeetingButton => 'Confirmar presença';
+
+  @override
+  String get groupMeetingConfirmedLabel => 'Presença confirmada';
+
+  @override
+  String get groupMeetingDeclinedLabel => 'Ausência confirmada';
+
+  @override
+  String get groupMeetingRsvpRetryAction => 'Tentar novamente';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
+  String get meetingDetailsTitleFallback => 'Encontro';
+
+  @override
+  String meetingDetailsDate(String date) {
+    return 'Data: $date';
+  }
+
+  @override
+  String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsBook(String title) {
+    return 'Livro: $title';
+  }
+
+  @override
+  String get meetingEditTitle => 'Editar encontro';
+
+  @override
+  String get meetingEditDateLabel => 'Data';
+
+  @override
+  String get meetingEditDateHint => 'DD/MM/AAAA';
+
+  @override
+  String get meetingEditDateError => 'Informe a data.';
+
+  @override
+  String get meetingEditTimeLabel => 'Horário';
+
+  @override
+  String get meetingEditTimeHint => 'HH:MM';
+
+  @override
+  String get meetingEditTimeError => 'Informe o horário.';
+
+  @override
+  String get meetingEditLocationLabel => 'Local';
+
+  @override
+  String get meetingEditLocationHint => 'Nome do local';
+
+  @override
+  String get meetingEditLocationError => 'Informe o local.';
+
+  @override
+  String get meetingEditDescriptionLabel => 'Observações';
+
+  @override
+  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
+
+  @override
+  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
+
+  @override
+  String get meetingEditBookLabel => 'Livro da vez';
+
+  @override
+  String get meetingEditHostLabel => 'Anfitriã';
+
+  @override
+  String get meetingEditSaveButton => 'Salvar alterações';
+
+  @override
+  String get profileLogoutButtonLabel => 'Sair da conta';
+
+  @override
+  String get logoutDialogTitle => 'Sair da conta';
+
+  @override
+  String get logoutDialogMessage =>
+      'Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.';
+
+  @override
+  String get logoutDialogCancel => 'Cancelar';
+
+  @override
+  String get logoutDialogConfirm => 'Sair';
+
+  @override
+  String get groupNextEventTitle => 'Próximo evento';
+    
+  @override
+  String get rafflePreparationTitle => 'Realizar sorteio';
+
+  @override
+  String get rafflePreparationSubtitle => 'Selecione as participantes';
+
+  @override
+  String get raffleTableHeaderName => 'Nome';
+
+  @override
+  String get raffleTableHeaderInclude => 'Incluir no sorteio';
+
+  @override
+  String get raffleConfirmDialogTitle => 'Confirmar sorteio';
+
+  @override
+  String get raffleConfirmDialogMessage =>
+      'Você deseja mesmo confirmar o sorteio?';
+
+  @override
+  String get raffleConfirmDialogCancel => 'Cancelar';
+
+  @override
+  String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
+
+  @override
+  String get showPasswordTooltip => 'Mostrar senha';
+
+  @override
+  String get hidePasswordTooltip => 'Ocultar senha';
+
+  @override
+  String get appLogoSemanticLabel => 'Logo do Clube de Leitura D\'Elas';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -597,9 +656,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get notProvided => 'Não informado';
-
-  @override
-  String get close => 'Fechar';
 
   @override
   String get loginTitle => 'Faça o seu login';
@@ -739,130 +795,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
-  String get profileLogoutButtonLabel => 'Sair da conta';
-
-  @override
-  String get logoutDialogTitle => 'Sair da conta';
-
-  @override
-  String get logoutDialogMessage =>
-      'Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.';
-
-  @override
-  String get logoutDialogCancel => 'Cancelar';
-
-  @override
-  String get logoutDialogConfirm => 'Sair';
-
-  @override
-  String get groupNextEventTitle => 'Próximo evento';
-
-  @override
-  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
-
-  @override
-  String groupNextEventHost(String name) {
+  String meetingDetailsHost(String name) {
     return 'Anfitriã: $name';
   }
 
   @override
-  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
-
-  @override
-  String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
-
-  @override
-  String groupNextEventBookCoverSemanticLabel(String title) {
-    return 'Capa do livro $title';
-  }
-
-  @override
-  String get groupNextEventBookUndefined => 'Livro ainda não definido';
-
-  @override
-  String get groupParticipantsTitle => 'Participantes';
-
-  @override
-  String groupParticipantsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count participantes',
-      one: '1 participante',
-      zero: 'Nenhum participante',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get meetingDetailsHeader => 'Detalhes do encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String meetingDetailsTitle(int number) {
-    return 'Encontro $number';
-  }
-
-  @override
-  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
-
-  @override
-  String get whatsappLaunchError =>
-      'Não foi possível abrir o link do WhatsApp.';
-
-  @override
-  String get groupRecommendBookButton => 'Indicar livro';
-
-  @override
-  String groupCoverSemanticLabel(String name) {
-    return 'Foto do grupo $name';
-  }
-
-  @override
-  String get groupParticipantsEmpty =>
-      'Ainda não há participantes neste grupo.';
-
-  @override
-  String get groupParticipantsLoadError =>
-      'Não foi possível carregar as participantes.';
-
-  @override
-  String get groupParticipantsRetryButton => 'Tentar novamente';
-
-  @override
-  String get groupParticipantsLoading => 'Carregando participantes';
-
-  @override
-  String get groupEventHistoryTitle => 'Histórico de eventos';
-
-  @override
-  String groupEventHistoryHost(String hostName) {
-    return 'Anfitriã: $hostName';
-  }
-
-  @override
-  String get meetingDetailsTitleFallback => 'Encontro';
-
-  @override
-  String meetingDetailsDate(String date) {
-    return 'Data: $date';
-  }
-
-  @override
-  String get meetingDetailsDateUndefined => 'Data: a definir';
-
-  @override
-  String meetingDetailsBook(String title) {
-    return 'Livro: $title';
+  String meetingDetailsLocation(String location) {
+    return 'Local: $location';
   }
 
   @override
@@ -872,66 +811,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get meetingDetailsDescriptionTitle => 'Descrição';
 
   @override
-  String get meetingEditTitle => 'Editar encontro';
-
-  @override
-  String get meetingEditDateLabel => 'Data';
-
-  @override
-  String get meetingEditDateHint => 'DD/MM/AAAA';
-
-  @override
-  String get meetingEditDateError => 'Informe a data.';
-
-  @override
-  String get meetingEditTimeLabel => 'Horário';
-
-  @override
-  String get meetingEditTimeHint => 'HH:MM';
-
-  @override
-  String get meetingEditTimeError => 'Informe o horário.';
-
-  @override
-  String get meetingEditLocationLabel => 'Local';
-
-  @override
-  String get meetingEditLocationHint => 'Nome do local';
-
-  @override
-  String get meetingEditLocationError => 'Informe o local.';
-
-  @override
-  String get meetingEditDescriptionLabel => 'Observações';
-
-  @override
-  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
-
-  @override
-  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
-
-  @override
-  String get meetingEditBookLabel => 'Livro da vez';
-
-  @override
-  String get meetingEditHostLabel => 'Anfitriã';
-
-  @override
-  String get meetingEditSaveButton => 'Salvar alterações';
-
-  @override
   String meetingCoverSemanticLabel(String title) {
     return 'Foto do $title';
-  }
-
-  @override
-  String meetingDetailsHost(String name) {
-    return 'Anfitriã: $name';
-  }
-
-  @override
-  String meetingDetailsLocation(String location) {
-    return 'Local: $location';
   }
 
   @override
@@ -1107,4 +988,188 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get emptyGroupsMessage =>
       'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String get groupNextEventTitle => 'Próximo evento';
+
+  @override
+  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
+
+  @override
+  String groupNextEventHost(String name) {
+    return 'Anfitriã: $name';
+  }
+
+  @override
+  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+
+  @override
+  String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
+
+  @override
+  String groupNextEventBookCoverSemanticLabel(String title) {
+    return 'Capa do livro $title';
+  }
+
+  @override
+  String get groupNextEventBookUndefined => 'Livro ainda não definido';
+
+  @override
+  String get groupParticipantsTitle => 'Participantes';
+
+  @override
+  String groupParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
+
+  @override
+  String get whatsappLaunchError =>
+      'Não foi possível abrir o link do WhatsApp.';
+
+  @override
+  String get groupRecommendBookButton => 'Indicar livro';
+
+  @override
+  String groupCoverSemanticLabel(String name) {
+    return 'Foto do grupo $name';
+  }
+
+  @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
+  String get groupParticipantsLoadError =>
+      'Não foi possível carregar as participantes.';
+
+  @override
+  String get groupParticipantsRetryButton => 'Tentar novamente';
+
+  @override
+  String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
+  String get groupEventHistoryTitle => 'Histórico de eventos';
+
+  @override
+  String groupEventHistoryHost(String hostName) {
+    return 'Anfitriã: $hostName';
+  }
+
+  @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
+  String get meetingDetailsTitleFallback => 'Encontro';
+
+  @override
+  String meetingDetailsDate(String date) {
+    return 'Data: $date';
+  }
+
+  @override
+  String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsBook(String title) {
+    return 'Livro: $title';
+  }
+
+  @override
+  String get meetingEditTitle => 'Editar encontro';
+
+  @override
+  String get meetingEditDateLabel => 'Data';
+
+  @override
+  String get meetingEditDateHint => 'DD/MM/AAAA';
+
+  @override
+  String get meetingEditDateError => 'Informe a data.';
+
+  @override
+  String get meetingEditTimeLabel => 'Horário';
+
+  @override
+  String get meetingEditTimeHint => 'HH:MM';
+
+  @override
+  String get meetingEditTimeError => 'Informe o horário.';
+
+  @override
+  String get meetingEditLocationLabel => 'Local';
+
+  @override
+  String get meetingEditLocationHint => 'Nome do local';
+
+  @override
+  String get meetingEditLocationError => 'Informe o local.';
+
+  @override
+  String get meetingEditDescriptionLabel => 'Observações';
+
+  @override
+  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
+
+  @override
+  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
+
+  @override
+  String get meetingEditBookLabel => 'Livro da vez';
+
+  @override
+  String get meetingEditHostLabel => 'Anfitriã';
+
+  @override
+  String get meetingEditSaveButton => 'Salvar alterações';
+
+  @override
+  String get meetingEditAction => 'Editar encontro';
+
+  @override
+  String get rafflePreparationTitle => 'Realizar sorteio';
+
+  @override
+  String get rafflePreparationSubtitle => 'Selecione as participantes';
+
+  @override
+  String get raffleTableHeaderName => 'Nome';
+
+  @override
+  String get raffleTableHeaderInclude => 'Incluir no sorteio';
+
+  @override
+  String get raffleConfirmDialogTitle => 'Confirmar sorteio';
+
+  @override
+  String get raffleConfirmDialogMessage =>
+      'Você deseja mesmo confirmar o sorteio?';
+
+  @override
+  String get raffleConfirmDialogCancel => 'Cancelar';
+
+  @override
+  String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
 }
