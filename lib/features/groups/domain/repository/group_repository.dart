@@ -5,10 +5,11 @@ import 'package:mobile/features/groups/domain/entities/group_details_entity.dart
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 
 abstract class GroupRepository {
@@ -34,7 +35,7 @@ abstract class GroupRepository {
     MeetingInvitationStatus response,
   );
 
-  Future<Result<List<MeetingPhotoEntity>, GroupFailure>> getMeetingPhotos(
+  Future<Result<MeetingPhotosEntity, GroupFailure>> getMeetingPhotos(
     String meetingId,
   );
 
@@ -45,13 +46,12 @@ abstract class GroupRepository {
     String contentType,
   );
 
-  Future<Result<List<MeetingAttendee>, GroupFailure>> getMeetingAttendance(
-    String meetingId,
-  );
-
   /// Marcadas = PRESENT, demais = ABSENT, em operação única.
   Future<Result<void, GroupFailure>> setMeetingPresence(
     String meetingId,
     List<String> presentUserIds,
   );
+
+  Future<Result<List<MeetingAttendanceEntity>, GroupFailure>>
+  getMeetingAttendance(String meetingId);
 }

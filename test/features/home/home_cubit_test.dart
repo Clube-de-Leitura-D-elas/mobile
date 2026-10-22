@@ -80,7 +80,14 @@ void main() {
       'updates the selected filter',
       build: build,
       act: (cubit) => cubit.selectFilter(1),
-      expect: () => [const HomeState(selectedFilterIndex: 1)],
+      expect: () => [const HomeState(filter: HomeFilter.unanswered)],
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'ignores a filter index out of range',
+      build: build,
+      act: (cubit) => cubit.selectFilter(7),
+      expect: () => const <HomeState>[],
     );
 
     blocTest<HomeCubit, HomeState>(
@@ -88,6 +95,27 @@ void main() {
       build: build,
       act: (cubit) => cubit.updateSearch('Porto Alegre'),
       expect: () => [const HomeState(searchQuery: 'Porto Alegre')],
+    );
+    blocTest<HomeCubit, HomeState>(
+      'expands a group card',
+      build: build,
+      act: (cubit) => cubit.toggleCardExpansion('1'),
+      expect: () => [
+        const HomeState(expandedGroupIds: {'1'}),
+      ],
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'collapses an expanded group card',
+      build: build,
+      act: (cubit) {
+        cubit.toggleCardExpansion('1');
+        cubit.toggleCardExpansion('1');
+      },
+      expect: () => [
+        const HomeState(expandedGroupIds: {'1'}),
+        const HomeState(),
+      ],
     );
   });
 }
