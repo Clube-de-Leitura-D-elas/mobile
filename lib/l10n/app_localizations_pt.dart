@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -175,12 +176,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get logoutDialogConfirm => 'Sair';
-
-  @override
-  String get groupNextEventTitle => 'Próximo evento';
-
-  @override
-  String get groupNextEventEmpty => 'Nenhum próximo evento agendado';
 
   @override
   String meetingDetailsHost(String name) {
@@ -430,10 +425,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get close => 'Fechar';
-
-  @override
-  String get loginTitle => 'Faça o seu login';
+  String get groupNextEventBookUndefined => 'Livro ainda não definido';
 
   @override
   String get groupNextEventNoLocation => 'Sem localização';
@@ -467,10 +459,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupCoverSemanticLabel(String name) {
     return 'Foto do grupo $name';
   }
-
-  @override
-  String get groupParticipantsEmpty =>
-      'Ainda não há participantes neste grupo.';
 
   @override
   String get groupParticipantsLoadError =>
@@ -588,24 +576,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingEditSaveButton => 'Salvar alterações';
 
   @override
-  String get profileLogoutButtonLabel => 'Sair da conta';
+  String get meetingEditAction => 'Editar encontro';
 
-  @override
-  String get logoutDialogTitle => 'Sair da conta';
-
-  @override
-  String get logoutDialogMessage =>
-      'Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.';
-
-  @override
-  String get logoutDialogCancel => 'Cancelar';
-
-  @override
-  String get logoutDialogConfirm => 'Sair';
-
-  @override
-  String get groupNextEventTitle => 'Próximo evento';
-    
   @override
   String get rafflePreparationTitle => 'Realizar sorteio';
 
@@ -627,9 +599,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get raffleConfirmDialogCancel => 'Cancelar';
-
-  @override
-  String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
 
   @override
   String get showPasswordTooltip => 'Mostrar senha';

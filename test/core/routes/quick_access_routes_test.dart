@@ -5,6 +5,7 @@ import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGoRouter extends Mock implements GoRouter {}
@@ -82,7 +83,13 @@ void main() {
         );
 
         await tester.pumpWidget(
-          MaterialApp.router(theme: AppTheme.light, routerConfig: router),
+          MaterialApp.router(
+            theme: AppTheme.light,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('pt'),
+            routerConfig: router,
+          ),
         );
         await tester.pumpAndSettle();
 
