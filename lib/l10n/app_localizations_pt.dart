@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -461,6 +460,10 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupParticipantsEmpty =>
+      'Ainda não há participantes neste grupo.';
+
+  @override
   String get groupParticipantsLoadError =>
       'Não foi possível carregar as participantes.';
 
@@ -601,6 +604,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get raffleConfirmDialogCancel => 'Cancelar';
 
   @override
+  String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
+
+  @override
   String get showPasswordTooltip => 'Mostrar senha';
 
   @override
@@ -625,6 +631,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get notProvided => 'Não informado';
+
+  @override
+  String get close => 'Fechar';
 
   @override
   String get loginTitle => 'Faça o seu login';
@@ -762,6 +771,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get profileLogoutButtonLabel => 'Sair da conta';
+
+  @override
+  String get logoutDialogTitle => 'Sair da conta';
+
+  @override
+  String get logoutDialogMessage =>
+      'Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.';
+
+  @override
+  String get logoutDialogCancel => 'Cancelar';
+
+  @override
+  String get logoutDialogConfirm => 'Sair';
 
   @override
   String meetingDetailsHost(String name) {

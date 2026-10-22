@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_screen.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGoRouter extends Mock implements GoRouter {}
@@ -18,6 +19,9 @@ void main() {
   Widget buildSubject() {
     return MaterialApp(
       theme: AppTheme.light,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('pt'),
       home: InheritedGoRouter(
         goRouter: mockGoRouter,
         child: const ProfilePage(),
