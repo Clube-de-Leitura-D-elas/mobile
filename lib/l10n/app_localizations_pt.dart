@@ -21,6 +21,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get notProvided => 'Não informado';
 
   @override
+  String get back => 'Voltar';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
   String get loginTitle => 'Faça o seu login';
 
   @override
@@ -112,13 +119,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
 
   @override
-  String get genericError =>
-      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
-
-  @override
-  String get back => 'Voltar';
-
-  @override
   String get logoutTooltip => 'Sair';
 
   @override
@@ -158,6 +158,45 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
 
   @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String get emptyGroupsSearch => 'Nenhum grupo encontrado';
+
+  @override
+  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
+
+  @override
+  String get emptyGroupsAnswered =>
+      'Você ainda não respondeu a nenhum encontro';
+
+  @override
+  String groupDetailsNumberLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
@@ -183,6 +222,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventBookUndefined => 'Livro ainda não definido';
 
   @override
+  String get groupNextEventNoLocation => 'Sem localização';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -195,24 +237,6 @@ class AppLocalizationsPt extends AppLocalizations {
       zero: 'Nenhum participante',
     );
     return '$_temp0';
-  }
-
-  @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get meetingDetailsHeader => 'Detalhes do encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String meetingDetailsTitle(int number) {
-    return 'Encontro $number';
   }
 
   @override
@@ -263,18 +287,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupMeetingRsvpRetryAction => 'Tentar novamente';
 
   @override
-  String get meetingPresenceHeader => 'Lista de Presença';
-
-  @override
-  String get invitationConfirmed => 'Nonfirmou';
-
-  @override
-  String get invitationNoResponse => 'Não respondeu';
-
-  @override
-  String get invitationDeclined => 'Recusou';
-
-  @override
   String get groupEventHistoryTitle => 'Histórico de eventos';
 
   @override
@@ -283,26 +295,37 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingPresenceHeader => 'Lista de Presença';
+
+  @override
+  String get invitationConfirmed => 'Confirmou';
+
+  @override
+  String get invitationNoResponse => 'Não respondeu';
+
+  @override
+  String get invitationDeclined => 'Recusou';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
   String get meetingDetailsTitleFallback => 'Encontro';
 
   @override
-  String meetingDetailsDate(String date) {
-    return 'Data: $date';
-  }
-
-  @override
-  String get meetingDetailsDateUndefined => 'Data: a definir';
-
-  @override
-  String meetingDetailsBook(String title) {
-    return 'Livro: $title';
-  }
-
-  @override
-  String get meetingDetailsLocationUndefined => 'Local: a definir';
-
-  @override
-  String get meetingDetailsDescriptionTitle => 'Descrição';
+  String get meetingEditAction => 'Editar encontro';
 
   @override
   String get meetingEditTitle => 'Editar encontro';
@@ -353,8 +376,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingEditSaveButton => 'Salvar alterações';
 
   @override
-  String meetingCoverSemanticLabel(String title) {
-    return 'Foto do $title';
+  String meetingDetailsDate(String date) {
+    return 'Data: $date';
+  }
+
+  @override
+  String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsBook(String title) {
+    return 'Livro: $title';
   }
 
   @override
@@ -365,6 +396,17 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String meetingDetailsLocation(String location) {
     return 'Local: $location';
+  }
+
+  @override
+  String get meetingDetailsLocationUndefined => 'Local: a definir';
+
+  @override
+  String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
   }
 
   @override
@@ -531,48 +573,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get genreFieldHint => 'Selecione um gênero';
-
-  @override
-  String get myGroupsTitle => 'Meus grupos';
-
-  @override
-  String get searchGroupPlaceholder => 'Buscar grupo';
-
-  @override
-  String get filterAll => 'Todos';
-
-  @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
-
-  @override
-  String get filterAnswered => 'Respondidos';
-
-  @override
-  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
-
-  @override
-  String get emptyGroupsMessage =>
-      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
-
-  @override
-  String get emptyGroupsSearch => 'Nenhum grupo encontrado';
-
-  @override
-  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
-
-  @override
-  String get emptyGroupsAnswered =>
-      'Você ainda não respondeu a nenhum encontro';
-
-  @override
-  String groupDetailsNumberLabel(int number) {
-    return 'Grupo $number';
-  }
-
-  @override
-  String get groupNextEventNoLocation => 'Sem localização';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -590,6 +590,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get notProvided => 'Não informado';
+
+  @override
+  String get back => 'Voltar';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
 
   @override
   String get loginTitle => 'Faça o seu login';
@@ -683,13 +690,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
 
   @override
-  String get genericError =>
-      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
-
-  @override
-  String get back => 'Voltar';
-
-  @override
   String get logoutTooltip => 'Sair';
 
   @override
@@ -727,6 +727,30 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 
   @override
   String get groupNextEventTitle => 'Próximo evento';
@@ -769,24 +793,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
-
-  @override
-  String get groupEventHistoryEmpty =>
-      'Este grupo ainda não realizou encontros.';
-
-  @override
-  String get meetingDetailsHeader => 'Detalhes do encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String meetingDetailsTitle(int number) {
-    return 'Encontro $number';
-  }
-
-  @override
   String get groupOpenWhatsAppButton => 'Abrir Whatsapp';
 
   @override
@@ -824,26 +830,25 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupEventHistoryEmpty =>
+      'Este grupo ainda não realizou encontros.';
+
+  @override
+  String get meetingDetailsHeader => 'Detalhes do encontro';
+
+  @override
+  String meetingDetailsTitle(int number) {
+    return 'Encontro $number';
+  }
+
+  @override
   String get meetingDetailsTitleFallback => 'Encontro';
 
   @override
-  String meetingDetailsDate(String date) {
-    return 'Data: $date';
-  }
-
-  @override
-  String get meetingDetailsDateUndefined => 'Data: a definir';
-
-  @override
-  String meetingDetailsBook(String title) {
-    return 'Livro: $title';
-  }
-
-  @override
-  String get meetingDetailsLocationUndefined => 'Local: a definir';
-
-  @override
-  String get meetingDetailsDescriptionTitle => 'Descrição';
+  String get meetingEditAction => 'Editar encontro';
 
   @override
   String get meetingEditTitle => 'Editar encontro';
@@ -894,8 +899,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get meetingEditSaveButton => 'Salvar alterações';
 
   @override
-  String meetingCoverSemanticLabel(String title) {
-    return 'Foto do $title';
+  String meetingDetailsDate(String date) {
+    return 'Data: $date';
+  }
+
+  @override
+  String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsBook(String title) {
+    return 'Livro: $title';
   }
 
   @override
@@ -906,6 +919,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String meetingDetailsLocation(String location) {
     return 'Local: $location';
+  }
+
+  @override
+  String get meetingDetailsLocationUndefined => 'Local: a definir';
+
+  @override
+  String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
   }
 
   @override
@@ -1057,28 +1081,4 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get selectOptionHint => 'Selecione';
-
-  @override
-  String get myGroupsTitle => 'Meus grupos';
-
-  @override
-  String get searchGroupPlaceholder => 'Buscar grupo';
-
-  @override
-  String get filterAll => 'Todos';
-
-  @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
-
-  @override
-  String get filterAnswered => 'Respondidos';
-
-  @override
-  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
-
-  @override
-  String get emptyGroupsMessage =>
-      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }

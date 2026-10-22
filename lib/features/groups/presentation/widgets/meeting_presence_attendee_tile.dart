@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/tokens/typography_tokens.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 
 class PresenceAttendeeTile extends StatelessWidget {
@@ -13,14 +13,14 @@ class PresenceAttendeeTile extends StatelessWidget {
     required this.onChanged,
   });
 
-  final MeetingAttendee attendee;
+  final MeetingAttendanceEntity attendee;
   final bool isChecked;
   final VoidCallback? onChanged;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final hint = switch (attendee.invitation) {
+    final hint = switch (attendee.invitationStatus) {
       MeetingInvitationStatus.confirmed => l10n.invitationConfirmed,
       MeetingInvitationStatus.pending => l10n.invitationNoResponse,
       MeetingInvitationStatus.declined => l10n.invitationDeclined,

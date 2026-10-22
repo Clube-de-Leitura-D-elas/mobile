@@ -17,6 +17,15 @@
   "@notProvided": {
     "description": "Valor padrão quando uma informação não foi preenchida"
   },
+  "back": "Voltar",
+  "@back": {
+    "description": "Texto padrão para ação de retornar"
+  },
+  "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
+  "@genericError": {
+    "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
+  },
+
   "@@Auth": "--- Auth ---",
   "loginTitle": "Faça o seu login",
   "@loginTitle": {
@@ -134,14 +143,7 @@
   "@claimTokenInvalidError": {
     "description": "Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado"
   },
-  "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
-  "@genericError": {
-    "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
-  },
-  "back": "Voltar",
-  "@back": {
-    "description": "Texto padrão para ação de retornar"
-  },
+
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",
   "@logoutTooltip": {
@@ -195,472 +197,7 @@
   "@authUserIdLabel": {
     "description": "Rótulo do item de perfil para ID do usuário no Supabase"
   },
-  "@@Groups": "--- Groups ---",
-  "groupNextEventTitle": "Próximo evento",
-  "groupNextEventEmpty": "Nenhum próximo evento agendado",
-  "@groupNextEventEmpty": {
-    "description": "Mensagem exibida quando o grupo não possui próximo evento"
-  },
-  "groupNextEventHost": "Anfitriã: {name}",
-  "@groupNextEventHost": {
-    "description": "Nome da anfitriã do próximo evento",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@groupNextEventTitle": {
-    "description": "Título da seção do próximo evento nos detalhes do grupo"
-  },
-  "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
-  "@groupNextEventHistoryLink": {
-    "description": "Link exibido abaixo do próximo evento para acessar o histórico de encontros"
-  },
-  "groupNextEventCurrentBookLabel": "O livro da vez é:",
-  "@groupNextEventCurrentBookLabel": {
-    "description": "Rótulo exibido acima da capa do livro do próximo evento do grupo"
-  },
-  "groupNextEventBookCoverSemanticLabel": "Capa do livro {title}",
-  "@groupNextEventBookCoverSemanticLabel": {
-    "description": "Rótulo de acessibilidade da capa do livro do próximo evento",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "groupNextEventBookUndefined": "Livro ainda não definido",
-  "@groupNextEventBookUndefined": {
-    "description": "Exibido no lugar da capa quando o próximo evento ainda não tem livro definido"
-  },
-  "groupParticipantsTitle": "Participantes",
-  "@groupParticipantsTitle": {
-    "description": "Título da seção de participantes nos detalhes do grupo"
-  },
-  "groupParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
-  "@groupParticipantsCount": {
-    "description": "Quantidade de participantes do grupo",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "groupEventHistoryDetailsLink": "Confira mais detalhes",
-  "@groupEventHistoryDetailsLink": {
-    "description": "Link para abrir os detalhes de um evento realizado"
-  },
-  "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
-  "@groupEventHistoryEmpty": {
-    "description": "Mensagem exibida quando o grupo não possui encontros realizados"
-  },
-  "meetingDetailsHeader": "Detalhes do encontro",
-  "meetingEditAction": "Editar encontro",
-  "@meetingDetailsHeader": {
-    "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
-  },
-  "meetingDetailsTitle": "Encontro {number}",
-  "@meetingDetailsTitle": {
-    "description": "Título do encontro com a numeração sequencial no grupo",
-    "placeholders": {
-      "number": {
-        "type": "int"
-      }
-    }
-  },
-  "groupOpenWhatsAppButton": "Abrir Whatsapp",
-  "@groupOpenWhatsAppButton": {
-    "description": "Botão para abrir o grupo no WhatsApp"
-  },
-  "whatsappLaunchError": "Não foi possível abrir o link do WhatsApp.",
-  "@whatsappLaunchError": {
-    "description": "Mensagem de erro exibida quando falha a abertura do link do WhatsApp"
-  },
-  "groupRecommendBookButton": "Indicar livro",
-  "@groupRecommendBookButton": {
-    "description": "Botão para indicar um livro ao grupo"
-  },
-  "groupCoverSemanticLabel": "Foto do grupo {name}",
-  "@groupCoverSemanticLabel": {
-    "description": "Descrição acessível da foto de capa do grupo",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "groupParticipantsEmpty": "Ainda não há participantes neste grupo.",
-  "@groupParticipantsEmpty": {
-    "description": "Mensagem quando o grupo não tem participantes"
-  },
-  "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
-  "@groupParticipantsLoadError": {
-    "description": "Erro ao buscar a lista de participantes do grupo"
-  },
-  "groupParticipantsRetryButton": "Tentar novamente",
-  "@groupParticipantsRetryButton": {
-    "description": "Botão para buscar de novo a lista de participantes após erro"
-  },
-  "groupParticipantsLoading": "Carregando participantes",
-  "@groupParticipantsLoading": {
-    "description": "Rótulo acessível do estado de carregamento da lista de participantes"
-  },
-  "groupNextMeetingLabel": "Próximo evento",
-  "@groupNextMeetingLabel": {
-    "description": "Rótulo da seção de próximo encontro no card de grupo"
-  },
-  "groupDeclineMeetingButton": "Não irei",
-  "@groupDeclineMeetingButton": {
-    "description": "Botão para recusar presença no próximo encontro do grupo"
-  },
-  "groupConfirmMeetingButton": "Confirmar presença",
-  "@groupConfirmMeetingButton": {
-    "description": "Botão para confirmar presença no próximo encontro do grupo"
-  },
-  "groupMeetingConfirmedLabel": "Presença confirmada",
-  "@groupMeetingConfirmedLabel": {
-    "description": "Rótulo exibido acima do botão 'Não irei' quando a presença no próximo encontro já foi confirmada"
-  },
-  "groupMeetingDeclinedLabel": "Ausência confirmada",
-  "@groupMeetingDeclinedLabel": {
-    "description": "Rótulo exibido acima do botão 'Confirmar presença' quando a ausência no próximo encontro já foi confirmada"
-  },
-  "groupMeetingRsvpRetryAction": "Tentar novamente",
-  "@groupMeetingRsvpRetryAction": {
-    "description": "Tentar responder a confirmação de presença no encontro novamente após um erro"
-  },
-  "groupEventHistoryTitle": "Histórico de eventos",
-  "@groupEventHistoryTitle": {
-    "description": "Título da tela de histórico de eventos do grupo"
-  },
-  "groupEventHistoryHost": "Anfitriã: {hostName}",
-  "@groupEventHistoryHost": {
-    "description": "Identificação da anfitriã de um evento realizado",
-    "placeholders": {
-      "hostName": {
-        "type": "String"
-      }
-    }
-  },
-  "groupEventHistoryDetailsLink": "Confira mais detalhes",
-  "@groupEventHistoryDetailsLink": {
-    "description": "Link para abrir os detalhes de um evento realizado"
-  },
-  "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
-  "@groupEventHistoryEmpty": {
-    "description": "Mensagem exibida quando o grupo não possui encontros realizados"
-  },
-  "meetingDetailsHeader": "Detalhes do encontro",
-  "@meetingDetailsHeader": {
-    "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
-  },
-  "meetingDetailsTitle": "Encontro {number}",
-  "@meetingDetailsTitle": {
-    "description": "Título do encontro com a numeração sequencial no grupo",
-    "placeholders": {
-      "number": {
-        "type": "int"
-      }
-    }
-  },
-  "meetingDetailsTitleFallback": "Encontro",
-  "@meetingDetailsTitleFallback": {
-    "description": "Título do encontro quando ele ainda não tem numeração (sem data)"
-  },
-  "meetingDetailsDate": "Data: {date}",
-  "@meetingDetailsDate": {
-    "description": "Data do encontro já formatada",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "meetingDetailsDateUndefined": "Data: a definir",
-  "@meetingDetailsDateUndefined": {
-    "description": "Exibido quando o encontro ainda não tem data"
-  },
-  "meetingDetailsBook": "Livro: {title}",
-  "@meetingDetailsBook": {
-    "description": "Livro lido no encontro",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "meetingDetailsLocationUndefined": "Local: a definir",
-  "@meetingDetailsLocationUndefined": {
-    "description": "Exibido quando o encontro ainda não tem local"
-  },
-  "meetingDetailsDescriptionTitle": "Descrição",
-  "@meetingDetailsDescriptionTitle": {
-    "description": "Título da seção de descrição do encontro"
-  },
-  "meetingEditTitle": "Editar encontro",
-  "meetingEditDateLabel": "Data",
-  "meetingEditDateHint": "DD/MM/AAAA",
-  "meetingEditDateError": "Informe a data.",
-  "meetingEditTimeLabel": "Horário",
-  "meetingEditTimeHint": "HH:MM",
-  "meetingEditTimeError": "Informe o horário.",
-  "meetingEditLocationLabel": "Local",
-  "meetingEditLocationHint": "Nome do local",
-  "meetingEditLocationError": "Informe o local.",
-  "meetingEditDescriptionLabel": "Observações",
-  "meetingEditDescriptionHint": "Adicione observações (opcional)",
-  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
-  "meetingEditBookLabel": "Livro da vez",
-  "meetingEditHostLabel": "Anfitriã",
-  "meetingEditSaveButton": "Salvar alterações",
-  "meetingCoverSemanticLabel": "Foto do {title}",
-  "@meetingCoverSemanticLabel": {
-    "description": "Rótulo de acessibilidade da foto de capa do encontro",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "meetingDetailsHost": "Anfitriã: {name}",
-  "@meetingDetailsHost": {
-    "description": "Anfitriã do encontro",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "meetingDetailsLocation": "Local: {location}",
-  "@meetingDetailsLocation": {
-    "description": "Nome e endereço do local do encontro",
-    "placeholders": {
-      "location": {
-        "type": "String"
-      }
-    }
-  },
-  "meetingDetailsLocationUndefined": "Local: a definir",
-  "@meetingDetailsLocationUndefined": {
-    "description": "Exibido quando o encontro ainda não tem local"
-  },
-  "meetingDetailsDescriptionTitle": "Descrição",
-  "@meetingDetailsDescriptionTitle": {
-    "description": "Título da seção de descrição do encontro"
-  },
-  "meetingCoverSemanticLabel": "Foto do {title}",
-  "@meetingCoverSemanticLabel": {
-    "description": "Rótulo de acessibilidade da foto de capa do encontro",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "meetingPhotosTitle": "Fotos do encontro",
-  "@meetingPhotosTitle": {
-    "description": "Título da seção de fotos na tela de detalhes do encontro"
-  },
-  "meetingPhotosAdd": "Adicionar fotos",
-  "@meetingPhotosAdd": {
-    "description": "Texto do estado vazio da seção de fotos; ao tocar abre a galeria"
-  },
-  "meetingPhotosAddMoreSemanticLabel": "Adicionar mais fotos",
-  "@meetingPhotosAddMoreSemanticLabel": {
-    "description": "Rótulo de acessibilidade do botão de adicionar fotos ao final da galeria"
-  },
-  "meetingPhotoSemanticLabel": "Foto {index} do encontro",
-  "@meetingPhotoSemanticLabel": {
-    "description": "Rótulo de acessibilidade de uma miniatura da galeria do encontro",
-    "placeholders": {
-      "index": {
-        "type": "int"
-      }
-    }
-  },
-  "meetingPhotosUploading": "Enviando {current} de {total}",
-  "@meetingPhotosUploading": {
-    "description": "Progresso do envio das fotos selecionadas",
-    "placeholders": {
-      "current": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "meetingPhotosUploadFailed": "{count, plural, =1{Não foi possível enviar 1 foto.} other{Não foi possível enviar {count} fotos.}}",
-  "@meetingPhotosUploadFailed": {
-    "description": "Mensagem exibida quando parte das fotos não foi enviada",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "meetingPhotosRetryButton": "Tentar novamente",
-  "@meetingPhotosRetryButton": {
-    "description": "Ação para reenviar só as fotos que falharam ou recarregar a galeria"
-  },
-  "meetingPhotosLoadError": "Não foi possível carregar as fotos do encontro.",
-  "@meetingPhotosLoadError": {
-    "description": "Erro ao carregar a galeria do encontro"
-  },
-  "meetingPhotosEmpty": "Ainda não há fotos deste encontro.",
-  "@meetingPhotosEmpty": {
-    "description": "Encontro sem fotos, para quem não pode adicionar (nem coordenadora nem anfitriã)"
-  },
-  "meetingPhotosAccessDenied": "Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.",
-  "@meetingPhotosAccessDenied": {
-    "description": "Exibido quando o acesso à galeria foi negado"
-  },
-  "meetingPhotosPickerFailed": "Não foi possível abrir a galeria. Tente novamente.",
-  "@meetingPhotosPickerFailed": {
-    "description": "Exibido quando a galeria não abre por um erro inesperado"
-  },
-  "meetingPhotosSkipped": "{count, plural, =1{1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.} other{{count} fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.}}",
-  "@meetingPhotosSkipped": {
-    "description": "Fotos descartadas antes do envio por tamanho ou formato",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "meetingPhotosLimitReached": "Este encontro já tem o máximo de {max} fotos.",
-  "@meetingPhotosLimitReached": {
-    "description": "Exibido quando o encontro atingiu o limite de fotos",
-    "placeholders": {
-      "max": {
-        "type": "int"
-      }
-    }
-  },
-  "meetingPhotosRejected": "{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}",
-  "@meetingPhotosRejected": {
-    "description": "Fotos recusadas pelo servidor (sem nova tentativa), por exemplo tamanho, formato ou permissão",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@@Onboarding": "--- Onboarding ---",
-  "onboardingReviewTitle": "Verifique os seus dados",
-  "@onboardingReviewTitle": {
-    "description": "Título principal do review de cadastro"
-  },
-  "onboardingNameLabel": "Nome",
-  "@onboardingNameLabel": {
-    "description": "Rótulo do campo Nome"
-  },
-  "onboardingEmailLabel": "E-mail",
-  "@onboardingEmailLabel": {
-    "description": "Rótulo e-mail"
-  },
-  "onboardingPhoneLabel": "Celular",
-  "@onboardingPhoneLabel": {
-    "description": "Rótulo celular"
-  },
-  "onboardingBirthDateLabel": "Data de nascimento",
-  "@onboardingBirthDateLabel": {
-    "description": "Rótulo data de nascimento"
-  },
-  "onboardingCityLabel": "Cidade",
-  "@onboardingCityLabel": {
-    "description": "Rótulo cidade"
-  },
-  "onboardingCityHint": "Selecione uma cidade",
-  "@onboardingCityHint": {
-    "description": "Dica de seleção de cidade"
-  },
-  "onboardingRegionLabel": "Região",
-  "@onboardingRegionLabel": {
-    "description": "Rótulo região"
-  },
-  "onboardingJobLabel": "Qual sua profissão?",
-  "@onboardingJobLabel": {
-    "description": "Rótulo profissão"
-  },
-  "onboardingEducationLabel": "Nível de escolaridade",
-  "@onboardingEducationLabel": {
-    "description": "Rótulo escolaridade"
-  },
-  "onboardingEducationHint": "Selecione um nível",
-  "@onboardingEducationHint": {
-    "description": "Dica seleção de escolaridade"
-  },
-  "onboardingOtherGroupLabel": "Você participa de outro grupo de leitura?",
-  "@onboardingOtherGroupLabel": {
-    "description": "Rótulo grupo de leitura"
-  },
-  "onboardingVolunteerLabel": "Teria interesse em se voluntariar como coordenadora de grupo?",
-  "@onboardingVolunteerLabel": {
-    "description": "Rótulo voluntariado"
-  },
-  "onboardingBookIndicationLabel": "Qual livro de ficção você indicaria para a leitura coletiva?",
-  "@onboardingBookIndicationLabel": {
-    "description": "Rótulo indicação livro"
-  },
-  "onboardingBookIndicationHint": "Digite sua resposta",
-  "@onboardingBookIndicationHint": {
-    "description": "Dica indicação livro"
-  },
-  "onboardingExpectationsLabel": "O que você espera ao participar do Clube de Leitura D'Elas?",
-  "@onboardingExpectationsLabel": {
-    "description": "Rótulo expectativas"
-  },
-  "onboardingExpectationsHint": "Digite sua resposta",
-  "@onboardingExpectationsHint": {
-    "description": "Dica expectativas"
-  },
-  "onboardingBackButton": "Voltar",
-  "@onboardingBackButton": {
-    "description": "Botão voltar"
-  },
-  "onboardingContinueButton": "Continuar",
-  "@onboardingContinueButton": {
-    "description": "Botão continuar"
-  },
-  "onboardingWelcomeTitle": "Seja Bem-vinda",
-  "@onboardingWelcomeTitle": {
-    "description": "Título de boas-vindas"
-  },
-  "onboardingWelcomeSubtitle": "Sua inscrição foi realizada com sucesso!",
-  "@onboardingWelcomeSubtitle": {
-    "description": "Subtítulo de boas-vindas"
-  },
-  "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
-  "@onboardingWelcomeButton": {
-    "description": "Botão concluir onboarding"
-  },
-  "selectOptionHint": "Selecione",
-  "@selectOptionHint": {
-    "description": "Dica genérica de seleção em dropdown"
-  },
-  "@@Dropdown": "--- Dropdown demo strings ---",
-  "genreRomance": "Romance",
-  "@genreRomance": {
-    "description": "Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown"
-  },
-  "genreFantasy": "Fantasia",
-  "@genreFantasy": {
-    "description": "Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown"
-  },
-  "genreSuspense": "Suspense",
-  "@genreSuspense": {
-    "description": "Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown"
-  },
-  "genreNonFiction": "Não Ficção",
-  "@genreNonFiction": {
-    "description": "Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown"
-  },
-  "genreFieldHint": "Selecione um gênero",
-  "@genreFieldHint": {
-    "description": "Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown"
-  },
+
   "@@Groups": "--- Groups ---",
   "myGroupsTitle": "Meus grupos",
   "@myGroupsTitle": {
@@ -836,22 +373,6 @@
   "@groupEventHistoryTitle": {
     "description": "Título da tela de histórico de eventos do grupo"
   },
-  "meetingPresenceHeader": "Lista de Presença",
-  "@meetingPresenceHeader": {
-    "description": "Título do cabeçalho da tela de registro de presença do encontro"
-  },
-  "invitationConfirmed": "Confirmou",
-  "@invitationConfirmed": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela confirmou que iria ao encontro"
-  },
-  "invitationNoResponse": "Não respondeu",
-  "@invitationNoResponse": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela não respondeu à confirmação de presença"
-  },
-  "invitationDeclined": "Recusou",
-  "@invitationDeclined": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela recusou a confirmação de presença"
-  },
   "groupEventHistoryHost": "Anfitriã: {hostName}",
   "@groupEventHistoryHost": {
     "description": "Identificação da anfitriã de um evento realizado",
@@ -868,6 +389,22 @@
   "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
   "@groupEventHistoryEmpty": {
     "description": "Mensagem exibida quando o grupo não possui encontros realizados"
+  },
+  "meetingPresenceHeader": "Lista de Presença",
+  "@meetingPresenceHeader": {
+    "description": "Título do cabeçalho da tela de registro de presença do encontro"
+  },
+  "invitationConfirmed": "Confirmou",
+  "@invitationConfirmed": {
+    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela confirmou que iria ao encontro"
+  },
+  "invitationNoResponse": "Não respondeu",
+  "@invitationNoResponse": {
+    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela não respondeu à confirmação de presença"
+  },
+  "invitationDeclined": "Recusou",
+  "@invitationDeclined": {
+    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela recusou a confirmação de presença"
   },
   "meetingDetailsHeader": "Detalhes do encontro",
   "@meetingDetailsHeader": {
@@ -886,6 +423,23 @@
   "@meetingDetailsTitleFallback": {
     "description": "Título do encontro quando ele ainda não tem numeração (sem data)"
   },
+  "meetingEditAction": "Editar encontro",
+  "meetingEditTitle": "Editar encontro",
+  "meetingEditDateLabel": "Data",
+  "meetingEditDateHint": "DD/MM/AAAA",
+  "meetingEditDateError": "Informe a data.",
+  "meetingEditTimeLabel": "Horário",
+  "meetingEditTimeHint": "HH:MM",
+  "meetingEditTimeError": "Informe o horário.",
+  "meetingEditLocationLabel": "Local",
+  "meetingEditLocationHint": "Nome do local",
+  "meetingEditLocationError": "Informe o local.",
+  "meetingEditDescriptionLabel": "Observações",
+  "meetingEditDescriptionHint": "Adicione observações (opcional)",
+  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
+  "meetingEditBookLabel": "Livro da vez",
+  "meetingEditHostLabel": "Anfitriã",
+  "meetingEditSaveButton": "Salvar alterações",
   "meetingDetailsDate": "Data: {date}",
   "@meetingDetailsDate": {
     "description": "Data do encontro já formatada",
@@ -993,6 +547,10 @@
   "@meetingPhotosLoadError": {
     "description": "Erro ao carregar a galeria do encontro"
   },
+  "meetingPhotosEmpty": "Ainda não há fotos deste encontro.",
+  "@meetingPhotosEmpty": {
+    "description": "Encontro sem fotos, para quem não pode adicionar (nem coordenadora nem anfitriã)"
+  },
   "meetingPhotosAccessDenied": "Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.",
   "@meetingPhotosAccessDenied": {
     "description": "Exibido quando o acesso à galeria foi negado"
@@ -1027,5 +585,121 @@
         "type": "int"
       }
     }
+  },
+
+  "@@Onboarding": "--- Onboarding ---",
+  "onboardingReviewTitle": "Verifique os seus dados",
+  "@onboardingReviewTitle": {
+    "description": "Título principal do review de cadastro"
+  },
+  "onboardingNameLabel": "Nome",
+  "@onboardingNameLabel": {
+    "description": "Rótulo do campo Nome"
+  },
+  "onboardingEmailLabel": "E-mail",
+  "@onboardingEmailLabel": {
+    "description": "Rótulo e-mail"
+  },
+  "onboardingPhoneLabel": "Celular",
+  "@onboardingPhoneLabel": {
+    "description": "Rótulo celular"
+  },
+  "onboardingBirthDateLabel": "Data de nascimento",
+  "@onboardingBirthDateLabel": {
+    "description": "Rótulo data de nascimento"
+  },
+  "onboardingCityLabel": "Cidade",
+  "@onboardingCityLabel": {
+    "description": "Rótulo cidade"
+  },
+  "onboardingCityHint": "Selecione uma cidade",
+  "@onboardingCityHint": {
+    "description": "Dica de seleção de cidade"
+  },
+  "onboardingRegionLabel": "Região",
+  "@onboardingRegionLabel": {
+    "description": "Rótulo região"
+  },
+  "onboardingJobLabel": "Qual sua profissão?",
+  "@onboardingJobLabel": {
+    "description": "Rótulo profissão"
+  },
+  "onboardingEducationLabel": "Nível de escolaridade",
+  "@onboardingEducationLabel": {
+    "description": "Rótulo escolaridade"
+  },
+  "onboardingEducationHint": "Selecione um nível",
+  "@onboardingEducationHint": {
+    "description": "Dica seleção de escolaridade"
+  },
+  "onboardingOtherGroupLabel": "Você participa de outro grupo de leitura?",
+  "@onboardingOtherGroupLabel": {
+    "description": "Rótulo grupo de leitura"
+  },
+  "onboardingVolunteerLabel": "Teria interesse em se voluntariar como coordenadora de grupo?",
+  "@onboardingVolunteerLabel": {
+    "description": "Rótulo voluntariado"
+  },
+  "onboardingBookIndicationLabel": "Qual livro de ficção você indicaria para a leitura coletiva?",
+  "@onboardingBookIndicationLabel": {
+    "description": "Rótulo indicação livro"
+  },
+  "onboardingBookIndicationHint": "Digite sua resposta",
+  "@onboardingBookIndicationHint": {
+    "description": "Dica indicação livro"
+  },
+  "onboardingExpectationsLabel": "O que você espera ao participar do Clube de Leitura D'Elas?",
+  "@onboardingExpectationsLabel": {
+    "description": "Rótulo expectativas"
+  },
+  "onboardingExpectationsHint": "Digite sua resposta",
+  "@onboardingExpectationsHint": {
+    "description": "Dica expectativas"
+  },
+  "onboardingBackButton": "Voltar",
+  "@onboardingBackButton": {
+    "description": "Botão voltar"
+  },
+  "onboardingContinueButton": "Continuar",
+  "@onboardingContinueButton": {
+    "description": "Botão continuar"
+  },
+  "onboardingWelcomeTitle": "Seja Bem-vinda",
+  "@onboardingWelcomeTitle": {
+    "description": "Título de boas-vindas"
+  },
+  "onboardingWelcomeSubtitle": "Sua inscrição foi realizada com sucesso!",
+  "@onboardingWelcomeSubtitle": {
+    "description": "Subtítulo de boas-vindas"
+  },
+  "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
+  "@onboardingWelcomeButton": {
+    "description": "Botão concluir onboarding"
+  },
+  "selectOptionHint": "Selecione",
+  "@selectOptionHint": {
+    "description": "Dica genérica de seleção em dropdown"
+  },
+
+  "@@Dropdown": "--- Dropdown demo strings ---",
+  "genreRomance": "Romance",
+  "@genreRomance": {
+    "description": "Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown"
+  },
+  "genreFantasy": "Fantasia",
+  "@genreFantasy": {
+    "description": "Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown"
+  },
+  "genreSuspense": "Suspense",
+  "@genreSuspense": {
+    "description": "Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown"
+  },
+  "genreNonFiction": "Não Ficção",
+  "@genreNonFiction": {
+    "description": "Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown"
+  },
+  "genreFieldHint": "Selecione um gênero",
+  "@genreFieldHint": {
+    "description": "Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown"
   }
 }

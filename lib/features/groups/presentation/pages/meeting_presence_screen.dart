@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/tokens/spacing_tokens.dart';
 import 'package:mobile/design_system/widgets/screen_header.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_presence_attendee_tile.dart';
 
@@ -17,7 +17,7 @@ class MeetingPresenceScreen extends StatelessWidget {
     required this.readOnly,
   });
 
-  final List<MeetingAttendee> attendees;
+  final List<MeetingAttendanceEntity> attendees;
   final Set<String> marked;
   final bool isSubmitting;
   final bool readOnly;
