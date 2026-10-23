@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_cover.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_info_card.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_section.dart';
@@ -34,6 +36,21 @@ class MeetingDetailsScreen extends StatelessWidget {
               padding: EdgeInsets.all(spacing.s24),
               child: MeetingInfoCard(meeting: meeting, title: title),
             ),
+            if (true || meeting.canRegisterPresence)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  spacing.s24,
+                  0,
+                  spacing.s24,
+                  spacing.s24,
+                ),
+                child: AppButton.primary(
+                  label: l10n.meetingDetailsRegisterPresence,
+                  onPressed: () => context.push(
+                    '${GroupRoutes.meetingPresence}?meeting_id=${meeting.id}',
+                  ),
+                ),
+              ),
             Padding(
               padding: EdgeInsets.fromLTRB(
                 spacing.s24,

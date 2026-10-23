@@ -187,7 +187,7 @@ class GroupRepositoryImpl implements GroupRepository {
   ) async {
     final result = await supabaseService.invokeFunction<void>(
       functionName: 'set-meeting-presence',
-      body: {'meeting_id': meetingId, 'present_group_user_ids': presentUserIds},
+      body: {'meeting_id': meetingId, 'present_user_ids': presentUserIds},
     );
 
     return switch (result) {

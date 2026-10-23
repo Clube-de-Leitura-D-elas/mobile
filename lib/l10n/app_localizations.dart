@@ -631,6 +631,12 @@ abstract class AppLocalizations {
   /// **'Descrição'**
   String get meetingDetailsDescriptionTitle;
 
+  /// Rótulo do botão nos detalhes do encontro que abre a tela de registro de presença, visível só para coordenadora ou anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Registrar presença'**
+  String get meetingDetailsRegisterPresence;
+
   /// Rótulo de acessibilidade da foto de capa do encontro
   ///
   /// In pt, this message translates to:

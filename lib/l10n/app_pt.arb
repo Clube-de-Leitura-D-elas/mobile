@@ -410,6 +410,10 @@
   "@meetingDetailsDescriptionTitle": {
     "description": "Título da seção de descrição do encontro"
   },
+  "meetingDetailsRegisterPresence": "Registrar presença",
+  "@meetingDetailsRegisterPresence": {
+    "description": "Rótulo do botão nos detalhes do encontro que abre a tela de registro de presença, visível só para coordenadora ou anfitriã"
+  },
   "meetingCoverSemanticLabel": "Foto do {title}",
   "@meetingCoverSemanticLabel": {
     "description": "Rótulo de acessibilidade da foto de capa do encontro",
