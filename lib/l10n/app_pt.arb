@@ -1,149 +1,227 @@
 {
   "@@locale": "pt",
 
-  "@@Common": "--- Common ---",
-  "appTitle": "Clube de Leitura D'elas",
-  "@appTitle": {
-    "description": "Nome principal do aplicativo"
-  },
-  "continueAction": "Continuar",
-  "@continueAction": {
-    "description": "Texto para botão de prosseguir em fluxos"
-  },
-  "confirm": "Confirmar",
-  "@confirm": {
-    "description": "Texto padrão para confirmação de ação"
-  },
-  "notProvided": "Não informado",
-  "@notProvided": {
-    "description": "Valor padrão quando uma informação não foi preenchida"
-  },
+    "@@Common": "--- Common ---",
+    "appTitle": "Clube de Leitura D'elas",
+    "@appTitle": {
+      "description": "Nome principal do aplicativo"
+    },
+    "continueAction": "Continuar",
+    "@continueAction": {
+      "description": "Texto para botão de prosseguir em fluxos"
+    },
+    "confirm": "Confirmar",
+    "@confirm": {
+      "description": "Texto padrão para confirmação de ação"
+    },
+    "notProvided": "Não informado",
+    "@notProvided": {
+      "description": "Valor padrão quando uma informação não foi preenchida"
+    },
+    "close": "Fechar",
+    "@close": {
+      "description": "Texto padrão para ação de fechar"
+    },
 
-  "@@Auth": "--- Auth ---",
-  "loginTitle": "Faça o seu login",
-  "@loginTitle": {
-    "description": "Título principal da tela de login"
-  },
-  "emailLabel": "E-mail",
-  "@emailLabel": {
-    "description": "Rótulo para campo de e-mail"
-  },
-  "emailHint": "seu@email.com",
-  "@emailHint": {
-    "description": "Texto de dica para campo de e-mail"
-  },
-  "passwordLabel": "Senha",
-  "@passwordLabel": {
-    "description": "Rótulo para campo de senha"
-  },
-  "forgotPasswordLink": "Esqueci minha senha",
-  "@forgotPasswordLink": {
-    "description": "Link de esqueci minha senha"
-  },
-  "signInWithGoogle": "Entrar com Google",
-  "@signInWithGoogle": {
-    "description": "Botão de login social com Google"
-  },
-  "createAccountLink": "Primeiro acesso? Crie sua conta aqui",
-  "@createAccountLink": {
-    "description": "Link para criação de nova conta"
-  },
-  "emailRequiredError": "Por favor, informe seu e-mail",
-  "@emailRequiredError": {
-    "description": "Mensagem de validação de e-mail obrigatório"
-  },
-  "emailInvalidError": "Informe um e-mail válido",
-  "@emailInvalidError": {
-    "description": "Mensagem de validação de formato de e-mail inválido"
-  },
-  "passwordRequiredError": "Por favor, informe sua senha",
-  "@passwordRequiredError": {
-    "description": "Mensagem de validação de senha obrigatória"
-  },
-  "confirmEmailBeforeLoginError": "Por favor, confirme seu e-mail antes de logar.",
-  "@confirmEmailBeforeLoginError": {
-    "description": "Mensagem de aviso para confirmar e-mail antes de fazer login"
-  },
-  "registerTitle": "Criar Conta",
-  "@registerTitle": {
-    "description": "Título da tela de cadastro de usuário"
-  },
-  "confirmPasswordLabel": "Confirmar Senha",
-  "@confirmPasswordLabel": {
-    "description": "Rótulo para campo de confirmação de senha"
-  },
-  "passwordMinLengthRequirement": "Pelo menos 8 caracteres",
-  "@passwordMinLengthRequirement": {
-    "description": "Requisito de validação de tamanho mínimo de senha"
-  },
-  "passwordUppercaseRequirement": "Pelo menos 1 letra maiúscula",
-  "@passwordUppercaseRequirement": {
-    "description": "Requisito de validação de letra maiúscula na senha"
-  },
-  "passwordLowercaseRequirement": "Pelo menos 1 letra minúscula",
-  "@passwordLowercaseRequirement": {
-    "description": "Requisito de validação de letra minúscula na senha"
-  },
-  "passwordNumberRequirement": "Pelo menos 1 número",
-  "@passwordNumberRequirement": {
-    "description": "Requisito de validação de número na senha"
-  },
-  "passwordsMatchRequirement": "Senhas conferem",
-  "@passwordsMatchRequirement": {
-    "description": "Indicador de que as senhas digitadas são iguais"
-  },
-  "registerButton": "Cadastrar",
-  "@registerButton": {
-    "description": "Botão para submeter o cadastro"
-  },
-  "accountCreatedSuccessMessage": "Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.",
-  "@accountCreatedSuccessMessage": {
-    "description": "Mensagem exibida após o cadastro bem-sucedido"
-  },
-  "alreadyHaveAccountLink": "Já tenho uma conta",
-  "@alreadyHaveAccountLink": {
-    "description": "Link para quem já possui conta e quer ir para o login"
-  },
-  "claimTokenTitle": "Vincular Perfil",
-  "@claimTokenTitle": {
-    "description": "Título da tela de vinculação de perfil por token"
-  },
-  "claimTokenSuccessMessage": "Perfil vinculado com sucesso!",
-  "@claimTokenSuccessMessage": {
-    "description": "Mensagem de sucesso após vincular perfil com token"
-  },
-  "claimTokenInputHeader": "Informe o seu Token de Acesso",
-  "@claimTokenInputHeader": {
-    "description": "Cabeçalho de instrução para digitação do token de acesso"
-  },
-  "claimTokenInputDescription": "Digite o token fornecido após a aprovação para vincular sua conta.",
-  "@claimTokenInputDescription": {
-    "description": "Descrição detalhada sobre a digitação do token de acesso"
-  },
-  "claimTokenFieldLabel": "Claim Token",
-  "@claimTokenFieldLabel": {
-    "description": "Rótulo do campo de entrada de token"
-  },
-  "claimTokenFieldHint": "Ex: 1A2B3C4D",
-  "@claimTokenFieldHint": {
-    "description": "Exemplo/Dica para preenchimento do token de acesso"
-  },
-  "claimTokenRequiredError": "Por favor, informe o token de acesso.",
-  "@claimTokenRequiredError": {
-    "description": "Erro exibido ao tentar enviar o token em branco"
-  },
-  "claimTokenInvalidError": "Token de acesso inválido ou já utilizado. Por favor, verifique o código.",
-  "@claimTokenInvalidError": {
-    "description": "Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado"
-  },
-  "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
-  "@genericError": {
-    "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
-  },
-  "back": "Voltar",
-  "@back": {
-    "description": "Texto padrão para ação de retornar"
-  },
+    "@@Auth": "--- Auth ---",
+    "loginTitle": "Faça o seu login",
+    "@loginTitle": {
+      "description": "Título principal da tela de login"
+    },
+    "emailLabel": "E-mail",
+    "@emailLabel": {
+      "description": "Rótulo para campo de e-mail"
+    },
+    "emailHint": "seu@email.com",
+    "@emailHint": {
+      "description": "Texto de dica para campo de e-mail"
+    },
+    "passwordLabel": "Senha",
+    "@passwordLabel": {
+      "description": "Rótulo para campo de senha"
+    },
+    "forgotPasswordLink": "Esqueci minha senha",
+    "@forgotPasswordLink": {
+      "description": "Link de esqueci minha senha"
+    },
+    "signInWithGoogle": "Entrar com Google",
+    "@signInWithGoogle": {
+      "description": "Botão de login social com Google"
+    },
+    "createAccountLink": "Primeiro acesso? Crie sua conta aqui",
+    "@createAccountLink": {
+      "description": "Link para criação de nova conta"
+    },
+    "emailRequiredError": "Por favor, informe seu e-mail",
+    "@emailRequiredError": {
+      "description": "Mensagem de validação de e-mail obrigatório"
+    },
+    "emailInvalidError": "Informe um e-mail válido",
+    "@emailInvalidError": {
+      "description": "Mensagem de validação de formato de e-mail inválido"
+    },
+    "passwordRequiredError": "Por favor, informe sua senha",
+    "@passwordRequiredError": {
+      "description": "Mensagem de validação de senha obrigatória"
+    },
+    "confirmEmailBeforeLoginError": "Por favor, confirme seu e-mail antes de logar.",
+    "@confirmEmailBeforeLoginError": {
+      "description": "Mensagem de aviso para confirmar e-mail antes de fazer login"
+    },
+    "registerTitle": "Criar Conta",
+    "@registerTitle": {
+      "description": "Título da tela de cadastro de usuário"
+    },
+    "confirmPasswordLabel": "Confirmar Senha",
+    "@confirmPasswordLabel": {
+      "description": "Rótulo para campo de confirmação de senha"
+    },
+    "passwordMinLengthRequirement": "Pelo menos 8 caracteres",
+    "@passwordMinLengthRequirement": {
+      "description": "Requisito de validação de tamanho mínimo de senha"
+    },
+    "passwordUppercaseRequirement": "Pelo menos 1 letra maiúscula",
+    "@passwordUppercaseRequirement": {
+      "description": "Requisito de validação de letra maiúscula na senha"
+    },
+    "passwordLowercaseRequirement": "Pelo menos 1 letra minúscula",
+    "@passwordLowercaseRequirement": {
+      "description": "Requisito de validação de letra minúscula na senha"
+    },
+    "passwordNumberRequirement": "Pelo menos 1 número",
+    "@passwordNumberRequirement": {
+      "description": "Requisito de validação de número na senha"
+    },
+    "passwordsMatchRequirement": "Senhas conferem",
+    "@passwordsMatchRequirement": {
+      "description": "Indicador de que as senhas digitadas são iguais"
+    },
+    "registerButton": "Cadastrar",
+    "@registerButton": {
+      "description": "Botão para submeter o cadastro"
+    },
+    "accountCreatedSuccessMessage": "Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.",
+    "@accountCreatedSuccessMessage": {
+      "description": "Mensagem exibida após o cadastro bem-sucedido"
+    },
+    "alreadyHaveAccountLink": "Já tenho uma conta",
+    "@alreadyHaveAccountLink": {
+      "description": "Link para quem já possui conta e quer ir para o login"
+    },
+    "claimTokenTitle": "Vincular Perfil",
+    "@claimTokenTitle": {
+      "description": "Título da tela de vinculação de perfil por token"
+    },
+    "claimTokenSuccessMessage": "Perfil vinculado com sucesso!",
+    "@claimTokenSuccessMessage": {
+      "description": "Mensagem de sucesso após vincular perfil com token"
+    },
+    "claimTokenInputHeader": "Informe o seu Token de Acesso",
+    "@claimTokenInputHeader": {
+      "description": "Cabeçalho de instrução para digitação do token de acesso"
+    },
+    "claimTokenInputDescription": "Digite o token fornecido após a aprovação para vincular sua conta.",
+    "@claimTokenInputDescription": {
+      "description": "Descrição detalhada sobre a digitação do token de acesso"
+    },
+    "claimTokenFieldLabel": "Claim Token",
+    "@claimTokenFieldLabel": {
+      "description": "Rótulo do campo de entrada de token"
+    },
+    "claimTokenFieldHint": "Ex: 1A2B3C4D",
+    "@claimTokenFieldHint": {
+      "description": "Exemplo/Dica para preenchimento do token de acesso"
+    },
+    "claimTokenRequiredError": "Por favor, informe o token de acesso.",
+    "@claimTokenRequiredError": {
+      "description": "Erro exibido ao tentar enviar o token em branco"
+    },
+    "claimTokenInvalidError": "Token de acesso inválido ou já utilizado. Por favor, verifique o código.",
+    "@claimTokenInvalidError": {
+      "description": "Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado"
+    },
+    "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
+    "@genericError": {
+      "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
+    },
+    "back": "Voltar",
+    "@back": {
+      "description": "Texto padrão para ação de retornar"
+    },
+
+    "@@Home": "--- Home ---",
+    "logoutTooltip": "Sair",
+    "@logoutTooltip": {
+      "description": "Tooltip do botão de logout no app bar"
+    },
+    "logoutButton": "Sair da Conta",
+    "@logoutButton": {
+      "description": "Texto do botão principal de sair da conta"
+    },
+    "defaultUserName": "Usuária",
+    "@defaultUserName": {
+      "description": "Nome genérico exibido quando o usuário não possui nome cadastrado"
+    },
+    "profileStatusActive": "Perfil Vinculado & Ativo",
+    "@profileStatusActive": {
+      "description": "Badge de status de perfil ativado"
+    },
+    "profileDataSectionTitle": "Dados do Perfil Cadastrado",
+    "@profileDataSectionTitle": {
+      "description": "Título da seção de dados do perfil na home"
+    },
+    "fullNameLabel": "Nome Completo",
+    "@fullNameLabel": {
+      "description": "Rótulo do item de perfil para o nome completo"
+    },
+    "phoneLabel": "Telefone",
+    "@phoneLabel": {
+      "description": "Rótulo do item de perfil para número de telefone"
+    },
+    "addressLabel": "Endereço",
+    "@addressLabel": {
+      "description": "Rótulo do item de perfil para endereço"
+    },
+    "birthdayLabel": "Data de Nascimento",
+    "@birthdayLabel": {
+      "description": "Rótulo do item de perfil para data de nascimento"
+    },
+    "instagramLabel": "Instagram",
+    "@instagramLabel": {
+      "description": "Rótulo do item de perfil para conta do instagram"
+    },
+    "educationLabel": "Escolaridade",
+    "@educationLabel": {
+      "description": "Rótulo do item de perfil para grau de escolaridade"
+    },
+    "jobPositionLabel": "Cargo / Profissão",
+    "@jobPositionLabel": {
+      "description": "Rótulo do item de perfil para cargo ou profissão"
+    },
+    "authUserIdLabel": "ID Auth (Supabase User ID)",
+    "@authUserIdLabel": {
+      "description": "Rótulo do item de perfil para ID do usuário no Supabase"
+    },
+    "profileLogoutButtonLabel": "Sair da conta",
+    "@profileLogoutButtonLabel": {
+      "description": "Rótulo de acessibilidade para o botão de logout no perfil"
+    },
+    "logoutDialogTitle": "Sair da conta",
+    "@logoutDialogTitle": {
+      "description": "Título do modal de confirmação de logout"
+    },
+    "logoutDialogMessage": "Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.",
+    "@logoutDialogMessage": {
+      "description": "Mensagem do modal de confirmação de logout"
+    },
+    "logoutDialogCancel": "Cancelar",
+    "@logoutDialogCancel": {
+      "description": "Botão de cancelar no modal de logout"
+    },
+    "logoutDialogConfirm": "Sair",
+    "@logoutDialogConfirm": {
+      "description": "Botão de confirmar no modal de logout"
+    },
 
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",

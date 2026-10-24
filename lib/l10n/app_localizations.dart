@@ -121,6 +121,12 @@ abstract class AppLocalizations {
   /// **'Não informado'**
   String get notProvided;
 
+  /// Texto padrão para ação de fechar
+  ///
+  /// In pt, this message translates to:
+  /// **'Fechar'**
+  String get close;
+
   /// Título principal da tela de login
   ///
   /// In pt, this message translates to:
@@ -384,6 +390,36 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
+
+  /// Rótulo de acessibilidade para o botão de logout no perfil
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair da conta'**
+  String get profileLogoutButtonLabel;
+
+  /// Título do modal de confirmação de logout
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair da conta'**
+  String get logoutDialogTitle;
+
+  /// Mensagem do modal de confirmação de logout
+  ///
+  /// In pt, this message translates to:
+  /// **'Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.'**
+  String get logoutDialogMessage;
+
+  /// Botão de cancelar no modal de logout
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get logoutDialogCancel;
+
+  /// Botão de confirmar no modal de logout
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair'**
+  String get logoutDialogConfirm;
 
   /// Anfitriã do encontro
   ///

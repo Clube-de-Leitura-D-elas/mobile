@@ -18,7 +18,6 @@ import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
-
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -215,7 +214,6 @@ void main() {
         equals(OnboardingRoutes.claimToken),
       );
 
-
       expect(
         SplashRoutes.splashGuard(mockContext, mockState, const GuestSession()),
         equals('/login'),
@@ -257,8 +255,9 @@ void main() {
       when(() => mockState.extra).thenReturn('user-123');
       final claimTokenRoute =
           OnboardingRoutes.routes.firstWhere(
-            (r) => (r as GoRoute).path == OnboardingRoutes.claimToken,
-          ) as GoRoute;
+                (r) => (r as GoRoute).path == OnboardingRoutes.claimToken,
+              )
+              as GoRoute;
       final claimTokenPage = claimTokenRoute.pageBuilder!(
         mockContext,
         mockState,
@@ -273,7 +272,6 @@ void main() {
       );
       expect(claimTokenPageNull, isA<Page<dynamic>>());
     });
-
 
     test('authGuard redirects correctly based on SessionState', () {
       when(() => mockState.matchedLocation).thenReturn('/other');
@@ -315,6 +313,64 @@ void main() {
         isNull,
       );
     });
+    group('authGuard - ramos adicionais', () {
+      String? guard(String location, SessionState s) {
+        when(() => mockState.matchedLocation).thenReturn(location);
+        return AuthRoutes.authGuard(mockContext, mockState, s);
+      }
+
+      const authenticated = AuthenticatedSession(
+        user: testUser,
+        profile: testProfile,
+      );
+
+      test('LoadingSession em telas de auth não redireciona', () {
+        expect(guard(AuthRoutes.login, const LoadingSession()), isNull);
+        expect(guard(AuthRoutes.register, const LoadingSession()), isNull);
+        expect(guard(AuthRoutes.claimToken, const LoadingSession()), isNull);
+      });
+
+      test('AuthenticatedSession em register e claimToken vai para /home', () {
+        expect(guard(AuthRoutes.register, authenticated), equals('/home'));
+        expect(guard(AuthRoutes.claimToken, authenticated), equals('/home'));
+      });
+
+      test('AuthenticatedSession em welcome não redireciona', () {
+        expect(guard(OnboardingRoutes.welcome, authenticated), isNull);
+      });
+
+      test('AuthenticatedSession em rota qualquer não redireciona', () {
+        expect(guard('/other', authenticated), isNull);
+      });
+
+      test(
+        'NeedsClaimSession em claimToken, reviewProfile e welcome não redireciona',
+        () {
+          const s = NeedsClaimSession(userId: 'u1');
+          expect(guard(AuthRoutes.claimToken, s), isNull);
+          expect(guard(OnboardingRoutes.reviewProfile, s), isNull);
+          expect(guard(OnboardingRoutes.welcome, s), isNull);
+        },
+      );
+
+      test('NeedsClaimSession em rota qualquer vai para claimToken', () {
+        expect(
+          guard('/other', const NeedsClaimSession(userId: 'u1')),
+          equals(OnboardingRoutes.claimToken),
+        );
+      });
+
+      test(
+        'GuestSession em register não redireciona e em rota qualquer vai para login',
+        () {
+          expect(guard(AuthRoutes.register, const GuestSession()), isNull);
+          expect(
+            guard('/other', const GuestSession()),
+            equals(AuthRoutes.login),
+          );
+        },
+      );
+    });
   });
 
   group('HomeRoutes', () {
@@ -334,7 +390,6 @@ void main() {
         ),
         equals(OnboardingRoutes.claimToken),
       );
-
 
       expect(
         HomeRoutes.homeGuard(mockContext, mockState, const GuestSession()),
