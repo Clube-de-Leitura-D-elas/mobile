@@ -7,17 +7,11 @@ import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_cover.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_info_card.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_section.dart';
-import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 
 class MeetingDetailsScreen extends StatelessWidget {
-  const MeetingDetailsScreen({
-    super.key,
-    required this.meeting,
-    this.canEdit = false,
-  });
+  const MeetingDetailsScreen({super.key, required this.meeting});
 
   final MeetingDetailsEntity meeting;
-  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -30,22 +24,6 @@ class MeetingDetailsScreen extends StatelessWidget {
     final coverUrl = meeting.coverPhotoUrl;
 
     return Scaffold(
-      appBar: canEdit
-          ? ScreenHeader.action(
-              title: l10n.meetingDetailsHeader,
-              action: IconButton(
-                tooltip: l10n.meetingEditAction,
-                icon: const Icon(Icons.edit_outlined),
-                onPressed: () => context.push(
-                  Uri(
-                    path: GroupRoutePaths.meetingEdit,
-                    queryParameters: {'meeting_id': meeting.id},
-                  ).toString(),
-                  extra: meeting,
-                ),
-              ),
-            )
-          : null,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -58,30 +36,21 @@ class MeetingDetailsScreen extends StatelessWidget {
               padding: EdgeInsets.all(spacing.s24),
               child: MeetingInfoCard(meeting: meeting, title: title),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: spacing.s24),
-              child: AppButton.secondary(
-                label: 'Ver lista de participantes',
-
-                onPressed: () {
-                  final meetingDate = meeting.date;
-
-                  context.push(
-                    '${GroupRoutes.meetingAttendance}?meeting_id=${meeting.id}',
-                    extra: {
-                      'meetingName': title,
-                      'formattedDate': meetingDate != null
-                          ? '${meetingDate.day.toString().padLeft(2, '0')}/'
-                                '${meetingDate.month.toString().padLeft(2, '0')}/'
-                                '${meetingDate.year}'
-                          : '',
-                    },
-                  );
-                },
+            if (true || meeting.canRegisterPresence)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  spacing.s24,
+                  0,
+                  spacing.s24,
+                  spacing.s24,
+                ),
+                child: AppButton.primary(
+                  label: l10n.meetingDetailsRegisterPresence,
+                  onPressed: () => context.push(
+                    '${GroupRoutes.meetingPresence}?meeting_id=${meeting.id}',
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: spacing.s16),
-            SizedBox(height: spacing.s16),
             Padding(
               padding: EdgeInsets.fromLTRB(
                 spacing.s24,

@@ -9,7 +9,6 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
@@ -42,11 +41,7 @@ void main() {
     );
     when(
       () => mockRepository.getMeetingPhotos(any()),
-    ).thenAnswer(
-      (_) async => const Success(
-        MeetingPhotosEntity(photos: [], canAddPhotos: true),
-      ),
-    );
+    ).thenAnswer((_) async => const Success([]));
   });
 
   tearDown(() {

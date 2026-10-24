@@ -1,1 +1,0 @@
-enum MeetingPresenceStatus { present, absent }

@@ -5,7 +5,7 @@ import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/tokens/spacing_tokens.dart';
 import 'package:mobile/design_system/tokens/typography_tokens.dart';
 import 'package:mobile/design_system/widgets/screen_header.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_presence_screen.dart';
@@ -62,7 +62,7 @@ class MeetingPresencePage extends StatelessWidget {
             attendees: attendees,
             marked: {
               for (final a in attendees)
-                if (a.presenceStatus == MeetingPresenceStatus.present) a.id,
+                if (a.presence == PresenceStatus.present) a.id,
             },
             isSubmitting: false,
             readOnly: true,

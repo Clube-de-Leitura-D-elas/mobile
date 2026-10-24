@@ -7,11 +7,9 @@ import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/meeting_photo_model.dart';
-import 'package:mobile/features/groups/data/models/meeting_photos_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
@@ -30,44 +28,38 @@ void main() {
   group('getMeetingPhotos', () {
     const functionName = 'get-meeting-photos?meeting_id=meeting-1';
 
-    void answerWith(Map<String, dynamic> json) {
-      when(
-        () => mockSupabaseService.invokeFunction<MeetingPhotosModel>(
-          functionName: functionName,
-          decoder: any(named: 'decoder'),
-        ),
-      ).thenAnswer((invocation) async {
-        final decoder =
-            invocation.namedArguments[#decoder]
-                as MeetingPhotosModel Function(dynamic);
-        return Success(SupabaseResponse(data: decoder(json)));
-      });
-    }
-
     test(
-      'given the function returns photos, when loading, then maps them in order with the permission',
+      'given the function returns photos, when loading, then maps them in order',
       () async {
-        answerWith({
-          'photos': [
-            {'id': 'photo-1', 'url': 'https://a/1.jpg'},
-            {'id': 'photo-2', 'url': 'https://a/2.jpg'},
-          ],
-          'can_add_photos': false,
+        when(
+          () => mockSupabaseService.invokeFunction<List<MeetingPhotoModel>>(
+            functionName: functionName,
+            decoder: any(named: 'decoder'),
+          ),
+        ).thenAnswer((invocation) async {
+          final decoder =
+              invocation.namedArguments[#decoder]
+                  as List<MeetingPhotoModel> Function(dynamic);
+          return Success(
+            SupabaseResponse(
+              data: decoder({
+                'photos': [
+                  {'id': 'photo-1', 'url': 'https://a/1.jpg'},
+                  {'id': 'photo-2', 'url': 'https://a/2.jpg'},
+                ],
+              }),
+            ),
+          );
         });
 
         final result = await repository.getMeetingPhotos('meeting-1');
 
         expect(
           result,
-          const Success<MeetingPhotosEntity, GroupFailure>(
-            MeetingPhotosEntity(
-              photos: [
-                MeetingPhotoEntity(id: 'photo-1', url: 'https://a/1.jpg'),
-                MeetingPhotoEntity(id: 'photo-2', url: 'https://a/2.jpg'),
-              ],
-              canAddPhotos: false,
-            ),
-          ),
+          const Success<List<MeetingPhotoEntity>, GroupFailure>([
+            MeetingPhotoEntity(id: 'photo-1', url: 'https://a/1.jpg'),
+            MeetingPhotoEntity(id: 'photo-2', url: 'https://a/2.jpg'),
+          ]),
         );
       },
     );
@@ -76,7 +68,7 @@ void main() {
       'given the function fails, when loading, then returns MeetingPhotosFailure',
       () async {
         when(
-          () => mockSupabaseService.invokeFunction<MeetingPhotosModel>(
+          () => mockSupabaseService.invokeFunction<List<MeetingPhotoModel>>(
             functionName: functionName,
             decoder: any(named: 'decoder'),
           ),
@@ -90,7 +82,7 @@ void main() {
 
         expect(
           result,
-          const Failure<MeetingPhotosEntity, GroupFailure>(
+          const Failure<List<MeetingPhotoEntity>, GroupFailure>(
             MeetingPhotosFailure(),
           ),
         );
@@ -101,7 +93,7 @@ void main() {
       'given a success without data, when loading, then returns MeetingPhotosFailure',
       () async {
         when(
-          () => mockSupabaseService.invokeFunction<MeetingPhotosModel>(
+          () => mockSupabaseService.invokeFunction<List<MeetingPhotoModel>>(
             functionName: functionName,
             decoder: any(named: 'decoder'),
           ),
@@ -109,7 +101,7 @@ void main() {
 
         final result = await repository.getMeetingPhotos('meeting-1');
 
-        expect(result, isA<Failure<MeetingPhotosEntity, GroupFailure>>());
+        expect(result, isA<Failure<List<MeetingPhotoEntity>, GroupFailure>>());
       },
     );
   });

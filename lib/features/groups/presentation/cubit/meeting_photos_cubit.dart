@@ -29,13 +29,7 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
       case Failure():
         emit(state.copyWith(status: MeetingPhotosStatus.error));
       case Success(:final data):
-        emit(
-          state.copyWith(
-            status: MeetingPhotosStatus.loaded,
-            photos: data.photos,
-            canAddPhotos: data.canAddPhotos,
-          ),
-        );
+        emit(state.copyWith(status: MeetingPhotosStatus.loaded, photos: data));
     }
   }
 

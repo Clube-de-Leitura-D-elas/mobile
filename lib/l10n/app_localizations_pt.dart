@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -19,13 +20,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get notProvided => 'Não informado';
-
-  @override
-  String get back => 'Voltar';
-
-  @override
-  String get genericError =>
-      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
 
   @override
   String get loginTitle => 'Faça o seu login';
@@ -117,6 +111,13 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get claimTokenInvalidError =>
       'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
+
+  @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
+  String get back => 'Voltar';
 
   @override
   String get logoutTooltip => 'Sair';
@@ -222,9 +223,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventBookUndefined => 'Livro ainda não definido';
 
   @override
-  String get groupNextEventNoLocation => 'Sem localização';
-
-  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -287,6 +285,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupMeetingRsvpRetryAction => 'Tentar novamente';
 
   @override
+  String get meetingPresenceHeader => 'Lista de Presença';
+
+  @override
+  String get invitationConfirmed => 'Nonfirmou';
+
+  @override
+  String get invitationNoResponse => 'Não respondeu';
+
+  @override
+  String get invitationDeclined => 'Recusou';
+
+  @override
   String get groupEventHistoryTitle => 'Histórico de eventos';
 
   @override
@@ -302,18 +312,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Este grupo ainda não realizou encontros.';
 
   @override
-  String get meetingPresenceHeader => 'Lista de Presença';
-
-  @override
-  String get invitationConfirmed => 'Confirmou';
-
-  @override
-  String get invitationNoResponse => 'Não respondeu';
-
-  @override
-  String get invitationDeclined => 'Recusou';
-
-  @override
   String get meetingDetailsHeader => 'Detalhes do encontro';
 
   @override
@@ -323,57 +321,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get meetingDetailsTitleFallback => 'Encontro';
-
-  @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String get meetingEditTitle => 'Editar encontro';
-
-  @override
-  String get meetingEditDateLabel => 'Data';
-
-  @override
-  String get meetingEditDateHint => 'DD/MM/AAAA';
-
-  @override
-  String get meetingEditDateError => 'Informe a data.';
-
-  @override
-  String get meetingEditTimeLabel => 'Horário';
-
-  @override
-  String get meetingEditTimeHint => 'HH:MM';
-
-  @override
-  String get meetingEditTimeError => 'Informe o horário.';
-
-  @override
-  String get meetingEditLocationLabel => 'Local';
-
-  @override
-  String get meetingEditLocationHint => 'Nome do local';
-
-  @override
-  String get meetingEditLocationError => 'Informe o local.';
-
-  @override
-  String get meetingEditDescriptionLabel => 'Observações';
-
-  @override
-  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
-
-  @override
-  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
-
-  @override
-  String get meetingEditBookLabel => 'Livro da vez';
-
-  @override
-  String get meetingEditHostLabel => 'Anfitriã';
-
-  @override
-  String get meetingEditSaveButton => 'Salvar alterações';
 
   @override
   String meetingDetailsDate(String date) {
@@ -403,6 +350,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get meetingDetailsDescriptionTitle => 'Descrição';
+
+  @override
+  String get meetingDetailsRegisterPresence => 'Registrar presença';
 
   @override
   String meetingCoverSemanticLabel(String title) {
@@ -445,9 +395,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get meetingPhotosLoadError =>
       'Não foi possível carregar as fotos do encontro.';
-
-  @override
-  String get meetingPhotosEmpty => 'Ainda não há fotos deste encontro.';
 
   @override
   String get meetingPhotosAccessDenied =>
@@ -592,13 +539,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get notProvided => 'Não informado';
 
   @override
-  String get back => 'Voltar';
-
-  @override
-  String get genericError =>
-      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
-
-  @override
   String get loginTitle => 'Faça o seu login';
 
   @override
@@ -690,6 +630,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Token de acesso inválido ou já utilizado. Por favor, verifique o código.';
 
   @override
+  String get genericError =>
+      'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
+
+  @override
+  String get back => 'Voltar';
+
+  @override
   String get logoutTooltip => 'Sair';
 
   @override
@@ -727,30 +674,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
-
-  @override
-  String get myGroupsTitle => 'Meus grupos';
-
-  @override
-  String get searchGroupPlaceholder => 'Buscar grupo';
-
-  @override
-  String get filterAll => 'Todos';
-
-  @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
-
-  @override
-  String get filterAnswered => 'Respondidos';
-
-  @override
-  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
-
-  @override
-  String get emptyGroupsMessage =>
-      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 
   @override
   String get groupNextEventTitle => 'Próximo evento';
@@ -848,57 +771,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get meetingDetailsTitleFallback => 'Encontro';
 
   @override
-  String get meetingEditAction => 'Editar encontro';
-
-  @override
-  String get meetingEditTitle => 'Editar encontro';
-
-  @override
-  String get meetingEditDateLabel => 'Data';
-
-  @override
-  String get meetingEditDateHint => 'DD/MM/AAAA';
-
-  @override
-  String get meetingEditDateError => 'Informe a data.';
-
-  @override
-  String get meetingEditTimeLabel => 'Horário';
-
-  @override
-  String get meetingEditTimeHint => 'HH:MM';
-
-  @override
-  String get meetingEditTimeError => 'Informe o horário.';
-
-  @override
-  String get meetingEditLocationLabel => 'Local';
-
-  @override
-  String get meetingEditLocationHint => 'Nome do local';
-
-  @override
-  String get meetingEditLocationError => 'Informe o local.';
-
-  @override
-  String get meetingEditDescriptionLabel => 'Observações';
-
-  @override
-  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
-
-  @override
-  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
-
-  @override
-  String get meetingEditBookLabel => 'Livro da vez';
-
-  @override
-  String get meetingEditHostLabel => 'Anfitriã';
-
-  @override
-  String get meetingEditSaveButton => 'Salvar alterações';
-
-  @override
   String meetingDetailsDate(String date) {
     return 'Data: $date';
   }
@@ -968,9 +840,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get meetingPhotosLoadError =>
       'Não foi possível carregar as fotos do encontro.';
-
-  @override
-  String get meetingPhotosEmpty => 'Ainda não há fotos deste encontro.';
 
   @override
   String get meetingPhotosAccessDenied =>

@@ -25,7 +25,6 @@
   "@genericError": {
     "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
   },
-
   "@@Auth": "--- Auth ---",
   "loginTitle": "Faça o seu login",
   "@loginTitle": {
@@ -143,7 +142,6 @@
   "@claimTokenInvalidError": {
     "description": "Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado"
   },
-
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",
   "@logoutTooltip": {
@@ -197,66 +195,8 @@
   "@authUserIdLabel": {
     "description": "Rótulo do item de perfil para ID do usuário no Supabase"
   },
-
   "@@Groups": "--- Groups ---",
-  "myGroupsTitle": "Meus grupos",
-  "@myGroupsTitle": {
-    "description": "Título principal da tela de grupos"
-  },
-  "searchGroupPlaceholder": "Buscar grupo",
-  "@searchGroupPlaceholder": {
-    "description": "Placeholder do campo de busca de grupos"
-  },
-  "filterAll": "Todos",
-  "@filterAll": {
-    "description": "Chip de filtro Todos"
-  },
-  "filterUnanswered": "Não respondidos ({count})",
-  "@filterUnanswered": {
-    "description": "Chip de filtro Não respondidos com contagem",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "filterAnswered": "Respondidos",
-  "@filterAnswered": {
-    "description": "Chip de filtro Respondidos"
-  },
-  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
-  "@emptyGroupsTitle": {
-    "description": "Título exibido quando a lista de grupos está vazia"
-  },
-  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
-  "@emptyGroupsMessage": {
-    "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
-  },
-  "emptyGroupsSearch": "Nenhum grupo encontrado",
-  "@emptyGroupsSearch": {
-    "description": "Mensagem exibida quando a busca por nome não retorna grupos"
-  },
-  "emptyGroupsUnanswered": "Nenhum grupo com resposta pendente",
-  "@emptyGroupsUnanswered": {
-    "description": "Mensagem exibida quando o filtro Não respondidos não tem grupos"
-  },
-  "emptyGroupsAnswered": "Você ainda não respondeu a nenhum encontro",
-  "@emptyGroupsAnswered": {
-    "description": "Mensagem exibida quando o filtro Respondidos não tem grupos"
-  },
-  "groupDetailsNumberLabel": "Grupo {number}",
-  "@groupDetailsNumberLabel": {
-    "description": "Título da tela de detalhes do grupo, com o número do grupo",
-    "placeholders": {
-      "number": {
-        "type": "int"
-      }
-    }
-  },
   "groupNextEventTitle": "Próximo evento",
-  "@groupNextEventTitle": {
-    "description": "Título da seção do próximo evento nos detalhes do grupo"
-  },
   "groupNextEventEmpty": "Nenhum próximo evento agendado",
   "@groupNextEventEmpty": {
     "description": "Mensagem exibida quando o grupo não possui próximo evento"
@@ -269,6 +209,9 @@
         "type": "String"
       }
     }
+  },
+  "@groupNextEventTitle": {
+    "description": "Título da seção do próximo evento nos detalhes do grupo"
   },
   "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
   "@groupNextEventHistoryLink": {
@@ -290,10 +233,6 @@
   "groupNextEventBookUndefined": "Livro ainda não definido",
   "@groupNextEventBookUndefined": {
     "description": "Exibido no lugar da capa quando o próximo evento ainda não tem livro definido"
-  },
-  "groupNextEventNoLocation": "Sem localização",
-  "@groupNextEventNoLocation": {
-    "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
   },
   "groupParticipantsTitle": "Participantes",
   "@groupParticipantsTitle": {
@@ -369,6 +308,22 @@
   "@groupMeetingRsvpRetryAction": {
     "description": "Tentar responder a confirmação de presença no encontro novamente após um erro"
   },
+  "meetingPresenceHeader": "Lista de Presença",
+  "@meetingPresenceHeader": {
+    "description": "Título do cabeçalho da tela de registro de presença do encontro"
+  },
+  "invitationConfirmed": "Nonfirmou",
+  "@invitationConfirmed": {
+    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela confirmou que iria ao encontro"
+  },
+  "invitationNoResponse": "Não respondeu",
+  "@invitationNoResponse": {
+    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela não respondeu à confirmação de presença"
+  },
+  "invitationDeclined": "Recusou",
+  "@invitationDeclined": {
+    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela recusou a confirmação de presença"
+  },
   "groupEventHistoryTitle": "Histórico de eventos",
   "@groupEventHistoryTitle": {
     "description": "Título da tela de histórico de eventos do grupo"
@@ -390,22 +345,6 @@
   "@groupEventHistoryEmpty": {
     "description": "Mensagem exibida quando o grupo não possui encontros realizados"
   },
-  "meetingPresenceHeader": "Lista de Presença",
-  "@meetingPresenceHeader": {
-    "description": "Título do cabeçalho da tela de registro de presença do encontro"
-  },
-  "invitationConfirmed": "Confirmou",
-  "@invitationConfirmed": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela confirmou que iria ao encontro"
-  },
-  "invitationNoResponse": "Não respondeu",
-  "@invitationNoResponse": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela não respondeu à confirmação de presença"
-  },
-  "invitationDeclined": "Recusou",
-  "@invitationDeclined": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela recusou a confirmação de presença"
-  },
   "meetingDetailsHeader": "Detalhes do encontro",
   "@meetingDetailsHeader": {
     "description": "Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro"
@@ -423,23 +362,6 @@
   "@meetingDetailsTitleFallback": {
     "description": "Título do encontro quando ele ainda não tem numeração (sem data)"
   },
-  "meetingEditAction": "Editar encontro",
-  "meetingEditTitle": "Editar encontro",
-  "meetingEditDateLabel": "Data",
-  "meetingEditDateHint": "DD/MM/AAAA",
-  "meetingEditDateError": "Informe a data.",
-  "meetingEditTimeLabel": "Horário",
-  "meetingEditTimeHint": "HH:MM",
-  "meetingEditTimeError": "Informe o horário.",
-  "meetingEditLocationLabel": "Local",
-  "meetingEditLocationHint": "Nome do local",
-  "meetingEditLocationError": "Informe o local.",
-  "meetingEditDescriptionLabel": "Observações",
-  "meetingEditDescriptionHint": "Adicione observações (opcional)",
-  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
-  "meetingEditBookLabel": "Livro da vez",
-  "meetingEditHostLabel": "Anfitriã",
-  "meetingEditSaveButton": "Salvar alterações",
   "meetingDetailsDate": "Data: {date}",
   "@meetingDetailsDate": {
     "description": "Data do encontro já formatada",
@@ -487,6 +409,10 @@
   "meetingDetailsDescriptionTitle": "Descrição",
   "@meetingDetailsDescriptionTitle": {
     "description": "Título da seção de descrição do encontro"
+  },
+  "meetingDetailsRegisterPresence": "Registrar presença",
+  "@meetingDetailsRegisterPresence": {
+    "description": "Rótulo do botão nos detalhes do encontro que abre a tela de registro de presença, visível só para coordenadora ou anfitriã"
   },
   "meetingCoverSemanticLabel": "Foto do {title}",
   "@meetingCoverSemanticLabel": {
@@ -547,10 +473,6 @@
   "@meetingPhotosLoadError": {
     "description": "Erro ao carregar a galeria do encontro"
   },
-  "meetingPhotosEmpty": "Ainda não há fotos deste encontro.",
-  "@meetingPhotosEmpty": {
-    "description": "Encontro sem fotos, para quem não pode adicionar (nem coordenadora nem anfitriã)"
-  },
   "meetingPhotosAccessDenied": "Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.",
   "@meetingPhotosAccessDenied": {
     "description": "Exibido quando o acesso à galeria foi negado"
@@ -586,7 +508,6 @@
       }
     }
   },
-
   "@@Onboarding": "--- Onboarding ---",
   "onboardingReviewTitle": "Verifique os seus dados",
   "@onboardingReviewTitle": {
@@ -680,7 +601,6 @@
   "@selectOptionHint": {
     "description": "Dica genérica de seleção em dropdown"
   },
-
   "@@Dropdown": "--- Dropdown demo strings ---",
   "genreRomance": "Romance",
   "@genreRomance": {
@@ -701,5 +621,51 @@
   "genreFieldHint": "Selecione um gênero",
   "@genreFieldHint": {
     "description": "Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown"
+  },
+  "myGroupsTitle": "Meus grupos",
+  "@myGroupsTitle": {
+    "description": "Título principal da tela de grupos"
+  },
+  "searchGroupPlaceholder": "Buscar grupo",
+  "@searchGroupPlaceholder": {
+    "description": "Placeholder do campo de busca de grupos"
+  },
+  "filterAll": "Todos",
+  "@filterAll": {
+    "description": "Chip de filtro Todos"
+  },
+  "filterUnanswered": "Não respondidos ({count})",
+  "@filterUnanswered": {
+    "description": "Chip de filtro Não respondidos com contagem",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterAnswered": "Respondidos",
+  "@filterAnswered": {
+    "description": "Chip de filtro Respondidos"
+  },
+  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
+  "@emptyGroupsTitle": {
+    "description": "Título exibido quando a lista de grupos está vazia"
+  },
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
+  "@emptyGroupsMessage": {
+    "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
+  },
+  "groupDetailsNumberLabel": "Grupo {number}",
+  "@groupDetailsNumberLabel": {
+    "description": "Título da tela de detalhes do grupo, com o número do grupo",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "groupNextEventNoLocation": "Sem localização",
+  "@groupNextEventNoLocation": {
+    "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
   }
 }

@@ -3,21 +3,18 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
-import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
-import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
-import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
-import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
-import 'package:mobile/features/groups/presentation/cubit/meeting_attendance_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
-import 'package:mobile/features/groups/presentation/pages/meeting_attendance_page.dart';
+import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -64,20 +61,6 @@ void main() {
         participantsRepository: mockParticipantsRepository,
       ),
     );
-    if (serviceLocator.isRegistered<MeetingAttendanceCubit>()) {
-      serviceLocator.unregister<MeetingAttendanceCubit>();
-    }
-
-    serviceLocator.registerFactoryParam<MeetingAttendanceCubit, String, void>(
-      (meetingId, _) => MeetingAttendanceCubit(
-        groupRepository: mockRepository,
-        meetingId: meetingId,
-      ),
-    );
-    when(() => mockRepository.getMeetingAttendance(any())).thenAnswer(
-      (_) async =>
-          const Success<List<MeetingAttendanceEntity>, GroupFailure>([]),
-    );
   });
 
   tearDown(() {
@@ -95,9 +78,6 @@ void main() {
     }
     if (serviceLocator.isRegistered<GroupRepository>()) {
       serviceLocator.unregister<GroupRepository>();
-    }
-    if (serviceLocator.isRegistered<MeetingAttendanceCubit>()) {
-      serviceLocator.unregister<MeetingAttendanceCubit>();
     }
   });
 
@@ -217,120 +197,6 @@ void main() {
 
       expect(find.text('Quarto de Despejo'), findsOneWidget);
       verify(() => mockRepository.getEventHistory('group-1')).called(1);
-    },
-  );
-
-  testWidgets('abre a página de presença com os dados da reunião', (
-    tester,
-  ) async {
-    final router = GoRouter(
-      initialLocation: GroupRoutes.meetingAttendance,
-      routes: GroupRoutes.routes,
-    );
-
-    addTearDown(router.dispose);
-
-    await tester.pumpWidget(
-      MaterialApp.router(
-        theme: AppTheme.light,
-        locale: const Locale('pt', 'BR'),
-        supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        routerConfig: router,
-      ),
-    );
-
-    router.go(
-      '${GroupRoutes.meetingAttendance}?meeting_id=meeting-1',
-      extra: {'meetingName': 'Clube de leitura', 'formattedDate': '12/10/2026'},
-    );
-
-    await tester.pumpAndSettle();
-
-    final page = tester.widget<MeetingAttendancePage>(
-      find.byType(MeetingAttendancePage),
-    );
-
-    expect(page.meetingId, 'meeting-1');
-    expect(page.meetingName, 'Clube de leitura');
-    expect(page.formattedDate, '12/10/2026');
-  });
-
-  testWidgets('usa valores vazios quando extra não é informado', (
-    tester,
-  ) async {
-    await pumpRoute(
-      tester,
-      '${GroupRoutes.meetingAttendance}?meeting_id=meeting-1',
-    );
-
-    final page = tester.widget<MeetingAttendancePage>(
-      find.byType(MeetingAttendancePage),
-    );
-
-    expect(page.meetingId, 'meeting-1');
-    expect(page.meetingName, '');
-    expect(page.formattedDate, '');
-  });
-
-  testWidgets('usa meeting_id vazio quando o parâmetro não é informado', (
-    tester,
-  ) async {
-    await pumpRoute(tester, GroupRoutes.meetingAttendance);
-
-    final page = tester.widget<MeetingAttendancePage>(
-      find.byType(MeetingAttendancePage),
-    );
-
-    expect(page.meetingId, '');
-    expect(page.meetingName, '');
-    expect(page.formattedDate, '');
-  });
-
-  testWidgets(
-    'usa valores vazios quando extra não contém os dados da reunião',
-    (tester) async {
-      final router = GoRouter(
-        initialLocation: GroupRoutes.meetingAttendance,
-        routes: GroupRoutes.routes,
-      );
-
-      addTearDown(router.dispose);
-
-      await tester.pumpWidget(
-        MaterialApp.router(
-          theme: AppTheme.light,
-          locale: const Locale('pt', 'BR'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          routerConfig: router,
-        ),
-      );
-
-      router.go(
-        '${GroupRoutes.meetingAttendance}?meeting_id=meeting-1',
-        extra: <String, dynamic>{},
-      );
-
-      await tester.pumpAndSettle();
-
-      final page = tester.widget<MeetingAttendancePage>(
-        find.byType(MeetingAttendancePage),
-      );
-
-      expect(page.meetingId, 'meeting-1');
-      expect(page.meetingName, '');
-      expect(page.formattedDate, '');
     },
   );
 }

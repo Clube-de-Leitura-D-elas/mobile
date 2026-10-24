@@ -7,13 +7,7 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_details_state.
 import 'package:mobile/features/groups/presentation/pages/meeting_details_screen.dart';
 
 class MeetingDetailsPage extends StatelessWidget {
-  const MeetingDetailsPage({
-    super.key,
-    this.canEdit = false,
-    // TODO: receber permissão calculada pela integração (coordenadora ou anfitriã).
-  });
-
-  final bool canEdit;
+  const MeetingDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +34,6 @@ class MeetingDetailsPage extends StatelessWidget {
         ),
         MeetingDetailsLoaded(:final meeting) => MeetingDetailsScreen(
           meeting: meeting,
-          canEdit: canEdit,
         ),
       },
     );

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
 
 sealed class MeetingPresenceState extends Equatable {
   const MeetingPresenceState();
@@ -28,7 +28,7 @@ class MeetingPresenceEditing extends MeetingPresenceState {
     this.submitError,
   });
 
-  final List<MeetingAttendanceEntity> attendees;
+  final List<MeetingAttendee> attendees;
   final Set<String> marked;
   final bool isSubmitting;
   final String? submitError;
@@ -51,7 +51,7 @@ class MeetingPresenceEditing extends MeetingPresenceState {
 
 class MeetingPresenceClosed extends MeetingPresenceState {
   const MeetingPresenceClosed(this.attendees);
-  final List<MeetingAttendanceEntity> attendees;
+  final List<MeetingAttendee> attendees;
 
   @override
   List<Object?> get props => [attendees];

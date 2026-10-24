@@ -121,18 +121,6 @@ abstract class AppLocalizations {
   /// **'Não informado'**
   String get notProvided;
 
-  /// Texto padrão para ação de retornar
-  ///
-  /// In pt, this message translates to:
-  /// **'Voltar'**
-  String get back;
-
-  /// Mensagem genérica amigável para falhas inesperadas de rede ou servidor
-  ///
-  /// In pt, this message translates to:
-  /// **'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.'**
-  String get genericError;
-
   /// Título principal da tela de login
   ///
   /// In pt, this message translates to:
@@ -307,6 +295,18 @@ abstract class AppLocalizations {
   /// **'Token de acesso inválido ou já utilizado. Por favor, verifique o código.'**
   String get claimTokenInvalidError;
 
+  /// Mensagem genérica amigável para falhas inesperadas de rede ou servidor
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.'**
+  String get genericError;
+
+  /// Texto padrão para ação de retornar
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get back;
+
   /// Tooltip do botão de logout no app bar
   ///
   /// In pt, this message translates to:
@@ -385,6 +385,7 @@ abstract class AppLocalizations {
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
 
+<<<<<<< HEAD
   /// Título principal da tela de grupos
   ///
   /// In pt, this message translates to:
@@ -451,6 +452,8 @@ abstract class AppLocalizations {
   /// **'Grupo {number}'**
   String groupDetailsNumberLabel(int number);
 
+=======
+>>>>>>> 8767ced3fdb9a4b4310f29297ccbd964723a6ad1
   /// Título da seção do próximo evento nos detalhes do grupo
   ///
   /// In pt, this message translates to:
@@ -492,12 +495,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Livro ainda não definido'**
   String get groupNextEventBookUndefined;
-
-  /// Exibido no próximo evento do grupo quando nenhum local foi definido
-  ///
-  /// In pt, this message translates to:
-  /// **'Sem localização'**
-  String get groupNextEventNoLocation;
 
   /// Título da seção de participantes nos detalhes do grupo
   ///
@@ -595,6 +592,30 @@ abstract class AppLocalizations {
   /// **'Tentar novamente'**
   String get groupMeetingRsvpRetryAction;
 
+  /// Título do cabeçalho da tela de registro de presença do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de Presença'**
+  String get meetingPresenceHeader;
+
+  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela confirmou que iria ao encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Nonfirmou'**
+  String get invitationConfirmed;
+
+  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela não respondeu à confirmação de presença
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondeu'**
+  String get invitationNoResponse;
+
+  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela recusou a confirmação de presença
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusou'**
+  String get invitationDeclined;
+
   /// Título da tela de histórico de eventos do grupo
   ///
   /// In pt, this message translates to:
@@ -619,30 +640,6 @@ abstract class AppLocalizations {
   /// **'Este grupo ainda não realizou encontros.'**
   String get groupEventHistoryEmpty;
 
-  /// Título do cabeçalho da tela de registro de presença do encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Lista de Presença'**
-  String get meetingPresenceHeader;
-
-  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela confirmou que iria ao encontro
-  ///
-  /// In pt, this message translates to:
-  /// **'Confirmou'**
-  String get invitationConfirmed;
-
-  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela não respondeu à confirmação de presença
-  ///
-  /// In pt, this message translates to:
-  /// **'Não respondeu'**
-  String get invitationNoResponse;
-
-  /// Dica exibida abaixo do nome da participante na tela de registro de presença quando ela recusou a confirmação de presença
-  ///
-  /// In pt, this message translates to:
-  /// **'Recusou'**
-  String get invitationDeclined;
-
   /// Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro
   ///
   /// In pt, this message translates to:
@@ -660,108 +657,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Encontro'**
   String get meetingDetailsTitleFallback;
-
-  /// No description provided for @meetingEditAction.
-  ///
-  /// In pt, this message translates to:
-  /// **'Editar encontro'**
-  String get meetingEditAction;
-
-  /// No description provided for @meetingEditTitle.
-  ///
-  /// In pt, this message translates to:
-  /// **'Editar encontro'**
-  String get meetingEditTitle;
-
-  /// No description provided for @meetingEditDateLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Data'**
-  String get meetingEditDateLabel;
-
-  /// No description provided for @meetingEditDateHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'DD/MM/AAAA'**
-  String get meetingEditDateHint;
-
-  /// No description provided for @meetingEditDateError.
-  ///
-  /// In pt, this message translates to:
-  /// **'Informe a data.'**
-  String get meetingEditDateError;
-
-  /// No description provided for @meetingEditTimeLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Horário'**
-  String get meetingEditTimeLabel;
-
-  /// No description provided for @meetingEditTimeHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'HH:MM'**
-  String get meetingEditTimeHint;
-
-  /// No description provided for @meetingEditTimeError.
-  ///
-  /// In pt, this message translates to:
-  /// **'Informe o horário.'**
-  String get meetingEditTimeError;
-
-  /// No description provided for @meetingEditLocationLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Local'**
-  String get meetingEditLocationLabel;
-
-  /// No description provided for @meetingEditLocationHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Nome do local'**
-  String get meetingEditLocationHint;
-
-  /// No description provided for @meetingEditLocationError.
-  ///
-  /// In pt, this message translates to:
-  /// **'Informe o local.'**
-  String get meetingEditLocationError;
-
-  /// No description provided for @meetingEditDescriptionLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Observações'**
-  String get meetingEditDescriptionLabel;
-
-  /// No description provided for @meetingEditDescriptionHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Adicione observações (opcional)'**
-  String get meetingEditDescriptionHint;
-
-  /// No description provided for @meetingEditReadOnlySection.
-  ///
-  /// In pt, this message translates to:
-  /// **'Informações definidas pelo sorteio'**
-  String get meetingEditReadOnlySection;
-
-  /// No description provided for @meetingEditBookLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Livro da vez'**
-  String get meetingEditBookLabel;
-
-  /// No description provided for @meetingEditHostLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Anfitriã'**
-  String get meetingEditHostLabel;
-
-  /// No description provided for @meetingEditSaveButton.
-  ///
-  /// In pt, this message translates to:
-  /// **'Salvar alterações'**
-  String get meetingEditSaveButton;
 
   /// Data do encontro já formatada
   ///
@@ -804,6 +699,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Descrição'**
   String get meetingDetailsDescriptionTitle;
+
+  /// Rótulo do botão nos detalhes do encontro que abre a tela de registro de presença, visível só para coordenadora ou anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Registrar presença'**
+  String get meetingDetailsRegisterPresence;
 
   /// Rótulo de acessibilidade da foto de capa do encontro
   ///
@@ -858,12 +759,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível carregar as fotos do encontro.'**
   String get meetingPhotosLoadError;
-
-  /// Encontro sem fotos, para quem não pode adicionar (nem coordenadora nem anfitriã)
-  ///
-  /// In pt, this message translates to:
-  /// **'Ainda não há fotos deste encontro.'**
-  String get meetingPhotosEmpty;
 
   /// Exibido quando o acesso à galeria foi negado
   ///
@@ -1062,6 +957,63 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Selecione um gênero'**
   String get genreFieldHint;
+<<<<<<< HEAD
+=======
+
+  /// Título principal da tela de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Meus grupos'**
+  String get myGroupsTitle;
+
+  /// Placeholder do campo de busca de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar grupo'**
+  String get searchGroupPlaceholder;
+
+  /// Chip de filtro Todos
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get filterAll;
+
+  /// Chip de filtro Não respondidos com contagem
+  ///
+  /// In pt, this message translates to:
+  /// **'Não respondidos ({count})'**
+  String filterUnanswered(int count);
+
+  /// Chip de filtro Respondidos
+  ///
+  /// In pt, this message translates to:
+  /// **'Respondidos'**
+  String get filterAnswered;
+
+  /// Título exibido quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo'**
+  String get emptyGroupsTitle;
+
+  /// Mensagem detalhada exibida quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
+  String get emptyGroupsMessage;
+
+  /// Título da tela de detalhes do grupo, com o número do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupDetailsNumberLabel(int number);
+
+  /// Exibido no próximo evento do grupo quando nenhum local foi definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem localização'**
+  String get groupNextEventNoLocation;
+>>>>>>> 8767ced3fdb9a4b4310f29297ccbd964723a6ad1
 }
 
 class _AppLocalizationsDelegate
