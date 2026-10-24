@@ -6,6 +6,7 @@
   "continueAction": "Continuar",
   "confirm": "Confirmar",
   "notProvided": "Não informado",
+  "close": "Fechar",
 
   "@@Auth": "--- Auth ---",
   "loginTitle": "Faça o seu login",
@@ -55,6 +56,11 @@
   "educationLabel": "Escolaridade",
   "jobPositionLabel": "Cargo / Profissão",
   "authUserIdLabel": "ID Auth (Supabase User ID)",
+  "profileLogoutButtonLabel": "Sair da conta",
+  "logoutDialogTitle": "Sair da conta",
+  "logoutDialogMessage": "Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.",
+  "logoutDialogCancel": "Cancelar",
+  "logoutDialogConfirm": "Sair",
 
   "@@Groups": "--- Groups ---",
   "groupNextEventTitle": "Próximo evento",
@@ -157,5 +163,15 @@
   "filterUnanswered": "Não respondidos ({count})",
   "filterAnswered": "Respondidos",
   "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
-  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui."
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
+
+  "@@Raffles": "--- Raffles ---",
+  "rafflePreparationTitle": "Realizar sorteio",
+  "rafflePreparationSubtitle": "Selecione as participantes",
+  "raffleTableHeaderName": "Nome",
+  "raffleTableHeaderInclude": "Incluir no sorteio",
+  "raffleConfirmDialogTitle": "Confirmar sorteio",
+  "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",
+  "raffleConfirmDialogCancel": "Cancelar",
+  "raffleSuccessToast": "Sorteio realizado com sucesso!"
 }

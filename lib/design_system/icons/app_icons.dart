@@ -22,6 +22,7 @@ abstract final class AppIcons {
   static const search = AppIconAsset._('assets/icons/si/search.si');
   static const settings = AppIconAsset._('assets/icons/si/settings.si');
   static const user = AppIconAsset._('assets/icons/si/user.si');
+  static const leave = AppIconAsset._('assets/icons/si/leave.si');
 
   static const List<AppIconAsset> all = [
     book,
@@ -36,5 +37,6 @@ abstract final class AppIcons {
     search,
     settings,
     user,
+    leave,
   ];
 }

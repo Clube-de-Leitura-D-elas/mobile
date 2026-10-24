@@ -17,8 +17,12 @@ import 'package:mobile/features/groups/domain/repository/group_participants_repo
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
-import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
+import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
+import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -46,12 +50,17 @@ void main() {
   test(
     'DependenciesContainer registers all singletons and factories',
     () async {
-      await Supabase.initialize(
-        url: 'http://localhost:54321',
-        publishableKey: 'test-key',
-        accessToken: () async => 'test-token',
-        debug: false,
-      );
+      try {
+        await Supabase.initialize(
+          url: 'http://localhost:54321',
+          publishableKey: 'test-key',
+          accessToken: () async => 'test-token',
+          authOptions: const FlutterAuthClientOptions(
+            localStorage: EmptyLocalStorage(),
+          ),
+          debug: false,
+        );
+      } catch (_) {}
 
       DependenciesContainer();
 
@@ -68,8 +77,11 @@ void main() {
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
       expect(serviceLocator<MeetingPhotosCubit>(), isA<MeetingPhotosCubit>());
-      expect(serviceLocator<MeetingEditCubit>(), isA<MeetingEditCubit>());
-      expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
+expect(serviceLocator<MeetingEditCubit>(), isA<MeetingEditCubit>());
+expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
+expect(serviceLocator<RaffleRemoteDataSource>(), isA<RaffleRemoteDataSourceImpl>());
+expect(serviceLocator<RaffleRepository>(), isA<RaffleRepositoryImpl>());
+expect(serviceLocator<RafflePreparationCubit>(), isA<RafflePreparationCubit>());
     },
   );
 }
