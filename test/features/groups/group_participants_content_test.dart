@@ -14,6 +14,7 @@ import 'package:mobile/features/groups/presentation/widgets/participants/group_p
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_error_view.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_skeleton.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/participant_avatar.dart';
+import 'package:mobile/features/groups/presentation/widgets/participants/participant_avatar_placeholder.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/participant_tile.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';

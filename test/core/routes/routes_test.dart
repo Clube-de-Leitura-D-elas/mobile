@@ -10,6 +10,7 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
+import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/login_screen.dart';
@@ -82,10 +83,18 @@ void main() {
       authRepository: mockAuthRepository,
       supabaseService: mockSupabaseService,
     );
+
+    serviceLocator.allowReassignment = true;
+    serviceLocator.registerFactory<PasswordValidationCubit>(
+      () => PasswordValidationCubit(),
+    );
   });
 
   tearDown(() {
     sessionCubit.close();
+    if (serviceLocator.isRegistered<PasswordValidationCubit>()) {
+      serviceLocator.unregister<PasswordValidationCubit>();
+    }
   });
 
   group('GoRouterRefreshStream', () {

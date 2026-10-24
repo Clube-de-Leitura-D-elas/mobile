@@ -394,5 +394,25 @@ void main() {
       await newCubit.close();
       await controller.close();
     });
+
+    group('refreshProfile', () {
+      test('does nothing when currentUser is null', () async {
+        when(() => mockSupabaseService.currentUser).thenReturn(null);
+
+        await sessionCubit.refreshProfile();
+
+        verifyNever(() => mockAuthRepository.getUserProfile(any()));
+      });
+
+      test('calls checkUserProfile when currentUser is present', () async {
+        when(() => mockSupabaseService.currentUser).thenReturn(mockSupabaseUser);
+        when(() => mockAuthRepository.getUserProfile('user-123'))
+            .thenAnswer((_) async => const Success(testProfile));
+
+        await sessionCubit.refreshProfile();
+
+        verify(() => mockAuthRepository.getUserProfile('user-123')).called(1);
+      });
+    });
   });
 }
