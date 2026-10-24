@@ -79,6 +79,7 @@
   "groupEventHistoryTitle": "Histórico de eventos",
   "groupEventHistoryHost": "Anfitriã: {hostName}",
   "groupEventHistoryDetailsLink": "Confira mais detalhes",
+  "groupMeetingMyTasksAction": "Minhas tarefas",
   "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
   "meetingDetailsHeader": "Detalhes do encontro",
   "meetingEditAction": "Editar encontro",

@@ -503,6 +503,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
 
   @override
+  String get groupMeetingMyTasksAction => 'Minhas tarefas';
+
+  @override
   String get groupEventHistoryEmpty =>
       'Este grupo ainda não realizou encontros.';
 
@@ -1062,6 +1065,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupEventHistoryDetailsLink => 'Confira mais detalhes';
+
+  @override
+  String get groupMeetingMyTasksAction => 'Minhas tarefas';
 
   @override
   String get groupEventHistoryEmpty =>
