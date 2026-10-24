@@ -8,8 +8,10 @@ class MeetingDetailsEntity extends Equatable {
   final String hostName;
   final String? locationName;
   final String? locationAddress;
+  final String? locationGooglePlaceId;
   final String? description;
   final String? coverPhotoUrl;
+  final bool canEdit;
 
   const MeetingDetailsEntity({
     required this.id,
@@ -19,8 +21,10 @@ class MeetingDetailsEntity extends Equatable {
     this.date,
     this.locationName,
     this.locationAddress,
+    this.locationGooglePlaceId,
     this.description,
     this.coverPhotoUrl,
+    this.canEdit = false,
   });
 
   @override
@@ -32,7 +36,9 @@ class MeetingDetailsEntity extends Equatable {
     hostName,
     locationName,
     locationAddress,
+    locationGooglePlaceId,
     description,
     coverPhotoUrl,
+    canEdit,
   ];
 }

@@ -11,6 +11,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_invitation_status
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/place_suggestion_entity.dart';
 
 abstract class GroupRepository {
   Future<Result<List<GroupEntity>, GroupFailure>> getMyGroups();
@@ -48,4 +49,15 @@ abstract class GroupRepository {
 
   Future<Result<List<MeetingAttendanceEntity>, GroupFailure>>
   getMeetingAttendance(String meetingId);
+
+  Future<Result<List<PlaceSuggestionEntity>, GroupFailure>> searchPlaces(
+    String query,
+  );
+
+  Future<Result<void, GroupFailure>> updateMeeting({
+    required String meetingId,
+    required DateTime date,
+    String? googlePlaceId,
+    String? description,
+  });
 }

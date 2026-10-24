@@ -421,6 +421,132 @@ abstract class AppLocalizations {
   /// **'Sair'**
   String get logoutDialogConfirm;
 
+  /// No description provided for @meetingEditTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar encontro'**
+  String get meetingEditTitle;
+
+  /// No description provided for @meetingEditDateLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data'**
+  String get meetingEditDateLabel;
+
+  /// No description provided for @meetingEditDateHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'DD/MM/AAAA'**
+  String get meetingEditDateHint;
+
+  /// No description provided for @meetingEditDateError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe a data.'**
+  String get meetingEditDateError;
+
+  /// No description provided for @meetingEditTimeLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Horário'**
+  String get meetingEditTimeLabel;
+
+  /// No description provided for @meetingEditTimeHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'HH:MM'**
+  String get meetingEditTimeHint;
+
+  /// No description provided for @meetingEditTimeError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe o horário.'**
+  String get meetingEditTimeError;
+
+  /// No description provided for @meetingEditLocationLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Local'**
+  String get meetingEditLocationLabel;
+
+  /// No description provided for @meetingEditLocationHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do local'**
+  String get meetingEditLocationHint;
+
+  /// No description provided for @meetingEditLocationError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe o local.'**
+  String get meetingEditLocationError;
+
+  /// No description provided for @meetingEditLocationSelectError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um local da lista.'**
+  String get meetingEditLocationSelectError;
+
+  /// No description provided for @meetingEditLocationSearchError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível buscar locais. Tente novamente.'**
+  String get meetingEditLocationSearchError;
+
+  /// No description provided for @meetingEditDateInvalidError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe uma data válida (DD/MM/AAAA).'**
+  String get meetingEditDateInvalidError;
+
+  /// No description provided for @meetingEditTimeInvalidError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe um horário válido (HH:MM).'**
+  String get meetingEditTimeInvalidError;
+
+  /// No description provided for @meetingEditDescriptionLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Observações'**
+  String get meetingEditDescriptionLabel;
+
+  /// No description provided for @meetingEditDescriptionHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione observações (opcional)'**
+  String get meetingEditDescriptionHint;
+
+  /// No description provided for @meetingEditReadOnlySection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informações definidas pelo sorteio'**
+  String get meetingEditReadOnlySection;
+
+  /// No description provided for @meetingEditBookLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro da vez'**
+  String get meetingEditBookLabel;
+
+  /// No description provided for @meetingEditHostLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã'**
+  String get meetingEditHostLabel;
+
+  /// No description provided for @meetingEditSaveButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar alterações'**
+  String get meetingEditSaveButton;
+
+  /// Rótulo de acessibilidade da foto de capa do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto do {title}'**
+  String meetingCoverSemanticLabel(String title);
+
   /// Anfitriã do encontro
   ///
   /// In pt, this message translates to:
@@ -445,11 +571,17 @@ abstract class AppLocalizations {
   /// **'Descrição'**
   String get meetingDetailsDescriptionTitle;
 
-  /// Rótulo de acessibilidade da foto de capa do encontro
+  /// No description provided for @meetingDetailsOpenMapHint.
   ///
   /// In pt, this message translates to:
-  /// **'Foto do {title}'**
-  String meetingCoverSemanticLabel(String title);
+  /// **'Abrir no Google Maps'**
+  String get meetingDetailsOpenMapHint;
+
+  /// No description provided for @meetingDetailsMapLaunchError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o mapa.'**
+  String get meetingDetailsMapLaunchError;
 
   /// Título da seção de fotos na tela de detalhes do encontro
   ///
@@ -972,102 +1104,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Livro: {title}'**
   String meetingDetailsBook(String title);
-
-  /// No description provided for @meetingEditTitle.
-  ///
-  /// In pt, this message translates to:
-  /// **'Editar encontro'**
-  String get meetingEditTitle;
-
-  /// No description provided for @meetingEditDateLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Data'**
-  String get meetingEditDateLabel;
-
-  /// No description provided for @meetingEditDateHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'DD/MM/AAAA'**
-  String get meetingEditDateHint;
-
-  /// No description provided for @meetingEditDateError.
-  ///
-  /// In pt, this message translates to:
-  /// **'Informe a data.'**
-  String get meetingEditDateError;
-
-  /// No description provided for @meetingEditTimeLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Horário'**
-  String get meetingEditTimeLabel;
-
-  /// No description provided for @meetingEditTimeHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'HH:MM'**
-  String get meetingEditTimeHint;
-
-  /// No description provided for @meetingEditTimeError.
-  ///
-  /// In pt, this message translates to:
-  /// **'Informe o horário.'**
-  String get meetingEditTimeError;
-
-  /// No description provided for @meetingEditLocationLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Local'**
-  String get meetingEditLocationLabel;
-
-  /// No description provided for @meetingEditLocationHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Nome do local'**
-  String get meetingEditLocationHint;
-
-  /// No description provided for @meetingEditLocationError.
-  ///
-  /// In pt, this message translates to:
-  /// **'Informe o local.'**
-  String get meetingEditLocationError;
-
-  /// No description provided for @meetingEditDescriptionLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Observações'**
-  String get meetingEditDescriptionLabel;
-
-  /// No description provided for @meetingEditDescriptionHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Adicione observações (opcional)'**
-  String get meetingEditDescriptionHint;
-
-  /// No description provided for @meetingEditReadOnlySection.
-  ///
-  /// In pt, this message translates to:
-  /// **'Informações definidas pelo sorteio'**
-  String get meetingEditReadOnlySection;
-
-  /// No description provided for @meetingEditBookLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Livro da vez'**
-  String get meetingEditBookLabel;
-
-  /// No description provided for @meetingEditHostLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Anfitriã'**
-  String get meetingEditHostLabel;
-
-  /// No description provided for @meetingEditSaveButton.
-  ///
-  /// In pt, this message translates to:
-  /// **'Salvar alterações'**
-  String get meetingEditSaveButton;
 
   /// No description provided for @meetingEditAction.
   ///
