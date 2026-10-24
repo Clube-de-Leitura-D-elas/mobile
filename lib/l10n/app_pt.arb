@@ -661,6 +661,10 @@
   "@groupEventHistoryDetailsLink": {
     "description": "Link para abrir os detalhes de um evento realizado"
   },
+  "groupMeetingMyTasksAction": "Minhas tarefas",
+  "@groupMeetingMyTasksAction": {
+    "description": "Rótulo do botão e título da tela de tarefas da anfitriã ou coordenadora do encontro"
+  },
   "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
   "@groupEventHistoryEmpty": {
     "description": "Mensagem exibida quando o grupo não possui encontros realizados"
