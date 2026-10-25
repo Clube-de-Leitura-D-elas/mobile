@@ -66,12 +66,14 @@ class GroupModel extends GroupEntity {
     final date = json['date'];
     final location = json['location'];
     final invitationStatus = json['invitation_status'];
+    final canManageTasks = json['can_manage_tasks'];
 
     if (id is! String ||
         hostName is! String ||
         bookTitle is! String ||
         date is! String ||
-        location is! String) {
+        location is! String ||
+        (canManageTasks != null && canManageTasks is! bool)) {
       throw const FormatException('Invalid next meeting.');
     }
 
@@ -82,6 +84,7 @@ class GroupModel extends GroupEntity {
       date: date,
       location: location,
       invitationStatus: _parseInvitationStatus(invitationStatus),
+      canManageTasks: canManageTasks as bool? ?? false,
     );
   }
 

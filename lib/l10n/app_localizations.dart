@@ -931,6 +931,12 @@ abstract class AppLocalizations {
   /// **'Confira mais detalhes'**
   String get groupEventHistoryDetailsLink;
 
+  /// Rótulo do botão e título da tela de tarefas da anfitriã ou coordenadora do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Minhas tarefas'**
+  String get groupMeetingMyTasksAction;
+
   /// Mensagem exibida quando o grupo não possui encontros realizados
   ///
   /// In pt, this message translates to:
