@@ -36,7 +36,7 @@ abstract class AppRoutes {
         ...OnboardingRoutes.routes,
         ...HomeRoutes.routes,
         ...GroupRoutes.routes,
-        ...QuickAccessRoutes.routes,
+        //...QuickAccessRoutes.routes,
       ],
       redirect: (context, state) {
         final sessionState = sessionCubit.state;

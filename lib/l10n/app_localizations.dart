@@ -385,75 +385,6 @@ abstract class AppLocalizations {
   /// **'ID Auth (Supabase User ID)'**
   String get authUserIdLabel;
 
-<<<<<<< HEAD
-  /// Título principal da tela de grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Meus grupos'**
-  String get myGroupsTitle;
-
-  /// Placeholder do campo de busca de grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Buscar grupo'**
-  String get searchGroupPlaceholder;
-
-  /// Chip de filtro Todos
-  ///
-  /// In pt, this message translates to:
-  /// **'Todos'**
-  String get filterAll;
-
-  /// Chip de filtro Não respondidos com contagem
-  ///
-  /// In pt, this message translates to:
-  /// **'Não respondidos ({count})'**
-  String filterUnanswered(int count);
-
-  /// Chip de filtro Respondidos
-  ///
-  /// In pt, this message translates to:
-  /// **'Respondidos'**
-  String get filterAnswered;
-
-  /// Título exibido quando a lista de grupos está vazia
-  ///
-  /// In pt, this message translates to:
-  /// **'Você ainda não participa de nenhum grupo'**
-  String get emptyGroupsTitle;
-
-  /// Mensagem detalhada exibida quando a lista de grupos está vazia
-  ///
-  /// In pt, this message translates to:
-  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
-  String get emptyGroupsMessage;
-
-  /// Mensagem exibida quando a busca por nome não retorna grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhum grupo encontrado'**
-  String get emptyGroupsSearch;
-
-  /// Mensagem exibida quando o filtro Não respondidos não tem grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhum grupo com resposta pendente'**
-  String get emptyGroupsUnanswered;
-
-  /// Mensagem exibida quando o filtro Respondidos não tem grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Você ainda não respondeu a nenhum encontro'**
-  String get emptyGroupsAnswered;
-
-  /// Título da tela de detalhes do grupo, com o número do grupo
-  ///
-  /// In pt, this message translates to:
-  /// **'Grupo {number}'**
-  String groupDetailsNumberLabel(int number);
-
-=======
->>>>>>> 8767ced3fdb9a4b4310f29297ccbd964723a6ad1
   /// Título da seção do próximo evento nos detalhes do grupo
   ///
   /// In pt, this message translates to:
@@ -957,8 +888,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Selecione um gênero'**
   String get genreFieldHint;
-<<<<<<< HEAD
-=======
 
   /// Título principal da tela de grupos
   ///
@@ -1013,7 +942,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Sem localização'**
   String get groupNextEventNoLocation;
->>>>>>> 8767ced3fdb9a4b4310f29297ccbd964723a6ad1
 }
 
 class _AppLocalizationsDelegate

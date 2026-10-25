@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -157,45 +156,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get authUserIdLabel => 'ID Auth (Supabase User ID)';
-
-  @override
-  String get myGroupsTitle => 'Meus grupos';
-
-  @override
-  String get searchGroupPlaceholder => 'Buscar grupo';
-
-  @override
-  String get filterAll => 'Todos';
-
-  @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
-
-  @override
-  String get filterAnswered => 'Respondidos';
-
-  @override
-  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
-
-  @override
-  String get emptyGroupsMessage =>
-      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
-
-  @override
-  String get emptyGroupsSearch => 'Nenhum grupo encontrado';
-
-  @override
-  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
-
-  @override
-  String get emptyGroupsAnswered =>
-      'Você ainda não respondeu a nenhum encontro';
-
-  @override
-  String groupDetailsNumberLabel(int number) {
-    return 'Grupo $number';
-  }
 
   @override
   String get groupNextEventTitle => 'Próximo evento';
@@ -520,6 +480,38 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get genreFieldHint => 'Selecione um gênero';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String groupDetailsNumberLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get groupNextEventNoLocation => 'Sem localização';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -950,4 +942,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get selectOptionHint => 'Selecione';
+
+  @override
+  String get myGroupsTitle => 'Meus grupos';
+
+  @override
+  String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get filterAll => 'Todos';
+
+  @override
+  String filterUnanswered(int count) {
+    return 'Não respondidos ($count)';
+  }
+
+  @override
+  String get filterAnswered => 'Respondidos';
+
+  @override
+  String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
+
+  @override
+  String get emptyGroupsMessage =>
+      'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
 }

@@ -32,13 +32,18 @@ class MeetingAttendeeModel extends MeetingAttendee {
   }
 
   static List<MeetingAttendeeModel> listFromEnvelope(dynamic json) {
-    if (json is! Map<String, dynamic> || json['attendees'] is! List) {
+    final attendees = switch (json) {
+      Map<String, dynamic>() when json['attendees'] is List =>
+        json['attendees'],
+      List() => json,
+      _ => null,
+    };
+
+    if (attendees is! List) {
       throw const FormatException('Invalid meeting attendance response.');
     }
 
-    return (json['attendees'] as List)
-        .map(MeetingAttendeeModel.fromJson)
-        .toList(growable: false);
+    return attendees.map(MeetingAttendeeModel.fromJson).toList(growable: false);
   }
 
   static MeetingInvitationStatus _parseInvitation(dynamic value) {

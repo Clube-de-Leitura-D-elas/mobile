@@ -36,7 +36,7 @@ class MeetingDetailsScreen extends StatelessWidget {
               padding: EdgeInsets.all(spacing.s24),
               child: MeetingInfoCard(meeting: meeting, title: title),
             ),
-            if (true || meeting.canRegisterPresence)
+            if (meeting.canRegisterPresence)
               Padding(
                 padding: EdgeInsets.fromLTRB(
                   spacing.s24,

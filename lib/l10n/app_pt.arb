@@ -17,14 +17,6 @@
   "@notProvided": {
     "description": "Valor padrão quando uma informação não foi preenchida"
   },
-  "back": "Voltar",
-  "@back": {
-    "description": "Texto padrão para ação de retornar"
-  },
-  "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
-  "@genericError": {
-    "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
-  },
   "@@Auth": "--- Auth ---",
   "loginTitle": "Faça o seu login",
   "@loginTitle": {
@@ -141,6 +133,14 @@
   "claimTokenInvalidError": "Token de acesso inválido ou já utilizado. Por favor, verifique o código.",
   "@claimTokenInvalidError": {
     "description": "Mensagem amigável de erro quando o token de acesso é inválido ou já foi utilizado"
+  },
+  "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
+  "@genericError": {
+    "description": "Mensagem genérica amigável para falhas inesperadas de rede ou servidor"
+  },
+  "back": "Voltar",
+  "@back": {
+    "description": "Texto padrão para ação de retornar"
   },
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",
