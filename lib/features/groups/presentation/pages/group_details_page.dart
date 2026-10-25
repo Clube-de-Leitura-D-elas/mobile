@@ -39,18 +39,31 @@ class GroupDetailsPage extends StatelessWidget {
                 : null,
             whatsappUrl: group.whatsappUrl,
             nextEvent: BlocBuilder<NextEventCubit, NextEventState>(
-              builder: (context, nextEventState) => GroupNextEvent(
-                status: _toWidgetStatus(nextEventState),
-                data: _toWidgetData(nextEventState),
-                onEventHistoryPressed: () => context.push(
-                  Uri(
-                    path: GroupRoutePaths.eventHistory,
-                    queryParameters: {'group_id': groupId},
-                  ).toString(),
-                ),
-              ),
+              builder: (context, nextEventState) {
+                final meetingId = nextEventState is NextEventLoaded
+                    ? nextEventState.event.id
+                    : null;
+                return GroupNextEvent(
+                  status: _toWidgetStatus(nextEventState),
+                  data: _toWidgetData(nextEventState),
+                  onMoreDetailsPressed: meetingId == null
+                      ? null
+                      : () => context.push(
+                          Uri(
+                            path: GroupRoutePaths.meetingDetails,
+                            queryParameters: {'meeting_id': meetingId},
+                          ).toString(),
+                        ),
+                );
+              },
             ),
             participantsContent: const GroupParticipantsContent(),
+            onEventHistoryPressed: () => context.push(
+              Uri(
+                path: GroupRoutePaths.eventHistory,
+                queryParameters: {'group_id': groupId},
+              ).toString(),
+            ),
           ),
         };
       },

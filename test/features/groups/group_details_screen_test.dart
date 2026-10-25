@@ -261,4 +261,36 @@ void main() {
     expect(find.text('Grupo 1'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'renders event history link below participants section when onEventHistoryPressed is provided',
+    (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(
+        buildSubject(
+          GroupDetailsScreen(
+            name: 'Grupo 1',
+            genres: const ['Ficção'],
+            participantCount: 5,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+            participantsContent: const Text('Conteúdo dos participantes'),
+            onEventHistoryPressed: () => tapped = true,
+          ),
+        ),
+      );
+
+      final participantsRect = tester.getRect(
+        find.text('Conteúdo dos participantes'),
+      );
+      final historyLink = find.text('Histórico de eventos');
+      expect(historyLink, findsOneWidget);
+      final historyRect = tester.getRect(historyLink);
+      expect(historyRect.top, greaterThan(participantsRect.bottom));
+
+      await tester.ensureVisible(historyLink);
+      await tester.tap(historyLink);
+      expect(tapped, isTrue);
+    },
+  );
 }
