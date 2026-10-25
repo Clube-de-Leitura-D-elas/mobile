@@ -413,7 +413,10 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+  String get groupNextEventHistoryLink => 'Histórico de eventos';
+
+  @override
+  String get groupNextEventMoreDetailsLink => 'Exibir mais detalhes';
 
   @override
   String get groupNextEventCurrentBookLabel => 'O livro da vez é:';
@@ -998,7 +1001,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get groupNextEventHistoryLink => 'Exibir detalhes dos últimos eventos';
+  String get groupNextEventHistoryLink => 'Histórico de eventos';
+
+  @override
+  String get groupNextEventMoreDetailsLink => 'Exibir mais detalhes';
 
   @override
   String get groupNextEventCurrentBookLabel => 'O livro da vez é:';

@@ -10,7 +10,11 @@ class NextEventEntity extends Equatable {
     required this.hostName,
     this.bookTitle,
     this.bookCoverUrl,
+    this.id,
   });
+
+  /// Identificador do encontro; usado para abrir os detalhes dele.
+  final String? id;
 
   final String location;
 
@@ -24,6 +28,7 @@ class NextEventEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+    id,
     location,
     date,
     hostName,

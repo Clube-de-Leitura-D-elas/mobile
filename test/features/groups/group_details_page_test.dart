@@ -141,6 +141,7 @@ void main() {
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.text('Ana Beatriz'), findsOneWidget);
+    expect(find.text('Histórico de eventos'), findsOneWidget);
   });
 
   testWidgets('uses the network cover image when the group has a URL', (
@@ -285,5 +286,29 @@ void main() {
     expect(data?.bookTitle, isNull);
     expect(data?.bookCover, isNull);
     expect(find.text('Livro ainda não definido'), findsOneWidget);
+  });
+
+  testWidgets('Given a next event with an id, '
+      'When the page loads, '
+      'Then GroupNextEvent renders Exibir mais detalhes link', (tester) async {
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Success(group));
+    when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+      (_) async => Success(
+        NextEventEntity(
+          id: 'meeting-1',
+          location: 'Casa da Fernanda',
+          date: DateTime.utc(2026, 10, 13, 22),
+          hostName: 'Fernanda Vargas',
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Exibir mais detalhes'), findsOneWidget);
+    expect(find.text('Histórico de eventos'), findsOneWidget);
   });
 }

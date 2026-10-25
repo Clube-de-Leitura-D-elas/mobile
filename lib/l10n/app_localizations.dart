@@ -787,11 +787,17 @@ abstract class AppLocalizations {
   /// **'Anfitriã: {name}'**
   String groupNextEventHost(String name);
 
-  /// Link exibido abaixo do próximo evento para acessar o histórico de encontros
+  /// Link exibido abaixo da seção de participantes para acessar o histórico de encontros
   ///
   /// In pt, this message translates to:
-  /// **'Exibir detalhes dos últimos eventos'**
+  /// **'Histórico de eventos'**
   String get groupNextEventHistoryLink;
+
+  /// Link exibido abaixo do próximo evento para abrir os detalhes daquele encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Exibir mais detalhes'**
+  String get groupNextEventMoreDetailsLink;
 
   /// Rótulo exibido acima da capa do livro do próximo evento do grupo
   ///
