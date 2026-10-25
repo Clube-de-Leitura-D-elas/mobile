@@ -26,6 +26,7 @@ class GroupDetailsScreen extends StatefulWidget {
     this.nextEvent = const GroupNextEvent(),
     this.participantsContent,
     this.onRecommendBook,
+    this.onEventHistoryPressed,
   });
 
   final String name;
@@ -39,6 +40,7 @@ class GroupDetailsScreen extends StatefulWidget {
   final Widget nextEvent;
   final Widget? participantsContent;
   final VoidCallback? onRecommendBook;
+  final VoidCallback? onEventHistoryPressed;
 
   @override
   State<GroupDetailsScreen> createState() => _GroupDetailsScreenState();
@@ -104,6 +106,29 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                         widget.participantsContent!,
                     ],
                   ),
+                  if (widget.onEventHistoryPressed != null) ...[
+                    SizedBox(height: spacing.s24),
+                    Center(
+                      child: Semantics(
+                        button: true,
+                        enabled: true,
+                        label: l10n.groupNextEventHistoryLink,
+                        child: InkWell(
+                          onTap: widget.onEventHistoryPressed,
+                          borderRadius: BorderRadius.circular(spacing.s4),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: spacing.s4),
+                            child: Text(
+                              l10n.groupNextEventHistoryLink,
+                              style: context.text.bodyDefaultEmphasis.copyWith(
+                                color: context.colors.textBrand,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

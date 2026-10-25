@@ -33,7 +33,7 @@ class GroupNextEvent extends StatelessWidget {
     super.key,
     this.status = GroupNextEventStatus.empty,
     this.data,
-    this.onEventHistoryPressed,
+    this.onMoreDetailsPressed,
   }) : assert(
          status != GroupNextEventStatus.loaded || data != null,
          'Loaded state requires event data.',
@@ -42,9 +42,9 @@ class GroupNextEvent extends StatelessWidget {
   final GroupNextEventStatus status;
   final GroupNextEventData? data;
 
-  /// Called when the user taps the "Ver histórico de eventos" link.
+  /// Called when the user taps the "Exibir mais detalhes" link.
   /// When null, the link is not rendered.
-  final VoidCallback? onEventHistoryPressed;
+  final VoidCallback? onMoreDetailsPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class GroupNextEvent extends StatelessWidget {
       ),
       GroupNextEventStatus.loaded when data != null => _EventDetails(
         data: data!,
-        onEventHistoryPressed: onEventHistoryPressed,
+        onMoreDetailsPressed: onMoreDetailsPressed,
       ),
       GroupNextEventStatus.loaded => _MessageState(
         icon: Icons.error_outline,
@@ -71,10 +71,10 @@ class GroupNextEvent extends StatelessWidget {
 }
 
 class _EventDetails extends StatelessWidget {
-  const _EventDetails({required this.data, this.onEventHistoryPressed});
+  const _EventDetails({required this.data, this.onMoreDetailsPressed});
 
   final GroupNextEventData data;
-  final VoidCallback? onEventHistoryPressed;
+  final VoidCallback? onMoreDetailsPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -107,20 +107,20 @@ class _EventDetails extends StatelessWidget {
         ),
         SizedBox(height: spacing.s16),
         _CurrentBook(title: data.bookTitle, cover: data.bookCover),
-        if (onEventHistoryPressed != null) ...[
+        if (onMoreDetailsPressed != null) ...[
           SizedBox(height: spacing.s12),
           Center(
             child: Semantics(
               button: true,
               enabled: true,
-              label: context.l10n.groupNextEventHistoryLink,
+              label: context.l10n.groupNextEventMoreDetailsLink,
               child: InkWell(
-                onTap: onEventHistoryPressed,
+                onTap: onMoreDetailsPressed,
                 borderRadius: BorderRadius.circular(spacing.s4),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: spacing.s4),
                   child: Text(
-                    context.l10n.groupNextEventHistoryLink,
+                    context.l10n.groupNextEventMoreDetailsLink,
                     style: context.text.bodyDefaultEmphasis.copyWith(
                       color: context.colors.textBrand,
                     ),

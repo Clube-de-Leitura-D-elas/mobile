@@ -248,33 +248,34 @@
   "@fullNameLabel": {
     "description": "Rótulo do item de perfil para o nome completo"
   },
-  "phoneLabel": "Telefone",
-  "@phoneLabel": {
-    "description": "Rótulo do item de perfil para número de telefone"
-  },
-  "addressLabel": "Endereço",
-  "@addressLabel": {
-    "description": "Rótulo do item de perfil para endereço"
-  },
-  "birthdayLabel": "Data de Nascimento",
-  "@birthdayLabel": {
-    "description": "Rótulo do item de perfil para data de nascimento"
-  },
-  "instagramLabel": "Instagram",
-  "@instagramLabel": {
-    "description": "Rótulo do item de perfil para conta do instagram"
-  },
-  "educationLabel": "Escolaridade",
-  "@educationLabel": {
-    "description": "Rótulo do item de perfil para grau de escolaridade"
-  },
-  "jobPositionLabel": "Cargo / Profissão",
-  "@jobPositionLabel": {
-    "description": "Rótulo do item de perfil para cargo ou profissão"
-  },
-  "authUserIdLabel": "ID Auth (Supabase User ID)",
-  "@authUserIdLabel": {
-    "description": "Rótulo do item de perfil para ID do usuário no Supabase"
+  "meetingEditTitle": "Editar encontro",
+  "meetingEditDateLabel": "Data",
+  "meetingEditDateHint": "DD/MM/AAAA",
+  "meetingEditDateError": "Informe a data.",
+  "meetingEditTimeLabel": "Horário",
+  "meetingEditTimeHint": "HH:MM",
+  "meetingEditTimeError": "Informe o horário.",
+  "meetingEditLocationLabel": "Local",
+  "meetingEditLocationHint": "Busque pelo nome ou endereço",
+  "meetingEditLocationError": "Informe o local.",
+  "meetingEditLocationSelectError": "Selecione um local da lista.",
+  "meetingEditLocationSearchError": "Não foi possível buscar locais. Tente novamente.",
+  "meetingEditDateInvalidError": "Informe uma data válida (DD/MM/AAAA).",
+  "meetingEditTimeInvalidError": "Informe um horário válido (HH:MM).",
+  "meetingEditDescriptionLabel": "Observações",
+  "meetingEditDescriptionHint": "Adicione observações (opcional)",
+  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
+  "meetingEditBookLabel": "Livro da vez",
+  "meetingEditHostLabel": "Anfitriã",
+  "meetingEditSaveButton": "Salvar alterações",
+  "meetingCoverSemanticLabel": "Foto do {title}",
+  "@meetingCoverSemanticLabel": {
+    "description": "Rótulo de acessibilidade da foto de capa do encontro",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   },
     "meetingDetailsHost": "Anfitriã: {name}",
     "@meetingDetailsHost": {
@@ -302,6 +303,8 @@
     "@meetingDetailsDescriptionTitle": {
       "description": "Título da seção de descrição do encontro"
     },
+    "meetingDetailsOpenMapHint": "Abrir no Google Maps",
+    "meetingDetailsMapLaunchError": "Não foi possível abrir o mapa.",
     "meetingCoverSemanticLabel": "Foto do {title}",
     "@meetingCoverSemanticLabel": {
       "description": "Rótulo de acessibilidade da foto de capa do encontro",
@@ -545,9 +548,13 @@
       }
     }
   },
-  "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
+  "groupNextEventHistoryLink": "Histórico de eventos",
   "@groupNextEventHistoryLink": {
-    "description": "Link exibido abaixo do próximo evento para acessar o histórico de encontros"
+    "description": "Link exibido abaixo da seção de participantes para acessar o histórico de encontros"
+  },
+  "groupNextEventMoreDetailsLink": "Exibir mais detalhes",
+  "@groupNextEventMoreDetailsLink": {
+    "description": "Link exibido abaixo do próximo evento para abrir os detalhes daquele encontro"
   },
   "groupNextEventCurrentBookLabel": "O livro da vez é:",
   "@groupNextEventCurrentBookLabel": {

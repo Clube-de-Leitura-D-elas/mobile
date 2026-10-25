@@ -13,6 +13,7 @@ import 'package:mobile/features/groups/data/models/meeting_photo_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_photos_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_tasks_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
+import 'package:mobile/features/groups/data/models/place_suggestion_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
@@ -24,6 +25,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/place_suggestion_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
 class GroupRepositoryImpl implements GroupRepository {
@@ -288,4 +290,55 @@ class GroupRepositoryImpl implements GroupRepository {
     }
     return buffer.toString();
   }
+
+  @override
+  Future<Result<List<PlaceSuggestionEntity>, GroupFailure>> searchPlaces(
+    String query,
+  ) async {
+    final result = await supabaseService
+        .invokeFunction<List<PlaceSuggestionModel>>(
+          functionName:
+              'search-places?query=${Uri.encodeQueryComponent(query)}',
+          decoder: PlaceSuggestionModel.listFromEnvelope,
+        );
+
+    switch (result) {
+      case Failure():
+        return const Failure(PlaceSearchFailure());
+      case Success(:final data):
+        final places = data.data;
+        if (places == null) return const Failure(PlaceSearchFailure());
+        return Success(
+          places.map((place) => place.toDomain()).toList(growable: false),
+        );
+    }
+  }
+
+  @override
+  Future<Result<void, GroupFailure>> updateMeeting({
+    required String meetingId,
+    required DateTime date,
+    String? googlePlaceId,
+    String? description,
+  }) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'update-meeting',
+      body: {
+        'meeting_id': meetingId,
+        'date': date.toUtc().toIso8601String(),
+        'google_place_id': ?googlePlaceId,
+        'description': description,
+      },
+    );
+
+    return switch (result) {
+      Failure(:final failure) => Failure(_updateMeetingFailure(failure.code)),
+      Success() => const Success(null),
+    };
+  }
+
+  GroupFailure _updateMeetingFailure(String? code) => switch (code) {
+    '403' || '409' => const MeetingNotEditableFailure(),
+    _ => const MeetingUpdateFailure(),
+  };
 }

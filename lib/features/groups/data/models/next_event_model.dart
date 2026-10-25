@@ -7,6 +7,7 @@ class NextEventModel extends NextEventEntity {
     required super.hostName,
     super.bookTitle,
     super.bookCoverUrl,
+    super.id,
   });
 
   /// Desempacota o envelope `{ next_event: { ... } }` retornado pela edge
@@ -29,13 +30,15 @@ class NextEventModel extends NextEventEntity {
       throw const FormatException('Invalid next event response.');
     }
 
+    final id = json['id'];
     final locationName = json['location_name'];
     final date = json['date'];
     final hostName = json['host_name'];
     final bookTitle = json['book_title'];
     final bookCoverUrl = json['book_cover_url'];
 
-    if (date is! String ||
+    if ((id != null && id is! String) ||
+        date is! String ||
         hostName is! String ||
         (bookTitle != null && bookTitle is! String) ||
         (bookCoverUrl != null && bookCoverUrl is! String)) {
@@ -47,6 +50,7 @@ class NextEventModel extends NextEventEntity {
     }
 
     return NextEventModel(
+      id: id as String?,
       // location_name pode ser null quando o encontro não tem local definido.
       location: locationName is String ? locationName : '',
       date: parsedDate,
@@ -58,6 +62,7 @@ class NextEventModel extends NextEventEntity {
 
   NextEventEntity toDomain() {
     return NextEventEntity(
+      id: id,
       location: location,
       date: date,
       hostName: hostName,
