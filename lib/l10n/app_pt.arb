@@ -548,9 +548,13 @@
       }
     }
   },
-  "groupNextEventHistoryLink": "Exibir detalhes dos últimos eventos",
+  "groupNextEventHistoryLink": "Histórico de eventos",
   "@groupNextEventHistoryLink": {
-    "description": "Link exibido abaixo do próximo evento para acessar o histórico de encontros"
+    "description": "Link exibido abaixo da seção de participantes para acessar o histórico de encontros"
+  },
+  "groupNextEventMoreDetailsLink": "Exibir mais detalhes",
+  "@groupNextEventMoreDetailsLink": {
+    "description": "Link exibido abaixo do próximo evento para abrir os detalhes daquele encontro"
   },
   "groupNextEventCurrentBookLabel": "O livro da vez é:",
   "@groupNextEventCurrentBookLabel": {
@@ -663,6 +667,10 @@
   "groupEventHistoryDetailsLink": "Confira mais detalhes",
   "@groupEventHistoryDetailsLink": {
     "description": "Link para abrir os detalhes de um evento realizado"
+  },
+  "groupMeetingMyTasksAction": "Minhas tarefas",
+  "@groupMeetingMyTasksAction": {
+    "description": "Rótulo do botão e título da tela de tarefas da anfitriã ou coordenadora do encontro"
   },
   "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
   "@groupEventHistoryEmpty": {

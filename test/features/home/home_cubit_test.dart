@@ -96,6 +96,7 @@ void main() {
       act: (cubit) => cubit.updateSearch('Porto Alegre'),
       expect: () => [const HomeState(searchQuery: 'Porto Alegre')],
     );
+
     blocTest<HomeCubit, HomeState>(
       'expands a group card',
       build: build,

@@ -17,6 +17,7 @@ import 'package:mobile/features/groups/presentation/pages/group_details_page.dar
 import 'package:mobile/features/groups/presentation/pages/meeting_attendance_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
+import 'package:mobile/features/groups/presentation/pages/meeting_tasks_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 
 abstract class GroupRoutes {
@@ -25,6 +26,7 @@ abstract class GroupRoutes {
   static const meetingDetails = GroupRoutePaths.meetingDetails;
   static const meetingAttendance = GroupRoutePaths.meetingAttendance;
   static const meetingEdit = GroupRoutePaths.meetingEdit;
+  static const meetingTasks = GroupRoutePaths.meetingTasks;
 
   static List<RouteBase> get routes => [
     GoRoute(
@@ -122,6 +124,16 @@ abstract class GroupRoutes {
             meetingName: extra?['meetingName'] as String? ?? '',
             formattedDate: extra?['formattedDate'] as String? ?? '',
           ),
+        );
+      },
+    ),
+    GoRoute(
+      path: meetingTasks,
+      pageBuilder: (context, state) {
+        final meetingId = state.uri.queryParameters['meeting_id'];
+        return AppPageTransitions.createPushPage(
+          state: state,
+          child: MeetingTasksScreen(meetingId: meetingId),
         );
       },
     ),

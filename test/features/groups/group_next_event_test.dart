@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 final _transparentPng = base64Decode(
@@ -162,7 +163,7 @@ void main() {
   });
 
   testWidgets(
-    'renders history link with bodyDefaultEmphasis when callback is provided',
+    'renders more details link with bodyDefaultEmphasis when callback is provided',
     (tester) async {
       var tapped = false;
       await tester.pumpWidget(
@@ -174,27 +175,27 @@ void main() {
               date: DateTime(2026, 8, 29),
               hostName: 'Roberta',
             ),
-            onEventHistoryPressed: () => tapped = true,
+            onMoreDetailsPressed: () => tapped = true,
           ),
         ),
       );
 
-      expect(find.text('Exibir detalhes dos últimos eventos'), findsOneWidget);
+      expect(find.text('Exibir mais detalhes'), findsOneWidget);
 
       final linkText = tester.widget<Text>(
-        find.text('Exibir detalhes dos últimos eventos'),
+        find.text('Exibir mais detalhes'),
       );
       expect(
         linkText.style?.fontSize,
         AppTypographyTokens.standard.bodyDefaultEmphasis.fontSize,
       );
 
-      await tester.tap(find.text('Exibir detalhes dos últimos eventos'));
+      await tester.tap(find.text('Exibir mais detalhes'));
       expect(tapped, isTrue);
     },
   );
 
-  testWidgets('does not render history link when no callback is given', (
+  testWidgets('does not render more details link when no callback is given', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -210,7 +211,7 @@ void main() {
       ),
     );
 
-    expect(find.text('Exibir detalhes dos últimos eventos'), findsNothing);
+    expect(find.text('Exibir mais detalhes'), findsNothing);
   });
 
   group('current book', () {
@@ -227,14 +228,14 @@ void main() {
           bookTitle: bookTitle,
           bookCover: bookCover,
         ),
-        onEventHistoryPressed: () {},
+        onMoreDetailsPressed: () {},
       );
     }
 
     testWidgets(
       'Given a next event with a book cover, '
       'When rendering, '
-      'Then shows the label, the cover sized 180x240 and the history link below',
+      'Then shows the label, the cover sized 180x240 and the more details link below',
       (tester) async {
         await tester.pumpWidget(
           buildSubject(
@@ -254,7 +255,7 @@ void main() {
         final label = tester.getRect(find.text('O livro da vez é:'));
         final image = tester.getRect(find.byType(Image));
         final link = tester.getRect(
-          find.text('Exibir detalhes dos últimos eventos'),
+          find.text('Exibir mais detalhes'),
         );
         expect(image.top, greaterThan(label.bottom));
         expect(link.top, greaterThan(image.bottom));
@@ -314,7 +315,7 @@ void main() {
           const Size(180, 240),
         );
         expect(
-          find.text('Exibir detalhes dos últimos eventos'),
+          find.text('Exibir mais detalhes'),
           findsOneWidget,
         );
       },

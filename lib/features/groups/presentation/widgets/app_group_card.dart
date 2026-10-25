@@ -24,6 +24,7 @@ class AppGroupCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onToggleExpanded;
   final VoidCallback? onMeetingResponseSuccess;
+  final VoidCallback? onMyTasksPressed;
 
   const AppGroupCard({
     super.key,
@@ -37,6 +38,7 @@ class AppGroupCard extends StatelessWidget {
     this.onTap,
     this.onToggleExpanded,
     this.onMeetingResponseSuccess,
+    this.onMyTasksPressed,
   });
 
   @override
@@ -85,6 +87,39 @@ class AppGroupCard extends StatelessWidget {
                     onResponseSuccess: onMeetingResponseSuccess,
                   ),
                 ),
+              if (meeting.canManageTasks) ...[
+                SizedBox(height: spacing.s12),
+                Center(
+                  child: Semantics(
+                    button: true,
+                    enabled: true,
+                    label: context.l10n.groupMeetingMyTasksAction,
+                    child: InkWell(
+                      onTap:
+                          onMyTasksPressed ??
+                          () => context.push(
+                            Uri(
+                              path: GroupRoutes.meetingTasks,
+                              queryParameters: {
+                                if (meeting.id != null)
+                                  'meeting_id': meeting.id!,
+                              },
+                            ).toString(),
+                          ),
+                      borderRadius: BorderRadius.circular(spacing.s4),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: spacing.s4),
+                        child: Text(
+                          context.l10n.groupMeetingMyTasksAction,
+                          style: context.typography.bodySmallEmphasis.copyWith(
+                            color: context.colors.textBrand,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ],
         ],

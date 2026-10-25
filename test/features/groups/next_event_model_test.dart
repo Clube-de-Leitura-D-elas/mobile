@@ -185,4 +185,14 @@ void main() {
       ),
     );
   });
+
+  test('maps meeting id when present in next_event', () {
+    final model = NextEventModel.fromJson(const {
+      ...validInnerJson,
+      'id': 'meeting-42',
+    });
+
+    expect(model.id, 'meeting-42');
+    expect(model.toDomain().id, 'meeting-42');
+  });
 }
