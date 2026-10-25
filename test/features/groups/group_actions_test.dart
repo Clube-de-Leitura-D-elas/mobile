@@ -23,6 +23,13 @@ void main() {
           find.widgetWithText(AppButton, 'Abrir Whatsapp'),
         );
         expect(button.onPressed, isNull);
+
+        final recommendButton = tester.widget<AppButton>(
+          find.widgetWithText(AppButton, 'Indicar livro'),
+        );
+        expect(recommendButton.onPressed, isNotNull);
+        await tester.tap(find.text('Indicar livro'));
+        await tester.pump();
       },
     );
 

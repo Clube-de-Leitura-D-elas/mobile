@@ -68,7 +68,7 @@ class GroupActions extends StatelessWidget {
           AppButton.primary(
             label: l10n.groupRecommendBookButton,
             size: AppButtonSize.sm,
-            onPressed: onRecommendBook,
+            onPressed: onRecommendBook ?? () {},
           ),
         ];
 

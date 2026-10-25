@@ -136,7 +136,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(GroupDetailsScreen), findsOneWidget);
-    expect(find.text('45'), findsOneWidget);
+    expect(find.text('Grupo 45'), findsOneWidget);
     expect(find.text('Ficção'), findsOneWidget);
     expect(find.text('Aventura'), findsOneWidget);
     expect(find.text('34 participantes'), findsOneWidget);

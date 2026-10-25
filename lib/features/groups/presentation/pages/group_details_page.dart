@@ -29,7 +29,7 @@ class GroupDetailsPage extends StatelessWidget {
             body: Center(child: Text(message)),
           ),
           GroupDetailsLoaded(:final group) => GroupDetailsScreen(
-            name: group.name,
+            name: 'Grupo ${group.name}',
             genres: group.genres,
             participantCount: group.participantCount,
             city: group.city,
