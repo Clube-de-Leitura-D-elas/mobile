@@ -77,6 +77,41 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test('reads can_edit and keeps it in the domain entity', () {
+    final model = MeetingDetailsModel.fromJson(withFields({'can_edit': true}));
+
+    expect(model.canEdit, isTrue);
+    expect(model.toDomain().canEdit, isTrue);
+  });
+
+  test('hides editing when can_edit is missing', () {
+    expect(MeetingDetailsModel.fromJson(_fullJson).canEdit, isFalse);
+  });
+
+  test('throws when can_edit is not a boolean', () {
+    expect(
+      () => MeetingDetailsModel.fromJson(withFields({'can_edit': 'yes'})),
+      throwsFormatException,
+    );
+  });
+
+  test('reads the Google place id of the location', () {
+    final model = MeetingDetailsModel.fromJson(
+      withFields({'location_google_place_id': 'place-1'}),
+    );
+
+    expect(model.toDomain().locationGooglePlaceId, 'place-1');
+  });
+
+  test('throws when the Google place id is not a string', () {
+    expect(
+      () => MeetingDetailsModel.fromJson(
+        withFields({'location_google_place_id': 123}),
+      ),
+      throwsFormatException,
+    );
+  });
 }
 
 Map<String, dynamic> withFields(Map<String, Object?> overrides) =>

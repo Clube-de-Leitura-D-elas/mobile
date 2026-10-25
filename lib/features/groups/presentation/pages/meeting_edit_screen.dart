@@ -3,26 +3,33 @@ import 'package:intl/intl.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/presentation/widgets/place_search_field.dart';
 
 class MeetingEditResult {
   const MeetingEditResult({
     required this.date,
-    required this.time,
-    required this.locationName,
-    required this.description,
+    this.googlePlaceId,
+    this.description,
   });
 
-  final String date;
-  final String time;
-  final String locationName;
-  final String description;
+  final DateTime date;
+
+  final String? googlePlaceId;
+
+  final String? description;
 }
 
 class MeetingEditScreen extends StatefulWidget {
-  const MeetingEditScreen({super.key, required this.meeting, this.onSaved});
+  const MeetingEditScreen({
+    super.key,
+    required this.meeting,
+    this.onSaved,
+    this.isSaving = false,
+  });
 
   final MeetingDetailsEntity meeting;
   final ValueChanged<MeetingEditResult>? onSaved;
+  final bool isSaving;
 
   @override
   State<MeetingEditScreen> createState() => _MeetingEditScreenState();
@@ -34,6 +41,8 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
   late final TextEditingController _timeController;
   late final TextEditingController _locationController;
   late final TextEditingController _descriptionController;
+  late final String _initialLocation;
+  String? _selectedPlaceId;
 
   @override
   void initState() {
@@ -45,7 +54,8 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
     _timeController = TextEditingController(
       text: date == null ? '' : DateFormat('HH:mm').format(date),
     );
-    _locationController = TextEditingController(text: _locationValue);
+    _initialLocation = _locationValue;
+    _locationController = TextEditingController(text: _initialLocation);
     _descriptionController = TextEditingController(
       text: widget.meeting.description ?? '',
     );
@@ -72,18 +82,53 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
+    final date = _parse(_dateFormat, _dateController.text)!;
+    final time = _parse(_timeFormat, _timeController.text)!;
+    final description = _descriptionController.text.trim();
+
     widget.onSaved?.call(
       MeetingEditResult(
-        date: _dateController.text.trim(),
-        time: _timeController.text.trim(),
-        locationName: _locationController.text.trim(),
-        description: _descriptionController.text.trim(),
+        date: DateTime(date.year, date.month, date.day, time.hour, time.minute),
+        googlePlaceId: _selectedPlaceId,
+        description: description.isEmpty ? null : description,
       ),
     );
   }
 
+  static final _dateFormat = DateFormat('dd/MM/yyyy');
+  static final _timeFormat = DateFormat('HH:mm');
+
+  DateTime? _parse(DateFormat format, String value) {
+    try {
+      return format.parseStrict(value.trim());
+    } on FormatException {
+      return null;
+    }
+  }
+
   String? _required(String? value, String message) {
     return value == null || value.trim().isEmpty ? message : null;
+  }
+
+  String? _validateDateTime(
+    String? value,
+    DateFormat format,
+    String requiredMessage,
+    String invalidMessage,
+  ) {
+    return _required(value, requiredMessage) ??
+        (_parse(format, value!) == null ? invalidMessage : null);
+  }
+
+  String? _validateLocation(String? value) {
+    final l10n = context.l10n;
+    final missing = _required(value, l10n.meetingEditLocationError);
+    if (missing != null) return missing;
+
+    final changed = value!.trim() != _initialLocation;
+    return changed && _selectedPlaceId == null
+        ? l10n.meetingEditLocationSelectError
+        : null;
   }
 
   @override
@@ -108,7 +153,12 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
               controller: _dateController,
               hintText: l10n.meetingEditDateHint,
               keyboardType: TextInputType.datetime,
-              validator: (value) => _required(value, l10n.meetingEditDateError),
+              validator: (value) => _validateDateTime(
+                value,
+                _dateFormat,
+                l10n.meetingEditDateError,
+                l10n.meetingEditDateInvalidError,
+              ),
             ),
             SizedBox(height: spacing.s16),
             AppTextField(
@@ -116,15 +166,19 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
               controller: _timeController,
               hintText: l10n.meetingEditTimeHint,
               keyboardType: TextInputType.datetime,
-              validator: (value) => _required(value, l10n.meetingEditTimeError),
+              validator: (value) => _validateDateTime(
+                value,
+                _timeFormat,
+                l10n.meetingEditTimeError,
+                l10n.meetingEditTimeInvalidError,
+              ),
             ),
             SizedBox(height: spacing.s16),
-            AppTextField(
-              label: l10n.meetingEditLocationLabel,
+            PlaceSearchField(
               controller: _locationController,
-              hintText: l10n.meetingEditLocationHint,
-              validator: (value) =>
-                  _required(value, l10n.meetingEditLocationError),
+              validator: _validateLocation,
+              onEdited: () => _selectedPlaceId = null,
+              onSelected: (place) => _selectedPlaceId = place.googlePlaceId,
             ),
             SizedBox(height: spacing.s16),
             AppTextField(
@@ -155,6 +209,7 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
             SizedBox(height: spacing.s32),
             AppButton.primary(
               label: l10n.meetingEditSaveButton,
+              isLoading: widget.isSaving,
               onPressed: _submit,
             ),
           ],

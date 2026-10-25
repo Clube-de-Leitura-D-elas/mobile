@@ -177,6 +177,74 @@ class AppLocalizationsPt extends AppLocalizations {
   String get logoutDialogConfirm => 'Sair';
 
   @override
+  String get meetingEditTitle => 'Editar encontro';
+
+  @override
+  String get meetingEditDateLabel => 'Data';
+
+  @override
+  String get meetingEditDateHint => 'DD/MM/AAAA';
+
+  @override
+  String get meetingEditDateError => 'Informe a data.';
+
+  @override
+  String get meetingEditTimeLabel => 'Horário';
+
+  @override
+  String get meetingEditTimeHint => 'HH:MM';
+
+  @override
+  String get meetingEditTimeError => 'Informe o horário.';
+
+  @override
+  String get meetingEditLocationLabel => 'Local';
+
+  @override
+  String get meetingEditLocationHint => 'Nome do local';
+
+  @override
+  String get meetingEditLocationError => 'Informe o local.';
+
+  @override
+  String get meetingEditLocationSelectError => 'Selecione um local da lista.';
+
+  @override
+  String get meetingEditLocationSearchError =>
+      'Não foi possível buscar locais. Tente novamente.';
+
+  @override
+  String get meetingEditDateInvalidError =>
+      'Informe uma data válida (DD/MM/AAAA).';
+
+  @override
+  String get meetingEditTimeInvalidError =>
+      'Informe um horário válido (HH:MM).';
+
+  @override
+  String get meetingEditDescriptionLabel => 'Observações';
+
+  @override
+  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
+
+  @override
+  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
+
+  @override
+  String get meetingEditBookLabel => 'Livro da vez';
+
+  @override
+  String get meetingEditHostLabel => 'Anfitriã';
+
+  @override
+  String get meetingEditSaveButton => 'Salvar alterações';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
+  }
+
+  @override
   String meetingDetailsHost(String name) {
     return 'Anfitriã: $name';
   }
@@ -193,9 +261,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingDetailsDescriptionTitle => 'Descrição';
 
   @override
-  String meetingCoverSemanticLabel(String title) {
-    return 'Foto do $title';
-  }
+  String get meetingDetailsOpenMapHint => 'Abrir no Google Maps';
+
+  @override
+  String get meetingDetailsMapLaunchError => 'Não foi possível abrir o mapa.';
 
   @override
   String get meetingPhotosTitle => 'Fotos do encontro';
@@ -537,54 +606,6 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get meetingEditTitle => 'Editar encontro';
-
-  @override
-  String get meetingEditDateLabel => 'Data';
-
-  @override
-  String get meetingEditDateHint => 'DD/MM/AAAA';
-
-  @override
-  String get meetingEditDateError => 'Informe a data.';
-
-  @override
-  String get meetingEditTimeLabel => 'Horário';
-
-  @override
-  String get meetingEditTimeHint => 'HH:MM';
-
-  @override
-  String get meetingEditTimeError => 'Informe o horário.';
-
-  @override
-  String get meetingEditLocationLabel => 'Local';
-
-  @override
-  String get meetingEditLocationHint => 'Nome do local';
-
-  @override
-  String get meetingEditLocationError => 'Informe o local.';
-
-  @override
-  String get meetingEditDescriptionLabel => 'Observações';
-
-  @override
-  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
-
-  @override
-  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
-
-  @override
-  String get meetingEditBookLabel => 'Livro da vez';
-
-  @override
-  String get meetingEditHostLabel => 'Anfitriã';
-
-  @override
-  String get meetingEditSaveButton => 'Salvar alterações';
-
-  @override
   String get meetingEditAction => 'Editar encontro';
 
   @override
@@ -795,6 +816,74 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get logoutDialogConfirm => 'Sair';
 
   @override
+  String get meetingEditTitle => 'Editar encontro';
+
+  @override
+  String get meetingEditDateLabel => 'Data';
+
+  @override
+  String get meetingEditDateHint => 'DD/MM/AAAA';
+
+  @override
+  String get meetingEditDateError => 'Informe a data.';
+
+  @override
+  String get meetingEditTimeLabel => 'Horário';
+
+  @override
+  String get meetingEditTimeHint => 'HH:MM';
+
+  @override
+  String get meetingEditTimeError => 'Informe o horário.';
+
+  @override
+  String get meetingEditLocationLabel => 'Local';
+
+  @override
+  String get meetingEditLocationHint => 'Busque pelo nome ou endereço';
+
+  @override
+  String get meetingEditLocationError => 'Informe o local.';
+
+  @override
+  String get meetingEditLocationSelectError => 'Selecione um local da lista.';
+
+  @override
+  String get meetingEditLocationSearchError =>
+      'Não foi possível buscar locais. Tente novamente.';
+
+  @override
+  String get meetingEditDateInvalidError =>
+      'Informe uma data válida (DD/MM/AAAA).';
+
+  @override
+  String get meetingEditTimeInvalidError =>
+      'Informe um horário válido (HH:MM).';
+
+  @override
+  String get meetingEditDescriptionLabel => 'Observações';
+
+  @override
+  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
+
+  @override
+  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
+
+  @override
+  String get meetingEditBookLabel => 'Livro da vez';
+
+  @override
+  String get meetingEditHostLabel => 'Anfitriã';
+
+  @override
+  String get meetingEditSaveButton => 'Salvar alterações';
+
+  @override
+  String meetingCoverSemanticLabel(String title) {
+    return 'Foto do $title';
+  }
+
+  @override
   String meetingDetailsHost(String name) {
     return 'Anfitriã: $name';
   }
@@ -811,9 +900,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get meetingDetailsDescriptionTitle => 'Descrição';
 
   @override
-  String meetingCoverSemanticLabel(String title) {
-    return 'Foto do $title';
-  }
+  String get meetingDetailsOpenMapHint => 'Abrir no Google Maps';
+
+  @override
+  String get meetingDetailsMapLaunchError => 'Não foi possível abrir o mapa.';
 
   @override
   String get meetingPhotosTitle => 'Fotos do encontro';
@@ -1102,54 +1192,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String meetingDetailsBook(String title) {
     return 'Livro: $title';
   }
-
-  @override
-  String get meetingEditTitle => 'Editar encontro';
-
-  @override
-  String get meetingEditDateLabel => 'Data';
-
-  @override
-  String get meetingEditDateHint => 'DD/MM/AAAA';
-
-  @override
-  String get meetingEditDateError => 'Informe a data.';
-
-  @override
-  String get meetingEditTimeLabel => 'Horário';
-
-  @override
-  String get meetingEditTimeHint => 'HH:MM';
-
-  @override
-  String get meetingEditTimeError => 'Informe o horário.';
-
-  @override
-  String get meetingEditLocationLabel => 'Local';
-
-  @override
-  String get meetingEditLocationHint => 'Nome do local';
-
-  @override
-  String get meetingEditLocationError => 'Informe o local.';
-
-  @override
-  String get meetingEditDescriptionLabel => 'Observações';
-
-  @override
-  String get meetingEditDescriptionHint => 'Adicione observações (opcional)';
-
-  @override
-  String get meetingEditReadOnlySection => 'Informações definidas pelo sorteio';
-
-  @override
-  String get meetingEditBookLabel => 'Livro da vez';
-
-  @override
-  String get meetingEditHostLabel => 'Anfitriã';
-
-  @override
-  String get meetingEditSaveButton => 'Salvar alterações';
 
   @override
   String get meetingEditAction => 'Editar encontro';
