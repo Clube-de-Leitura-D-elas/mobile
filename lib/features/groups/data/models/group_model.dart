@@ -67,6 +67,8 @@ class GroupModel extends GroupEntity {
     final location = json['location'];
     final invitationStatus = json['invitation_status'];
     final canManageTasks = json['can_manage_tasks'];
+    final tasksDone = json['tasks_done'];
+    final tasksTotal = json['tasks_total'];
 
     if (id is! String ||
         hostName is! String ||
@@ -85,6 +87,8 @@ class GroupModel extends GroupEntity {
       location: location,
       invitationStatus: _parseInvitationStatus(invitationStatus),
       canManageTasks: canManageTasks as bool? ?? false,
+      tasksDone: tasksDone is int ? tasksDone : 0,
+      tasksTotal: tasksTotal is int ? tasksTotal : 2,
     );
   }
 

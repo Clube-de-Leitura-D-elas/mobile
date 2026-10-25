@@ -8,12 +8,14 @@ import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.da
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_tasks_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_page.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_attendance_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
+import 'package:mobile/features/groups/presentation/pages/meeting_edit_route_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_tasks_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
@@ -25,6 +27,7 @@ abstract class GroupRoutes {
   static const meetingAttendance = GroupRoutePaths.meetingAttendance;
   static const meetingEdit = GroupRoutePaths.meetingEdit;
   static const meetingTasks = GroupRoutePaths.meetingTasks;
+  static const meetingRecord = GroupRoutePaths.meetingRecord;
 
   static List<RouteBase> get routes => [
     GoRoute(
@@ -56,12 +59,39 @@ abstract class GroupRoutes {
         if (meeting is! MeetingDetailsEntity) {
           return AppPageTransitions.createPushPage(
             state: state,
-            child: const Scaffold(body: SizedBox.shrink()),
+            child: BlocProvider(
+              create: (_) =>
+                  serviceLocator<MeetingDetailsCubit>()
+                    ..load(state.uri.queryParameters['meeting_id'] ?? ''),
+              child: const MeetingEditRoutePage(),
+            ),
           );
         }
         return AppPageTransitions.createPushPage(
           state: state,
           child: MeetingEditPage(meeting: meeting),
+        );
+      },
+    ),
+    GoRoute(
+      path: meetingRecord,
+      pageBuilder: (context, state) {
+        final meetingId = state.uri.queryParameters['meeting_id'] ?? '';
+        return AppPageTransitions.createPushPage(
+          state: state,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<MeetingDetailsCubit>()..load(meetingId),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<MeetingPhotosCubit>()..load(meetingId),
+              ),
+            ],
+            child: const MeetingDetailsPage(),
+          ),
         );
       },
     ),
@@ -115,6 +145,7 @@ abstract class GroupRoutes {
             meetingId: meetingId,
             meetingName: extra?['meetingName'] as String? ?? '',
             formattedDate: extra?['formattedDate'] as String? ?? '',
+            concludeOnFinish: extra?['concludeOnFinish'] as bool? ?? false,
           ),
         );
       },
@@ -125,7 +156,15 @@ abstract class GroupRoutes {
         final meetingId = state.uri.queryParameters['meeting_id'];
         return AppPageTransitions.createPushPage(
           state: state,
-          child: MeetingTasksScreen(meetingId: meetingId),
+          child: meetingId == null || meetingId.isEmpty
+              ? const Scaffold(body: Center(child: Text('Encontro inválido.')))
+              : BlocProvider(
+                  create: (_) => MeetingTasksCubit(
+                    groupRepository: serviceLocator(),
+                    meetingId: meetingId,
+                  )..load(),
+                  child: MeetingTasksScreen(meetingId: meetingId),
+                ),
         );
       },
     ),

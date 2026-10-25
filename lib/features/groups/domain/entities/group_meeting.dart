@@ -10,6 +10,8 @@ class GroupMeeting extends Equatable {
   final String? bookCoverUrl;
   final MeetingInvitationStatus invitationStatus;
   final bool canManageTasks;
+  final int tasksDone;
+  final int tasksTotal;
 
   const GroupMeeting({
     this.id,
@@ -20,6 +22,8 @@ class GroupMeeting extends Equatable {
     this.bookCoverUrl,
     this.invitationStatus = MeetingInvitationStatus.pending,
     this.canManageTasks = false,
+    this.tasksDone = 0,
+    this.tasksTotal = 2,
   });
 
   @override
@@ -32,5 +36,7 @@ class GroupMeeting extends Equatable {
     bookCoverUrl,
     invitationStatus,
     canManageTasks,
+    tasksDone,
+    tasksTotal,
   ];
 }

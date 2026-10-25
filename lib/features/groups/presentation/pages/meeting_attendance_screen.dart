@@ -7,12 +7,14 @@ class MeetingAttendanceScreen extends StatelessWidget {
   final String meetingName;
   final String formattedDate;
   final List<MeetingAttendanceEntity> participants;
+  final Future<void> Function()? onComplete;
 
   const MeetingAttendanceScreen({
     super.key,
     required this.meetingName,
     required this.formattedDate,
     required this.participants,
+    this.onComplete,
   });
 
   @override
@@ -68,6 +70,14 @@ class MeetingAttendanceScreen extends StatelessWidget {
                     },
                   ),
           ),
+          if (onComplete != null)
+            Padding(
+              padding: EdgeInsets.all(spacing.s16),
+              child: AppButton.primary(
+                label: 'Concluir lista de presença',
+                onPressed: () => onComplete!(),
+              ),
+            ),
         ],
       ),
     );

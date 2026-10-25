@@ -10,6 +10,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_details_entity.da
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 
 abstract class GroupRepository {
@@ -48,4 +49,10 @@ abstract class GroupRepository {
 
   Future<Result<List<MeetingAttendanceEntity>, GroupFailure>>
   getMeetingAttendance(String meetingId);
+
+  Future<Result<MeetingTasksEntity, GroupFailure>> getMeetingTasks(
+    String meetingId,
+  );
+
+  Future<Result<void, GroupFailure>> concludeMeeting(String meetingId);
 }

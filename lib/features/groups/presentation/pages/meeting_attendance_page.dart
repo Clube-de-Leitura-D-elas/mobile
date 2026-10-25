@@ -10,12 +10,14 @@ class MeetingAttendancePage extends StatelessWidget {
   final String meetingId;
   final String meetingName;
   final String formattedDate;
+  final bool concludeOnFinish;
 
   const MeetingAttendancePage({
     super.key,
     required this.meetingId,
     required this.meetingName,
     required this.formattedDate,
+    this.concludeOnFinish = false,
   });
 
   @override
@@ -65,6 +67,16 @@ class MeetingAttendancePage extends StatelessWidget {
                 meetingName: meetingName,
                 formattedDate: formattedDate,
                 participants: participants,
+                onComplete: concludeOnFinish
+                    ? () async {
+                        final result = await context
+                            .read<MeetingAttendanceCubit>()
+                            .conclude();
+                        if (result && context.mounted) {
+                          Navigator.of(context).pop(true);
+                        }
+                      }
+                    : null,
               ),
             _ => const SizedBox.shrink(),
           };

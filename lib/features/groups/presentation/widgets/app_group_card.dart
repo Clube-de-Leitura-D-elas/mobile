@@ -76,7 +76,7 @@ class AppGroupCard extends StatelessWidget {
               SizedBox(height: spacing.s8),
               _MeetingDetailsGrid(meeting: meeting),
               SizedBox(height: spacing.s16),
-              if (meeting.id != null)
+              if (meeting.id != null && !meeting.canManageTasks)
                 BlocProvider(
                   create: (context) => MeetingInvitationCubit(
                     groupRepository: serviceLocator<GroupRepository>(),
@@ -109,10 +109,28 @@ class AppGroupCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(spacing.s4),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: spacing.s4),
-                        child: Text(
-                          context.l10n.groupMeetingMyTasksAction,
-                          style: context.typography.bodySmallEmphasis.copyWith(
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: spacing.s8),
+                          decoration: BoxDecoration(
                             color: context.colors.textBrand,
+                            borderRadius: BorderRadius.circular(spacing.s16),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                context.l10n.groupMeetingMyTasksAction,
+                                style: context.typography.bodySmallEmphasis
+                                    .copyWith(color: Colors.white),
+                              ),
+                              SizedBox(width: spacing.s8),
+                              Text(
+                                '${meeting.tasksDone}/${meeting.tasksTotal}',
+                                style: context.typography.bodySmallEmphasis
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ],
                           ),
                         ),
                       ),

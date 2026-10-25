@@ -11,6 +11,7 @@ import 'package:mobile/features/groups/data/models/meeting_attendance_model.dart
 import 'package:mobile/features/groups/data/models/meeting_details_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_photo_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_photos_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_tasks_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
@@ -21,6 +22,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_details_entity.da
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
@@ -237,10 +239,41 @@ class GroupRepositoryImpl implements GroupRepository {
         if (items == null) {
           return const Failure(GroupDetailsFailure());
         }
+
         final entities = items.map((m) => m.toDomain()).toList()
           ..sort((a, b) => _sortKey(a.name).compareTo(_sortKey(b.name)));
         return Success(entities);
     }
+  }
+
+  @override
+  Future<Result<MeetingTasksEntity, GroupFailure>> getMeetingTasks(
+    String meetingId,
+  ) async {
+    final result = await supabaseService.invokeFunction<MeetingTasksModel>(
+      functionName:
+          'get-meeting-tasks?meeting_id=${Uri.encodeQueryComponent(meetingId)}',
+      decoder: MeetingTasksModel.fromJson,
+    );
+    return switch (result) {
+      Failure() => const Failure(MeetingTasksFailure()),
+      Success(:final data) when data.data != null => Success(
+        data.data!.toDomain(),
+      ),
+      Success() => const Failure(MeetingTasksFailure()),
+    };
+  }
+
+  @override
+  Future<Result<void, GroupFailure>> concludeMeeting(String meetingId) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'conclude-meeting',
+      body: {'meeting_id': meetingId},
+    );
+    return switch (result) {
+      Failure() => const Failure(MeetingConclusionFailure()),
+      Success() => const Success(null),
+    };
   }
 
   /// Ordenação alfabética insensível a acentos ("Ágata" junto de "Ana").

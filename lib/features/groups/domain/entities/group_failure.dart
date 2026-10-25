@@ -86,3 +86,15 @@ class MeetingPhotoRejectedFailure extends GroupFailure {
     super.message = 'A foto foi recusada e não pode ser enviada.',
   });
 }
+
+class MeetingTasksFailure extends GroupFailure {
+  const MeetingTasksFailure({
+    super.message = 'Não foi possível carregar suas tarefas. Tente novamente.',
+  });
+}
+
+class MeetingConclusionFailure extends GroupFailure {
+  const MeetingConclusionFailure({
+    super.message = 'Não foi possível encerrar o encontro. Tente novamente.',
+  });
+}
