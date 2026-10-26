@@ -2,9 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/models/raffle_participant_model.dart';
+import 'package:mobile/features/raffles/data/models/raffle_result_model.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_result.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockRaffleRemoteDataSource extends Mock
@@ -13,6 +15,17 @@ class MockRaffleRemoteDataSource extends Mock
 void main() {
   late RaffleRepositoryImpl repository;
   late MockRaffleRemoteDataSource mockDataSource;
+
+  setUpAll(() {
+    registerFallbackValue(
+      const RaffleResultModel(
+        meetingId: 'm1',
+        winnerId: 'p1',
+        winnerName: 'Beatriz',
+        bookTitle: '1984',
+      ),
+    );
+  });
 
   setUp(() {
     mockDataSource = MockRaffleRemoteDataSource();
@@ -32,15 +45,12 @@ void main() {
     test(
       'deve chamar o data source e retornar a lista de participantes com sucesso',
       () async {
-        // Arrange
         when(
           () => mockDataSource.getEligibleParticipants(tMeetingId),
         ).thenAnswer((_) async => [tModel]);
 
-        // Act
         final result = await repository.getEligibleParticipants(tMeetingId);
 
-        // Assert
         expect(result, isA<Success<List<RaffleParticipant>, RaffleFailure>>());
         final participants =
             (result as Success<List<RaffleParticipant>, RaffleFailure>).data;
@@ -58,15 +68,12 @@ void main() {
     test(
       'deve retornar Failure com RaffleFailure quando o data source lançar uma exceção',
       () async {
-        // Arrange
         when(
           () => mockDataSource.getEligibleParticipants(tMeetingId),
         ).thenThrow(Exception('Erro no servidor'));
 
-        // Act
         final result = await repository.getEligibleParticipants(tMeetingId);
 
-        // Assert
         expect(result, isA<Failure<List<RaffleParticipant>, RaffleFailure>>());
         verify(
           () => mockDataSource.getEligibleParticipants(tMeetingId),
@@ -81,18 +88,15 @@ void main() {
     const tSelectedIds = ['p1', 'p2'];
 
     test('deve chamar o data source e concluir com sucesso', () async {
-      // Arrange
       when(
         () => mockDataSource.confirmRaffle(tMeetingId, tSelectedIds),
       ).thenAnswer((_) async => Future.value());
 
-      // Act
       final result = await repository.confirmRaffle(
         meetingId: tMeetingId,
         selectedParticipantIds: tSelectedIds,
       );
 
-      // Assert
       expect(result, isA<Success<void, RaffleFailure>>());
       verify(
         () => mockDataSource.confirmRaffle(tMeetingId, tSelectedIds),
@@ -103,18 +107,15 @@ void main() {
     test(
       'deve retornar Failure quando o data source lançar uma exceção ao confirmar',
       () async {
-        // Arrange
         when(
           () => mockDataSource.confirmRaffle(tMeetingId, tSelectedIds),
         ).thenThrow(Exception('Erro ao confirmar sorteio'));
 
-        // Act
         final result = await repository.confirmRaffle(
           meetingId: tMeetingId,
           selectedParticipantIds: tSelectedIds,
         );
 
-        // Assert
         expect(result, isA<Failure<void, RaffleFailure>>());
         verify(
           () => mockDataSource.confirmRaffle(tMeetingId, tSelectedIds),
@@ -122,5 +123,111 @@ void main() {
         verifyNoMoreInteractions(mockDataSource);
       },
     );
+  });
+
+  group('getRaffleResult', () {
+    const tMeetingId = 'm1';
+    const tModel = RaffleResultModel(
+      meetingId: tMeetingId,
+      winnerId: 'p1',
+      winnerName: 'Beatriz',
+      bookTitle: '1984',
+    );
+
+    test('deve retornar Success com RaffleResult quando houver resultado salvo', () async {
+      when(
+        () => mockDataSource.getRaffleResult(tMeetingId),
+      ).thenAnswer((_) async => tModel);
+
+      final result = await repository.getRaffleResult(tMeetingId);
+
+      expect(result, isA<Success<RaffleResult?, RaffleFailure>>());
+      final domain = (result as Success<RaffleResult?, RaffleFailure>).data;
+      expect(domain?.winnerName, equals('Beatriz'));
+      expect(domain?.bookTitle, equals('1984'));
+    });
+
+    test('deve retornar Failure quando o datasource lançar erro', () async {
+      when(
+        () => mockDataSource.getRaffleResult(tMeetingId),
+      ).thenThrow(Exception('Erro no banco'));
+
+      final result = await repository.getRaffleResult(tMeetingId);
+
+      expect(result, isA<Failure<RaffleResult?, RaffleFailure>>());
+    });
+  });
+
+  group('drawRaffle', () {
+    const tMeetingId = 'm1';
+    const tModel = RaffleResultModel(
+      meetingId: tMeetingId,
+      winnerId: 'p1',
+      winnerName: 'Beatriz',
+      bookTitle: '1984',
+    );
+
+    test('deve retornar Success com RaffleResult após sortear', () async {
+      when(
+        () => mockDataSource.drawRaffle(
+          meetingId: tMeetingId,
+          eligibleParticipantIds: ['p1'],
+        ),
+      ).thenAnswer((_) async => tModel);
+
+      final result = await repository.drawRaffle(
+        meetingId: tMeetingId,
+        eligibleParticipantIds: ['p1'],
+      );
+
+      expect(result, isA<Success<RaffleResult, RaffleFailure>>());
+      final domain = (result as Success<RaffleResult, RaffleFailure>).data;
+      expect(domain.winnerName, equals('Beatriz'));
+    });
+
+    test('deve retornar Failure quando datasource falhar ao sortear', () async {
+      when(
+        () => mockDataSource.drawRaffle(
+          meetingId: tMeetingId,
+          eligibleParticipantIds: ['p1'],
+        ),
+      ).thenThrow(Exception('Falha no sorteio'));
+
+      final result = await repository.drawRaffle(
+        meetingId: tMeetingId,
+        eligibleParticipantIds: ['p1'],
+      );
+
+      expect(result, isA<Failure<RaffleResult, RaffleFailure>>());
+    });
+  });
+
+  group('saveRaffleResult', () {
+    const tResult = RaffleResult(
+      meetingId: 'm1',
+      winnerId: 'p1',
+      winnerName: 'Beatriz',
+      bookTitle: '1984',
+    );
+
+    test('deve salvar o resultado e retornar Success', () async {
+      when(
+        () => mockDataSource.saveRaffleResult(any()),
+      ).thenAnswer((_) async => Future.value());
+
+      final result = await repository.saveRaffleResult(tResult);
+
+      expect(result, isA<Success<void, RaffleFailure>>());
+    });
+
+    test('deve retornar Failure quando datasource falhar ao salvar', () async {
+      when(
+        () => mockDataSource.saveRaffleResult(any()),
+      ).thenThrow(Exception('Falha ao salvar'));
+
+      final result = await repository.saveRaffleResult(tResult);
+
+      expect(result, isA<Failure<void, RaffleFailure>>());
+    });
   });
 }

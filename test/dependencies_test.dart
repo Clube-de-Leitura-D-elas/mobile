@@ -25,6 +25,7 @@ import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -104,6 +105,10 @@ void main() {
       expect(
         serviceLocator<RafflePreparationCubit>(),
         isA<RafflePreparationCubit>(),
+      );
+      expect(
+        serviceLocator<RaffleExecutionCubit>(),
+        isA<RaffleExecutionCubit>(),
       );
     },
   );

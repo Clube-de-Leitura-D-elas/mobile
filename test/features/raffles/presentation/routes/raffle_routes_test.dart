@@ -6,7 +6,9 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
+import 'package:mobile/features/raffles/presentation/pages/raffle_execution_page.dart';
 import 'package:mobile/features/raffles/presentation/pages/raffle_preparation_page.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -23,14 +25,23 @@ void main() {
     when(
       () => mockRepository.getEligibleParticipants(any()),
     ).thenAnswer((_) async => const Success([]));
+    when(
+      () => mockRepository.getRaffleResult(any()),
+    ).thenAnswer((_) async => const Success(null));
 
     serviceLocator.registerFactory<RaffleRepository>(() => mockRepository);
     serviceLocator.registerFactory<RafflePreparationCubit>(
       () => RafflePreparationCubit(repository: mockRepository),
     );
+    serviceLocator.registerFactory<RaffleExecutionCubit>(
+      () => RaffleExecutionCubit(repository: mockRepository),
+    );
   });
 
   tearDown(() {
+    if (serviceLocator.isRegistered<RaffleExecutionCubit>()) {
+      serviceLocator.unregister<RaffleExecutionCubit>();
+    }
     if (serviceLocator.isRegistered<RafflePreparationCubit>()) {
       serviceLocator.unregister<RafflePreparationCubit>();
     }
@@ -110,4 +121,51 @@ void main() {
       expect(page.meetingId, 'meeting-789');
     },
   );
+
+  testWidgets('RaffleRoutes navega para RaffleExecutionPage com extra Map', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) => const Scaffold(body: Text('Home')),
+        ),
+        ...RaffleRoutes.routes,
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        locale: const Locale('pt', 'BR'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    router.go(
+      RaffleRoutes.draw,
+      extra: {
+        'meeting_id': 'meeting-999',
+        'meeting_title': 'Agosto',
+      },
+    );
+    await tester.pumpAndSettle();
+
+    final page = tester.widget<RaffleExecutionPage>(
+      find.byType(RaffleExecutionPage),
+    );
+    expect(page.meetingId, 'meeting-999');
+    expect(page.meetingTitle, 'Agosto');
+  });
 }
