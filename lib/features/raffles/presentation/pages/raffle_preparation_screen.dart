@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/features/raffles/presentation/widgets/confirm_raffle_dialog.dart';
 import 'package:mobile/features/raffles/presentation/widgets/raffle_participant_tile.dart';
 
@@ -27,7 +29,14 @@ class RafflePreparationScreen extends StatelessWidget {
               context.showAppToast(state.message);
             } else if (state is RafflePreparationSuccess) {
               context.showAppToast(context.l10n.raffleSuccessToast);
-              Navigator.of(context).pop();
+              try {
+                context.pushReplacement(
+                  RaffleRoutes.draw,
+                  extra: meetingId,
+                );
+              } catch (_) {
+                Navigator.of(context).pop();
+              }
             }
           },
           builder: (context, state) {
@@ -208,4 +217,3 @@ class _ActionButtons extends StatelessWidget {
     );
   }
 }
-

@@ -8,6 +8,9 @@ class RaffleParticipant extends Equatable {
   final bool isExcludedByRule;
   final String? exclusionReason;
   final bool isSelected;
+  final String? bookTitle;
+  final String? bookAuthor;
+  final String? bookCoverUrl;
 
   const RaffleParticipant({
     required this.id,
@@ -17,6 +20,9 @@ class RaffleParticipant extends Equatable {
     this.isExcludedByRule = false,
     this.exclusionReason,
     this.isSelected = true,
+    this.bookTitle,
+    this.bookAuthor,
+    this.bookCoverUrl,
   });
 
   RaffleParticipant copyWith({
@@ -27,6 +33,9 @@ class RaffleParticipant extends Equatable {
     bool? isExcludedByRule,
     String? exclusionReason,
     bool? isSelected,
+    String? bookTitle,
+    String? bookAuthor,
+    String? bookCoverUrl,
   }) {
     return RaffleParticipant(
       id: id ?? this.id,
@@ -36,6 +45,9 @@ class RaffleParticipant extends Equatable {
       isExcludedByRule: isExcludedByRule ?? this.isExcludedByRule,
       exclusionReason: exclusionReason ?? this.exclusionReason,
       isSelected: isSelected ?? this.isSelected,
+      bookTitle: bookTitle ?? this.bookTitle,
+      bookAuthor: bookAuthor ?? this.bookAuthor,
+      bookCoverUrl: bookCoverUrl ?? this.bookCoverUrl,
     );
   }
 
@@ -48,5 +60,8 @@ class RaffleParticipant extends Equatable {
     isExcludedByRule,
     exclusionReason,
     isSelected,
+    bookTitle,
+    bookAuthor,
+    bookCoverUrl,
   ];
 }

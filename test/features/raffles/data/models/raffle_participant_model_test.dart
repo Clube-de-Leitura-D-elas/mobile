@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/raffles/data/models/raffle_participant_model.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 
 void main() {
   const tModel = RaffleParticipantModel(
@@ -9,6 +10,9 @@ void main() {
     hasAttended: true,
     isExcludedByRule: false,
     exclusionReason: null,
+    bookTitle: 'Dom Casmurro',
+    bookAuthor: 'Machado de Assis',
+    bookCoverUrl: 'https://cover.jpg',
   );
 
   final tJson = {
@@ -18,6 +22,9 @@ void main() {
     'has_attended': true,
     'is_excluded_by_rule': false,
     'exclusion_reason': null,
+    'book_title': 'Dom Casmurro',
+    'book_author': 'Machado de Assis',
+    'book_cover_url': 'https://cover.jpg',
   };
 
   group('RaffleParticipantModel', () {
@@ -25,6 +32,7 @@ void main() {
       expect(tModel.id, equals('p1'));
       expect(tModel.name, equals('Mariana de Souza'));
       expect(tModel.hasAttended, isTrue);
+      expect(tModel.bookTitle, equals('Dom Casmurro'));
     });
 
     group('fromJson', () {
@@ -33,6 +41,7 @@ void main() {
         expect(result.id, equals(tModel.id));
         expect(result.name, equals(tModel.name));
         expect(result.hasAttended, equals(tModel.hasAttended));
+        expect(result.bookTitle, equals('Dom Casmurro'));
       });
     });
 
@@ -41,6 +50,14 @@ void main() {
         final result = tModel.toJson();
         expect(result, equals(tJson));
       });
+    });
+
+    test('toDomain deve converter para RaffleParticipant com dados do livro', () {
+      final domain = tModel.toDomain();
+      expect(domain, isA<RaffleParticipant>());
+      expect(domain.bookTitle, equals('Dom Casmurro'));
+      expect(domain.bookAuthor, equals('Machado de Assis'));
+      expect(domain.isSelected, isTrue);
     });
   });
 }

@@ -1,12 +1,10 @@
 {
   "@@locale": "pt_BR",
-
   "@@Common": "--- Common ---",
   "appTitle": "Clube de Leitura D'elas",
   "continueAction": "Continuar",
   "confirm": "Confirmar",
   "notProvided": "Não informado",
-
   "@@Auth": "--- Auth ---",
   "loginTitle": "Faça o seu login",
   "emailLabel": "E-mail",
@@ -29,7 +27,6 @@
   "registerButton": "Cadastrar",
   "accountCreatedSuccessMessage": "Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.",
   "alreadyHaveAccountLink": "Já tenho uma conta",
-
   "claimTokenTitle": "Vincular Perfil",
   "claimTokenSuccessMessage": "Perfil vinculado com sucesso!",
   "claimTokenInputHeader": "Informe o seu Token de Acesso",
@@ -40,7 +37,6 @@
   "claimTokenInvalidError": "Token de acesso inválido ou já utilizado. Por favor, verifique o código.",
   "genericError": "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.",
   "back": "Voltar",
-
   "@@Home": "--- Home ---",
   "logoutTooltip": "Sair",
   "logoutButton": "Sair da Conta",
@@ -55,7 +51,6 @@
   "educationLabel": "Escolaridade",
   "jobPositionLabel": "Cargo / Profissão",
   "authUserIdLabel": "ID Auth (Supabase User ID)",
-
   "@@Groups": "--- Groups ---",
   "groupNextEventTitle": "Próximo evento",
   "groupNextEventEmpty": "Nenhum próximo evento agendado",
@@ -120,7 +115,6 @@
   "groupParticipantsLoadError": "Não foi possível carregar as participantes.",
   "groupParticipantsRetryButton": "Tentar novamente",
   "groupParticipantsLoading": "Carregando participantes",
-
   "@@Onboarding": "--- Onboarding ---",
   "onboardingReviewTitle": "Verifique os seus dados",
   "onboardingNameLabel": "Nome",
@@ -152,7 +146,6 @@
   "filterAnswered": "Respondidos",
   "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
   "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
-
   "@@Raffles": "--- Raffles ---",
   "rafflePreparationTitle": "Realizar sorteio",
   "rafflePreparationSubtitle": "Selecione as participantes",
@@ -161,5 +154,17 @@
   "raffleConfirmDialogTitle": "Confirmar sorteio",
   "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",
   "raffleConfirmDialogCancel": "Cancelar",
-  "raffleSuccessToast": "Sorteio realizado com sucesso!"
+  "raffleSuccessToast": "Sorteio realizado com sucesso!",
+  "raffleDrawScreenTitle": "Realizar Sorteio",
+  "raffleBookDrawTitle": "Sorteio do Livro - {month}",
+  "raffleDrawButton": "SORTEAR",
+  "raffleDisclaimer": "O sorteio é automático e aleatório.\nA participação é voluntária.",
+  "raffleResultTitle": "Resultado do Sorteio",
+  "raffleDrawnBookLabel": "Livro sorteado",
+  "raffleHostLabel": "Anfitriã",
+  "raffleHostAnnounceLabel": "A Anfitriã da vez é",
+  "raffleFinishButton": "Concluir",
+  "raffleDrawAgainButton": "Sortear novamente",
+  "raffleNoEligibleParticipants": "Não há participantes elegíveis para o sorteio.",
+  "raffleSavedSuccessToast": "Sorteio registrado com sucesso! Nova anfitriã definida."
 }

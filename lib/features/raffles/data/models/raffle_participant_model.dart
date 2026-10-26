@@ -7,6 +7,9 @@ class RaffleParticipantModel {
   final bool hasAttended;
   final bool isExcludedByRule;
   final String? exclusionReason;
+  final String? bookTitle;
+  final String? bookAuthor;
+  final String? bookCoverUrl;
 
   const RaffleParticipantModel({
     required this.id,
@@ -15,6 +18,9 @@ class RaffleParticipantModel {
     required this.hasAttended,
     this.isExcludedByRule = false,
     this.exclusionReason,
+    this.bookTitle,
+    this.bookAuthor,
+    this.bookCoverUrl,
   });
 
   factory RaffleParticipantModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +31,9 @@ class RaffleParticipantModel {
       hasAttended: json['has_attended'] as bool? ?? false,
       isExcludedByRule: json['is_excluded_by_rule'] as bool? ?? false,
       exclusionReason: json['exclusion_reason'] as String?,
+      bookTitle: json['book_title'] as String?,
+      bookAuthor: json['book_author'] as String?,
+      bookCoverUrl: json['book_cover_url'] as String?,
     );
   }
 
@@ -36,6 +45,9 @@ class RaffleParticipantModel {
       'has_attended': hasAttended,
       'is_excluded_by_rule': isExcludedByRule,
       'exclusion_reason': exclusionReason,
+      'book_title': bookTitle,
+      'book_author': bookAuthor,
+      'book_cover_url': bookCoverUrl,
     };
   }
 
@@ -47,8 +59,10 @@ class RaffleParticipantModel {
       hasAttended: hasAttended,
       isExcludedByRule: isExcludedByRule,
       exclusionReason: exclusionReason,
-      isSelected:
-          !isExcludedByRule, // Se for excluída por regra de livro sorteado, vem desmarcada por padrão
+      isSelected: !isExcludedByRule,
+      bookTitle: bookTitle,
+      bookAuthor: bookAuthor,
+      bookCoverUrl: bookCoverUrl,
     );
   }
 }

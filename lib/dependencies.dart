@@ -26,6 +26,7 @@ import 'package:mobile/features/onboarding/domain/repository/onboarding_reposito
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -127,6 +128,12 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<RafflePreparationCubit>(
       () => RafflePreparationCubit(
+        repository: serviceLocator<RaffleRepository>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<RaffleExecutionCubit>(
+      () => RaffleExecutionCubit(
         repository: serviceLocator<RaffleRepository>(),
       ),
     );

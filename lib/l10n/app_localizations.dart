@@ -1104,6 +1104,78 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Logo do Clube de Leitura D\'Elas'**
   String get appLogoSemanticLabel;
+
+  /// Título no header da tela de realização do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar Sorteio'**
+  String get raffleDrawScreenTitle;
+
+  /// Título principal com o mês do sorteio do livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio do Livro - {month}'**
+  String raffleBookDrawTitle(String month);
+
+  /// Texto do botão central principal para realizar o sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'SORTEAR'**
+  String get raffleDrawButton;
+
+  /// Texto informativo no rodapé sobre a aleatoriedade do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'O sorteio é automático e aleatório.\nA participação é voluntária.'**
+  String get raffleDisclaimer;
+
+  /// Título do cabeçalho da tela de resultado do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Resultado do Sorteio'**
+  String get raffleResultTitle;
+
+  /// Rótulo superior acima do livro sorteado
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro sorteado'**
+  String get raffleDrawnBookLabel;
+
+  /// Rótulo identificando a anfitriã sorteada
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã'**
+  String get raffleHostLabel;
+
+  /// Frase anunciando a anfitriã da vez
+  ///
+  /// In pt, this message translates to:
+  /// **'A Anfitriã da vez é'**
+  String get raffleHostAnnounceLabel;
+
+  /// Texto do botão principal de concluir e registrar o resultado
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluir'**
+  String get raffleFinishButton;
+
+  /// Texto do botão secundário para sortear novamente
+  ///
+  /// In pt, this message translates to:
+  /// **'Sortear novamente'**
+  String get raffleDrawAgainButton;
+
+  /// Aviso emitido quando a lista de participantes elegíveis está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Não há participantes elegíveis para o sorteio.'**
+  String get raffleNoEligibleParticipants;
+
+  /// Mensagem de sucesso após registrar o sorteio e definir a nova anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio registrado com sucesso! Nova anfitriã definida.'**
+  String get raffleSavedSuccessToast;
 }
 
 class _AppLocalizationsDelegate
