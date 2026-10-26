@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
@@ -8,7 +9,6 @@ import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart'
 import 'package:mobile/features/groups/presentation/cubit/next_event_state.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
-import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
 
 class GroupDetailsPage extends StatelessWidget {
@@ -48,17 +48,12 @@ class GroupDetailsPage extends StatelessWidget {
                   data: _toWidgetData(nextEventState),
                   onMoreDetailsPressed: meetingId == null
                       ? null
-                      : () async {
-                          await context.push(
-                            Uri(
-                              path: GroupRoutePaths.meetingDetails,
-                              queryParameters: {'meeting_id': meetingId},
-                            ).toString(),
-                          );
-                          if (context.mounted) {
-                            await context.read<NextEventCubit>().load(groupId);
-                          }
-                        },
+                      : () => context.push(
+                          Uri(
+                            path: GroupRoutePaths.meetingDetails,
+                            queryParameters: {'meeting_id': meetingId},
+                          ).toString(),
+                        ),
                 );
               },
             ),

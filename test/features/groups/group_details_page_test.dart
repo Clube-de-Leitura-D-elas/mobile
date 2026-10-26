@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -13,9 +16,6 @@ import 'package:mobile/features/groups/domain/entities/group_participant_entity.
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
-import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
-import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
-import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
@@ -291,10 +291,8 @@ void main() {
   });
 
   testWidgets('Given a next event with an id, '
-      'When tapping Exibir mais detalhes and going back, '
-      'Then navigates to meeting details and reloads the next event', (
-    tester,
-  ) async {
+      'When tapping Exibir mais detalhes, '
+      'Then navigates to meeting details with meeting_id', (tester) async {
     when(
       () => mockRepository.getGroupDetails('group-1'),
     ).thenAnswer((_) async => const Success(group));
@@ -366,11 +364,5 @@ void main() {
 
     expect(pushedMeetingId, 'meeting-1');
     expect(find.text('Detalhes do encontro'), findsOneWidget);
-
-    router.pop();
-    await tester.pumpAndSettle();
-
-    expect(find.text('Detalhes do encontro'), findsNothing);
-    verify(() => mockRepository.getNextEvent('group-1')).called(2);
   });
 }
