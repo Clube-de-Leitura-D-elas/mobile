@@ -43,7 +43,6 @@ class MeetingPhotoThumbnail extends StatelessWidget {
   }
 }
 
-
 class MeetingPhotoPlaceholder extends StatelessWidget {
   const MeetingPhotoPlaceholder({super.key, this.onReload});
 

@@ -210,7 +210,7 @@ void main() {
       );
 
       await pumpRoute(tester, '/group-details?group_id=group-1');
-      final historyAction = find.text('Exibir detalhes dos últimos eventos');
+      final historyAction = find.text('Histórico de eventos');
       await tester.ensureVisible(historyAction);
       await tester.tap(historyAction);
       await tester.pumpAndSettle();

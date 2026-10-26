@@ -67,7 +67,7 @@ abstract class AuthRoutes {
     }
 
     if (sessionState is GuestSession) {
-      if (isClaim) {
+      if (!isLogin && !isRegister) {
         return login;
       }
     }

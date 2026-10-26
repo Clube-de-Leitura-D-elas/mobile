@@ -1,21 +1,24 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_page.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_attendance_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
+import 'package:mobile/features/groups/presentation/pages/meeting_tasks_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 
 abstract class GroupRoutes {
   static const groupDetails = GroupRoutePaths.groupDetails;
@@ -23,6 +26,7 @@ abstract class GroupRoutes {
   static const meetingDetails = GroupRoutePaths.meetingDetails;
   static const meetingAttendance = GroupRoutePaths.meetingAttendance;
   static const meetingEdit = GroupRoutePaths.meetingEdit;
+  static const meetingTasks = GroupRoutePaths.meetingTasks;
 
   static List<RouteBase> get routes => [
     GoRoute(
@@ -59,7 +63,13 @@ abstract class GroupRoutes {
         }
         return AppPageTransitions.createPushPage(
           state: state,
-          child: MeetingEditPage(meeting: meeting),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => serviceLocator<MeetingEditCubit>()),
+              BlocProvider(create: (_) => serviceLocator<PlaceSearchCubit>()),
+            ],
+            child: MeetingEditPage(meeting: meeting),
+          ),
         );
       },
     ),
@@ -114,6 +124,16 @@ abstract class GroupRoutes {
             meetingName: extra?['meetingName'] as String? ?? '',
             formattedDate: extra?['formattedDate'] as String? ?? '',
           ),
+        );
+      },
+    ),
+    GoRoute(
+      path: meetingTasks,
+      pageBuilder: (context, state) {
+        final meetingId = state.uri.queryParameters['meeting_id'];
+        return AppPageTransitions.createPushPage(
+          state: state,
+          child: MeetingTasksScreen(meetingId: meetingId),
         );
       },
     ),

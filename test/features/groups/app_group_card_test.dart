@@ -519,5 +519,75 @@ void main() {
         expect(toggleCalled, isTrue);
       },
     );
+
+    testWidgets(
+      'Shows Minhas tarefas button when canManageTasks is true and navigates to tasks screen',
+      (tester) async {
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => const Scaffold(
+                body: AppGroupCard(
+                  groupId: 'group-1',
+                  groupName: 'Grupo 1',
+                  participantsCount: 32,
+                  cityState: 'Porto Alegre, RS',
+                  nextMeeting: GroupMeeting(
+                    id: 'meeting-1',
+                    hostName: 'Roberta',
+                    bookTitle: 'Pequeno príncipe',
+                    date: '2026-08-29T19:00:00Z',
+                    location: 'Z Café TECNOPUC',
+                    canManageTasks: true,
+                  ),
+                ),
+              ),
+            ),
+            ...GroupRoutes.routes,
+          ],
+        );
+        addTearDown(router.dispose);
+
+        await tester.pumpWidget(_wrapRouter(router));
+        expect(find.text('Minhas tarefas'), findsOneWidget);
+
+        await tester.tap(find.text('Minhas tarefas'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Minhas tarefas'), findsOneWidget);
+        expect(find.byType(AppGroupCard), findsNothing);
+
+        await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppGroupCard), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Does not show Minhas tarefas button when canManageTasks is false',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Minhas tarefas'), findsNothing);
+      },
+    );
   });
 }

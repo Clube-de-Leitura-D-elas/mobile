@@ -10,13 +10,18 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
+import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
-import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
@@ -76,6 +81,17 @@ void main() {
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
       expect(serviceLocator<MeetingPhotosCubit>(), isA<MeetingPhotosCubit>());
+      expect(serviceLocator<MeetingEditCubit>(), isA<MeetingEditCubit>());
+      expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
+      expect(serviceLocator<ClaimTokenCubit>(), isA<ClaimTokenCubit>());
+      expect(
+        serviceLocator<OnboardingReviewCubit>(),
+        isA<OnboardingReviewCubit>(),
+      );
+      expect(
+        serviceLocator<PasswordValidationCubit>(),
+        isA<PasswordValidationCubit>(),
+      );
       expect(
         serviceLocator<RaffleRemoteDataSource>(),
         isA<RaffleRemoteDataSourceImpl>(),

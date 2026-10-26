@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
@@ -17,6 +18,8 @@ import 'package:mobile/features/groups/domain/repository/group_participants_repo
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
+import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -133,13 +136,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(GroupDetailsScreen), findsOneWidget);
-    expect(find.text('45'), findsOneWidget);
+    expect(find.text('Grupo 45'), findsOneWidget);
     expect(find.text('Ficção'), findsOneWidget);
     expect(find.text('Aventura'), findsOneWidget);
     expect(find.text('34 participantes'), findsOneWidget);
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.text('Ana Beatriz'), findsOneWidget);
+    expect(find.text('Histórico de eventos'), findsOneWidget);
   });
 
   testWidgets('uses the network cover image when the group has a URL', (
@@ -284,5 +288,81 @@ void main() {
     expect(data?.bookTitle, isNull);
     expect(data?.bookCover, isNull);
     expect(find.text('Livro ainda não definido'), findsOneWidget);
+  });
+
+  testWidgets('Given a next event with an id, '
+      'When tapping Exibir mais detalhes, '
+      'Then navigates to meeting details with meeting_id', (tester) async {
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Success(group));
+    when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+      (_) async => Success(
+        NextEventEntity(
+          id: 'meeting-1',
+          location: 'Casa da Fernanda',
+          date: DateTime.utc(2026, 10, 13, 22),
+          hostName: 'Fernanda Vargas',
+        ),
+      ),
+    );
+
+    String? pushedMeetingId;
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => GroupDetailsCubit(
+                  groupRepository: serviceLocator<GroupRepository>(),
+                )..load('group-1'),
+              ),
+              BlocProvider(
+                create: (_) => NextEventCubit(
+                  groupRepository: serviceLocator<GroupRepository>(),
+                )..load('group-1'),
+              ),
+              BlocProvider(
+                create: (_) => GroupParticipantsCubit(
+                  participantsRepository: mockParticipantsRepository,
+                )..load('group-1'),
+              ),
+            ],
+            child: const GroupDetailsPage(groupId: 'group-1'),
+          ),
+        ),
+        GoRoute(
+          path: GroupRoutePaths.meetingDetails,
+          builder: (_, state) {
+            pushedMeetingId = state.uri.queryParameters['meeting_id'];
+            return const Scaffold(body: Text('Detalhes do encontro'));
+          },
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Exibir mais detalhes'), findsOneWidget);
+    expect(find.text('Histórico de eventos'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Exibir mais detalhes'));
+    await tester.tap(find.text('Exibir mais detalhes'));
+    await tester.pumpAndSettle();
+
+    expect(pushedMeetingId, 'meeting-1');
+    expect(find.text('Detalhes do encontro'), findsOneWidget);
   });
 }

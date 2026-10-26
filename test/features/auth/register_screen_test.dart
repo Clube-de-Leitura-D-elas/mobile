@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
@@ -21,6 +23,17 @@ void main() {
     mockSessionCubit = MockSessionCubit();
     when(() => mockSessionCubit.stream).thenAnswer((_) => const Stream.empty());
     when(() => mockSessionCubit.state).thenReturn(const GuestSession());
+
+    serviceLocator.allowReassignment = true;
+    serviceLocator.registerFactory<PasswordValidationCubit>(
+      () => PasswordValidationCubit(),
+    );
+  });
+
+  tearDown(() {
+    if (serviceLocator.isRegistered<PasswordValidationCubit>()) {
+      serviceLocator.unregister<PasswordValidationCubit>();
+    }
   });
 
   Widget buildSubject({VoidCallback? onLoginPressed}) {

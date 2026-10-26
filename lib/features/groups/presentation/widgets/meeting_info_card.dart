@@ -4,16 +4,20 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_info_row.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
 
 class MeetingInfoCard extends StatelessWidget {
   const MeetingInfoCard({
     super.key,
     required this.meeting,
     required this.title,
+    this.onOpenMap,
   });
 
   final MeetingDetailsEntity meeting;
   final String title;
+
+  final Future<bool> Function(Uri url)? onOpenMap;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,7 @@ class MeetingInfoCard extends StatelessWidget {
     final typography = context.typography;
     final l10n = context.l10n;
     final description = meeting.description;
+    final mapUri = _mapUri();
 
     return AppCard(
       child: Column(
@@ -47,6 +52,9 @@ class MeetingInfoCard extends StatelessWidget {
           MeetingInfoRow(
             icon: AppIcons.location,
             label: _locationLabel(context),
+            linkHint: mapUri == null ? null : l10n.meetingDetailsOpenMapHint,
+            linkLabel: _locationText(),
+            onTap: mapUri == null ? null : () => _openMap(context, mapUri),
           ),
           if (description != null && description.trim().isNotEmpty) ...[
             SizedBox(height: spacing.s24),
@@ -79,14 +87,53 @@ class MeetingInfoCard extends StatelessWidget {
     return context.l10n.meetingDetailsDate(formatted);
   }
 
-  String _locationLabel(BuildContext context) {
+  String? _locationText() {
     final parts = [meeting.locationName, meeting.locationAddress]
         .whereType<String>()
         .map((part) => part.trim())
         .where((part) => part.isNotEmpty)
         .toList(growable: false);
+    return parts.isEmpty ? null : parts.join(' - ');
+  }
 
-    if (parts.isEmpty) return context.l10n.meetingDetailsLocationUndefined;
-    return context.l10n.meetingDetailsLocation(parts.join(' - '));
+  String _locationLabel(BuildContext context) {
+    final location = _locationText();
+    if (location == null) return context.l10n.meetingDetailsLocationUndefined;
+    return context.l10n.meetingDetailsLocation(location);
+  }
+
+  Uri? _mapUri() {
+    final query = [meeting.locationName, meeting.locationAddress]
+        .whereType<String>()
+        .map((part) => part.trim())
+        .where((part) => part.isNotEmpty)
+        .join(', ');
+    if (query.isEmpty) return null;
+
+    return Uri.https('www.google.com', '/maps/search/', {
+      'api': '1',
+      'query': query,
+      'query_place_id': ?meeting.locationGooglePlaceId,
+    });
+  }
+
+  Future<void> _openMap(BuildContext context, Uri uri) async {
+    final open =
+        onOpenMap ??
+        (url) => launcher.launchUrl(
+          url,
+          mode: launcher.LaunchMode.externalApplication,
+        );
+
+    try {
+      final opened = await open(uri);
+      if (!opened && context.mounted) {
+        context.showErrorToast(context.l10n.meetingDetailsMapLaunchError);
+      }
+    } catch (_) {
+      if (context.mounted) {
+        context.showErrorToast(context.l10n.meetingDetailsMapLaunchError);
+      }
+    }
   }
 }
