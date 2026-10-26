@@ -91,6 +91,25 @@ void main() {
     expect(location.top, greaterThan(date.bottom));
   });
 
+  testWidgets('shows the no-location text when the location is empty', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        GroupNextEvent(
+          status: GroupNextEventStatus.loaded,
+          data: GroupNextEventData(
+            location: '',
+            date: DateTime(2026, 8, 29),
+            hostName: 'Roberta',
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Sem localização'), findsOneWidget);
+  });
+
   testWidgets('renders the empty state with localized text', (tester) async {
     await tester.pumpWidget(
       buildSubject(const GroupNextEvent(status: GroupNextEventStatus.empty)),
