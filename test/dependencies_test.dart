@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+﻿// ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -29,6 +29,7 @@ import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubi
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MockGoogleSignInPlatform extends Mock
@@ -43,6 +44,7 @@ void main() {
 
   setUp(() async {
     dotenv.testLoad(fileInput: 'BASE_URL=http://localhost:8080');
+    SharedPreferences.setMockInitialValues({});
     GoogleSignInPlatform.instance = MockGoogleSignInPlatform();
     await serviceLocator.reset();
   });
