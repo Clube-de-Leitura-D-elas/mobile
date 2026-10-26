@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+﻿// ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,6 +44,7 @@ void main() {
 
   setUp(() async {
     dotenv.testLoad(fileInput: 'BASE_URL=http://localhost:8080');
+    SharedPreferences.setMockInitialValues({});
     GoogleSignInPlatform.instance = MockGoogleSignInPlatform();
     SharedPreferences.setMockInitialValues({});
     await serviceLocator.reset();
