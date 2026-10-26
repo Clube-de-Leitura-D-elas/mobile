@@ -213,6 +213,44 @@ void main() {
     );
   });
 
+  testWidgets('closing the modal with X changes nothing', (tester) async {
+    answerTasks([
+      Success(
+        _withState(status: MeetingTaskStatus.inProgress, canConclude: true),
+      ),
+    ]);
+    await pumpScreen(tester);
+
+    await tester.tap(find.text('Encerrar encontro'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.close));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Dialog), findsNothing);
+    expect(visited, isEmpty);
+  });
+
+  testWidgets('shows minutes in the scheduled time', (tester) async {
+    answerTasks([
+      Success(
+        MeetingTasksEntity(
+          meetingId: 'meeting-1',
+          status: MeetingTaskStatus.scheduled,
+          canManageTasks: true,
+          canConclude: false,
+          schedule: MeetingScheduleTask(
+            done: true,
+            date: DateTime(2026, 8, 22, 15, 5),
+          ),
+          record: const MeetingRecordTask(MeetingRecordStatus.locked),
+        ),
+      ),
+    ]);
+    await pumpScreen(tester);
+
+    expect(find.text('Sábado, 22 de agosto · 15h05'), findsOneWidget);
+  });
+
   testWidgets('answering Não in the modal closes it and changes nothing', (
     tester,
   ) async {

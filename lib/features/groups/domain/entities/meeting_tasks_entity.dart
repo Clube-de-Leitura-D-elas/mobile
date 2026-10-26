@@ -22,10 +22,6 @@ class MeetingRecordTask extends Equatable {
 
   bool get done => status == MeetingRecordStatus.published;
 
-  bool get available =>
-      status == MeetingRecordStatus.pending ||
-      status == MeetingRecordStatus.draft;
-
   @override
   List<Object?> get props => [status];
 }

@@ -7,6 +7,7 @@ import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_attendance_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_tasks_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
@@ -15,6 +16,7 @@ import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -583,6 +585,119 @@ void main() {
       ).captured;
 
       expect(captured.single, expectedFunctionName);
+    });
+  });
+
+  group('getMeetingTasks', () {
+    const functionName = 'get-meeting-tasks?meeting_id=meeting+1%2F2';
+
+    test('decodes the response and maps it to the entity', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<MeetingTasksModel>(
+          functionName: functionName,
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer((invocation) async {
+        final decoder =
+            invocation.namedArguments[#decoder]
+                as MeetingTasksModel Function(dynamic);
+        return Success<SupabaseResponse<MeetingTasksModel>, SupabaseFailure>(
+          SupabaseResponse(
+            data: decoder({
+              'meeting_id': 'meeting 1/2',
+              'status': 'CREATED',
+              'can_manage_tasks': true,
+            }),
+          ),
+        );
+      });
+
+      final result = await repository.getMeetingTasks('meeting 1/2');
+
+      expect(
+        result,
+        const Success<MeetingTasksEntity, GroupFailure>(
+          MeetingTasksModel(
+            meetingId: 'meeting 1/2',
+            status: MeetingTaskStatus.created,
+            canManageTasks: true,
+            canConclude: false,
+            schedule: MeetingScheduleTask(done: false),
+            record: MeetingRecordTask(MeetingRecordStatus.locked),
+          ),
+        ),
+      );
+    });
+
+    test('returns MeetingTasksFailure when the function fails', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<MeetingTasksModel>(
+          functionName: functionName,
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(FunctionSupabaseFailure(message: 'erro')),
+      );
+
+      final result = await repository.getMeetingTasks('meeting 1/2');
+
+      expect(
+        result,
+        const Failure<MeetingTasksEntity, GroupFailure>(MeetingTasksFailure()),
+      );
+    });
+
+    test('returns MeetingTasksFailure when the response has no data', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<MeetingTasksModel>(
+          functionName: functionName,
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<MeetingTasksModel>()),
+      );
+
+      final result = await repository.getMeetingTasks('meeting 1/2');
+
+      expect(
+        result,
+        const Failure<MeetingTasksEntity, GroupFailure>(MeetingTasksFailure()),
+      );
+    });
+  });
+
+  group('concludeMeeting', () {
+    test('sends the meeting id and returns Success', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'conclude-meeting',
+          body: {'meeting_id': 'meeting-1'},
+        ),
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<void>(data: null)),
+      );
+
+      final result = await repository.concludeMeeting('meeting-1');
+
+      expect(result, const Success<void, GroupFailure>(null));
+    });
+
+    test('returns MeetingConclusionFailure when the function fails', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'conclude-meeting',
+          body: {'meeting_id': 'meeting-1'},
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(FunctionSupabaseFailure(message: 'erro')),
+      );
+
+      final result = await repository.concludeMeeting('meeting-1');
+
+      expect(
+        result,
+        const Failure<void, GroupFailure>(MeetingConclusionFailure()),
+      );
     });
   });
 }
