@@ -634,6 +634,108 @@ class AppLocalizationsPt extends AppLocalizations {
   String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
 
   @override
+  String groupMeetingMyTasksProgress(int done, int total) {
+    return '$done de $total tarefas concluídas';
+  }
+
+  @override
+  String get meetingTasksTitle => 'Suas tarefas';
+
+  @override
+  String get meetingTasksInvalidMeeting => 'Encontro inválido.';
+
+  @override
+  String get meetingTasksRetry => 'Tentar novamente';
+
+  @override
+  String get meetingTasksDrawnLabel => 'VOCÊ FOI SORTEADA';
+
+  @override
+  String get meetingTasksDrawnFallbackTitle => 'Próximo encontro';
+
+  @override
+  String get meetingTasksPublishedLabel => 'TUDO CERTO';
+
+  @override
+  String get meetingTasksPublishedTitle => 'Encontro publicado';
+
+  @override
+  String get meetingTasksPublishedMessage =>
+      'As participantes já foram avisadas.';
+
+  @override
+  String meetingTasksPendingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tarefas para você',
+      one: '1 tarefa para você',
+      zero: 'Todas as tarefas concluídas',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meetingTasksScheduleTitle => '1. Marcar data e local';
+
+  @override
+  String get meetingTasksSchedulePending =>
+      'O grupo está esperando para saber quando e onde.';
+
+  @override
+  String get meetingTasksScheduleAction => 'Marcar agora';
+
+  @override
+  String get meetingTasksRecordTitle => '2. Enviar fotos do encontro';
+
+  @override
+  String get meetingTasksRecordLocked =>
+      'Disponível depois que o encontro acontecer.';
+
+  @override
+  String get meetingTasksRecordPending =>
+      'Depois do encontro, compartilhe como foi.';
+
+  @override
+  String get meetingTasksRecordDraft =>
+      'Você tem um rascunho salvo. Continue de onde parou.';
+
+  @override
+  String get meetingTasksRecordDraftTag => 'Rascunho salvo';
+
+  @override
+  String get meetingTasksRecordPublished => 'Registro publicado.';
+
+  @override
+  String get meetingTasksRecordAction => 'Enviar fotos';
+
+  @override
+  String get meetingTasksDoneSemantics => 'Concluída';
+
+  @override
+  String get meetingTasksConcludeAction => 'Encerrar encontro';
+
+  @override
+  String get meetingTasksConcludeHint =>
+      'Este botão ficará ativo quando o encontro iniciar.';
+
+  @override
+  String get meetingTasksConcludeDialogTitle => 'Encerrar encontro';
+
+  @override
+  String get meetingTasksConcludeDialogMessage =>
+      'Você deseja mesmo encerrar o encontro? Para concluir, preencha a lista de presença.';
+
+  @override
+  String get meetingTasksConcludeDialogNo => 'Não';
+
+  @override
+  String get meetingTasksConcludeDialogYes => 'Sim';
+
+  @override
+  String get meetingAttendanceCompleteAction => 'Concluir lista de presença';
+
+  @override
   String get showPasswordTooltip => 'Mostrar senha';
 
   @override

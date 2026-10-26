@@ -888,6 +888,126 @@
     "description": "Mensagem de sucesso exibida no toast após a realização do sorteio"
   },
 
+  "groupMeetingMyTasksProgress": "{done} de {total} tarefas concluídas",
+  "@groupMeetingMyTasksProgress": {
+    "description": "Descrição de acessibilidade do contador de tarefas da anfitriã no card do grupo",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "meetingTasksTitle": "Suas tarefas",
+  "@meetingTasksTitle": {
+    "description": "Título da tela de tarefas da anfitriã"
+  },
+  "meetingTasksInvalidMeeting": "Encontro inválido.",
+  "@meetingTasksInvalidMeeting": {
+    "description": "Mensagem quando a tela de tarefas é aberta sem meeting_id"
+  },
+  "meetingTasksRetry": "Tentar novamente",
+  "@meetingTasksRetry": {
+    "description": "Botão para recarregar as tarefas após erro"
+  },
+  "meetingTasksDrawnLabel": "VOCÊ FOI SORTEADA",
+  "@meetingTasksDrawnLabel": {
+    "description": "Sobretítulo do banner antes de o encontro ser publicado"
+  },
+  "meetingTasksDrawnFallbackTitle": "Próximo encontro",
+  "@meetingTasksDrawnFallbackTitle": {
+    "description": "Título do banner quando o livro do encontro não é conhecido"
+  },
+  "meetingTasksPublishedLabel": "TUDO CERTO",
+  "@meetingTasksPublishedLabel": {
+    "description": "Sobretítulo do banner depois de o encontro ser publicado"
+  },
+  "meetingTasksPublishedTitle": "Encontro publicado",
+  "@meetingTasksPublishedTitle": {
+    "description": "Título do banner depois de o encontro ser publicado"
+  },
+  "meetingTasksPublishedMessage": "As participantes já foram avisadas.",
+  "@meetingTasksPublishedMessage": {
+    "description": "Mensagem do banner depois de o encontro ser publicado"
+  },
+  "meetingTasksPendingCount": "{count, plural, =0{Todas as tarefas concluídas} =1{1 tarefa para você} other{{count} tarefas para você}}",
+  "@meetingTasksPendingCount": {
+    "description": "Quantidade de tarefas pendentes da anfitriã",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "meetingTasksScheduleTitle": "1. Marcar data e local",
+  "@meetingTasksScheduleTitle": {
+    "description": "Título da tarefa de marcar data e local"
+  },
+  "meetingTasksSchedulePending": "O grupo está esperando para saber quando e onde.",
+  "@meetingTasksSchedulePending": {
+    "description": "Descrição da tarefa de marcar data e local enquanto pendente"
+  },
+  "meetingTasksScheduleAction": "Marcar agora",
+  "@meetingTasksScheduleAction": {
+    "description": "Botão que abre a edição do encontro"
+  },
+  "meetingTasksRecordTitle": "2. Enviar fotos do encontro",
+  "@meetingTasksRecordTitle": {
+    "description": "Título da tarefa de enviar fotos e registro do encontro"
+  },
+  "meetingTasksRecordLocked": "Disponível depois que o encontro acontecer.",
+  "@meetingTasksRecordLocked": {
+    "description": "Descrição da tarefa de fotos antes de o encontro ser encerrado"
+  },
+  "meetingTasksRecordPending": "Depois do encontro, compartilhe como foi.",
+  "@meetingTasksRecordPending": {
+    "description": "Descrição da tarefa de fotos quando disponível"
+  },
+  "meetingTasksRecordDraft": "Você tem um rascunho salvo. Continue de onde parou.",
+  "@meetingTasksRecordDraft": {
+    "description": "Descrição da tarefa de fotos quando há rascunho salvo"
+  },
+  "meetingTasksRecordDraftTag": "Rascunho salvo",
+  "@meetingTasksRecordDraftTag": {
+    "description": "Etiqueta que indica rascunho salvo na tarefa de fotos"
+  },
+  "meetingTasksRecordPublished": "Registro publicado.",
+  "@meetingTasksRecordPublished": {
+    "description": "Descrição da tarefa de fotos depois de publicada"
+  },
+  "meetingTasksRecordAction": "Enviar fotos",
+  "@meetingTasksRecordAction": {
+    "description": "Botão que abre a tela de fotos e registro do encontro"
+  },
+  "meetingTasksDoneSemantics": "Concluída",
+  "@meetingTasksDoneSemantics": {
+    "description": "Descrição de acessibilidade do ícone de tarefa concluída"
+  },
+  "meetingTasksConcludeAction": "Encerrar encontro",
+  "@meetingTasksConcludeAction": {
+    "description": "Botão de encerrar o encontro no rodapé das tarefas"
+  },
+  "meetingTasksConcludeHint": "Este botão ficará ativo quando o encontro iniciar.",
+  "@meetingTasksConcludeHint": {
+    "description": "Aviso acima do botão de encerrar enquanto ele está bloqueado"
+  },
+  "meetingTasksConcludeDialogTitle": "Encerrar encontro",
+  "@meetingTasksConcludeDialogTitle": {
+    "description": "Título do modal de confirmação de encerramento"
+  },
+  "meetingTasksConcludeDialogMessage": "Você deseja mesmo encerrar o encontro? Para concluir, preencha a lista de presença.",
+  "@meetingTasksConcludeDialogMessage": {
+    "description": "Mensagem do modal de confirmação de encerramento"
+  },
+  "meetingTasksConcludeDialogNo": "Não",
+  "@meetingTasksConcludeDialogNo": {
+    "description": "Botão que cancela o encerramento"
+  },
+  "meetingTasksConcludeDialogYes": "Sim",
+  "@meetingTasksConcludeDialogYes": {
+    "description": "Botão que confirma o encerramento e abre a lista de presença"
+  },
+  "meetingAttendanceCompleteAction": "Concluir lista de presença",
+  "@meetingAttendanceCompleteAction": {
+    "description": "Botão que conclui a lista de presença e encerra o encontro"
+  },
+
   "showPasswordTooltip": "Mostrar senha",
   "@showPasswordTooltip": {
     "description": "Tooltip e acessibilidade para exibir senha"

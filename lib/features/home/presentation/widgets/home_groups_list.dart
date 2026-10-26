@@ -125,6 +125,7 @@ class _GroupCardItem extends StatelessWidget {
       expanded: isExpanded,
       onToggleExpanded: onToggle,
       onMeetingResponseSuccess: onMeetingResponseSuccess,
+      onTasksClosed: onMeetingResponseSuccess,
     );
   }
 }

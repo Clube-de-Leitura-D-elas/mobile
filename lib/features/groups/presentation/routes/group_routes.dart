@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
@@ -58,13 +61,21 @@ abstract class GroupRoutes {
       path: meetingEdit,
       pageBuilder: (context, state) {
         final meeting = state.extra;
+        // Sem o encontro em `extra` (ex.: vindo de "Suas tarefas"), carrega os
+        // detalhes antes de abrir a edição.
         if (meeting is! MeetingDetailsEntity) {
           return AppPageTransitions.createPushPage(
             state: state,
-            child: BlocProvider(
-              create: (_) =>
-                  serviceLocator<MeetingDetailsCubit>()
-                    ..load(state.uri.queryParameters['meeting_id'] ?? ''),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) =>
+                      serviceLocator<MeetingDetailsCubit>()
+                        ..load(state.uri.queryParameters['meeting_id'] ?? ''),
+                ),
+                BlocProvider(create: (_) => serviceLocator<MeetingEditCubit>()),
+                BlocProvider(create: (_) => serviceLocator<PlaceSearchCubit>()),
+              ],
               child: const MeetingEditRoutePage(),
             ),
           );
@@ -81,6 +92,8 @@ abstract class GroupRoutes {
         );
       },
     ),
+    // TODO(CLU-62): trocar pela tela de fotos e registro quando ela existir.
+    // Por enquanto abre os detalhes do encontro, que já têm a seção de fotos.
     GoRoute(
       path: meetingRecord,
       pageBuilder: (context, state) {
@@ -165,10 +178,19 @@ abstract class GroupRoutes {
         return AppPageTransitions.createPushPage(
           state: state,
           child: meetingId == null || meetingId.isEmpty
-              ? const Scaffold(body: Center(child: Text('Encontro inválido.')))
+              ? Builder(
+                  builder: (context) => Scaffold(
+                    appBar: ScreenHeader.back(
+                      title: context.l10n.meetingTasksTitle,
+                    ),
+                    body: Center(
+                      child: Text(context.l10n.meetingTasksInvalidMeeting),
+                    ),
+                  ),
+                )
               : BlocProvider(
                   create: (_) => MeetingTasksCubit(
-                    groupRepository: serviceLocator(),
+                    groupRepository: serviceLocator<GroupRepository>(),
                     meetingId: meetingId,
                   )..load(),
                   child: MeetingTasksScreen(meetingId: meetingId),

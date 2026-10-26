@@ -8,6 +8,9 @@ class MeetingTasksModel extends MeetingTasksEntity {
     required super.canConclude,
     required super.schedule,
     required super.record,
+    super.bookTitle,
+    super.bookAuthor,
+    super.groupName,
   });
 
   factory MeetingTasksModel.fromJson(dynamic json) {
@@ -37,8 +40,14 @@ class MeetingTasksModel extends MeetingTasksEntity {
       canConclude: canConclude is bool ? canConclude : false,
       schedule: schedule,
       record: record,
+      bookTitle: _optionalString(json['book_title']),
+      bookAuthor: _optionalString(json['book_author']),
+      groupName: _optionalString(json['group_name']),
     );
   }
+
+  static String? _optionalString(dynamic value) =>
+      value is String && value.trim().isNotEmpty ? value : null;
 
   static MeetingScheduleTask _parseSchedule(
     dynamic json,

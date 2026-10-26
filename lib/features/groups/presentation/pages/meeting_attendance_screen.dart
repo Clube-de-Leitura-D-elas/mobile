@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_attendance_card.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_attendance_complete_button.dart';
 
 class MeetingAttendanceScreen extends StatelessWidget {
   final String meetingName;
@@ -70,12 +71,12 @@ class MeetingAttendanceScreen extends StatelessWidget {
                     },
                   ),
           ),
-          if (onComplete != null)
-            Padding(
-              padding: EdgeInsets.all(spacing.s16),
-              child: AppButton.primary(
-                label: 'Concluir lista de presença',
-                onPressed: () => onComplete!(),
+          if (onComplete case final onComplete?)
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.all(spacing.s16),
+                child: MeetingAttendanceCompleteButton(onComplete: onComplete),
               ),
             ),
         ],
