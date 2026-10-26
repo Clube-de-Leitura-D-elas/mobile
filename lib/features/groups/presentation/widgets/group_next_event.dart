@@ -88,8 +88,10 @@ class _EventDetails extends StatelessWidget {
           children: [
             Expanded(
               child: _EventMetadata(
-                icon: AppIcons.user,
-                label: context.l10n.groupNextEventHost(data.hostName),
+                icon: AppIcons.location,
+                label: data.location.isEmpty
+                    ? context.l10n.groupNextEventNoLocation
+                    : data.location,
               ),
             ),
             SizedBox(width: spacing.s16),
@@ -100,10 +102,8 @@ class _EventDetails extends StatelessWidget {
         ),
         SizedBox(height: spacing.s16),
         _EventMetadata(
-          icon: AppIcons.location,
-          label: data.location.isEmpty
-              ? context.l10n.groupNextEventNoLocation
-              : data.location,
+          icon: AppIcons.user,
+          label: context.l10n.groupNextEventHost(data.hostName),
         ),
         SizedBox(height: spacing.s16),
         _CurrentBook(title: data.bookTitle, cover: data.bookCover),
@@ -154,8 +154,6 @@ class _EventMetadata extends StatelessWidget {
         Flexible(
           child: Text(
             label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
             style: context.text.bodySmall.copyWith(color: colors.textMuted),
           ),
         ),
