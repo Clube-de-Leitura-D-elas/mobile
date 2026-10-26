@@ -104,6 +104,7 @@ class _EventDetails extends StatelessWidget {
           label: data.location.isEmpty
               ? context.l10n.groupNextEventNoLocation
               : data.location,
+          wrap: true,
         ),
         SizedBox(height: spacing.s16),
         _CurrentBook(title: data.bookTitle, cover: data.bookCover),
@@ -136,10 +137,15 @@ class _EventDetails extends StatelessWidget {
 }
 
 class _EventMetadata extends StatelessWidget {
-  const _EventMetadata({required this.icon, required this.label});
+  const _EventMetadata({
+    required this.icon,
+    required this.label,
+    this.wrap = false,
+  });
 
   final AppIconAsset icon;
   final String label;
+  final bool wrap;
 
   @override
   Widget build(BuildContext context) {
@@ -148,14 +154,17 @@ class _EventMetadata extends StatelessWidget {
 
     return Row(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: wrap
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
         AppIcon(icon: icon, size: spacing.s16, color: colors.textMuted),
         SizedBox(width: spacing.s8),
         Flexible(
           child: Text(
             label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            maxLines: wrap ? null : 1,
+            overflow: wrap ? null : TextOverflow.ellipsis,
             style: context.text.bodySmall.copyWith(color: colors.textMuted),
           ),
         ),

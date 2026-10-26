@@ -140,7 +140,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('truncates long info with an ellipsis on a narrow layout', (
+    testWidgets('wraps a long location and truncates the host on a narrow layout', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(320, 800);
@@ -167,15 +167,23 @@ void main() {
 
     expect(tester.takeException(), isNull);
 
-    for (final label in [longLocation, 'Anfitriã: $longHost']) {
-      final text = tester.widget<Text>(find.text(label));
-      expect(text.maxLines, 1);
-      expect(text.overflow, TextOverflow.ellipsis);
-      expect(
-        tester.getSize(find.text(label)).height,
-        lessThan(AppTypographyTokens.standard.bodySmall.fontSize! * 2),
-      );
-    }
+    final fontSize = AppTypographyTokens.standard.bodySmall.fontSize!;
+
+    final host = tester.widget<Text>(find.text('Anfitriã: $longHost'));
+    expect(host.maxLines, 1);
+    expect(host.overflow, TextOverflow.ellipsis);
+    expect(
+      tester.getSize(find.text('Anfitriã: $longHost')).height,
+      lessThan(fontSize * 2),
+    );
+
+    final location = tester.widget<Text>(find.text(longLocation));
+    expect(location.maxLines, isNull);
+    expect(location.overflow, isNull);
+    expect(
+      tester.getSize(find.text(longLocation)).height,
+      greaterThan(fontSize * 1.5),
+    );
   });
 
   test('loaded state requires data', () {
