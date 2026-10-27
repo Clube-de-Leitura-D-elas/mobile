@@ -161,9 +161,10 @@
   "selectOptionHint": "Selecione",
   "myGroupsTitle": "Meus grupos",
   "searchGroupPlaceholder": "Buscar grupo",
-  "filterAll": "Todos",
-  "filterUnanswered": "Não respondidos ({count})",
-  "filterAnswered": "Respondidos",
+  "homePendingTasksMessage": "Você tem tarefas pendentes",
+  "homePendingTasksAction": "Tarefas",
+  "pendingTasksTitle": "Tarefas pendentes",
+  "emptyPendingTasks": "Você não tem tarefas pendentes",
   "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
   "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
 

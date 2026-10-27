@@ -77,20 +77,6 @@ void main() {
     );
 
     blocTest<HomeCubit, HomeState>(
-      'updates the selected filter',
-      build: build,
-      act: (cubit) => cubit.selectFilter(1),
-      expect: () => [const HomeState(filter: HomeFilter.unanswered)],
-    );
-
-    blocTest<HomeCubit, HomeState>(
-      'ignores a filter index out of range',
-      build: build,
-      act: (cubit) => cubit.selectFilter(7),
-      expect: () => const <HomeState>[],
-    );
-
-    blocTest<HomeCubit, HomeState>(
       'updates the search query',
       build: build,
       act: (cubit) => cubit.updateSearch('Porto Alegre'),

@@ -7,11 +7,13 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
+import 'package:mobile/features/home/presentation/pages/pending_tasks_screen.dart';
 
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 
 abstract class HomeRoutes {
   static const String home = '/home';
+  static const String pendingTasks = '/tarefas';
 
   static List<RouteBase> get routes => [
     GoRoute(
@@ -30,6 +32,16 @@ abstract class HomeRoutes {
         }
         return AppPageTransitions.createFadePage(state: state, child: child);
       },
+    ),
+    GoRoute(
+      path: pendingTasks,
+      pageBuilder: (context, state) => AppPageTransitions.createPushPage(
+        state: state,
+        child: BlocProvider(
+          create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
+          child: const PendingTasksScreen(),
+        ),
+      ),
     ),
   ];
 

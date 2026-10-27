@@ -16,8 +16,7 @@ class HomeEmptyState extends StatelessWidget {
     return switch (kind) {
       HomeEmptyKind.noGroups => const GroupsEmptyState(),
       HomeEmptyKind.noSearchResults => _EmptyMessage(l10n.emptyGroupsSearch),
-      HomeEmptyKind.noUnanswered => _EmptyMessage(l10n.emptyGroupsUnanswered),
-      HomeEmptyKind.noAnswered => _EmptyMessage(l10n.emptyGroupsAnswered),
+      HomeEmptyKind.noPendingTasks => _EmptyMessage(l10n.emptyPendingTasks),
     };
   }
 }

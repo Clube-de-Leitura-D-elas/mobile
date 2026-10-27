@@ -46,25 +46,5 @@ void main() {
       expect(find.text(l10n.emptyGroupsSearch), findsOneWidget);
       expect(find.byType(GroupsEmptyState), findsNothing);
     });
-
-    testWidgets('renders the no unanswered groups message', (tester) async {
-      await tester.pumpWidget(buildSubject(HomeEmptyKind.noUnanswered));
-
-      final context = tester.element(find.byType(HomeEmptyState));
-      final l10n = AppLocalizations.of(context);
-
-      expect(find.text(l10n.emptyGroupsUnanswered), findsOneWidget);
-      expect(find.byType(GroupsEmptyState), findsNothing);
-    });
-
-    testWidgets('renders the no answered groups message', (tester) async {
-      await tester.pumpWidget(buildSubject(HomeEmptyKind.noAnswered));
-
-      final context = tester.element(find.byType(HomeEmptyState));
-      final l10n = AppLocalizations.of(context);
-
-      expect(find.text(l10n.emptyGroupsAnswered), findsOneWidget);
-      expect(find.byType(GroupsEmptyState), findsNothing);
-    });
   });
 }

@@ -15,9 +15,11 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
+import 'package:mobile/features/home/presentation/widgets/home_pending_tasks_banner.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -70,6 +72,55 @@ void main() {
     expect(find.text('3 participantes'), findsOneWidget);
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
+  });
+
+  testWidgets('hides the pending tasks banner when there are no host tasks', (
+    tester,
+  ) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Success([group]));
+    final cubit = HomeCubit(groupRepository: repository);
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(buildSubject(cubit, MockSessionCubit()));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HomePendingTasksBanner), findsNothing);
+    expect(find.text('Todos'), findsNothing);
+  });
+
+  testWidgets('shows the pending tasks banner when the host has tasks', (
+    tester,
+  ) async {
+    final repository = MockGroupRepository();
+    when(() => repository.getMyGroups()).thenAnswer(
+      (_) async => Success([
+        group.copyWith(
+          nextMeeting: const GroupMeeting(
+            id: 'meeting-1',
+            hostName: 'Ana',
+            bookTitle: 'Livro',
+            date: '08/11/2026',
+            location: 'Casa da Ana',
+            canManageTasks: true,
+            tasksDone: 1,
+          ),
+        ),
+      ]),
+    );
+    final cubit = HomeCubit(groupRepository: repository);
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(buildSubject(cubit, MockSessionCubit()));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HomePendingTasksBanner), findsOneWidget);
+    expect(find.text('Você tem tarefas pendentes'), findsOneWidget);
+    expect(find.bySemanticsLabel('Tarefas'), findsOneWidget);
   });
 
   testWidgets(

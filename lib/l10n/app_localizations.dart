@@ -847,23 +847,29 @@ abstract class AppLocalizations {
   /// **'Buscar grupo'**
   String get searchGroupPlaceholder;
 
-  /// Chip de filtro Todos
+  /// Aviso na home quando a anfitriã tem tarefas pendentes
   ///
   /// In pt, this message translates to:
-  /// **'Todos'**
-  String get filterAll;
+  /// **'Você tem tarefas pendentes'**
+  String get homePendingTasksMessage;
 
-  /// Chip de filtro Não respondidos com contagem
+  /// Botão do aviso de tarefas pendentes que abre as tarefas da anfitriã
   ///
   /// In pt, this message translates to:
-  /// **'Não respondidos ({count})'**
-  String filterUnanswered(int count);
+  /// **'Tarefas'**
+  String get homePendingTasksAction;
 
-  /// Chip de filtro Respondidos
+  /// Título da tela com os grupos em que a anfitriã tem tarefas pendentes
   ///
   /// In pt, this message translates to:
-  /// **'Respondidos'**
-  String get filterAnswered;
+  /// **'Tarefas pendentes'**
+  String get pendingTasksTitle;
+
+  /// Mensagem exibida quando não há grupos com tarefas pendentes
+  ///
+  /// In pt, this message translates to:
+  /// **'Você não tem tarefas pendentes'**
+  String get emptyPendingTasks;
 
   /// Título exibido quando a lista de grupos está vazia
   ///
@@ -882,18 +888,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Nenhum grupo encontrado'**
   String get emptyGroupsSearch;
-
-  /// Mensagem exibida quando o filtro Não respondidos não tem grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhum grupo com resposta pendente'**
-  String get emptyGroupsUnanswered;
-
-  /// Mensagem exibida quando o filtro Respondidos não tem grupos
-  ///
-  /// In pt, this message translates to:
-  /// **'Você ainda não respondeu a nenhum encontro'**
-  String get emptyGroupsAnswered;
 
   /// Título da tela de detalhes do grupo, com o número do grupo
   ///

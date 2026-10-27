@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -7,6 +8,7 @@ import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_state.dart';
+import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/home/presentation/widgets/home_groups_list.dart';
 import 'package:mobile/features/home/presentation/widgets/home_header.dart';
 
@@ -33,11 +35,12 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: QuickAccessItem.home.index,
-        onItemSelected: onNavigationItemSelected ??
+        onItemSelected:
+            onNavigationItemSelected ??
             (index) => context.goToQuickAccessTab(
-                  index,
-                  currentIndex: QuickAccessItem.home.index,
-                ),
+              index,
+              currentIndex: QuickAccessItem.home.index,
+            ),
       ),
     );
   }
@@ -62,10 +65,10 @@ class _HomeContent extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: HomeHeader(
-            selectedFilterIndex: state.selectedFilterIndex,
-            onFilterSelected: cubit.selectFilter,
             onSearchChanged: cubit.updateSearch,
-            unansweredCount: state.unansweredCount,
+            onPendingTasksPressed: state.hasPendingTasks
+                ? () => _openPendingTasks(context)
+                : null,
           ),
         ),
         HomeGroupsList(
@@ -82,5 +85,11 @@ class _HomeContent extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _openPendingTasks(BuildContext context) async {
+    final cubit = context.read<HomeCubit>();
+    await context.push<Object?>(HomeRoutes.pendingTasks);
+    if (!cubit.isClosed) await cubit.loadGroups();
   }
 }

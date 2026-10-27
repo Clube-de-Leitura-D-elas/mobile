@@ -91,6 +91,62 @@ void main() {
     });
 
     testWidgets(
+      'Hides the meeting section and Minhas tarefas when the host meeting ended',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 2',
+              participantsCount: 5,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                canManageTasks: true,
+                status: 'ENDED',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Próximo evento'), findsNothing);
+        expect(find.text('Minhas tarefas'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'Shows only Minhas tarefas, without the meeting section, when tasksOnly',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 2',
+              participantsCount: 5,
+              cityState: 'Porto Alegre, RS',
+              tasksOnly: true,
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                canManageTasks: true,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Próximo evento'), findsNothing);
+        expect(find.text('Minhas tarefas'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
       'Does not render the meeting section when there is no next meeting',
       (tester) async {
         await tester.pumpWidget(

@@ -29,6 +29,9 @@ class AppGroupCard extends StatelessWidget {
   /// Chamado ao voltar de "Suas tarefas", para atualizar o contador.
   final VoidCallback? onTasksClosed;
 
+  /// Mostra só o botão "Minhas tarefas" no lugar do próximo evento.
+  final bool tasksOnly;
+
   const AppGroupCard({
     super.key,
     required this.groupId,
@@ -43,6 +46,7 @@ class AppGroupCard extends StatelessWidget {
     this.onMeetingResponseSuccess,
     this.onMyTasksPressed,
     this.onTasksClosed,
+    this.tasksOnly = false,
   });
 
   @override
@@ -70,12 +74,13 @@ class AppGroupCard extends StatelessWidget {
             participantsCount: participantsCount,
             cityState: cityState,
           ),
-          if (meeting != null &&
-              meeting.isEnded &&
-              meeting.canManageTasks) ...[
-            SizedBox(height: spacing.s16),
-            _myTasksButton(context, meeting),
-          ] else if (meeting != null) ...[
+          if (tasksOnly) ...[
+            if (meeting != null && meeting.canManageTasks) ...[
+              SizedBox(height: spacing.s16),
+              _myTasksButton(context, meeting),
+            ],
+          ] else if (meeting != null &&
+              !(meeting.isEnded && meeting.canManageTasks)) ...[
             SizedBox(height: spacing.s16),
             GroupCardMeetingHeaderRow(
               expanded: expanded,
