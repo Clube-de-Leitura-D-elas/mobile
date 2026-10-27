@@ -70,7 +70,12 @@ class AppGroupCard extends StatelessWidget {
             participantsCount: participantsCount,
             cityState: cityState,
           ),
-          if (meeting != null) ...[
+          if (meeting != null &&
+              meeting.isEnded &&
+              meeting.canManageTasks) ...[
+            SizedBox(height: spacing.s16),
+            _myTasksButton(context, meeting),
+          ] else if (meeting != null) ...[
             SizedBox(height: spacing.s16),
             GroupCardMeetingHeaderRow(
               expanded: expanded,
@@ -91,27 +96,30 @@ class AppGroupCard extends StatelessWidget {
                     onResponseSuccess: onMeetingResponseSuccess,
                   ),
                 ),
-              if (meeting.canManageTasks)
-                GroupCardMyTasksButton(
-                  meeting: meeting,
-                  onPressed:
-                      onMyTasksPressed ??
-                      () async {
-                        await context.push<Object?>(
-                          Uri(
-                            path: GroupRoutes.meetingTasks,
-                            queryParameters: {
-                              if (meeting.id != null) 'meeting_id': meeting.id!,
-                            },
-                          ).toString(),
-                        );
-                        onTasksClosed?.call();
-                      },
-                ),
+              if (meeting.canManageTasks) _myTasksButton(context, meeting),
             ],
           ],
         ],
       ),
+    );
+  }
+
+  Widget _myTasksButton(BuildContext context, GroupMeeting meeting) {
+    return GroupCardMyTasksButton(
+      meeting: meeting,
+      onPressed:
+          onMyTasksPressed ??
+          () async {
+            await context.push<Object?>(
+              Uri(
+                path: GroupRoutes.meetingTasks,
+                queryParameters: {
+                  if (meeting.id != null) 'meeting_id': meeting.id!,
+                },
+              ).toString(),
+            );
+            onTasksClosed?.call();
+          },
     );
   }
 }

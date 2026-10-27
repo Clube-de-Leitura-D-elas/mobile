@@ -14,27 +14,24 @@ abstract class HomeRoutes {
   static const String home = '/home';
 
   static List<RouteBase> get routes => [
-        GoRoute(
-          path: home,
-          pageBuilder: (context, state) {
-            final sessionState = context.read<SessionCubit>().state;
-            Widget child = const Scaffold(body: SizedBox.shrink());
-            if (sessionState is AuthenticatedSession) {
-              child = BlocProvider(
-                create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
-                child: HomeScreen(
-                  user: sessionState.user,
-                  profile: sessionState.profile,
-                ),
-              );
-            }
-            return AppPageTransitions.createFadePage(
-              state: state,
-              child: child,
-            );
-          },
-        ),
-      ];
+    GoRoute(
+      path: home,
+      pageBuilder: (context, state) {
+        final sessionState = context.read<SessionCubit>().state;
+        Widget child = const Scaffold(body: SizedBox.shrink());
+        if (sessionState is AuthenticatedSession) {
+          child = BlocProvider(
+            create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
+            child: HomeScreen(
+              user: sessionState.user,
+              profile: sessionState.profile,
+            ),
+          );
+        }
+        return AppPageTransitions.createFadePage(state: state, child: child);
+      },
+    ),
+  ];
 
   /// Route guard for Home feature.
   static String? homeGuard(
@@ -59,4 +56,3 @@ abstract class HomeRoutes {
     return null;
   }
 }
-

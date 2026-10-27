@@ -12,6 +12,7 @@ class GroupMeeting extends Equatable {
   final bool canManageTasks;
   final int tasksDone;
   final int tasksTotal;
+  final String? status;
 
   const GroupMeeting({
     this.id,
@@ -24,7 +25,10 @@ class GroupMeeting extends Equatable {
     this.canManageTasks = false,
     this.tasksDone = 0,
     this.tasksTotal = 2,
+    this.status,
   });
+
+  bool get isEnded => status == 'ENDED';
 
   @override
   List<Object?> get props => [
@@ -38,5 +42,6 @@ class GroupMeeting extends Equatable {
     canManageTasks,
     tasksDone,
     tasksTotal,
+    status,
   ];
 }
