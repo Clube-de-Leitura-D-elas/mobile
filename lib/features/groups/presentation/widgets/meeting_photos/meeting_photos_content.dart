@@ -30,14 +30,14 @@ class MeetingPhotosContent extends StatelessWidget {
           message: context.l10n.meetingPhotosLoadError,
           onRetry: context.read<MeetingPhotosCubit>().reload,
         ),
-        MeetingPhotosStatus.loaded => MeetingPhotosLoadedContent(state: state),
+        MeetingPhotosStatus.loaded => _MeetingPhotosLoadedContent(state: state),
       },
     );
   }
 }
 
-class MeetingPhotosLoadedContent extends StatelessWidget {
-  const MeetingPhotosLoadedContent({super.key, required this.state});
+class _MeetingPhotosLoadedContent extends StatelessWidget {
+  const _MeetingPhotosLoadedContent({required this.state});
 
   final MeetingPhotosState state;
 

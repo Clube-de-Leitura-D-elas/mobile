@@ -12,6 +12,10 @@ import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_avatar.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_info_row.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_meeting_response_buttons.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_header.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_meeting_details_grid.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_meeting_header_row.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_my_tasks_button.dart';
 
 class AppGroupCard extends StatelessWidget {
   final String groupId;
@@ -24,6 +28,10 @@ class AppGroupCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onToggleExpanded;
   final VoidCallback? onMeetingResponseSuccess;
+  final VoidCallback? onMyTasksPressed;
+
+  /// Chamado ao voltar de "Suas tarefas", para atualizar o contador.
+  final VoidCallback? onTasksClosed;
 
   const AppGroupCard({
     super.key,
@@ -37,6 +45,8 @@ class AppGroupCard extends StatelessWidget {
     this.onTap,
     this.onToggleExpanded,
     this.onMeetingResponseSuccess,
+    this.onMyTasksPressed,
+    this.onTasksClosed,
   });
 
   @override
@@ -58,7 +68,7 @@ class AppGroupCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _GroupCardHeader(
+          GroupCardHeader(
             photoUrl: photoUrl,
             groupName: groupName,
             participantsCount: participantsCount,
@@ -66,15 +76,15 @@ class AppGroupCard extends StatelessWidget {
           ),
           if (meeting != null) ...[
             SizedBox(height: spacing.s16),
-            _MeetingHeaderRow(
+            GroupCardMeetingHeaderRow(
               expanded: expanded,
               onToggleExpanded: onToggleExpanded,
             ),
             if (expanded) ...[
               SizedBox(height: spacing.s8),
-              _MeetingDetailsGrid(meeting: meeting),
+              GroupCardMeetingDetailsGrid(meeting: meeting),
               SizedBox(height: spacing.s16),
-              if (meeting.id != null)
+              if (meeting.id != null && !meeting.canManageTasks)
                 BlocProvider(
                   create: (context) => MeetingInvitationCubit(
                     groupRepository: serviceLocator<GroupRepository>(),
@@ -84,6 +94,23 @@ class AppGroupCard extends StatelessWidget {
                   child: AppMeetingResponseButtons(
                     onResponseSuccess: onMeetingResponseSuccess,
                   ),
+                ),
+              if (meeting.canManageTasks)
+                GroupCardMyTasksButton(
+                  meeting: meeting,
+                  onPressed:
+                      onMyTasksPressed ??
+                      () async {
+                        await context.push<Object?>(
+                          Uri(
+                            path: GroupRoutes.meetingTasks,
+                            queryParameters: {
+                              if (meeting.id != null) 'meeting_id': meeting.id!,
+                            },
+                          ).toString(),
+                        );
+                        onTasksClosed?.call();
+                      },
                 ),
             ],
           ],

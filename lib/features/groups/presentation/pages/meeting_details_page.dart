@@ -34,6 +34,7 @@ class MeetingDetailsPage extends StatelessWidget {
         ),
         MeetingDetailsLoaded(:final meeting) => MeetingDetailsScreen(
           meeting: meeting,
+          canEdit: meeting.canEdit,
         ),
       },
     );

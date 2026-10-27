@@ -50,11 +50,7 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
         child: BlocConsumer<OnboardingReviewCubit, OnboardingReviewState>(
           listener: (context, state) {
             if (state is OnboardingReviewSuccess) {
-              final sessionCubit = context.read<SessionCubit>();
-              final currentUser = sessionCubit.supabaseService.currentUser;
-              if (currentUser != null) {
-                sessionCubit.checkUserProfile(currentUser.id);
-              }
+              context.read<SessionCubit>().refreshProfile();
               context.go(OnboardingRoutes.welcome);
               return;
             }

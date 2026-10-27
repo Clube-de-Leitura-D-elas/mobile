@@ -149,4 +149,24 @@ void main() {
       MeetingInvitationStatus.confirmed,
     );
   });
+
+  test('maps can_manage_tasks when present in next_meeting', () {
+    final group = GroupModel.fromJson(const {
+      'id': 'group-1',
+      'number': 1,
+      'participant_count': 3,
+      'city_state': 'Porto Alegre, RS',
+      'photo_url': null,
+      'next_meeting': {
+        'id': 'meeting-1',
+        'host_name': 'Ana',
+        'book_title': 'Quarto de Despejo',
+        'date': '2026-10-12T19:00:00Z',
+        'location': 'Porto Alegre, RS',
+        'can_manage_tasks': true,
+      },
+    });
+
+    expect(group.toDomain().nextMeeting?.canManageTasks, isTrue);
+  });
 }

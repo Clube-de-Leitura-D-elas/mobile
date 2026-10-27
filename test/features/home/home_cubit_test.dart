@@ -89,5 +89,30 @@ void main() {
       act: (cubit) => cubit.updateSearch('Porto Alegre'),
       expect: () => [const HomeState(searchQuery: 'Porto Alegre')],
     );
+<<<<<<< HEAD
+=======
+
+    blocTest<HomeCubit, HomeState>(
+      'expands a group card',
+      build: build,
+      act: (cubit) => cubit.toggleCardExpansion('1'),
+      expect: () => [
+        const HomeState(expandedGroupIds: {'1'}),
+      ],
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'collapses an expanded group card',
+      build: build,
+      act: (cubit) {
+        cubit.toggleCardExpansion('1');
+        cubit.toggleCardExpansion('1');
+      },
+      expect: () => [
+        const HomeState(expandedGroupIds: {'1'}),
+        const HomeState(),
+      ],
+    );
+>>>>>>> 40aa024b8056eab63c2697dd9e28a1a708d29325
   });
 }

@@ -110,3 +110,33 @@ class MeetingPhotoRejectedFailure extends GroupFailure {
     super.message = 'A foto foi recusada e não pode ser enviada.',
   });
 }
+
+class PlaceSearchFailure extends GroupFailure {
+  const PlaceSearchFailure({
+    super.message = 'Não foi possível buscar locais. Tente novamente.',
+  });
+}
+
+class MeetingUpdateFailure extends GroupFailure {
+  const MeetingUpdateFailure({
+    super.message = 'Não foi possível salvar o encontro. Tente novamente.',
+  });
+}
+
+class MeetingNotEditableFailure extends GroupFailure {
+  const MeetingNotEditableFailure({
+    super.message = 'Este encontro não pode mais ser editado.',
+  });
+}
+
+class MeetingTasksFailure extends GroupFailure {
+  const MeetingTasksFailure({
+    super.message = 'Não foi possível carregar suas tarefas. Tente novamente.',
+  });
+}
+
+class MeetingConclusionFailure extends GroupFailure {
+  const MeetingConclusionFailure({
+    super.message = 'Não foi possível encerrar o encontro. Tente novamente.',
+  });
+}

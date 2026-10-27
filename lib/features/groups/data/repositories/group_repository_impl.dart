@@ -10,7 +10,9 @@ import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_attendee_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_details_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_photo_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_tasks_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
+import 'package:mobile/features/groups/data/models/place_suggestion_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
@@ -19,7 +21,9 @@ import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/place_suggestion_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
 class GroupRepositoryImpl implements GroupRepository {
@@ -261,4 +265,125 @@ class GroupRepositoryImpl implements GroupRepository {
     }
     return const MeetingPhotoUploadFailure();
   }
+
+  @override
+  Future<Result<List<MeetingAttendanceEntity>, GroupFailure>>
+  getMeetingAttendance(String meetingId) async {
+    final result = await supabaseService
+        .invokeFunction<List<MeetingAttendanceModel>>(
+          functionName:
+              'get-meeting-attendance?meeting_id=${Uri.encodeQueryComponent(meetingId)}',
+          decoder: MeetingAttendanceModel.listFromJson,
+        );
+
+    switch (result) {
+      case Failure():
+        return const Failure(
+          GroupDetailsFailure(),
+        ); // Reutilizando uma falha existente no GroupFailure
+      case Success(:final data):
+        final items = data.data;
+        if (items == null) {
+          return const Failure(GroupDetailsFailure());
+        }
+
+        final entities = items.map((m) => m.toDomain()).toList()
+          ..sort((a, b) => _sortKey(a.name).compareTo(_sortKey(b.name)));
+        return Success(entities);
+    }
+  }
+
+  @override
+  Future<Result<MeetingTasksEntity, GroupFailure>> getMeetingTasks(
+    String meetingId,
+  ) async {
+    final result = await supabaseService.invokeFunction<MeetingTasksModel>(
+      functionName:
+          'get-meeting-tasks?meeting_id=${Uri.encodeQueryComponent(meetingId)}',
+      decoder: MeetingTasksModel.fromJson,
+    );
+    return switch (result) {
+      Failure() => const Failure(MeetingTasksFailure()),
+      Success(:final data) when data.data != null => Success(
+        data.data!.toDomain(),
+      ),
+      Success() => const Failure(MeetingTasksFailure()),
+    };
+  }
+
+  @override
+  Future<Result<void, GroupFailure>> concludeMeeting(String meetingId) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'conclude-meeting',
+      body: {'meeting_id': meetingId},
+    );
+    return switch (result) {
+      Failure() => const Failure(MeetingConclusionFailure()),
+      Success() => const Success(null),
+    };
+  }
+
+  /// Ordenação alfabética insensível a acentos ("Ágata" junto de "Ana").
+  static String _sortKey(String name) {
+    const accented = 'áàâãäéèêëíìîïóòôõöúùûüçñ';
+    const plain = 'aaaaaeeeeiiiiooooouuuucn';
+    final buffer = StringBuffer();
+    for (final rune in name.toLowerCase().runes) {
+      final char = String.fromCharCode(rune);
+      final index = accented.indexOf(char);
+      buffer.write(index == -1 ? char : plain[index]);
+    }
+    return buffer.toString();
+  }
+
+  @override
+  Future<Result<List<PlaceSuggestionEntity>, GroupFailure>> searchPlaces(
+    String query,
+  ) async {
+    final result = await supabaseService
+        .invokeFunction<List<PlaceSuggestionModel>>(
+          functionName:
+              'search-places?query=${Uri.encodeQueryComponent(query)}',
+          decoder: PlaceSuggestionModel.listFromEnvelope,
+        );
+
+    switch (result) {
+      case Failure():
+        return const Failure(PlaceSearchFailure());
+      case Success(:final data):
+        final places = data.data;
+        if (places == null) return const Failure(PlaceSearchFailure());
+        return Success(
+          places.map((place) => place.toDomain()).toList(growable: false),
+        );
+    }
+  }
+
+  @override
+  Future<Result<void, GroupFailure>> updateMeeting({
+    required String meetingId,
+    required DateTime date,
+    String? googlePlaceId,
+    String? description,
+  }) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'update-meeting',
+      body: {
+        'meeting_id': meetingId,
+        'date': date.toUtc().toIso8601String(),
+        'google_place_id': ?googlePlaceId,
+        'description': description,
+      },
+    );
+
+    return switch (result) {
+      Failure(:final failure) => Failure(_updateMeetingFailure(failure.code)),
+      Success() => const Success(null),
+    };
+  }
+
+  GroupFailure _updateMeetingFailure(String? code) => switch (code) {
+    '403' || '409' => const MeetingNotEditableFailure(),
+    _ => const MeetingUpdateFailure(),
+  };
 }

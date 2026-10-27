@@ -9,6 +9,8 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/supabase/supabase_service_impl.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
+import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
@@ -18,12 +20,15 @@ import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.da
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
+import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 GroupRepository _createGroupRepository() =>
@@ -88,6 +93,14 @@ class DependenciesContainer {
         photoPicker: serviceLocator<PhotoPicker>(),
       ),
     );
+    serviceLocator.registerFactory<MeetingEditCubit>(
+      () =>
+          MeetingEditCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
+    serviceLocator.registerFactory<PlaceSearchCubit>(
+      () =>
+          PlaceSearchCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
     serviceLocator.registerFactory<NextEventCubit>(
       () => NextEventCubit(groupRepository: serviceLocator<GroupRepository>()),
     );
@@ -111,6 +124,38 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<HomeCubit>(
       () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
+    );
+    serviceLocator.registerFactory<ClaimTokenCubit>(
+      () => ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
+    );
+
+    serviceLocator.registerFactory<OnboardingReviewCubit>(
+      () => OnboardingReviewCubit(
+        onboardingRepository: serviceLocator<OnboardingRepository>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<PasswordValidationCubit>(
+      () => PasswordValidationCubit(),
+    );
+
+    // --- Raffles Feature ---
+    serviceLocator.registerLazySingleton<RaffleRemoteDataSource>(
+      () => RaffleRemoteDataSourceImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerLazySingleton<RaffleRepository>(
+      () => RaffleRepositoryImpl(
+        remoteDataSource: serviceLocator<RaffleRemoteDataSource>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<RafflePreparationCubit>(
+      () => RafflePreparationCubit(
+        repository: serviceLocator<RaffleRepository>(),
+      ),
     );
   }
 }

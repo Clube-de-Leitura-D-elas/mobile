@@ -5,11 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
+import 'package:mobile/features/groups/presentation/widgets/app_meeting_response_buttons.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -517,6 +519,136 @@ void main() {
         await tester.pump();
 
         expect(toggleCalled, isTrue);
+      },
+    );
+
+    testWidgets(
+      'Shows Minhas tarefas button when canManageTasks is true and navigates to tasks screen',
+      (tester) async {
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => const Scaffold(
+                body: AppGroupCard(
+                  groupId: 'group-1',
+                  groupName: 'Grupo 1',
+                  participantsCount: 32,
+                  cityState: 'Porto Alegre, RS',
+                  nextMeeting: GroupMeeting(
+                    id: 'meeting-1',
+                    hostName: 'Roberta',
+                    bookTitle: 'Pequeno príncipe',
+                    date: '2026-08-29T19:00:00Z',
+                    location: 'Z Café TECNOPUC',
+                    canManageTasks: true,
+                  ),
+                ),
+              ),
+            ),
+            ...GroupRoutes.routes,
+          ],
+        );
+        addTearDown(router.dispose);
+        when(
+          () => repository.getMeetingTasks('meeting-1'),
+        ).thenAnswer((_) async => const Failure(MeetingTasksFailure()));
+
+        await tester.pumpWidget(_wrapRouter(router));
+        expect(find.text('Minhas tarefas'), findsOneWidget);
+        expect(find.text('0/2'), findsOneWidget);
+
+        await tester.tap(find.text('Minhas tarefas'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Suas tarefas'), findsOneWidget);
+        expect(find.byType(AppGroupCard), findsNothing);
+
+        await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppGroupCard), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Shows task progress and calls onTasksClosed after returning from tasks',
+      (tester) async {
+        var closedCount = 0;
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => Scaffold(
+                body: AppGroupCard(
+                  groupId: 'group-1',
+                  groupName: 'Grupo 1',
+                  participantsCount: 32,
+                  cityState: 'Porto Alegre, RS',
+                  nextMeeting: const GroupMeeting(
+                    id: 'meeting-1',
+                    hostName: 'Roberta',
+                    bookTitle: 'Pequeno príncipe',
+                    date: '2026-08-29T19:00:00Z',
+                    location: 'Z Café TECNOPUC',
+                    canManageTasks: true,
+                    tasksDone: 1,
+                  ),
+                  onTasksClosed: () => closedCount++,
+                ),
+              ),
+            ),
+            GoRoute(
+              path: GroupRoutes.meetingTasks,
+              builder: (context, state) => const Scaffold(
+                appBar: ScreenHeader.back(title: 'Suas tarefas'),
+              ),
+            ),
+          ],
+        );
+        addTearDown(router.dispose);
+
+        await tester.pumpWidget(_wrapRouter(router));
+        expect(find.text('1/2'), findsOneWidget);
+        expect(find.byType(AppMeetingResponseButtons), findsNothing);
+        expect(
+          find.bySemanticsLabel('Minhas tarefas, 1 de 2 tarefas concluídas'),
+          findsOneWidget,
+        );
+
+        await tester.tap(find.text('Minhas tarefas'));
+        await tester.pumpAndSettle();
+        expect(closedCount, 0);
+
+        await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.pumpAndSettle();
+
+        expect(closedCount, 1);
+      },
+    );
+
+    testWidgets(
+      'Does not show Minhas tarefas button when canManageTasks is false',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Minhas tarefas'), findsNothing);
       },
     );
   });

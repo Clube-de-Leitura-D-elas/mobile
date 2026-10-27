@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 final _transparentPng = base64Decode(
@@ -80,12 +81,33 @@ void main() {
     expect(find.text('Anfitriã: Roberta'), findsOneWidget);
     expect(
       tester.widgetList<AppIcon>(find.byType(AppIcon)).map((icon) => icon.icon),
-      [AppIcons.location, AppIcons.calendar, AppIcons.user, AppIcons.book],
+      [AppIcons.user, AppIcons.calendar, AppIcons.location, AppIcons.book],
     );
 
-    final location = tester.getRect(find.text('Porto Alegre, RS'));
+    final host = tester.getRect(find.text('Anfitriã: Roberta'));
     final date = tester.getRect(find.text('29/08/2026'));
-    expect(date.left, greaterThan(location.right));
+    final location = tester.getRect(find.text('Porto Alegre, RS'));
+    expect(date.left, greaterThan(host.right));
+    expect(location.top, greaterThan(date.bottom));
+  });
+
+  testWidgets('shows the no-location text when the location is empty', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        GroupNextEvent(
+          status: GroupNextEventStatus.loaded,
+          data: GroupNextEventData(
+            location: '',
+            date: DateTime(2026, 8, 29),
+            hostName: 'Roberta',
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Sem localização'), findsOneWidget);
   });
 
   testWidgets('renders the empty state with localized text', (tester) async {
@@ -118,39 +140,49 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('does not overflow on a narrow layout', (tester) async {
+    testWidgets('wraps a long location and truncates the host on a narrow layout', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(320, 800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
+
+    const longLocation =
+        'Uma localização muito extensa para a largura disponível';
+    const longHost = 'Maria Eduarda Albuquerque Cavalcanti';
 
     await tester.pumpWidget(
       buildSubject(
         GroupNextEvent(
           status: GroupNextEventStatus.loaded,
           data: GroupNextEventData(
-            location: 'Uma localização muito extensa para a largura disponível',
+            location: longLocation,
             date: DateTime(2026, 8, 29),
-            hostName: 'Roberta',
+            hostName: longHost,
           ),
         ),
       ),
     );
 
     expect(tester.takeException(), isNull);
-    final location = tester.widget<Text>(
-      find.text('Uma localização muito extensa para a largura disponível'),
-    );
-    expect(location.overflow, isNot(TextOverflow.ellipsis));
+
+    final fontSize = AppTypographyTokens.standard.bodySmall.fontSize!;
+
+    final host = tester.widget<Text>(find.text('Anfitriã: $longHost'));
+    expect(host.maxLines, 1);
+    expect(host.overflow, TextOverflow.ellipsis);
     expect(
-      tester
-          .getSize(
-            find.text(
-              'Uma localização muito extensa para a largura disponível',
-            ),
-          )
-          .height,
-      greaterThan(AppTypographyTokens.standard.bodySmall.fontSize! * 2),
+      tester.getSize(find.text('Anfitriã: $longHost')).height,
+      lessThan(fontSize * 2),
+    );
+
+    final location = tester.widget<Text>(find.text(longLocation));
+    expect(location.maxLines, isNull);
+    expect(location.overflow, isNull);
+    expect(
+      tester.getSize(find.text(longLocation)).height,
+      greaterThan(fontSize * 1.5),
     );
   });
 
@@ -162,7 +194,7 @@ void main() {
   });
 
   testWidgets(
-    'renders history link with bodyDefaultEmphasis when callback is provided',
+    'renders more details link with bodyDefaultEmphasis when callback is provided',
     (tester) async {
       var tapped = false;
       await tester.pumpWidget(
@@ -174,27 +206,25 @@ void main() {
               date: DateTime(2026, 8, 29),
               hostName: 'Roberta',
             ),
-            onEventHistoryPressed: () => tapped = true,
+            onMoreDetailsPressed: () => tapped = true,
           ),
         ),
       );
 
-      expect(find.text('Exibir detalhes dos últimos eventos'), findsOneWidget);
+      expect(find.text('Exibir mais detalhes'), findsOneWidget);
 
-      final linkText = tester.widget<Text>(
-        find.text('Exibir detalhes dos últimos eventos'),
-      );
+      final linkText = tester.widget<Text>(find.text('Exibir mais detalhes'));
       expect(
         linkText.style?.fontSize,
         AppTypographyTokens.standard.bodyDefaultEmphasis.fontSize,
       );
 
-      await tester.tap(find.text('Exibir detalhes dos últimos eventos'));
+      await tester.tap(find.text('Exibir mais detalhes'));
       expect(tapped, isTrue);
     },
   );
 
-  testWidgets('does not render history link when no callback is given', (
+  testWidgets('does not render more details link when no callback is given', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -210,7 +240,7 @@ void main() {
       ),
     );
 
-    expect(find.text('Exibir detalhes dos últimos eventos'), findsNothing);
+    expect(find.text('Exibir mais detalhes'), findsNothing);
   });
 
   group('current book', () {
@@ -227,14 +257,14 @@ void main() {
           bookTitle: bookTitle,
           bookCover: bookCover,
         ),
-        onEventHistoryPressed: () {},
+        onMoreDetailsPressed: () {},
       );
     }
 
     testWidgets(
       'Given a next event with a book cover, '
       'When rendering, '
-      'Then shows the label, the cover sized 180x240 and the history link below',
+      'Then shows the label, the cover sized 180x240 and the more details link below',
       (tester) async {
         await tester.pumpWidget(
           buildSubject(
@@ -253,9 +283,7 @@ void main() {
 
         final label = tester.getRect(find.text('O livro da vez é:'));
         final image = tester.getRect(find.byType(Image));
-        final link = tester.getRect(
-          find.text('Exibir detalhes dos últimos eventos'),
-        );
+        final link = tester.getRect(find.text('Exibir mais detalhes'));
         expect(image.top, greaterThan(label.bottom));
         expect(link.top, greaterThan(image.bottom));
       },
@@ -313,10 +341,7 @@ void main() {
           tester.getSize(find.byKey(placeholderKey)),
           const Size(180, 240),
         );
-        expect(
-          find.text('Exibir detalhes dos últimos eventos'),
-          findsOneWidget,
-        );
+        expect(find.text('Exibir mais detalhes'), findsOneWidget);
       },
     );
 
