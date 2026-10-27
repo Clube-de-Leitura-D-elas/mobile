@@ -181,31 +181,34 @@ void main() {
   group('getRaffleResult', () {
     const tMeetingId = 'meeting-123';
 
-    test('deve retornar RaffleResultModel quando houver resultado salvo', () async {
-      when(
-        () => mockSupabaseService.invokeFunction<Map<String, dynamic>?>(
-          functionName: any(named: 'functionName'),
-          body: any(named: 'body'),
-          decoder: any(named: 'decoder'),
-        ),
-      ).thenAnswer((invocation) async {
-        final decoder = invocation.namedArguments[#decoder] as Function;
-        final rawMap = {
-          'meeting_id': tMeetingId,
-          'winner_id': 'w1',
-          'winner_name': 'Beatriz',
-          'book_title': '1984',
-        };
-        final decoded = decoder(rawMap) as Map<String, dynamic>?;
-        return Success(SupabaseResponse(data: decoded));
-      });
+    test(
+      'deve retornar RaffleResultModel quando houver resultado salvo',
+      () async {
+        when(
+          () => mockSupabaseService.invokeFunction<Map<String, dynamic>?>(
+            functionName: any(named: 'functionName'),
+            body: any(named: 'body'),
+            decoder: any(named: 'decoder'),
+          ),
+        ).thenAnswer((invocation) async {
+          final decoder = invocation.namedArguments[#decoder] as Function;
+          final rawMap = {
+            'meeting_id': tMeetingId,
+            'winner_id': 'w1',
+            'winner_name': 'Beatriz',
+            'book_title': '1984',
+          };
+          final decoded = decoder(rawMap) as Map<String, dynamic>?;
+          return Success(SupabaseResponse(data: decoded));
+        });
 
-      final result = await dataSource.getRaffleResult(tMeetingId);
+        final result = await dataSource.getRaffleResult(tMeetingId);
 
-      expect(result, isNotNull);
-      expect(result?.winnerName, 'Beatriz');
-      expect(result?.bookTitle, '1984');
-    });
+        expect(result, isNotNull);
+        expect(result?.winnerName, 'Beatriz');
+        expect(result?.bookTitle, '1984');
+      },
+    );
 
     test('deve retornar null quando decoder receber null ou vazio', () async {
       when(
@@ -224,17 +227,27 @@ void main() {
       expect(result, isNull);
     });
 
-    test('deve retornar null quando a chamada falhar', () async {
+    test('deve propagar erro quando a chamada falhar', () async {
       when(
         () => mockSupabaseService.invokeFunction<Map<String, dynamic>?>(
           functionName: any(named: 'functionName'),
           body: any(named: 'body'),
           decoder: any(named: 'decoder'),
         ),
-      ).thenAnswer((_) async => const Failure(TestSupabaseFailure('Not found')));
+      ).thenAnswer(
+        (_) async => const Failure(TestSupabaseFailure('Not found')),
+      );
 
-      final result = await dataSource.getRaffleResult(tMeetingId);
-      expect(result, isNull);
+      expect(
+        () => dataSource.getRaffleResult(tMeetingId),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('Not found'),
+          ),
+        ),
+      );
     });
   });
 
@@ -276,7 +289,9 @@ void main() {
           body: any(named: 'body'),
           decoder: any(named: 'decoder'),
         ),
-      ).thenAnswer((_) async => const Failure(TestSupabaseFailure('Falha ao sortear')));
+      ).thenAnswer(
+        (_) async => const Failure(TestSupabaseFailure('Falha ao sortear')),
+      );
 
       expect(
         () => dataSource.drawRaffle(
@@ -302,7 +317,9 @@ void main() {
           functionName: any(named: 'functionName'),
           body: any(named: 'body'),
         ),
-      ).thenAnswer((_) async => const Success(SupabaseResponse<void>(data: null)));
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<void>(data: null)),
+      );
 
       await expectLater(dataSource.saveRaffleResult(tModel), completes);
     });
@@ -313,9 +330,14 @@ void main() {
           functionName: any(named: 'functionName'),
           body: any(named: 'body'),
         ),
-      ).thenAnswer((_) async => const Failure(TestSupabaseFailure('Erro ao salvar')));
+      ).thenAnswer(
+        (_) async => const Failure(TestSupabaseFailure('Erro ao salvar')),
+      );
 
-      expect(() => dataSource.saveRaffleResult(tModel), throwsA(isA<Exception>()));
+      expect(
+        () => dataSource.saveRaffleResult(tModel),
+        throwsA(isA<Exception>()),
+      );
     });
   });
 }

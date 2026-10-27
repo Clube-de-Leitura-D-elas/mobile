@@ -71,6 +71,21 @@ void main() {
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'deve emitir [Loading, Error] quando falhar ao consultar resultado existente',
+      build: () {
+        when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
+          (_) async => const Failure(TestRaffleFailure('Erro de conexão')),
+        );
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      act: (cubit) => cubit.load(tMeetingId, meetingTitle: tMeetingTitle),
+      expect: () => const [
+        RaffleExecutionLoading(),
+        RaffleExecutionError('Erro de conexão'),
+      ],
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
       'deve emitir [Loading, Ready] quando nao houver resultado e houver participantes elegiveis',
       build: () {
         when(
@@ -235,7 +250,7 @@ void main() {
 
   group('confirmResult', () {
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
-      'deve salvar o resultado e emitir [isSubmitting: true, Success, isSubmitting: false, isPersisted: true]',
+      'deve salvar o resultado e emitir [isSubmitting: true, ResultLoaded persistido]',
       build: () {
         when(
           () => mockRepository.saveRaffleResult(tResult),
@@ -258,22 +273,13 @@ void main() {
           isSubmitting: true,
         ),
         RaffleExecutionSuccess(tResult),
-        RaffleExecutionResultLoaded(
-          meetingId: tMeetingId,
-          meetingTitle: tMeetingTitle,
-          result: tResult,
-          isPersisted: true,
-          isSubmitting: false,
-        ),
       ],
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
       'deve emitir Error quando a confirmacao falhar',
       build: () {
-        when(
-          () => mockRepository.saveRaffleResult(tResult),
-        ).thenAnswer(
+        when(() => mockRepository.saveRaffleResult(tResult)).thenAnswer(
           (_) async => const Failure(TestRaffleFailure('Erro ao salvar')),
         );
         return RaffleExecutionCubit(repository: mockRepository);
@@ -294,13 +300,6 @@ void main() {
           isSubmitting: true,
         ),
         RaffleExecutionError('Erro ao salvar'),
-        RaffleExecutionResultLoaded(
-          meetingId: tMeetingId,
-          meetingTitle: tMeetingTitle,
-          result: tResult,
-          isPersisted: false,
-          isSubmitting: false,
-        ),
       ],
     );
   });

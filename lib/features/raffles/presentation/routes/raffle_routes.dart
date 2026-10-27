@@ -12,13 +12,26 @@ abstract class RaffleRoutes {
     GoRoute(
       path: preparation,
       pageBuilder: (context, state) {
-        final meetingId =
-            state.extra as String? ??
-            state.uri.queryParameters['meeting_id'] ??
-            '';
+        final extra = state.extra;
+        String meetingId = '';
+        String meetingTitle = '';
+
+        if (extra is String) {
+          meetingId = extra;
+        } else if (extra is Map<String, dynamic>) {
+          meetingId = extra['meeting_id'] as String? ?? '';
+          meetingTitle = extra['meeting_title'] as String? ?? '';
+        } else {
+          meetingId = state.uri.queryParameters['meeting_id'] ?? '';
+          meetingTitle = state.uri.queryParameters['meeting_title'] ?? '';
+        }
+
         return AppPageTransitions.createPushPage(
           state: state,
-          child: RafflePreparationPage(meetingId: meetingId),
+          child: RafflePreparationPage(
+            meetingId: meetingId,
+            meetingTitle: meetingTitle,
+          ),
         );
       },
     ),

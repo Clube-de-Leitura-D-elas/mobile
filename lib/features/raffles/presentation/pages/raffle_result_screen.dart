@@ -21,43 +21,34 @@ class RaffleResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
     final spacing = context.spacing;
 
-    return Scaffold(
-      backgroundColor: colors.bgDefault,
-      appBar: ScreenHeader.back(
-        title: context.l10n.raffleResultTitle,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: spacing.s24),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Gap16(),
-                      _DrawnBookSection(result: result),
-                      const Gap16(),
-                      _HostSection(result: result),
-                      const Gap24(),
-                    ],
-                  ),
-                ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: spacing.s24),
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Gap16(),
+                  _DrawnBookSection(result: result),
+                  const Gap16(),
+                  _HostSection(result: result),
+                  const Gap24(),
+                ],
               ),
-              _ResultActionButtons(
-                isPersisted: isPersisted,
-                isSubmitting: isSubmitting,
-                onDrawAgain: onDrawAgain,
-                onFinish: onFinish,
-              ),
-              const Gap16(),
-            ],
+            ),
           ),
-        ),
+          _ResultActionButtons(
+            isPersisted: isPersisted,
+            isSubmitting: isSubmitting,
+            onDrawAgain: onDrawAgain,
+            onFinish: onFinish,
+          ),
+          const Gap16(),
+        ],
       ),
     );
   }
@@ -159,11 +150,7 @@ class _BookCoverPlaceholder extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Center(
-        child: Icon(
-          Icons.menu_book_rounded,
-          size: 64,
-          color: colors.textMuted,
-        ),
+        child: Icon(Icons.menu_book_rounded, size: 64, color: colors.textMuted),
       ),
     );
   }
@@ -231,27 +218,17 @@ class _HostAvatar extends StatelessWidget {
     return Container(
       width: 64,
       height: 64,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: colors.bgSubtle,
-      ),
+      decoration: BoxDecoration(shape: BoxShape.circle, color: colors.bgSubtle),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(32.0),
         child: avatarUrl != null && avatarUrl!.isNotEmpty
             ? Image.network(
                 avatarUrl!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Icon(
-                  Icons.person,
-                  size: 32,
-                  color: colors.textMuted,
-                ),
+                errorBuilder: (_, _, _) =>
+                    Icon(Icons.person, size: 32, color: colors.textMuted),
               )
-            : Icon(
-                Icons.person,
-                size: 32,
-                color: colors.textMuted,
-              ),
+            : Icon(Icons.person, size: 32, color: colors.textMuted),
       ),
     );
   }

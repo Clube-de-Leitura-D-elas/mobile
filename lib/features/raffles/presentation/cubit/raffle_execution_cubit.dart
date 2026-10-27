@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_result.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_state.dart';
 
@@ -16,7 +18,11 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     final existingResult = await repository.getRaffleResult(meetingId);
     if (isClosed) return;
 
-    final existing = existingResult.match((res) => res, (_) => null);
+    final existing = existingResult.match((res) => res, (failure) {
+      emit(RaffleExecutionError(failure.message));
+      return null;
+    });
+    if (existingResult is Failure<RaffleResult?, RaffleFailure>) return;
     if (existing != null) {
       emit(
         RaffleExecutionResultLoaded(
@@ -34,32 +40,28 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     );
     if (isClosed) return;
 
-    participantsResult.match(
-      (participants) {
-        final eligible =
-            participants
-                .where((p) => p.isSelected && !p.isExcludedByRule)
-                .toList();
+    participantsResult.match((participants) {
+      final eligible = participants
+          .where((p) => p.isSelected && !p.isExcludedByRule)
+          .toList();
 
-        if (eligible.isEmpty) {
-          emit(
-            RaffleExecutionNoEligible(
-              meetingId: meetingId,
-              meetingTitle: meetingTitle ?? '',
-            ),
-          );
-        } else {
-          emit(
-            RaffleExecutionReady(
-              meetingId: meetingId,
-              meetingTitle: meetingTitle ?? '',
-              eligibleParticipants: eligible,
-            ),
-          );
-        }
-      },
-      (failure) => emit(RaffleExecutionError(failure.message)),
-    );
+      if (eligible.isEmpty) {
+        emit(
+          RaffleExecutionNoEligible(
+            meetingId: meetingId,
+            meetingTitle: meetingTitle ?? '',
+          ),
+        );
+      } else {
+        emit(
+          RaffleExecutionReady(
+            meetingId: meetingId,
+            meetingTitle: meetingTitle ?? '',
+            eligibleParticipants: eligible,
+          ),
+        );
+      }
+    }, (failure) => emit(RaffleExecutionError(failure.message)));
   }
 
   Future<void> draw() async {
@@ -127,14 +129,8 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     if (isClosed) return;
 
     saveResult.match(
-      (_) {
-        emit(RaffleExecutionSuccess(currentState.result));
-        emit(currentState.copyWith(isSubmitting: false, isPersisted: true));
-      },
-      (failure) {
-        emit(RaffleExecutionError(failure.message));
-        emit(currentState.copyWith(isSubmitting: false));
-      },
+      (_) => emit(RaffleExecutionSuccess(currentState.result)),
+      (failure) => emit(RaffleExecutionError(failure.message)),
     );
   }
 }

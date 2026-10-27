@@ -12,8 +12,13 @@ import 'package:mobile/features/raffles/presentation/widgets/raffle_participant_
 
 class RafflePreparationScreen extends StatelessWidget {
   final String meetingId;
+  final String meetingTitle;
 
-  const RafflePreparationScreen({super.key, required this.meetingId});
+  const RafflePreparationScreen({
+    super.key,
+    required this.meetingId,
+    this.meetingTitle = '',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,10 @@ class RafflePreparationScreen extends StatelessWidget {
               try {
                 context.pushReplacement(
                   RaffleRoutes.draw,
-                  extra: meetingId,
+                  extra: {
+                    'meeting_id': meetingId,
+                    'meeting_title': meetingTitle,
+                  },
                 );
               } catch (_) {
                 Navigator.of(context).pop();
@@ -82,8 +90,7 @@ class RafflePreparationScreen extends StatelessWidget {
                     canConfirm: hasSelected,
                     onBack: () => Navigator.of(context).pop(),
                     onContinue: () async {
-                      final confirmed =
-                          await ConfirmRaffleDialog.show(context);
+                      final confirmed = await ConfirmRaffleDialog.show(context);
                       if (confirmed == true && context.mounted) {
                         await context
                             .read<RafflePreparationCubit>()
@@ -117,16 +124,12 @@ class _RaffleHeader extends StatelessWidget {
         const Gap(32),
         Text(
           context.l10n.rafflePreparationTitle,
-          style: typography.headingH2.copyWith(
-            color: colors.textDefault,
-          ),
+          style: typography.headingH2.copyWith(color: colors.textDefault),
         ),
         const Gap4(),
         Text(
           context.l10n.rafflePreparationSubtitle,
-          style: typography.bodyDefault.copyWith(
-            color: colors.textMuted,
-          ),
+          style: typography.bodyDefault.copyWith(color: colors.textMuted),
         ),
         const Gap24(),
         Row(
@@ -168,9 +171,9 @@ class _ParticipantsTable extends StatelessWidget {
         return RaffleParticipantTile(
           participant: participant,
           onChanged: (_) {
-            context
-                .read<RafflePreparationCubit>()
-                .toggleParticipantSelection(participant.id);
+            context.read<RafflePreparationCubit>().toggleParticipantSelection(
+              participant.id,
+            );
           },
         );
       },
