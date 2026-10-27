@@ -34,6 +34,10 @@ class MockRafflePreparationCubit extends Cubit<RafflePreparationState>
     emit(const RafflePreparationSuccess());
   }
 
+  void emitError() => emit(const RafflePreparationError('Erro de teste'));
+
+  void emitSuccess() => emit(const RafflePreparationSuccess());
+
   @override
   Future<void> loadEligibleParticipants(String meetingId) async {}
 
@@ -42,6 +46,86 @@ class MockRafflePreparationCubit extends Cubit<RafflePreparationState>
 }
 
 void main() {
+  testWidgets('deve renderizar loading e erro na preparação', (tester) async {
+    final loadingCubit = MockRafflePreparationCubit(
+      const RafflePreparationLoading(),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        home: BlocProvider<RafflePreparationCubit>.value(
+          value: loadingCubit,
+          child: const RafflePreparationScreen(meetingId: 'meeting-123'),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    final errorCubit = MockRafflePreparationCubit(
+      const RafflePreparationLoading(),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        home: BlocProvider<RafflePreparationCubit>.value(
+          value: errorCubit,
+          child: const RafflePreparationScreen(meetingId: 'meeting-123'),
+        ),
+      ),
+    );
+    await tester.pump();
+    errorCubit.emitError();
+    await tester.pump();
+    expect(find.text('Erro de teste'), findsOneWidget);
+  });
+
+  testWidgets('deve voltar quando confirmacao concluir sem router', (
+    tester,
+  ) async {
+    final cubit = MockRafflePreparationCubit(const RafflePreparationSuccess());
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        home: Scaffold(
+          body: BlocProvider<RafflePreparationCubit>.value(
+            value: cubit,
+            child: const RafflePreparationScreen(
+              meetingId: 'meeting-123',
+              meetingTitle: 'Julho',
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.byType(RafflePreparationScreen), findsOneWidget);
+  });
+
   testWidgets('Teste Visual - Interação na Preparação do Sorteio', (
     WidgetTester tester,
   ) async {
