@@ -19,7 +19,6 @@ import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart'
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_page.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_page.dart';
-import 'package:mobile/features/groups/presentation/pages/meeting_attendance_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_route_page.dart';
@@ -164,11 +163,10 @@ abstract class GroupRoutes {
         final meetingId = state.uri.queryParameters['meeting_id'] ?? '';
         return AppPageTransitions.createPushPage(
           state: state,
-          child: MeetingAttendancePage(
-            meetingId: meetingId,
-            meetingName: extra?['meetingName'] as String? ?? '',
-            formattedDate: extra?['formattedDate'] as String? ?? '',
-            concludeOnFinish: extra?['concludeOnFinish'] as bool? ?? false,
+          child: BlocProvider(
+            create: (_) =>
+                serviceLocator<MeetingPresenceCubit>()..load(meetingId),
+            child: const MeetingPresencePage(),
           ),
         );
       },

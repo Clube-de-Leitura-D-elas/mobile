@@ -7,12 +7,14 @@ import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_tasks_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_attendance_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
@@ -538,7 +540,7 @@ void main() {
       expect(
         result,
         const Failure<List<MeetingAttendanceEntity>, GroupFailure>(
-          GroupDetailsFailure(),
+          MeetingAttendanceFailure(),
         ),
       );
     });

@@ -83,6 +83,12 @@
   "groupMeetingMyTasksAction": "Minhas tarefas",
   "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
   "meetingDetailsHeader": "Detalhes do encontro",
+  "meetingEditAction": "Editar encontro",
+  "meetingPresenceHeader": "Lista de Presença",
+  "meetingPresenceConfirmed": "Presença confirmada",
+  "invitationConfirmed": "Confirmou presença",
+  "invitationNoResponse": "Sem resposta",
+  "invitationDeclined": "Recusou o convite",
   "meetingDetailsTitle": "Encontro {number}",
   "meetingDetailsTitleFallback": "Encontro",
   "meetingDetailsDate": "Data: {date}",
@@ -123,6 +129,7 @@
   "meetingPhotosUploadFailed": "{count, plural, =1{Não foi possível enviar 1 foto.} other{Não foi possível enviar {count} fotos.}}",
   "meetingPhotosRetryButton": "Tentar novamente",
   "meetingPhotosLoadError": "Não foi possível carregar as fotos do encontro.",
+  "meetingPhotosEmpty": "Ainda não há fotos deste encontro.",
   "meetingPhotosAccessDenied": "Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.",
   "meetingPhotosPickerFailed": "Não foi possível abrir a galeria. Tente novamente.",
   "meetingPhotosSkipped": "{count, plural, =1{1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.} other{{count} fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.}}",
@@ -163,5 +170,15 @@
   "filterUnanswered": "Não respondidos ({count})",
   "filterAnswered": "Respondidos",
   "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
-  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui."
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
+
+  "@@Raffles": "--- Raffles ---",
+  "rafflePreparationTitle": "Realizar sorteio",
+  "rafflePreparationSubtitle": "Selecione as participantes",
+  "raffleTableHeaderName": "Nome",
+  "raffleTableHeaderInclude": "Incluir no sorteio",
+  "raffleConfirmDialogTitle": "Confirmar sorteio",
+  "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",
+  "raffleConfirmDialogCancel": "Cancelar",
+  "raffleSuccessToast": "Sorteio realizado com sucesso!"
 }

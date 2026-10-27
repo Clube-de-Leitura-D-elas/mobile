@@ -304,36 +304,41 @@ class _DropdownMenu<T> extends StatelessWidget {
             itemBuilder: (context, index) {
               final item = items[index];
               final selected = item == selectedValue;
-              return InkWell(
-                onTap: () => onSelected(item),
-                child: Container(
-                  constraints: const BoxConstraints(minHeight: 48.0),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: spacing.s16,
-                    vertical: spacing.s8,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          itemLabelBuilder(item),
-                          style: typography.bodyDefault.copyWith(
-                            color: selected
-                                ? colors.textBrand
-                                : colors.textDefault,
-                            fontWeight: selected
-                                ? FontWeight.w600
-                                : FontWeight.w400,
+              return Semantics(
+                button: true,
+                selected: selected,
+                label: itemLabelBuilder(item),
+                child: InkWell(
+                  onTap: () => onSelected(item),
+                  child: Container(
+                    constraints: const BoxConstraints(minHeight: 48.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: spacing.s16,
+                      vertical: spacing.s8,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            itemLabelBuilder(item),
+                            style: typography.bodyDefault.copyWith(
+                              color: selected
+                                  ? colors.textBrand
+                                  : colors.textDefault,
+                              fontWeight: selected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ),
                           ),
                         ),
-                      ),
-                      if (selected)
-                        Icon(
-                          Icons.check,
-                          size: 20.0,
-                          color: colors.actionPrimary,
-                        ),
-                    ],
+                        if (selected)
+                          Icon(
+                            Icons.check,
+                            size: 20.0,
+                            color: colors.actionPrimary,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               );

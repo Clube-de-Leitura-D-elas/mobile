@@ -60,35 +60,39 @@ class AppToast {
           right: spacing.s16,
           child: Material(
             color: Colors.transparent,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s16,
-                vertical: spacing.s12,
-              ),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.circular(12.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: colors.overlayScrim.withValues(alpha: 0.08),
-                    blurRadius: 12.0,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Icon(iconData, color: textColor, size: 20.0),
-                  SizedBox(width: spacing.s8),
-                  Expanded(
-                    child: Text(
-                      message,
-                      style: typography.bodyDefaultEmphasis.copyWith(
-                        color: textColor,
+            child: Semantics(
+              liveRegion: true,
+              label: message,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing.s16,
+                  vertical: spacing.s12,
+                ),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: colors.overlayScrim.withValues(alpha: 0.08),
+                      blurRadius: 12.0,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(iconData, color: textColor, size: 20.0),
+                    SizedBox(width: spacing.s8),
+                    Expanded(
+                      child: Text(
+                        message,
+                        style: typography.bodyDefaultEmphasis.copyWith(
+                          color: textColor,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

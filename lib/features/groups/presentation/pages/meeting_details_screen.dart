@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
-import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
-import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_cover.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_info_card.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_section.dart';
 
 class MeetingDetailsScreen extends StatelessWidget {
-  const MeetingDetailsScreen({super.key, required this.meeting});
+  const MeetingDetailsScreen({
+    super.key,
+    required this.meeting,
+    this.canEdit = false,
+  });
 
   final MeetingDetailsEntity meeting;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {

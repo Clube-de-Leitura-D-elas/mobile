@@ -7,6 +7,7 @@ import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
@@ -31,9 +32,12 @@ void main() {
 
   setUp(() {
     repository = MockGroupRepository();
-    when(() => repository.getMeetingPhotos(any())).thenAnswer(
-      (_) async =>
-          const Success(MeetingPhotosEntity(photos: [], canAddPhotos: false)),
+    when(
+      () => repository.getMeetingPhotos(any()),
+    ).thenAnswer(
+      (_) async => const Success(
+        MeetingPhotosEntity(photos: <MeetingPhotoEntity>[], canAddPhotos: true),
+      ),
     );
     when(
       () => repository.getMeetingDetails('meeting-1'),

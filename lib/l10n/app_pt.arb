@@ -222,6 +222,32 @@
     "@logoutDialogConfirm": {
       "description": "Botão de confirmar no modal de logout"
     },
+
+  "@@Home": "--- Home ---",
+  "logoutTooltip": "Sair",
+  "@logoutTooltip": {
+    "description": "Tooltip do botão de logout no app bar"
+  },
+  "logoutButton": "Sair da Conta",
+  "@logoutButton": {
+    "description": "Texto do botão principal de sair da conta"
+  },
+  "defaultUserName": "Usuária",
+  "@defaultUserName": {
+    "description": "Nome genérico exibido quando o usuário não possui nome cadastrado"
+  },
+  "profileStatusActive": "Perfil Vinculado & Ativo",
+  "@profileStatusActive": {
+    "description": "Badge de status de perfil ativado"
+  },
+  "profileDataSectionTitle": "Dados do Perfil Cadastrado",
+  "@profileDataSectionTitle": {
+    "description": "Título da seção de dados do perfil na home"
+  },
+  "fullNameLabel": "Nome Completo",
+  "@fullNameLabel": {
+    "description": "Rótulo do item de perfil para o nome completo"
+  },
   "meetingEditTitle": "Editar encontro",
   "meetingEditDateLabel": "Data",
   "meetingEditDateHint": "DD/MM/AAAA",
@@ -451,7 +477,64 @@
   },
 
   "@@Groups": "--- Groups ---",
+  "myGroupsTitle": "Meus grupos",
+  "@myGroupsTitle": {
+    "description": "Título principal da tela de grupos"
+  },
+  "searchGroupPlaceholder": "Buscar grupo",
+  "@searchGroupPlaceholder": {
+    "description": "Placeholder do campo de busca de grupos"
+  },
+  "filterAll": "Todos",
+  "@filterAll": {
+    "description": "Chip de filtro Todos"
+  },
+  "filterUnanswered": "Não respondidos ({count})",
+  "@filterUnanswered": {
+    "description": "Chip de filtro Não respondidos com contagem",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterAnswered": "Respondidos",
+  "@filterAnswered": {
+    "description": "Chip de filtro Respondidos"
+  },
+  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
+  "@emptyGroupsTitle": {
+    "description": "Título exibido quando a lista de grupos está vazia"
+  },
+  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
+  "@emptyGroupsMessage": {
+    "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
+  },
+  "emptyGroupsSearch": "Nenhum grupo encontrado",
+  "@emptyGroupsSearch": {
+    "description": "Mensagem exibida quando a busca por nome não retorna grupos"
+  },
+  "emptyGroupsUnanswered": "Nenhum grupo com resposta pendente",
+  "@emptyGroupsUnanswered": {
+    "description": "Mensagem exibida quando o filtro Não respondidos não tem grupos"
+  },
+  "emptyGroupsAnswered": "Você ainda não respondeu a nenhum encontro",
+  "@emptyGroupsAnswered": {
+    "description": "Mensagem exibida quando o filtro Respondidos não tem grupos"
+  },
+  "groupDetailsNumberLabel": "Grupo {number}",
+  "@groupDetailsNumberLabel": {
+    "description": "Título da tela de detalhes do grupo, com o número do grupo",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "groupNextEventTitle": "Próximo evento",
+  "@groupNextEventTitle": {
+    "description": "Título da seção do próximo evento nos detalhes do grupo"
+  },
   "groupNextEventEmpty": "Nenhum próximo evento agendado",
   "@groupNextEventEmpty": {
     "description": "Mensagem exibida quando o grupo não possui próximo evento"
@@ -464,9 +547,6 @@
         "type": "String"
       }
     }
-  },
-  "@groupNextEventTitle": {
-    "description": "Título da seção do próximo evento nos detalhes do grupo"
   },
   "groupNextEventHistoryLink": "Histórico de eventos",
   "@groupNextEventHistoryLink": {
@@ -492,6 +572,10 @@
   "groupNextEventBookUndefined": "Livro ainda não definido",
   "@groupNextEventBookUndefined": {
     "description": "Exibido no lugar da capa quando o próximo evento ainda não tem livro definido"
+  },
+  "groupNextEventNoLocation": "Sem localização",
+  "@groupNextEventNoLocation": {
+    "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
   },
   "groupParticipantsTitle": "Participantes",
   "@groupParticipantsTitle": {
@@ -566,22 +650,6 @@
   "groupMeetingRsvpRetryAction": "Tentar novamente",
   "@groupMeetingRsvpRetryAction": {
     "description": "Tentar responder a confirmação de presença no encontro novamente após um erro"
-  },
-  "meetingPresenceHeader": "Lista de Presença",
-  "@meetingPresenceHeader": {
-    "description": "Título do cabeçalho da tela de registro de presença do encontro"
-  },
-  "invitationConfirmed": "Nonfirmou",
-  "@invitationConfirmed": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela confirmou que iria ao encontro"
-  },
-  "invitationNoResponse": "Não respondeu",
-  "@invitationNoResponse": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela não respondeu à confirmação de presença"
-  },
-  "invitationDeclined": "Recusou",
-  "@invitationDeclined": {
-    "description": "Dica exibida abaixo do nome da participante na tela de registro de presença quando ela recusou a confirmação de presença"
   },
   "groupEventHistoryTitle": "Histórico de eventos",
   "@groupEventHistoryTitle": {
@@ -673,6 +741,22 @@
   "@meetingDetailsDescriptionTitle": {
     "description": "Título da seção de descrição do encontro"
   },
+  "meetingEditTitle": "Editar encontro",
+  "meetingEditDateLabel": "Data",
+  "meetingEditDateHint": "DD/MM/AAAA",
+  "meetingEditDateError": "Informe a data.",
+  "meetingEditTimeLabel": "Horário",
+  "meetingEditTimeHint": "HH:MM",
+  "meetingEditTimeError": "Informe o horário.",
+  "meetingEditLocationLabel": "Local",
+  "meetingEditLocationHint": "Nome do local",
+  "meetingEditLocationError": "Informe o local.",
+  "meetingEditDescriptionLabel": "Observações",
+  "meetingEditDescriptionHint": "Adicione observações (opcional)",
+  "meetingEditReadOnlySection": "Informações definidas pelo sorteio",
+  "meetingEditBookLabel": "Livro da vez",
+  "meetingEditHostLabel": "Anfitriã",
+  "meetingEditSaveButton": "Salvar alterações",
   "meetingCoverSemanticLabel": "Foto do {title}",
   "@meetingCoverSemanticLabel": {
     "description": "Rótulo de acessibilidade da foto de capa do encontro",
@@ -767,43 +851,51 @@
       }
     }
   },
-  "@@Onboarding": "--- Onboarding ---",
-  "onboardingReviewTitle": "Verifique os seus dados",
-  "@onboardingReviewTitle": {
-    "description": "Título principal do review de cadastro"
+
+  "meetingEditAction": "Editar encontro",
+  "meetingPresenceHeader": "Lista de Presença",
+  "meetingPresenceConfirmed": "Presença confirmada",
+  "@meetingPresenceConfirmed": {
+    "description": "Indicação exibida após o registro da presença do encontro"
   },
-  "onboardingNameLabel": "Nome",
-  "@onboardingNameLabel": {
-    "description": "Rótulo do campo Nome"
+  "invitationConfirmed": "Confirmou presença",
+  "invitationNoResponse": "Sem resposta",
+ "invitationDeclined": "Recusou o convite",
+
+  "@@Raffles": "--- Raffles ---",
+  "rafflePreparationTitle": "Realizar sorteio",
+  "@rafflePreparationTitle": {
+    "description": "Título principal da tela de preparação do sorteio"
   },
-  "onboardingEmailLabel": "E-mail",
-  "@onboardingEmailLabel": {
-    "description": "Rótulo e-mail"
+  "rafflePreparationSubtitle": "Selecione as participantes",
+  "@rafflePreparationSubtitle": {
+    "description": "Subtítulo de instrução da tela de preparação do sorteio"
   },
-  "onboardingPhoneLabel": "Celular",
-  "@onboardingPhoneLabel": {
-    "description": "Rótulo celular"
+  "raffleTableHeaderName": "Nome",
+  "@raffleTableHeaderName": {
+    "description": "Rótulo do cabeçalho de nome na tabela de participantes"
   },
-  "onboardingBirthDateLabel": "Data de nascimento",
-  "@onboardingBirthDateLabel": {
-    "description": "Rótulo data de nascimento"
+  "raffleTableHeaderInclude": "Incluir no sorteio",
+  "@raffleTableHeaderInclude": {
+    "description": "Rótulo do cabeçalho de seleção/presença na tabela de participantes"
   },
-  "onboardingCityLabel": "Cidade",
-  "@onboardingCityLabel": {
-    "description": "Rótulo cidade"
+  "raffleConfirmDialogTitle": "Confirmar sorteio",
+  "@raffleConfirmDialogTitle": {
+    "description": "Título da caixa de diálogo de confirmação do sorteio"
   },
-  "onboardingCityHint": "Selecione uma cidade",
-  "@onboardingCityHint": {
-    "description": "Dica de seleção de cidade"
+  "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",
+  "@raffleConfirmDialogMessage": {
+    "description": "Mensagem de confirmação na caixa de diálogo do sorteio"
   },
-  "onboardingRegionLabel": "Região",
-  "@onboardingRegionLabel": {
-    "description": "Rótulo região"
+  "raffleConfirmDialogCancel": "Cancelar",
+  "@raffleConfirmDialogCancel": {
+    "description": "Texto do botão de cancelamento na caixa de diálogo do sorteio"
   },
-  "onboardingJobLabel": "Qual sua profissão?",
-  "@onboardingJobLabel": {
-    "description": "Rótulo profissão"
+  "raffleSuccessToast": "Sorteio realizado com sucesso!",
+  "@raffleSuccessToast": {
+    "description": "Mensagem de sucesso exibida no toast após a realização do sorteio"
   },
+
   "groupMeetingMyTasksProgress": "{done} de {total} tarefas concluídas",
   "@groupMeetingMyTasksProgress": {
     "description": "Descrição de acessibilidade do contador de tarefas da anfitriã no card do grupo",
@@ -928,127 +1020,12 @@
   "@showPasswordTooltip": {
     "description": "Tooltip e acessibilidade para exibir senha"
   },
-  "onboardingEducationLabel": "Nível de escolaridade",
-  "@onboardingEducationLabel": {
-    "description": "Rótulo escolaridade"
+  "hidePasswordTooltip": "Ocultar senha",
+  "@hidePasswordTooltip": {
+    "description": "Tooltip e acessibilidade para ocultar senha"
   },
-  "onboardingEducationHint": "Selecione um nível",
-  "@onboardingEducationHint": {
-    "description": "Dica seleção de escolaridade"
-  },
-  "onboardingOtherGroupLabel": "Você participa de outro grupo de leitura?",
-  "@onboardingOtherGroupLabel": {
-    "description": "Rótulo grupo de leitura"
-  },
-  "onboardingVolunteerLabel": "Teria interesse em se voluntariar como coordenadora de grupo?",
-  "@onboardingVolunteerLabel": {
-    "description": "Rótulo voluntariado"
-  },
-  "onboardingBookIndicationLabel": "Qual livro de ficção você indicaria para a leitura coletiva?",
-  "@onboardingBookIndicationLabel": {
-    "description": "Rótulo indicação livro"
-  },
-  "onboardingBookIndicationHint": "Digite sua resposta",
-  "@onboardingBookIndicationHint": {
-    "description": "Dica indicação livro"
-  },
-  "onboardingExpectationsLabel": "O que você espera ao participar do Clube de Leitura D'Elas?",
-  "@onboardingExpectationsLabel": {
-    "description": "Rótulo expectativas"
-  },
-  "onboardingExpectationsHint": "Digite sua resposta",
-  "@onboardingExpectationsHint": {
-    "description": "Dica expectativas"
-  },
-  "onboardingBackButton": "Voltar",
-  "@onboardingBackButton": {
-    "description": "Botão voltar"
-  },
-  "onboardingContinueButton": "Continuar",
-  "@onboardingContinueButton": {
-    "description": "Botão continuar"
-  },
-  "onboardingWelcomeTitle": "Seja Bem-vinda",
-  "@onboardingWelcomeTitle": {
-    "description": "Título de boas-vindas"
-  },
-  "onboardingWelcomeSubtitle": "Sua inscrição foi realizada com sucesso!",
-  "@onboardingWelcomeSubtitle": {
-    "description": "Subtítulo de boas-vindas"
-  },
-  "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
-  "@onboardingWelcomeButton": {
-    "description": "Botão concluir onboarding"
-  },
-  "selectOptionHint": "Selecione",
-  "@selectOptionHint": {
-    "description": "Dica genérica de seleção em dropdown"
-  },
-  "@@Dropdown": "--- Dropdown demo strings ---",
-  "genreRomance": "Romance",
-  "@genreRomance": {
-    "description": "Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown"
-  },
-  "genreFantasy": "Fantasia",
-  "@genreFantasy": {
-    "description": "Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown"
-  },
-  "genreSuspense": "Suspense",
-  "@genreSuspense": {
-    "description": "Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown"
-  },
-  "genreNonFiction": "Não Ficção",
-  "@genreNonFiction": {
-    "description": "Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown"
-  },
-  "genreFieldHint": "Selecione um gênero",
-  "@genreFieldHint": {
-    "description": "Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown"
-  },
-  "myGroupsTitle": "Meus grupos",
-  "@myGroupsTitle": {
-    "description": "Título principal da tela de grupos"
-  },
-  "searchGroupPlaceholder": "Buscar grupo",
-  "@searchGroupPlaceholder": {
-    "description": "Placeholder do campo de busca de grupos"
-  },
-  "filterAll": "Todos",
-  "@filterAll": {
-    "description": "Chip de filtro Todos"
-  },
-  "filterUnanswered": "Não respondidos ({count})",
-  "@filterUnanswered": {
-    "description": "Chip de filtro Não respondidos com contagem",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "filterAnswered": "Respondidos",
-  "@filterAnswered": {
-    "description": "Chip de filtro Respondidos"
-  },
-  "emptyGroupsTitle": "Você ainda não participa de nenhum grupo",
-  "@emptyGroupsTitle": {
-    "description": "Título exibido quando a lista de grupos está vazia"
-  },
-  "emptyGroupsMessage": "Assim que você entrar em um grupo de leitura, ele aparecerá aqui.",
-  "@emptyGroupsMessage": {
-    "description": "Mensagem detalhada exibida quando a lista de grupos está vazia"
-  },
-  "groupDetailsNumberLabel": "Grupo {number}",
-  "@groupDetailsNumberLabel": {
-    "description": "Título da tela de detalhes do grupo, com o número do grupo",
-    "placeholders": {
-      "number": {
-        "type": "int"
-      }
-    }
-  },
-  "groupNextEventNoLocation": "Sem localização",
-  "@groupNextEventNoLocation": {
-    "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
+  "appLogoSemanticLabel": "Logo do Clube de Leitura D'Elas",
+  "@appLogoSemanticLabel": {
+    "description": "Descrição de acessibilidade do logotipo do aplicativo"
   }
 }

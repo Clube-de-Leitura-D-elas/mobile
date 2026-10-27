@@ -29,6 +29,10 @@ import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
+import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
+import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
+import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 GroupRepository _createGroupRepository() =>
@@ -71,9 +75,6 @@ class DependenciesContainer {
     serviceLocator.registerLazySingleton<GroupRepository>(
       _createGroupRepository,
     );
-    serviceLocator.registerFactory(
-      () => MeetingPresenceCubit(repository: serviceLocator()),
-    );
     serviceLocator.registerFactory<GroupDetailsCubit>(
       () =>
           GroupDetailsCubit(groupRepository: serviceLocator<GroupRepository>()),
@@ -91,6 +92,11 @@ class DependenciesContainer {
       () => MeetingPhotosCubit(
         groupRepository: serviceLocator<GroupRepository>(),
         photoPicker: serviceLocator<PhotoPicker>(),
+      ),
+    );
+    serviceLocator.registerFactory<MeetingPresenceCubit>(
+      () => MeetingPresenceCubit(
+        repository: serviceLocator<GroupRepository>(),
       ),
     );
     serviceLocator.registerFactory<MeetingEditCubit>(
@@ -126,7 +132,8 @@ class DependenciesContainer {
       () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
     );
     serviceLocator.registerFactory<ClaimTokenCubit>(
-      () => ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
+      () =>
+          ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
     );
 
     serviceLocator.registerFactory<OnboardingReviewCubit>(

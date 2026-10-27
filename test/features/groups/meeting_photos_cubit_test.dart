@@ -7,6 +7,7 @@ import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_state.dart';
@@ -47,7 +48,11 @@ void main() {
     picker = MockPhotoPicker();
     when(
       () => repository.getMeetingPhotos(meetingId),
-    ).thenAnswer((_) async => Success([existing]));
+    ).thenAnswer(
+      (_) async => Success(
+        MeetingPhotosEntity(photos: [existing], canAddPhotos: true),
+      ),
+    );
   });
 
   MeetingPhotosCubit buildLoadedCubit() =>
@@ -332,7 +337,12 @@ void main() {
       'given 45 photos, when picking, then limits the selection to the remaining 5',
       build: () {
         when(() => repository.getMeetingPhotos(meetingId)).thenAnswer(
-          (_) async => Success(List.generate(45, (i) => _photo('p$i'))),
+          (_) async => Success(
+            MeetingPhotosEntity(
+              photos: List.generate(45, (i) => _photo('p$i')),
+              canAddPhotos: true,
+            ),
+          ),
         );
         givenPicked(const []);
         return buildLoadedCubit();
@@ -350,7 +360,12 @@ void main() {
       'given the meeting is full, when picking, then emits the limit notice without opening the gallery',
       build: () {
         when(() => repository.getMeetingPhotos(meetingId)).thenAnswer(
-          (_) async => Success(List.generate(50, (i) => _photo('p$i'))),
+          (_) async => Success(
+            MeetingPhotosEntity(
+              photos: List.generate(50, (i) => _photo('p$i')),
+              canAddPhotos: true,
+            ),
+          ),
         );
         return buildLoadedCubit();
       },

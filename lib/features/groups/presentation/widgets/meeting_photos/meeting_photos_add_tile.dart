@@ -16,6 +16,7 @@ class MeetingPhotosAddTile extends StatelessWidget {
 
     return Semantics(
       button: true,
+      enabled: onTap != null,
       label: context.l10n.meetingPhotosAddMoreSemanticLabel,
       child: MeetingPhotosDashedBorder(
         color: colors.borderBrand,

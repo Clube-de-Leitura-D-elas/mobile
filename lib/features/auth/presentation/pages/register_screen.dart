@@ -81,27 +81,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Widget _buildCheckItem(bool isValid, String text) {
-    final colors = context.colors;
-    final typography = context.text;
-    return Row(
-      children: [
-        Icon(
-          isValid ? Icons.check_circle : Icons.cancel,
-          color: isValid ? colors.feedbackSuccess : colors.feedbackError,
-          size: 16,
-        ),
-        const Gap4(),
-        Text(
-          text,
-          style: typography.bodySmall.copyWith(
-            color: isValid ? colors.feedbackSuccess : colors.feedbackError,
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -222,8 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                       const Gap4(),
                                       _PasswordCheckItem(
-                                        isValid:
-                                            passState.passwordsMatch &&
+                                        isValid: passState.passwordsMatch &&
                                             !passState.isConfirmEmpty,
                                         text: l10n.passwordsMatchRequirement,
                                       ),
@@ -264,19 +242,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               const Gap16(),
                               Center(
-                                child: GestureDetector(
-                                  onTap: isLoading
-                                      ? null
-                                      : widget.onLoginPressed,
-                                  child: Text(
-                                    l10n.alreadyHaveAccountLink,
-                                    textAlign: TextAlign.center,
-                                    style: typography.bodySmallEmphasis
-                                        .copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: colors.textBrand,
-                                          height: 24.0 / 14.0,
-                                        ),
+                                child: Semantics(
+                                  button: true,
+                                  enabled: !isLoading,
+                                  label: l10n.alreadyHaveAccountLink,
+                                  child: GestureDetector(
+                                    onTap: isLoading
+                                        ? null
+                                        : widget.onLoginPressed,
+                                    child: Text(
+                                      l10n.alreadyHaveAccountLink,
+                                      textAlign: TextAlign.center,
+                                      style: typography.bodySmallEmphasis
+                                          .copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            color: colors.textBrand,
+                                            height: 24.0 / 14.0,
+                                          ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -300,7 +283,10 @@ class _PasswordCheckItem extends StatelessWidget {
   final bool isValid;
   final String text;
 
-  const _PasswordCheckItem({required this.isValid, required this.text});
+  const _PasswordCheckItem({
+    required this.isValid,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {

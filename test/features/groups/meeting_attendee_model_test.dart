@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/features/groups/data/models/meeting_attendee_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_attendance_model.dart';
 
 void main() {
   const attendee = {
@@ -12,14 +12,14 @@ void main() {
 
   test('parses the attendance envelope', () {
     expect(
-      MeetingAttendeeModel.listFromEnvelope({
-        'attendees': [attendee],
+      MeetingAttendanceModel.listFromJson({
+        'data': [attendee],
       }),
       hasLength(1),
     );
   });
 
   test('parses the legacy direct attendance list', () {
-    expect(MeetingAttendeeModel.listFromEnvelope([attendee]), hasLength(1));
+    expect(MeetingAttendanceModel.listFromJson([attendee]), hasLength(1));
   });
 }

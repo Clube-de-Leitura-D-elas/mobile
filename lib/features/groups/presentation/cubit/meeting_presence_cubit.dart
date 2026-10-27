@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:mobile/core/tools/result.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
 
@@ -21,7 +22,7 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
     result.match((attendees) {
       final sorted = [...attendees]
         ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-      final alreadyRegistered = sorted.any((a) => a.presence != null);
+      final alreadyRegistered = sorted.any((a) => a.presenceStatus != null);
       emit(
         alreadyRegistered
             ? MeetingPresenceClosed(sorted)
@@ -50,21 +51,33 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
       current.marked.toList(),
     );
 
-    result.match(
-      (_) => emit(
-        MeetingPresenceClosed([
-          for (final a in current.attendees)
-            a.copyWith(
-              presence: current.marked.contains(a.id)
-                  ? PresenceStatus.present
-                  : PresenceStatus.absent,
-            ),
-        ]),
-      ),
-      // Mantém as marcações para nova tentativa.
-      (failure) => emit(
-        current.copyWith(isSubmitting: false, submitError: failure.message),
-      ),
-    );
+    switch (result) {
+      case Success():
+        final conclusion = await _repository.concludeMeeting(_meetingId);
+        conclusion.match(
+          (_) => emit(
+            MeetingPresenceClosed([
+              for (final a in current.attendees)
+                MeetingAttendanceEntity(
+                  id: a.id,
+                  name: a.name,
+                  photoUrl: a.photoUrl,
+                  invitationStatus: a.invitationStatus,
+                  presenceStatus: current.marked.contains(a.id)
+                      ? MeetingPresenceStatus.present
+                      : MeetingPresenceStatus.absent,
+                ),
+            ]),
+          ),
+          (failure) => emit(
+            current.copyWith(isSubmitting: false, submitError: failure.message),
+          ),
+        );
+      case Failure(:final failure):
+        // Mantém as marcações para nova tentativa.
+        emit(
+          current.copyWith(isSubmitting: false, submitError: failure.message),
+        );
+    }
   }
 }

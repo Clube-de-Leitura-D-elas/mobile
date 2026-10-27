@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/tokens/spacing_tokens.dart';
 import 'package:mobile/design_system/widgets/screen_header.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_atendee.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_presence_attendee_tile.dart';
 
@@ -17,7 +18,7 @@ class MeetingPresenceScreen extends StatelessWidget {
     required this.readOnly,
   });
 
-  final List<MeetingAttendee> attendees;
+  final List<MeetingAttendanceEntity> attendees;
   final Set<String> marked;
   final bool isSubmitting;
   final bool readOnly;
@@ -30,6 +31,23 @@ class MeetingPresenceScreen extends StatelessWidget {
       appBar: ScreenHeader.back(title: context.l10n.meetingPresenceHeader),
       body: Column(
         children: [
+          if (readOnly)
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: context.spacing.s16,
+                vertical: context.spacing.s12,
+              ),
+              color: context.colors.feedbackSuccessLight,
+              child: Text(
+                context.l10n.meetingPresenceConfirmed,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: context.colors.feedbackSuccessDark,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
           Expanded(
             child: Opacity(
               opacity: readOnly ? 0.5 : 1,
