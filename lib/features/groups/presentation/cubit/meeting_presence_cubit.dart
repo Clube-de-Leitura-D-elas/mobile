@@ -53,25 +53,19 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
 
     switch (result) {
       case Success():
-        final conclusion = await _repository.concludeMeeting(_meetingId);
-        conclusion.match(
-          (_) => emit(
-            MeetingPresenceClosed([
-              for (final a in current.attendees)
-                MeetingAttendanceEntity(
-                  id: a.id,
-                  name: a.name,
-                  photoUrl: a.photoUrl,
-                  invitationStatus: a.invitationStatus,
-                  presenceStatus: current.marked.contains(a.id)
-                      ? MeetingPresenceStatus.present
-                      : MeetingPresenceStatus.absent,
-                ),
-            ]),
-          ),
-          (failure) => emit(
-            current.copyWith(isSubmitting: false, submitError: failure.message),
-          ),
+        emit(
+          MeetingPresenceClosed([
+            for (final a in current.attendees)
+              MeetingAttendanceEntity(
+                id: a.id,
+                name: a.name,
+                photoUrl: a.photoUrl,
+                invitationStatus: a.invitationStatus,
+                presenceStatus: current.marked.contains(a.id)
+                    ? MeetingPresenceStatus.present
+                    : MeetingPresenceStatus.absent,
+              ),
+          ], confirmed: true),
         );
       case Failure(:final failure):
         // Mantém as marcações para nova tentativa.

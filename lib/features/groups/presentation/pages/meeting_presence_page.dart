@@ -17,11 +17,17 @@ class MeetingPresencePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<MeetingPresenceCubit, MeetingPresenceState>(
       listenWhen: (prev, curr) =>
-          curr is MeetingPresenceEditing &&
-          curr.submitError != null &&
-          (prev is! MeetingPresenceEditing ||
-              prev.submitError != curr.submitError),
+          (curr is MeetingPresenceEditing &&
+              curr.submitError != null &&
+              (prev is! MeetingPresenceEditing ||
+                  prev.submitError != curr.submitError)) ||
+          (curr is MeetingPresenceClosed && curr.confirmed),
       listener: (context, state) {
+        if (state is MeetingPresenceClosed && state.confirmed) {
+          Navigator.of(context).pop(true);
+          return;
+        }
+
         final error = (state as MeetingPresenceEditing).submitError!;
         ScaffoldMessenger.of(
           context,

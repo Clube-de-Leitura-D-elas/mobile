@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
-import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/tokens/spacing_tokens.dart';
 import 'package:mobile/design_system/widgets/screen_header.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
@@ -31,23 +29,6 @@ class MeetingPresenceScreen extends StatelessWidget {
       appBar: ScreenHeader.back(title: context.l10n.meetingPresenceHeader),
       body: Column(
         children: [
-          if (readOnly)
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: context.spacing.s16,
-                vertical: context.spacing.s12,
-              ),
-              color: context.colors.feedbackSuccessLight,
-              child: Text(
-                context.l10n.meetingPresenceConfirmed,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: context.colors.feedbackSuccessDark,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
           Expanded(
             child: Opacity(
               opacity: readOnly ? 0.5 : 1,
@@ -69,17 +50,10 @@ class MeetingPresenceScreen extends StatelessWidget {
           SafeArea(
             child: Padding(
               padding: EdgeInsets.all(context.spacing.s16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => context.pop(),
-                      child: Text(context.l10n.back),
-                    ),
-                  ),
-                  if (!readOnly) ...[
-                    SizedBox(width: context.spacing.s16),
-                    Expanded(
+              child: readOnly
+                  ? const SizedBox.shrink()
+                  : SizedBox(
+                      width: double.infinity,
                       child: FilledButton(
                         onPressed: isSubmitting ? null : cubit.confirm,
                         child: isSubmitting
@@ -92,9 +66,6 @@ class MeetingPresenceScreen extends StatelessWidget {
                             : Text(context.l10n.confirm),
                       ),
                     ),
-                  ],
-                ],
-              ),
             ),
           ),
         ],

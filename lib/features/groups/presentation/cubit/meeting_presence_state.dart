@@ -50,9 +50,11 @@ class MeetingPresenceEditing extends MeetingPresenceState {
 }
 
 class MeetingPresenceClosed extends MeetingPresenceState {
-  const MeetingPresenceClosed(this.attendees);
+  const MeetingPresenceClosed(this.attendees, {this.confirmed = false});
+
   final List<MeetingAttendanceEntity> attendees;
+  final bool confirmed;
 
   @override
-  List<Object?> get props => [attendees];
+  List<Object?> get props => [attendees, confirmed];
 }
