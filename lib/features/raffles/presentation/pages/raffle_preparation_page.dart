@@ -6,8 +6,13 @@ import 'package:mobile/features/raffles/presentation/pages/raffle_preparation_sc
 
 class RafflePreparationPage extends StatelessWidget {
   final String meetingId;
+  final String meetingTitle;
 
-  const RafflePreparationPage({super.key, required this.meetingId});
+  const RafflePreparationPage({
+    super.key,
+    required this.meetingId,
+    this.meetingTitle = '',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,10 @@ class RafflePreparationPage extends StatelessWidget {
       create: (context) =>
           serviceLocator<RafflePreparationCubit>()
             ..loadEligibleParticipants(meetingId),
-      child: RafflePreparationScreen(meetingId: meetingId),
+      child: RafflePreparationScreen(
+        meetingId: meetingId,
+        meetingTitle: meetingTitle,
+      ),
     );
   }
 }

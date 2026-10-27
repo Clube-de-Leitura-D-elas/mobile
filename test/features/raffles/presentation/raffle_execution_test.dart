@@ -62,10 +62,13 @@ void main() {
     bookAuthor: 'Antoine de Saint-Exupéry',
   );
 
-  Widget buildWidget(RaffleExecutionCubit cubit) {
+  Widget buildWidget(
+    RaffleExecutionCubit cubit, {
+    Locale locale = const Locale('pt', 'BR'),
+  }) {
     return MaterialApp(
       theme: AppTheme.light,
-      locale: const Locale('pt', 'BR'),
+      locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -83,78 +86,84 @@ void main() {
     );
   }
 
-  testWidgets('deve renderizar a tela pronta com o botao SORTEAR e disparar draw ao tocar', (
-    tester,
-  ) async {
-    final cubit = MockRaffleExecutionCubit(
-      const RaffleExecutionReady(
-        meetingId: tMeetingId,
-        meetingTitle: tMeetingTitle,
-        eligibleParticipants: tParticipants,
-      ),
-    );
+  testWidgets(
+    'deve renderizar a tela pronta com o botao SORTEAR e disparar draw ao tocar',
+    (tester) async {
+      final cubit = MockRaffleExecutionCubit(
+        const RaffleExecutionReady(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          eligibleParticipants: tParticipants,
+        ),
+      );
 
-    await tester.pumpWidget(buildWidget(cubit));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildWidget(cubit));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Realizar Sorteio'), findsOneWidget);
-    expect(find.text('Sorteio do Livro - Julho'), findsOneWidget);
-    expect(find.text('2 participantes'), findsOneWidget);
-    expect(find.text('SORTEAR'), findsOneWidget);
+      expect(find.text('Realizar Sorteio'), findsOneWidget);
+      expect(find.text('Sorteio do Livro - Julho'), findsOneWidget);
+      expect(find.text('2 participantes'), findsOneWidget);
+      expect(find.text('SORTEAR'), findsOneWidget);
 
-    final sortearButton = find.text('SORTEAR');
-    await tester.tap(sortearButton);
-    await tester.pumpAndSettle();
+      final sortearButton = find.text('SORTEAR');
+      await tester.tap(sortearButton);
+      await tester.pumpAndSettle();
 
-    expect(cubit.drawCalled, isTrue);
-  });
+      expect(cubit.drawCalled, isTrue);
+    },
+  );
 
-  testWidgets('deve renderizar a tela de resultado com livro e anfitria quando ResultLoaded', (
-    tester,
-  ) async {
-    final cubit = MockRaffleExecutionCubit(
-      const RaffleExecutionResultLoaded(
-        meetingId: tMeetingId,
-        meetingTitle: tMeetingTitle,
-        result: tResult,
-        eligibleParticipants: tParticipants,
-        isPersisted: false,
-      ),
-    );
+  testWidgets(
+    'deve renderizar a tela de resultado com livro e anfitria quando ResultLoaded',
+    (tester) async {
+      final cubit = MockRaffleExecutionCubit(
+        const RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult,
+          eligibleParticipants: tParticipants,
+          isPersisted: false,
+        ),
+      );
 
-    await tester.pumpWidget(buildWidget(cubit));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildWidget(cubit));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Resultado do Sorteio'), findsOneWidget);
-    expect(find.text('Livro sorteado'), findsOneWidget);
-    expect(find.text('O Pequeno Príncipe'), findsOneWidget);
-    expect(find.text('Antoine de Saint-Exupéry'), findsOneWidget);
-    expect(find.text('Anfitriã'), findsOneWidget);
-    expect(find.text('Ana Beatriz'), findsOneWidget);
+      expect(find.text('Resultado do Sorteio'), findsOneWidget);
+      expect(find.text('Livro sorteado'), findsOneWidget);
+      expect(find.text('O Pequeno Príncipe'), findsOneWidget);
+      expect(find.text('Antoine de Saint-Exupéry'), findsOneWidget);
+      expect(find.text('Anfitriã'), findsOneWidget);
+      expect(find.text('Ana Beatriz'), findsOneWidget);
 
-    expect(find.text('Concluir'), findsOneWidget);
-    expect(find.text('Sortear novamente'), findsOneWidget);
+      expect(find.text('Concluir'), findsOneWidget);
+      expect(find.text('Sortear novamente'), findsOneWidget);
 
-    await tester.tap(find.text('Concluir'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Concluir'));
+      await tester.pumpAndSettle();
 
-    expect(cubit.confirmResultCalled, isTrue);
-  });
+      expect(cubit.confirmResultCalled, isTrue);
+    },
+  );
 
-  testWidgets('deve renderizar a tela de aviso quando nao houver participantes elegiveis', (
-    tester,
-  ) async {
-    final cubit = MockRaffleExecutionCubit(
-      const RaffleExecutionNoEligible(
-        meetingId: tMeetingId,
-        meetingTitle: tMeetingTitle,
-      ),
-    );
+  testWidgets(
+    'deve renderizar a tela de aviso quando nao houver participantes elegiveis',
+    (tester) async {
+      final cubit = MockRaffleExecutionCubit(
+        const RaffleExecutionNoEligible(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+        ),
+      );
 
-    await tester.pumpWidget(buildWidget(cubit));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildWidget(cubit));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Não há participantes elegíveis para o sorteio.'), findsOneWidget);
-    expect(find.text('Voltar'), findsOneWidget);
-  });
+      expect(
+        find.text('Não há participantes elegíveis para o sorteio.'),
+        findsOneWidget,
+      );
+      expect(find.text('Voltar'), findsOneWidget);
+    },
+  );
 }

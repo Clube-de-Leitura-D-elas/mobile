@@ -22,6 +22,16 @@ class RaffleExecutionScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: colors.bgDefault,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(56),
+        child: BlocBuilder<RaffleExecutionCubit, RaffleExecutionState>(
+          builder: (context, state) => ScreenHeader.back(
+            title: state is RaffleExecutionResultLoaded
+                ? context.l10n.raffleResultTitle
+                : context.l10n.raffleDrawScreenTitle,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: BlocConsumer<RaffleExecutionCubit, RaffleExecutionState>(
           listener: (context, state) {
@@ -88,10 +98,7 @@ class _ReadyDrawView extends StatelessWidget {
   final RaffleExecutionReady state;
   final VoidCallback onDraw;
 
-  const _ReadyDrawView({
-    required this.state,
-    required this.onDraw,
-  });
+  const _ReadyDrawView({required this.state, required this.onDraw});
 
   @override
   Widget build(BuildContext context) {
@@ -100,16 +107,14 @@ class _ReadyDrawView extends StatelessWidget {
     final spacing = context.spacing;
 
     final title = state.meetingTitle.isNotEmpty
-        ? 'Sorteio do Livro - ${state.meetingTitle}'
-        : 'Sorteio do Livro';
+        ? context.l10n.raffleBookDrawTitle(state.meetingTitle)
+        : context.l10n.raffleDrawScreenTitle;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: spacing.s24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Gap16(),
-          _ScreenTopBar(title: context.l10n.raffleDrawScreenTitle),
           const Gap24(),
           Text(
             title,
@@ -123,11 +128,7 @@ class _ReadyDrawView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.group_outlined,
-                size: 20,
-                color: colors.textMuted,
-              ),
+              Icon(Icons.group_outlined, size: 20, color: colors.textMuted),
               const Gap8(),
               Text(
                 context.l10n.groupParticipantsCount(
@@ -142,10 +143,7 @@ class _ReadyDrawView extends StatelessWidget {
           ),
           const Spacer(),
           Center(
-            child: _DrawCircleButton(
-              isDrawing: state.isDrawing,
-              onTap: onDraw,
-            ),
+            child: _DrawCircleButton(isDrawing: state.isDrawing, onTap: onDraw),
           ),
           const Spacer(),
           Text(
@@ -167,10 +165,7 @@ class _DrawCircleButton extends StatelessWidget {
   final bool isDrawing;
   final VoidCallback onTap;
 
-  const _DrawCircleButton({
-    required this.isDrawing,
-    required this.onTap,
-  });
+  const _DrawCircleButton({required this.isDrawing, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -188,10 +183,7 @@ class _DrawCircleButton extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: colors.bgDefault,
-            border: Border.all(
-              color: colors.actionPrimary,
-              width: 2.0,
-            ),
+            border: Border.all(color: colors.actionPrimary, width: 2.0),
             boxShadow: const [
               BoxShadow(
                 color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -223,47 +215,6 @@ class _DrawCircleButton extends StatelessWidget {
   }
 }
 
-class _ScreenTopBar extends StatelessWidget {
-  final String title;
-
-  const _ScreenTopBar({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final typography = context.typography;
-
-    return Row(
-      children: [
-        SizedBox(
-          width: 48,
-          height: 48,
-          child: IconButton(
-            tooltip: context.l10n.back,
-            icon: Icon(
-              Icons.chevron_left,
-              color: colors.textDefault,
-              size: 28,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: typography.headingH3.copyWith(
-              color: colors.textDefault,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        const SizedBox(width: 48),
-      ],
-    );
-  }
-}
-
 class _NoEligibleView extends StatelessWidget {
   final String meetingTitle;
 
@@ -280,20 +231,13 @@ class _NoEligibleView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _ScreenTopBar(title: context.l10n.raffleDrawScreenTitle),
           const Spacer(),
-          Icon(
-            Icons.people_outline,
-            size: 64,
-            color: colors.textMuted,
-          ),
+          Icon(Icons.people_outline, size: 64, color: colors.textMuted),
           const Gap16(),
           Text(
             context.l10n.raffleNoEligibleParticipants,
             textAlign: TextAlign.center,
-            style: typography.headingH3.copyWith(
-              color: colors.textDefault,
-            ),
+            style: typography.headingH3.copyWith(color: colors.textDefault),
           ),
           const Spacer(),
           AppButton.secondary(

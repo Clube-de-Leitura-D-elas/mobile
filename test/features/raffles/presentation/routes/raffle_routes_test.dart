@@ -122,6 +122,50 @@ void main() {
     },
   );
 
+  testWidgets('RaffleRoutes preserva meetingTitle na preparação', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) => const Scaffold(body: Text('Home')),
+        ),
+        ...RaffleRoutes.routes,
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        locale: const Locale('pt', 'BR'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    router.go(
+      RaffleRoutes.preparation,
+      extra: {'meeting_id': 'meeting-123', 'meeting_title': 'Julho'},
+    );
+    await tester.pumpAndSettle();
+
+    final page = tester.widget<RafflePreparationPage>(
+      find.byType(RafflePreparationPage),
+    );
+    expect(page.meetingId, 'meeting-123');
+    expect(page.meetingTitle, 'Julho');
+  });
+
   testWidgets('RaffleRoutes navega para RaffleExecutionPage com extra Map', (
     tester,
   ) async {
@@ -155,10 +199,7 @@ void main() {
 
     router.go(
       RaffleRoutes.draw,
-      extra: {
-        'meeting_id': 'meeting-999',
-        'meeting_title': 'Agosto',
-      },
+      extra: {'meeting_id': 'meeting-999', 'meeting_title': 'Agosto'},
     );
     await tester.pumpAndSettle();
 

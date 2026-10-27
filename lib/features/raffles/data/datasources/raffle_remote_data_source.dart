@@ -81,14 +81,11 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
       },
     );
 
-    return result.match(
-      (response) {
-        final data = response.data;
-        if (data == null) return null;
-        return RaffleResultModel.fromJson(data);
-      },
-      (failure) => null,
-    );
+    return result.match((response) {
+      final data = response.data;
+      if (data == null) return null;
+      return RaffleResultModel.fromJson(data);
+    }, (failure) => throw Exception(failure.message));
   }
 
   @override
