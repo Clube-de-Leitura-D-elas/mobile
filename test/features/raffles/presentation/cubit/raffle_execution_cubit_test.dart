@@ -201,6 +201,41 @@ void main() {
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'deve sortear novamente a partir de um resultado carregado',
+      build: () {
+        when(
+          () => mockRepository.drawRaffle(
+            meetingId: tMeetingId,
+            eligibleParticipantIds: ['p1'],
+          ),
+        ).thenAnswer((_) async => const Success(tResult));
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      seed: () => const RaffleExecutionResultLoaded(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        result: tResult,
+        eligibleParticipants: [tParticipant],
+      ),
+      act: (cubit) => cubit.draw(),
+      expect: () => const [
+        RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult,
+          eligibleParticipants: [tParticipant],
+          isSubmitting: true,
+        ),
+        RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult,
+          eligibleParticipants: [tParticipant],
+        ),
+      ],
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
       'deve emitir NoEligible se a lista de participantes elegiveis for vazia ao sortear',
       build: () => RaffleExecutionCubit(repository: mockRepository),
       seed: () => const RaffleExecutionReady(
@@ -245,6 +280,35 @@ void main() {
         ),
         isA<RaffleExecutionError>(),
       ],
+    );
+  });
+
+  group('copyWith', () {
+    test('deve preservar valores de RaffleExecutionReady quando omitidos', () {
+      const state = RaffleExecutionReady(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        eligibleParticipants: [tParticipant],
+        isDrawing: true,
+      );
+
+      expect(state.copyWith(), state);
+    });
+
+    test(
+      'deve preservar valores de RaffleExecutionResultLoaded quando omitidos',
+      () {
+        const state = RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult,
+          eligibleParticipants: [tParticipant],
+          isPersisted: true,
+          isSubmitting: true,
+        );
+
+        expect(state.copyWith(), state);
+      },
     );
   });
 

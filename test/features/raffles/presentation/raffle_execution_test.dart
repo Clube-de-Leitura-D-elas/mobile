@@ -27,6 +27,10 @@ class MockRaffleExecutionCubit extends Cubit<RaffleExecutionState>
     confirmResultCalled = true;
   }
 
+  void emitError() => emit(const RaffleExecutionError('Erro de teste'));
+
+  void emitSuccess(RaffleResult result) => emit(RaffleExecutionSuccess(result));
+
   @override
   Future<void> load(String meetingId, {String? meetingTitle}) async {}
 
@@ -145,6 +149,125 @@ void main() {
       expect(cubit.confirmResultCalled, isTrue);
     },
   );
+
+  testWidgets(
+    'deve acionar sortear novamente e concluir resultado persistido',
+    (tester) async {
+      final cubit = MockRaffleExecutionCubit(
+        const RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: '',
+          result: tResult,
+          eligibleParticipants: tParticipants,
+          isPersisted: false,
+        ),
+      );
+      await tester.pumpWidget(buildWidget(cubit));
+      await tester.pumpAndSettle();
+      expect(find.text('Resultado do Sorteio'), findsOneWidget);
+      await tester.tap(find.text('Sortear novamente'));
+      expect(cubit.drawCalled, isTrue);
+
+      final persistedCubit = MockRaffleExecutionCubit(
+        const RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult,
+          isPersisted: true,
+        ),
+      );
+      await tester.pumpWidget(buildWidget(persistedCubit));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Concluir'));
+    },
+  );
+
+  testWidgets('deve acionar voltar no estado sem participantes', (
+    tester,
+  ) async {
+    final cubit = MockRaffleExecutionCubit(
+      const RaffleExecutionNoEligible(meetingId: tMeetingId, meetingTitle: ''),
+    );
+    await tester.pumpWidget(buildWidget(cubit));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Voltar'));
+  });
+
+  testWidgets('deve renderizar loading e resultado persistido', (tester) async {
+    final loadingCubit = MockRaffleExecutionCubit(
+      const RaffleExecutionLoading(),
+    );
+    await tester.pumpWidget(buildWidget(loadingCubit));
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    final persistedCubit = MockRaffleExecutionCubit(
+      const RaffleExecutionResultLoaded(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        result: tResult,
+        isPersisted: true,
+      ),
+    );
+    await tester.pumpWidget(buildWidget(persistedCubit));
+    await tester.pumpAndSettle();
+    expect(find.text('Sortear novamente'), findsNothing);
+    expect(find.text('Concluir'), findsOneWidget);
+  });
+
+  testWidgets('deve renderizar capas e avatar com URLs invalidas', (
+    tester,
+  ) async {
+    const resultWithImages = RaffleResult(
+      meetingId: tMeetingId,
+      winnerId: 'p1',
+      winnerName: 'Ana Beatriz',
+      winnerAvatarUrl: 'https://invalid.test/avatar.png',
+      bookTitle: 'O Pequeno Príncipe',
+      bookCoverUrl: 'https://invalid.test/cover.png',
+    );
+    final cubit = MockRaffleExecutionCubit(
+      const RaffleExecutionResultLoaded(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        result: resultWithImages,
+      ),
+    );
+    await tester.pumpWidget(buildWidget(cubit));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.menu_book_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.person), findsOneWidget);
+  });
+
+  testWidgets('deve exibir estado de desenho e desabilitar botao', (
+    tester,
+  ) async {
+    final cubit = MockRaffleExecutionCubit(
+      const RaffleExecutionReady(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        eligibleParticipants: tParticipants,
+        isDrawing: true,
+      ),
+    );
+    await tester.pumpWidget(buildWidget(cubit));
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.text('SORTEAR'), findsNothing);
+    expect(cubit.drawCalled, isFalse);
+  });
+
+  testWidgets('deve tratar erro e sucesso emitidos pelo Cubit', (tester) async {
+    final cubit = MockRaffleExecutionCubit(const RaffleExecutionInitial());
+    await tester.pumpWidget(buildWidget(cubit));
+    cubit.emitError();
+    await tester.pump();
+    expect(find.text('Erro de teste'), findsOneWidget);
+
+    cubit.emitSuccess(tResult);
+    await tester.pump();
+    expect(find.text('Erro de teste'), findsOneWidget);
+  });
 
   testWidgets(
     'deve renderizar a tela de aviso quando nao houver participantes elegiveis',

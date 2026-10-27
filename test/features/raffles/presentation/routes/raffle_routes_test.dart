@@ -122,6 +122,37 @@ void main() {
     },
   );
 
+  testWidgets('RaffleRoutes usa query parameters na execução', (tester) async {
+    final router = GoRouter(
+      initialLocation:
+          '${RaffleRoutes.draw}?meeting_id=meeting-query&meeting_title=Setembro',
+      routes: RaffleRoutes.routes,
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        locale: const Locale('pt', 'BR'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final page = tester.widget<RaffleExecutionPage>(
+      find.byType(RaffleExecutionPage),
+    );
+    expect(page.meetingId, 'meeting-query');
+    expect(page.meetingTitle, 'Setembro');
+  });
+
   testWidgets('RaffleRoutes preserva meetingTitle na preparação', (
     tester,
   ) async {
