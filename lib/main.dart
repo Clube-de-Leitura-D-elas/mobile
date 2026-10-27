@@ -40,11 +40,7 @@ Future<void> mainAsync() async {
     );
   }
 
-  if (!kIsWeb) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   DependenciesContainer();
   runApp(const MainApp());
