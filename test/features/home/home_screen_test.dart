@@ -19,6 +19,7 @@ import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
+import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/home/presentation/widgets/home_pending_tasks_banner.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -122,6 +123,74 @@ void main() {
     expect(find.text('Você tem tarefas pendentes'), findsOneWidget);
     expect(find.bySemanticsLabel('Tarefas'), findsOneWidget);
   });
+
+  testWidgets(
+    'opens the pending tasks screen and reloads groups when returning',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(() => repository.getMyGroups()).thenAnswer(
+        (_) async => Success([
+          group.copyWith(
+            nextMeeting: const GroupMeeting(
+              id: 'meeting-1',
+              hostName: 'Ana',
+              bookTitle: 'Livro',
+              date: '08/11/2026',
+              location: 'Casa da Ana',
+              canManageTasks: true,
+              tasksDone: 1,
+            ),
+          ),
+        ]),
+      );
+      final cubit = HomeCubit(groupRepository: repository);
+      addTearDown(cubit.close);
+
+      final router = GoRouter(
+        initialLocation: QuickAccessRoutes.home,
+        routes: [
+          GoRoute(
+            path: QuickAccessRoutes.home,
+            builder: (context, state) =>
+                BlocProvider.value(value: cubit, child: const HomeScreen()),
+          ),
+          GoRoute(
+            path: HomeRoutes.pendingTasks,
+            builder: (context, state) =>
+                const Scaffold(body: Text('Tela de tarefas pendentes')),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
+      await cubit.loadGroups();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.bySemanticsLabel('Tarefas'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Tela de tarefas pendentes'), findsOneWidget);
+
+      router.pop();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HomeScreen), findsOneWidget);
+      verify(() => repository.getMyGroups()).called(2);
+    },
+  );
 
   testWidgets(
     'shows loading instead of the empty state while fetching groups',

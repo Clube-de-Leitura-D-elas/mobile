@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
@@ -81,5 +82,28 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Você não tem tarefas pendentes'), findsOneWidget);
+  });
+
+  testWidgets('shows a retry action when loading groups fails', (tester) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Failure(GroupListFailure()));
+    final cubit = HomeCubit(groupRepository: repository);
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(buildSubject(cubit));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Não foi possível carregar seus grupos. Tente novamente.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Tentar novamente'));
+    await tester.pumpAndSettle();
+
+    verify(() => repository.getMyGroups()).called(2);
   });
 }
