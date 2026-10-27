@@ -11,7 +11,6 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
     super.locationAddress,
     super.description,
     super.coverPhotoUrl,
-    super.canRegisterPresence,
   });
 
   factory MeetingDetailsModel.fromJson(dynamic json) {
@@ -28,7 +27,6 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
     final locationAddress = json['location_address'];
     final description = json['description'];
     final coverPhotoUrl = json['cover_photo_url'];
-    final canRegisterPresence = json['can_register_presence'];
 
     if (id is! String ||
         (number != null && number is! int) ||
@@ -38,8 +36,7 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
         (locationName != null && locationName is! String) ||
         (locationAddress != null && locationAddress is! String) ||
         (description != null && description is! String) ||
-        (coverPhotoUrl != null && coverPhotoUrl is! String) ||
-        (canRegisterPresence != null && canRegisterPresence is! bool)) {
+        (coverPhotoUrl != null && coverPhotoUrl is! String)) {
       throw const FormatException('Invalid meeting details response.');
     }
 
@@ -58,7 +55,6 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
       locationAddress: locationAddress as String?,
       description: description as String?,
       coverPhotoUrl: coverPhotoUrl as String?,
-      canRegisterPresence: canRegisterPresence as bool? ?? false,
     );
   }
 
@@ -73,7 +69,6 @@ class MeetingDetailsModel extends MeetingDetailsEntity {
       locationAddress: locationAddress,
       description: description,
       coverPhotoUrl: coverPhotoUrl,
-      canRegisterPresence: canRegisterPresence,
     );
   }
 }

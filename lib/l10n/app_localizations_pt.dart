@@ -312,9 +312,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingDetailsDescriptionTitle => 'Descrição';
 
   @override
-  String get meetingDetailsRegisterPresence => 'Registrar presença';
-
-  @override
   String meetingCoverSemanticLabel(String title) {
     return 'Foto do $title';
   }

@@ -56,15 +56,6 @@ void main() {
     expect(model.locationAddress, isNull);
   });
 
-  test('parses presence registration permission', () {
-    final model = MeetingDetailsModel.fromJson(
-      withFields({'can_register_presence': true}),
-    );
-
-    expect(model.canRegisterPresence, isTrue);
-    expect(model.toDomain().canRegisterPresence, isTrue);
-  });
-
   test('throws on a non-map response', () {
     expect(() => MeetingDetailsModel.fromJson(const []), throwsFormatException);
   });
