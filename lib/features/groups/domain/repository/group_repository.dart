@@ -10,6 +10,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_details_entity.da
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/entities/place_suggestion_entity.dart';
 
@@ -60,4 +61,10 @@ abstract class GroupRepository {
     String? googlePlaceId,
     String? description,
   });
+
+  Future<Result<MeetingTasksEntity, GroupFailure>> getMeetingTasks(
+    String meetingId,
+  );
+
+  Future<Result<void, GroupFailure>> concludeMeeting(String meetingId);
 }

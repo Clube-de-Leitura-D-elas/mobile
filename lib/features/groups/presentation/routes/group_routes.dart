@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_tasks_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_page.dart';
@@ -17,6 +21,7 @@ import 'package:mobile/features/groups/presentation/pages/group_details_page.dar
 import 'package:mobile/features/groups/presentation/pages/meeting_attendance_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
+import 'package:mobile/features/groups/presentation/pages/meeting_edit_route_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_tasks_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 
@@ -27,6 +32,7 @@ abstract class GroupRoutes {
   static const meetingAttendance = GroupRoutePaths.meetingAttendance;
   static const meetingEdit = GroupRoutePaths.meetingEdit;
   static const meetingTasks = GroupRoutePaths.meetingTasks;
+  static const meetingRecord = GroupRoutePaths.meetingRecord;
 
   static List<RouteBase> get routes => [
     GoRoute(
@@ -55,10 +61,23 @@ abstract class GroupRoutes {
       path: meetingEdit,
       pageBuilder: (context, state) {
         final meeting = state.extra;
+        // Sem o encontro em `extra` (ex.: vindo de "Suas tarefas"), carrega os
+        // detalhes antes de abrir a edição.
         if (meeting is! MeetingDetailsEntity) {
           return AppPageTransitions.createPushPage(
             state: state,
-            child: const Scaffold(body: SizedBox.shrink()),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) =>
+                      serviceLocator<MeetingDetailsCubit>()
+                        ..load(state.uri.queryParameters['meeting_id'] ?? ''),
+                ),
+                BlocProvider(create: (_) => serviceLocator<MeetingEditCubit>()),
+                BlocProvider(create: (_) => serviceLocator<PlaceSearchCubit>()),
+              ],
+              child: const MeetingEditRoutePage(),
+            ),
           );
         }
         return AppPageTransitions.createPushPage(
@@ -69,6 +88,30 @@ abstract class GroupRoutes {
               BlocProvider(create: (_) => serviceLocator<PlaceSearchCubit>()),
             ],
             child: MeetingEditPage(meeting: meeting),
+          ),
+        );
+      },
+    ),
+    // TODO(CLU-62): trocar pela tela de fotos e registro quando ela existir.
+    // Por enquanto abre os detalhes do encontro, que já têm a seção de fotos.
+    GoRoute(
+      path: meetingRecord,
+      pageBuilder: (context, state) {
+        final meetingId = state.uri.queryParameters['meeting_id'] ?? '';
+        return AppPageTransitions.createPushPage(
+          state: state,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<MeetingDetailsCubit>()..load(meetingId),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<MeetingPhotosCubit>()..load(meetingId),
+              ),
+            ],
+            child: const MeetingDetailsPage(),
           ),
         );
       },
@@ -123,6 +166,7 @@ abstract class GroupRoutes {
             meetingId: meetingId,
             meetingName: extra?['meetingName'] as String? ?? '',
             formattedDate: extra?['formattedDate'] as String? ?? '',
+            concludeOnFinish: extra?['concludeOnFinish'] as bool? ?? false,
           ),
         );
       },
@@ -133,7 +177,24 @@ abstract class GroupRoutes {
         final meetingId = state.uri.queryParameters['meeting_id'];
         return AppPageTransitions.createPushPage(
           state: state,
-          child: MeetingTasksScreen(meetingId: meetingId),
+          child: meetingId == null || meetingId.isEmpty
+              ? Builder(
+                  builder: (context) => Scaffold(
+                    appBar: ScreenHeader.back(
+                      title: context.l10n.meetingTasksTitle,
+                    ),
+                    body: Center(
+                      child: Text(context.l10n.meetingTasksInvalidMeeting),
+                    ),
+                  ),
+                )
+              : BlocProvider(
+                  create: (_) => MeetingTasksCubit(
+                    groupRepository: serviceLocator<GroupRepository>(),
+                    meetingId: meetingId,
+                  )..load(),
+                  child: MeetingTasksScreen(meetingId: meetingId),
+                ),
         );
       },
     ),

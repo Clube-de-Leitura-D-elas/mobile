@@ -1171,6 +1171,174 @@ abstract class AppLocalizations {
   /// **'Sorteio realizado com sucesso!'**
   String get raffleSuccessToast;
 
+  /// Descrição de acessibilidade do contador de tarefas da anfitriã no card do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'{done} de {total} tarefas concluídas'**
+  String groupMeetingMyTasksProgress(int done, int total);
+
+  /// Título da tela de tarefas da anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Suas tarefas'**
+  String get meetingTasksTitle;
+
+  /// Mensagem quando a tela de tarefas é aberta sem meeting_id
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro inválido.'**
+  String get meetingTasksInvalidMeeting;
+
+  /// Botão para recarregar as tarefas após erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get meetingTasksRetry;
+
+  /// Sobretítulo do banner antes de o encontro ser publicado
+  ///
+  /// In pt, this message translates to:
+  /// **'VOCÊ FOI SORTEADA'**
+  String get meetingTasksDrawnLabel;
+
+  /// Título do banner quando o livro do encontro não é conhecido
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo encontro'**
+  String get meetingTasksDrawnFallbackTitle;
+
+  /// Sobretítulo do banner depois de o encontro ser publicado
+  ///
+  /// In pt, this message translates to:
+  /// **'TUDO CERTO'**
+  String get meetingTasksPublishedLabel;
+
+  /// Título do banner depois de o encontro ser publicado
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro publicado'**
+  String get meetingTasksPublishedTitle;
+
+  /// Mensagem do banner depois de o encontro ser publicado
+  ///
+  /// In pt, this message translates to:
+  /// **'As participantes já foram avisadas.'**
+  String get meetingTasksPublishedMessage;
+
+  /// Quantidade de tarefas pendentes da anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Todas as tarefas concluídas} =1{1 tarefa para você} other{{count} tarefas para você}}'**
+  String meetingTasksPendingCount(int count);
+
+  /// Título da tarefa de marcar data e local
+  ///
+  /// In pt, this message translates to:
+  /// **'1. Marcar data e local'**
+  String get meetingTasksScheduleTitle;
+
+  /// Descrição da tarefa de marcar data e local enquanto pendente
+  ///
+  /// In pt, this message translates to:
+  /// **'O grupo está esperando para saber quando e onde.'**
+  String get meetingTasksSchedulePending;
+
+  /// Botão que abre a edição do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar agora'**
+  String get meetingTasksScheduleAction;
+
+  /// Título da tarefa de enviar fotos e registro do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'2. Enviar fotos do encontro'**
+  String get meetingTasksRecordTitle;
+
+  /// Descrição da tarefa de fotos antes de o encontro ser encerrado
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponível depois que o encontro acontecer.'**
+  String get meetingTasksRecordLocked;
+
+  /// Descrição da tarefa de fotos quando disponível
+  ///
+  /// In pt, this message translates to:
+  /// **'Depois do encontro, compartilhe como foi.'**
+  String get meetingTasksRecordPending;
+
+  /// Descrição da tarefa de fotos quando há rascunho salvo
+  ///
+  /// In pt, this message translates to:
+  /// **'Você tem um rascunho salvo. Continue de onde parou.'**
+  String get meetingTasksRecordDraft;
+
+  /// Etiqueta que indica rascunho salvo na tarefa de fotos
+  ///
+  /// In pt, this message translates to:
+  /// **'Rascunho salvo'**
+  String get meetingTasksRecordDraftTag;
+
+  /// Descrição da tarefa de fotos depois de publicada
+  ///
+  /// In pt, this message translates to:
+  /// **'Registro publicado.'**
+  String get meetingTasksRecordPublished;
+
+  /// Botão que abre a tela de fotos e registro do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar fotos'**
+  String get meetingTasksRecordAction;
+
+  /// Descrição de acessibilidade do ícone de tarefa concluída
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluída'**
+  String get meetingTasksDoneSemantics;
+
+  /// Botão de encerrar o encontro no rodapé das tarefas
+  ///
+  /// In pt, this message translates to:
+  /// **'Encerrar encontro'**
+  String get meetingTasksConcludeAction;
+
+  /// Aviso acima do botão de encerrar enquanto ele está bloqueado
+  ///
+  /// In pt, this message translates to:
+  /// **'Este botão ficará ativo quando o encontro iniciar.'**
+  String get meetingTasksConcludeHint;
+
+  /// Título do modal de confirmação de encerramento
+  ///
+  /// In pt, this message translates to:
+  /// **'Encerrar encontro'**
+  String get meetingTasksConcludeDialogTitle;
+
+  /// Mensagem do modal de confirmação de encerramento
+  ///
+  /// In pt, this message translates to:
+  /// **'Você deseja mesmo encerrar o encontro? Para concluir, preencha a lista de presença.'**
+  String get meetingTasksConcludeDialogMessage;
+
+  /// Botão que cancela o encerramento
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get meetingTasksConcludeDialogNo;
+
+  /// Botão que confirma o encerramento e abre a lista de presença
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get meetingTasksConcludeDialogYes;
+
+  /// Botão que conclui a lista de presença e encerra o encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluir lista de presença'**
+  String get meetingAttendanceCompleteAction;
+
   /// Tooltip e acessibilidade para exibir senha
   ///
   /// In pt, this message translates to:

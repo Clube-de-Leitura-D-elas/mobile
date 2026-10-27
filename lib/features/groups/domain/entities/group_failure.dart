@@ -104,3 +104,15 @@ class MeetingNotEditableFailure extends GroupFailure {
     super.message = 'Este encontro não pode mais ser editado.',
   });
 }
+
+class MeetingTasksFailure extends GroupFailure {
+  const MeetingTasksFailure({
+    super.message = 'Não foi possível carregar suas tarefas. Tente novamente.',
+  });
+}
+
+class MeetingConclusionFailure extends GroupFailure {
+  const MeetingConclusionFailure({
+    super.message = 'Não foi possível encerrar o encontro. Tente novamente.',
+  });
+}

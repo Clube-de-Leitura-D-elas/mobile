@@ -125,4 +125,104 @@ void main() {
       expect(calls, 2);
     });
   });
+
+  group('MeetingAttendancePage aberta pelo "Encerrar encontro"', () {
+    /// Abre a página com `concludeOnFinish` e guarda o valor devolvido ao fechar.
+    Future<List<bool?>> pumpConcluding(WidgetTester tester) async {
+      final results = <bool?>[];
+      when(
+        () => repository.getMeetingAttendance('meeting-1'),
+      ).thenAnswer((_) async => const Success([participant]));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) => TextButton(
+              onPressed: () async => results.add(
+                await Navigator.of(context).push<bool>(
+                  MaterialPageRoute(
+                    builder: (_) => const MeetingAttendancePage(
+                      meetingId: 'meeting-1',
+                      meetingName: 'Encontro de leitura',
+                      formattedDate: '12/10/2026',
+                      concludeOnFinish: true,
+                    ),
+                  ),
+                ),
+              ),
+              child: const Text('abrir'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('abrir'));
+      await tester.pumpAndSettle();
+      return results;
+    }
+
+    testWidgets('sem concludeOnFinish não mostra o botão de concluir', (
+      tester,
+    ) async {
+      when(
+        () => repository.getMeetingAttendance('meeting-1'),
+      ).thenAnswer((_) async => const Success([participant]));
+
+      await tester.pumpWidget(createWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Concluir lista de presença'), findsNothing);
+    });
+
+    testWidgets('concluir encerra o encontro e volta com true', (tester) async {
+      final results = await pumpConcluding(tester);
+      when(
+        () => repository.concludeMeeting('meeting-1'),
+      ).thenAnswer((_) async => const Success(null));
+
+      await tester.tap(find.text('Concluir lista de presença'));
+      await tester.pumpAndSettle();
+
+      verify(() => repository.concludeMeeting('meeting-1')).called(1);
+      expect(results, [true]);
+    });
+
+    testWidgets('voltar sem concluir não encerra o encontro', (tester) async {
+      final results = await pumpConcluding(tester);
+
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+
+      verifyNever(() => repository.concludeMeeting(any()));
+      expect(results, [null]);
+    });
+
+    testWidgets('falha ao encerrar mostra erro e continua na lista', (
+      tester,
+    ) async {
+      final results = await pumpConcluding(tester);
+      when(
+        () => repository.concludeMeeting('meeting-1'),
+      ).thenAnswer((_) async => const Failure(MeetingConclusionFailure()));
+
+      await tester.tap(find.text('Concluir lista de presença'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.text('Não foi possível encerrar o encontro. Tente novamente.'),
+        findsOneWidget,
+      );
+      expect(results, isEmpty);
+      expect(find.text('Ana Souza'), findsOneWidget);
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+    });
+  });
 }

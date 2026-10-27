@@ -54,4 +54,12 @@ class MeetingAttendanceCubit extends Cubit<MeetingAttendanceState> {
         emit(MeetingAttendanceLoaded(data));
     }
   }
+
+  Future<bool> conclude() async {
+    final result = await groupRepository.concludeMeeting(meetingId);
+    return switch (result) {
+      Failure() => false,
+      Success() => true,
+    };
+  }
 }

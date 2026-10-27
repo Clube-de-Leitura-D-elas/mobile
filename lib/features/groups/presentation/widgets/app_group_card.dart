@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
-import 'package:mobile/features/groups/presentation/widgets/app_group_avatar.dart';
-import 'package:mobile/features/groups/presentation/widgets/app_group_info_row.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_meeting_response_buttons.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_header.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_meeting_details_grid.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_meeting_header_row.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_my_tasks_button.dart';
 
 class AppGroupCard extends StatelessWidget {
   final String groupId;
@@ -26,6 +26,9 @@ class AppGroupCard extends StatelessWidget {
   final VoidCallback? onMeetingResponseSuccess;
   final VoidCallback? onMyTasksPressed;
 
+  /// Chamado ao voltar de "Suas tarefas", para atualizar o contador.
+  final VoidCallback? onTasksClosed;
+
   const AppGroupCard({
     super.key,
     required this.groupId,
@@ -39,6 +42,7 @@ class AppGroupCard extends StatelessWidget {
     this.onToggleExpanded,
     this.onMeetingResponseSuccess,
     this.onMyTasksPressed,
+    this.onTasksClosed,
   });
 
   @override
@@ -60,7 +64,7 @@ class AppGroupCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _GroupCardHeader(
+          GroupCardHeader(
             photoUrl: photoUrl,
             groupName: groupName,
             participantsCount: participantsCount,
@@ -68,15 +72,15 @@ class AppGroupCard extends StatelessWidget {
           ),
           if (meeting != null) ...[
             SizedBox(height: spacing.s16),
-            _MeetingHeaderRow(
+            GroupCardMeetingHeaderRow(
               expanded: expanded,
               onToggleExpanded: onToggleExpanded,
             ),
             if (expanded) ...[
               SizedBox(height: spacing.s8),
-              _MeetingDetailsGrid(meeting: meeting),
+              GroupCardMeetingDetailsGrid(meeting: meeting),
               SizedBox(height: spacing.s16),
-              if (meeting.id != null)
+              if (meeting.id != null && !meeting.canManageTasks)
                 BlocProvider(
                   create: (context) => MeetingInvitationCubit(
                     groupRepository: serviceLocator<GroupRepository>(),
@@ -87,192 +91,27 @@ class AppGroupCard extends StatelessWidget {
                     onResponseSuccess: onMeetingResponseSuccess,
                   ),
                 ),
-              if (meeting.canManageTasks) ...[
-                SizedBox(height: spacing.s12),
-                Center(
-                  child: Semantics(
-                    button: true,
-                    enabled: true,
-                    label: context.l10n.groupMeetingMyTasksAction,
-                    child: InkWell(
-                      onTap:
-                          onMyTasksPressed ??
-                          () => context.push(
-                            Uri(
-                              path: GroupRoutes.meetingTasks,
-                              queryParameters: {
-                                if (meeting.id != null)
-                                  'meeting_id': meeting.id!,
-                              },
-                            ).toString(),
-                          ),
-                      borderRadius: BorderRadius.circular(spacing.s4),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: spacing.s4),
-                        child: Text(
-                          context.l10n.groupMeetingMyTasksAction,
-                          style: context.typography.bodySmallEmphasis.copyWith(
-                            color: context.colors.textBrand,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+              if (meeting.canManageTasks)
+                GroupCardMyTasksButton(
+                  meeting: meeting,
+                  onPressed:
+                      onMyTasksPressed ??
+                      () async {
+                        await context.push<Object?>(
+                          Uri(
+                            path: GroupRoutes.meetingTasks,
+                            queryParameters: {
+                              if (meeting.id != null) 'meeting_id': meeting.id!,
+                            },
+                          ).toString(),
+                        );
+                        onTasksClosed?.call();
+                      },
                 ),
-              ],
             ],
           ],
         ],
       ),
     );
   }
-}
-
-class _GroupCardHeader extends StatelessWidget {
-  final String? photoUrl;
-  final String groupName;
-  final int participantsCount;
-  final String cityState;
-
-  const _GroupCardHeader({
-    required this.photoUrl,
-    required this.groupName,
-    required this.participantsCount,
-    required this.cityState,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final typography = context.typography;
-    final spacing = context.spacing;
-    final l10n = context.l10n;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppGroupAvatar(photoUrl: photoUrl),
-        SizedBox(width: spacing.s12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                groupName,
-                style: typography.headingH2.copyWith(color: colors.textDefault),
-              ),
-              SizedBox(height: spacing.s4),
-              AppGroupInfoRow(
-                icon: AppIcons.group,
-                label: l10n.groupParticipantsCount(participantsCount),
-              ),
-              AppGroupInfoRow(icon: AppIcons.location, label: cityState),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _MeetingHeaderRow extends StatelessWidget {
-  final bool expanded;
-  final VoidCallback? onToggleExpanded;
-
-  const _MeetingHeaderRow({
-    required this.expanded,
-    required this.onToggleExpanded,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final typography = context.typography;
-    final l10n = context.l10n;
-
-    return Semantics(
-      button: true,
-      expanded: expanded,
-      label: l10n.groupNextMeetingLabel,
-      child: InkWell(
-        onTap: onToggleExpanded,
-        borderRadius: BorderRadius.circular(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              l10n.groupNextMeetingLabel,
-              style: typography.bodyLarge.copyWith(color: colors.textMuted),
-            ),
-            Icon(
-              expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-              color: colors.textMuted,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MeetingDetailsGrid extends StatelessWidget {
-  final GroupMeeting meeting;
-
-  const _MeetingDetailsGrid({required this.meeting});
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.spacing;
-    final formattedDate = _formatMeetingDate(meeting.date);
-    final l10n = context.l10n;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: AppGroupInfoRow(
-                icon: AppIcons.user,
-                label: meeting.hostName,
-              ),
-            ),
-            Expanded(
-              child: AppGroupInfoRow(
-                icon: AppIcons.book,
-                label: meeting.bookTitle,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: spacing.s4),
-        Row(
-          children: [
-            Expanded(
-              child: AppGroupInfoRow(
-                icon: AppIcons.calendar,
-                label: formattedDate,
-              ),
-            ),
-            Expanded(
-              child: AppGroupInfoRow(
-                icon: AppIcons.location,
-                label: meeting.location.isEmpty
-                    ? l10n.groupNextEventNoLocation
-                    : meeting.location,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-String _formatMeetingDate(String value) {
-  final date = DateTime.tryParse(value);
-  if (date == null) return value;
-
-  return DateFormat('dd/MM/yyyy', 'pt_BR').format(date.toLocal());
 }
