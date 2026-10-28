@@ -121,7 +121,10 @@ void main() {
 
     expect(find.byType(HomePendingTasksBanner), findsOneWidget);
     expect(find.text('Você tem tarefas pendentes'), findsOneWidget);
-    expect(find.bySemanticsLabel('Tarefas'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Você tem tarefas pendentes, Tarefas'),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
@@ -179,7 +182,8 @@ void main() {
       await cubit.loadGroups();
       await tester.pumpAndSettle();
 
-      await tester.tap(find.bySemanticsLabel('Tarefas'));
+      // O banner inteiro é clicável, não só o chip "Tarefas".
+      await tester.tap(find.text('Você tem tarefas pendentes'));
       await tester.pumpAndSettle();
 
       expect(find.text('Tela de tarefas pendentes'), findsOneWidget);

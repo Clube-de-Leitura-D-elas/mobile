@@ -88,6 +88,7 @@ class MeetingTasksModel extends MeetingTasksEntity {
   static MeetingTaskStatus _status(dynamic value) => switch (value) {
     'SCHEDULED' => MeetingTaskStatus.scheduled,
     'IN_PROGRESS' => MeetingTaskStatus.inProgress,
+    'ENDED' => MeetingTaskStatus.ended,
     'CONCLUDED' => MeetingTaskStatus.concluded,
     _ => MeetingTaskStatus.created,
   };

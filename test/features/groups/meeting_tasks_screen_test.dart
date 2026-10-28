@@ -308,9 +308,10 @@ void main() {
       Success(
         _withState(status: MeetingTaskStatus.inProgress, canConclude: true),
       ),
+      // Registrar a presença deixa o encontro ENDED, ainda sem fotos.
       Success(
         _withState(
-          status: MeetingTaskStatus.concluded,
+          status: MeetingTaskStatus.ended,
           record: MeetingRecordStatus.pending,
         ),
       ),

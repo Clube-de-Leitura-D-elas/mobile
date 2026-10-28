@@ -61,6 +61,8 @@ void main() {
         parse('IN_PROGRESS', 'LOCKED').status,
         MeetingTaskStatus.inProgress,
       );
+      expect(parse('ENDED', 'PENDING').status, MeetingTaskStatus.ended);
+      expect(parse('ENDED', 'PENDING').hasEnded, isTrue);
       expect(parse('CONCLUDED', 'PENDING').status, MeetingTaskStatus.concluded);
       expect(
         parse('CONCLUDED', 'PENDING').record.status,

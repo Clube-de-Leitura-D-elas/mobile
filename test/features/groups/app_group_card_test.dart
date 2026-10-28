@@ -120,6 +120,32 @@ void main() {
     );
 
     testWidgets(
+      'Given an ended meeting and a non-host participant, When rendering, Then hides next event',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 2',
+              participantsCount: 5,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                status: GroupMeetingStatus.ended,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Próximo evento'), findsNothing);
+      },
+    );
+
+    testWidgets(
       'Given tasksOnly, When rendering, Then shows only Minhas tarefas',
       (tester) async {
         await tester.pumpWidget(

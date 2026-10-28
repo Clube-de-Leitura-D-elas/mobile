@@ -13,7 +13,7 @@ import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes
 
 abstract class HomeRoutes {
   static const String home = '/home';
-  static const String pendingTasks = '/tarefas';
+  static const String pendingTasks = '/pending-tasks';
 
   static List<RouteBase> get routes => [
     GoRoute(

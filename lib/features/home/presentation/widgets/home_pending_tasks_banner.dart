@@ -10,88 +10,105 @@ class HomePendingTasksBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final typography = context.typography;
     final spacing = context.spacing;
     final l10n = context.l10n;
+    final borderRadius = BorderRadius.circular(AppCard.borderRadius);
 
-    return Container(
-      padding: EdgeInsets.all(spacing.s12),
-      decoration: BoxDecoration(
+    return Semantics(
+      button: true,
+      label: '${l10n.homePendingTasksMessage}, ${l10n.homePendingTasksAction}',
+      excludeSemantics: true,
+      child: Material(
         color: colors.surfaceBrandSoft,
-        borderRadius: BorderRadius.circular(AppCard.borderRadius),
-        border: Border.all(color: colors.borderBrand.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          AppIcon(
-            icon: AppIcons.tasks,
-            size: 18,
-            color: colors.textOnBrand,
-            backgroundColor: colors.actionPrimary,
-            padding: EdgeInsets.all(spacing.s8),
-            borderRadius: BorderRadius.circular(999),
-          ),
-          SizedBox(width: spacing.s12),
-          Expanded(
-            child: Text(
-              l10n.homePendingTasksMessage,
-              style: typography.bodySmallEmphasis.copyWith(
-                color: colors.textDefault,
+        borderRadius: borderRadius,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: borderRadius,
+          child: Ink(
+            padding: EdgeInsets.all(spacing.s12),
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              border: Border.all(
+                color: colors.borderBrand.withValues(alpha: 0.3),
               ),
             ),
+            child: const _BannerContent(),
           ),
-          SizedBox(width: spacing.s8),
-          _TasksButton(onPressed: onPressed),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _TasksButton extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const _TasksButton({required this.onPressed});
+class _BannerContent extends StatelessWidget {
+  const _BannerContent();
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final typography = context.typography;
     final spacing = context.spacing;
-    final label = context.l10n.homePendingTasksAction;
-    final borderRadius = BorderRadius.circular(999);
 
-    return Semantics(
-      button: true,
-      label: label,
-      excludeSemantics: true,
-      child: Material(
-        color: colors.surfaceDefault,
-        borderRadius: borderRadius,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: borderRadius,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              spacing.s12,
-              spacing.s4,
-              spacing.s8,
-              spacing.s4,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  style: typography.bodySmallEmphasis.copyWith(
-                    color: colors.textBrand,
-                  ),
-                ),
-                SizedBox(width: spacing.s4),
-                Icon(Icons.chevron_right, size: 18, color: colors.textBrand),
-              ],
+    return Row(
+      children: [
+        AppIcon(
+          icon: AppIcons.tasks,
+          size: 18,
+          color: colors.textOnBrand,
+          backgroundColor: colors.actionPrimary,
+          padding: EdgeInsets.all(spacing.s8),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        SizedBox(width: spacing.s12),
+        Expanded(
+          child: Text(
+            context.l10n.homePendingTasksMessage,
+            style: typography.bodySmallEmphasis.copyWith(
+              color: colors.textDefault,
             ),
           ),
+        ),
+        SizedBox(width: spacing.s8),
+        const _TasksChip(),
+      ],
+    );
+  }
+}
+
+/// Indicação visual da ação; o toque é tratado pelo banner inteiro.
+class _TasksChip extends StatelessWidget {
+  const _TasksChip();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.surfaceDefault,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          spacing.s12,
+          spacing.s4,
+          spacing.s8,
+          spacing.s4,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              context.l10n.homePendingTasksAction,
+              style: typography.bodySmallEmphasis.copyWith(
+                color: colors.textBrand,
+              ),
+            ),
+            SizedBox(width: spacing.s4),
+            Icon(Icons.chevron_right, size: 18, color: colors.textBrand),
+          ],
         ),
       ),
     );

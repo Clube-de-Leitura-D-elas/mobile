@@ -77,13 +77,13 @@ class AppGroupCard extends StatelessWidget {
           if (tasksOnly) ...[
             if (meeting != null && meeting.canManageTasks) ...[
               SizedBox(height: spacing.s16),
-              _MyTasksButton(
+              GroupCardMyTasksButton(
                 meeting: meeting,
                 onPressed: onMyTasksPressed,
                 onClosed: onTasksClosed,
               ),
             ],
-          ] else if (meeting != null && !meeting.hidesNextEventForHost) ...[
+          ] else if (meeting != null && !meeting.isEnded) ...[
             SizedBox(height: spacing.s16),
             GroupCardMeetingHeaderRow(
               expanded: expanded,
@@ -105,7 +105,7 @@ class AppGroupCard extends StatelessWidget {
                   ),
                 ),
               if (meeting.canManageTasks)
-                _MyTasksButton(
+                GroupCardMyTasksButton(
                   meeting: meeting,
                   onPressed: onMyTasksPressed,
                   onClosed: onTasksClosed,
@@ -114,38 +114,6 @@ class AppGroupCard extends StatelessWidget {
           ],
         ],
       ),
-    );
-  }
-}
-
-class _MyTasksButton extends StatelessWidget {
-  final GroupMeeting meeting;
-  final VoidCallback? onPressed;
-  final VoidCallback? onClosed;
-
-  const _MyTasksButton({
-    required this.meeting,
-    required this.onPressed,
-    required this.onClosed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GroupCardMyTasksButton(
-      meeting: meeting,
-      onPressed:
-          onPressed ??
-          () async {
-            await context.push<Object?>(
-              Uri(
-                path: GroupRoutes.meetingTasks,
-                queryParameters: {
-                  if (meeting.id != null) 'meeting_id': meeting.id!,
-                },
-              ).toString(),
-            );
-            onClosed?.call();
-          },
     );
   }
 }

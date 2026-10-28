@@ -31,9 +31,6 @@ class GroupMeeting extends Equatable {
 
   bool get isEnded => status == GroupMeetingStatus.ended;
 
-  /// Encontro encerrado da anfitriã: as tarefas ficam só na tela de pendências.
-  bool get hidesNextEventForHost => isEnded && canManageTasks;
-
   @override
   List<Object?> get props => [
     id,
