@@ -6,8 +6,8 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
-import 'package:mobile/features/groups/data/models/meeting_tasks_model.dart';
 import 'package:mobile/features/groups/data/models/meeting_attendance_model.dart';
+import 'package:mobile/features/groups/data/models/meeting_tasks_model.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
@@ -697,6 +697,149 @@ void main() {
       expect(
         result,
         const Failure<void, GroupFailure>(MeetingConclusionFailure()),
+      );
+    });
+  });
+
+  group('setMeetingPresence', () {
+    const functionName = 'set-meeting-presence';
+
+    test('envia meeting_id e present_user_ids e retorna Success', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: functionName,
+          body: {
+            'meeting_id': 'meeting-1',
+            'present_user_ids': ['user-1', 'user-3'],
+          },
+        ),
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<void>(data: null)),
+      );
+
+      final result = await repository.setMeetingPresence('meeting-1', [
+        'user-1',
+        'user-3',
+      ]);
+
+      expect(result, const Success<void, GroupFailure>(null));
+      verify(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: functionName,
+          body: {
+            'meeting_id': 'meeting-1',
+            'present_user_ids': ['user-1', 'user-3'],
+          },
+        ),
+      ).called(1);
+    });
+
+    test('envia lista vazia quando ninguém está presente', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: functionName,
+          body: {'meeting_id': 'meeting-1', 'present_user_ids': <String>[]},
+        ),
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<void>(data: null)),
+      );
+
+      final result = await repository.setMeetingPresence(
+        'meeting-1',
+        <String>[],
+      );
+
+      expect(result, const Success<void, GroupFailure>(null));
+    });
+
+    test('mapeia código 403 para MeetingPresenceForbiddenFailure', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: functionName,
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(message: 'Forbidden', code: '403'),
+        ),
+      );
+
+      final result = await repository.setMeetingPresence('meeting-1', [
+        'user-1',
+      ]);
+
+      expect(
+        result,
+        const Failure<void, GroupFailure>(MeetingPresenceForbiddenFailure()),
+      );
+    });
+
+    test(
+      'mapeia código 409 para MeetingPresenceAlreadyRegisteredFailure',
+      () async {
+        when(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: functionName,
+            body: any(named: 'body'),
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(
+            FunctionSupabaseFailure(message: 'Conflict', code: '409'),
+          ),
+        );
+
+        final result = await repository.setMeetingPresence('meeting-1', [
+          'user-1',
+        ]);
+
+        expect(
+          result,
+          const Failure<void, GroupFailure>(
+            MeetingPresenceAlreadyRegisteredFailure(),
+          ),
+        );
+      },
+    );
+
+    test('mapeia outros códigos para MeetingPresenceFailure', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: functionName,
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(message: 'Erro', code: '500'),
+        ),
+      );
+
+      final result = await repository.setMeetingPresence('meeting-1', [
+        'user-1',
+      ]);
+
+      expect(
+        result,
+        const Failure<void, GroupFailure>(MeetingPresenceFailure()),
+      );
+    });
+
+    test('mapeia falha sem código para MeetingPresenceFailure', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: functionName,
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(FunctionSupabaseFailure(message: 'Erro')),
+      );
+
+      final result = await repository.setMeetingPresence('meeting-1', [
+        'user-1',
+      ]);
+
+      expect(
+        result,
+        const Failure<void, GroupFailure>(MeetingPresenceFailure()),
       );
     });
   });

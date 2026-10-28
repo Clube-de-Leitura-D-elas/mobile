@@ -30,12 +30,14 @@ class MeetingAttendanceModel {
   static List<MeetingAttendanceModel> listFromJson(dynamic json) {
     final dynamic data = json is Map<String, dynamic> ? json['data'] : json;
 
-    if (data is! List) return [];
+    if (data is! List) {
+      return [];
+    }
 
     return data
         .map(
-          (item) => MeetingAttendanceModel.fromJson(
-            Map<String, dynamic>.from(item as Map),
+          (e) => MeetingAttendanceModel.fromJson(
+            Map<String, dynamic>.from(e as Map),
           ),
         )
         .toList();

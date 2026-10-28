@@ -136,6 +136,37 @@ void main() {
   );
 
   testWidgets(
+    'given the member cannot add photos and there are none, when rendered, then shows a message without the add action',
+    (tester) async {
+      await pumpSection(tester, _loadedEmpty.copyWith(canAddPhotos: false));
+
+      expect(
+        find.byKey(const ValueKey('meeting-photos-empty-state')),
+        findsNothing,
+      );
+      expect(find.text('Adicionar fotos'), findsNothing);
+      expect(find.text('Ainda não há fotos deste encontro.'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'given the member cannot add photos, when rendered with photos, then hides the add tile',
+    (tester) async {
+      await pumpSection(
+        tester,
+        _loadedEmpty.copyWith(photos: _photos, canAddPhotos: false),
+      );
+      await tester.pump();
+
+      expect(find.byType(MeetingPhotoThumbnail), findsNWidgets(4));
+      expect(
+        find.byKey(const ValueKey('meeting-photos-add-tile')),
+        findsNothing,
+      );
+    },
+  );
+
+  testWidgets(
     'given the meeting is full, when rendered, then hides the add tile',
     (tester) async {
       await pumpSection(
@@ -235,8 +266,42 @@ void main() {
 
       expect(find.byKey(const ValueKey('meeting-photo-error')), findsOneWidget);
 
+      final retrySemantics = find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            w.properties.label == 'Tentar novamente' &&
+            w.properties.button == true,
+      );
+      expect(retrySemantics, findsOneWidget);
+
       await tester.tap(find.byKey(const ValueKey('meeting-photo-error')));
       verify(() => cubit.reload()).called(1);
+    },
+  );
+
+  testWidgets(
+    'renders loading state of MeetingPhotoPlaceholder with circular progress indicator',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          locale: const Locale('pt', 'BR'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: const Scaffold(body: MeetingPhotoPlaceholder()),
+        ),
+      );
+
+      expect(
+        find.byKey(const ValueKey('meeting-photo-loading')),
+        findsOneWidget,
+      );
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
     },
   );
 }

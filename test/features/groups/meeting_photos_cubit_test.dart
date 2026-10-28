@@ -27,6 +27,11 @@ PickedPhoto _picked(int seed, {String? contentType = 'image/jpeg'}) =>
 MeetingPhotoEntity _photo(String id) =>
     MeetingPhotoEntity(id: id, url: 'https://a/$id.jpg');
 
+MeetingPhotosEntity _photos(
+  List<MeetingPhotoEntity> photos, {
+  bool canAddPhotos = true,
+}) => MeetingPhotosEntity(photos: photos, canAddPhotos: canAddPhotos);
+
 MeetingPhotosUploadProgress _progress(int current, int total) =>
     MeetingPhotosUploadProgress(current: current, total: total);
 
@@ -48,11 +53,7 @@ void main() {
     picker = MockPhotoPicker();
     when(
       () => repository.getMeetingPhotos(meetingId),
-    ).thenAnswer(
-      (_) async => Success(
-        MeetingPhotosEntity(photos: [existing], canAddPhotos: true),
-      ),
-    );
+    ).thenAnswer((_) async => Success(_photos([existing])));
   });
 
   MeetingPhotosCubit buildLoadedCubit() =>
@@ -86,6 +87,24 @@ void main() {
           MeetingPhotosCubit(groupRepository: repository, photoPicker: picker),
       act: (cubit) => cubit.load(meetingId),
       expect: () => [const MeetingPhotosState(), loaded],
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the member cannot add photos, when loading, then keeps the permission in the state',
+      build: () {
+        when(() => repository.getMeetingPhotos(meetingId)).thenAnswer(
+          (_) async => Success(_photos([existing], canAddPhotos: false)),
+        );
+        return MeetingPhotosCubit(
+          groupRepository: repository,
+          photoPicker: picker,
+        );
+      },
+      act: (cubit) => cubit.load(meetingId),
+      expect: () => [
+        const MeetingPhotosState(),
+        loaded.copyWith(canAddPhotos: false),
+      ],
     );
 
     blocTest<MeetingPhotosCubit, MeetingPhotosState>(
@@ -337,12 +356,8 @@ void main() {
       'given 45 photos, when picking, then limits the selection to the remaining 5',
       build: () {
         when(() => repository.getMeetingPhotos(meetingId)).thenAnswer(
-          (_) async => Success(
-            MeetingPhotosEntity(
-              photos: List.generate(45, (i) => _photo('p$i')),
-              canAddPhotos: true,
-            ),
-          ),
+          (_) async =>
+              Success(_photos(List.generate(45, (i) => _photo('p$i')))),
         );
         givenPicked(const []);
         return buildLoadedCubit();
@@ -360,12 +375,8 @@ void main() {
       'given the meeting is full, when picking, then emits the limit notice without opening the gallery',
       build: () {
         when(() => repository.getMeetingPhotos(meetingId)).thenAnswer(
-          (_) async => Success(
-            MeetingPhotosEntity(
-              photos: List.generate(50, (i) => _photo('p$i')),
-              canAddPhotos: true,
-            ),
-          ),
+          (_) async =>
+              Success(_photos(List.generate(50, (i) => _photo('p$i')))),
         );
         return buildLoadedCubit();
       },

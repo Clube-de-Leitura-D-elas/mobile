@@ -30,29 +30,29 @@ void main() {
   group('getMeetingPhotos', () {
     const functionName = 'get-meeting-photos?meeting_id=meeting-1';
 
+    void answerWith(Map<String, dynamic> json) {
+      when(
+        () => mockSupabaseService.invokeFunction<MeetingPhotosModel>(
+          functionName: functionName,
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer((invocation) async {
+        final decoder =
+            invocation.namedArguments[#decoder]
+                as MeetingPhotosModel Function(dynamic);
+        return Success(SupabaseResponse(data: decoder(json)));
+      });
+    }
+
     test(
-      'given the function returns photos, when loading, then maps them in order',
+      'given the function returns photos, when loading, then maps them in order with the permission',
       () async {
-        when(
-          () => mockSupabaseService.invokeFunction<MeetingPhotosModel>(
-            functionName: functionName,
-            decoder: any(named: 'decoder'),
-          ),
-        ).thenAnswer((invocation) async {
-          final decoder =
-              invocation.namedArguments[#decoder]
-                  as MeetingPhotosModel Function(dynamic);
-          return Success(
-            SupabaseResponse(
-              data: decoder({
-                'photos': [
-                  {'id': 'photo-1', 'url': 'https://a/1.jpg'},
-                  {'id': 'photo-2', 'url': 'https://a/2.jpg'},
-                ],
-                'can_add_photos': true,
-              }),
-            ),
-          );
+        answerWith({
+          'photos': [
+            {'id': 'photo-1', 'url': 'https://a/1.jpg'},
+            {'id': 'photo-2', 'url': 'https://a/2.jpg'},
+          ],
+          'can_add_photos': false,
         });
 
         final result = await repository.getMeetingPhotos('meeting-1');
@@ -65,7 +65,7 @@ void main() {
                 MeetingPhotoEntity(id: 'photo-1', url: 'https://a/1.jpg'),
                 MeetingPhotoEntity(id: 'photo-2', url: 'https://a/2.jpg'),
               ],
-              canAddPhotos: true,
+              canAddPhotos: false,
             ),
           ),
         );
@@ -90,7 +90,9 @@ void main() {
 
         expect(
           result,
-          const Failure<MeetingPhotosEntity, GroupFailure>(MeetingPhotosFailure()),
+          const Failure<MeetingPhotosEntity, GroupFailure>(
+            MeetingPhotosFailure(),
+          ),
         );
       },
     );
