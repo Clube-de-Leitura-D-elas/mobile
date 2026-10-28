@@ -852,6 +852,15 @@
     }
   },
 
+  "meetingPresenceEmptyTitle": "Nenhum participante nesta reunião",
+  "@meetingPresenceEmptyTitle": {
+    "description": "Título exibido quando uma reunião não possui participantes."
+  },
+  "meetingPresenceEmptyDescription": "Quando houver participantes, eles aparecerão aqui para registrar a presença.",
+  "@meetingPresenceEmptyDescription": {
+    "description": "Descrição exibida no estado vazio da tela de presença."
+  },
+  
   "meetingEditAction": "Editar encontro",
   "meetingPresenceHeader": "Lista de Presença",
   "meetingPresenceConfirmed": "Presença confirmada",

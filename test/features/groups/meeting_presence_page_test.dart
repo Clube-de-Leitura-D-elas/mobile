@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/theme/app_theme.dart';
+import 'package:mobile/design_system/widgets/app_button.dart';
+import 'package:mobile/design_system/widgets/app_toast.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
@@ -72,6 +74,7 @@ void main() {
 
     testWidgets('exibe a mensagem de erro no estado Error', (tester) async {
       const failure = MeetingAttendanceFailure();
+
       when(() => repository.getMeetingAttendance(meetingId)).thenAnswer(
         (_) async =>
             const Failure<List<MeetingAttendanceEntity>, GroupFailure>(failure),
@@ -96,7 +99,8 @@ void main() {
 
       expect(find.byType(MeetingPresenceScreen), findsOneWidget);
       expect(find.byType(PresenceAttendeeTile), findsNWidgets(2));
-      expect(find.byType(FilledButton), findsOneWidget);
+      expect(find.byType(AppButton), findsOneWidget);
+
       expect(
         tester
             .widget<MeetingPresenceScreen>(find.byType(MeetingPresenceScreen))
@@ -118,6 +122,7 @@ void main() {
       final screen = tester.widget<MeetingPresenceScreen>(
         find.byType(MeetingPresenceScreen),
       );
+
       expect(screen.marked, {'u-2'});
     });
 
@@ -136,17 +141,18 @@ void main() {
       final screen = tester.widget<MeetingPresenceScreen>(
         find.byType(MeetingPresenceScreen),
       );
+
       expect(screen.readOnly, isTrue);
       expect(screen.isSubmitting, isFalse);
       expect(screen.marked, {'u-1'});
-      expect(find.byType(FilledButton), findsNothing);
+      expect(find.byType(AppButton), findsNothing);
     });
 
-    testWidgets('mostra SnackBar com o erro quando o envio falha', (
-      tester,
-    ) async {
+    testWidgets('mostra toast de erro quando o envio falha', (tester) async {
       const failure = MeetingPresenceForbiddenFailure();
+
       stubAttendance([_attendee('u-1', 'Ana')]);
+
       when(
         () => repository.setMeetingPresence(meetingId, any()),
       ).thenAnswer((_) async => const Failure<void, GroupFailure>(failure));
@@ -155,17 +161,21 @@ void main() {
       await cubit.load(meetingId);
       await tester.pump();
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(find.byType(AppButton));
       await tester.pump();
       await tester.pump();
 
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byType(SnackBar), findsNothing);
       expect(find.text(failure.message), findsOneWidget);
-      expect(find.byType(MeetingPresenceScreen), findsOneWidget);
+      expect(find.byType(MeetingPresencePage), findsOneWidget);
+
+      // Remove a entrada do Overlay criada pelo AppToast durante o teste.
+      AppToast.dismiss();
     });
 
     testWidgets('faz pop(true) quando a presença é confirmada', (tester) async {
       stubAttendance([_attendee('u-1', 'Ana')]);
+
       when(
         () => repository.setMeetingPresence(meetingId, any()),
       ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
@@ -204,7 +214,7 @@ void main() {
       await cubit.load(meetingId);
       await tester.pump();
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(find.byType(AppButton));
       await tester.pumpAndSettle();
 
       expect(find.byType(MeetingPresencePage), findsNothing);

@@ -1117,6 +1117,18 @@ abstract class AppLocalizations {
   /// **'Livro: {title}'**
   String meetingDetailsBook(String title);
 
+  /// Título exibido quando uma reunião não possui participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum participante nesta reunião'**
+  String get meetingPresenceEmptyTitle;
+
+  /// Descrição exibida no estado vazio da tela de presença.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quando houver participantes, eles aparecerão aqui para registrar a presença.'**
+  String get meetingPresenceEmptyDescription;
+
   /// No description provided for @meetingEditAction.
   ///
   /// In pt, this message translates to:

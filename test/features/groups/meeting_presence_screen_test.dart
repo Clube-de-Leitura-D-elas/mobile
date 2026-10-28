@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/theme/app_theme.dart';
+import 'package:mobile/design_system/widgets/app_button.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
@@ -64,6 +65,7 @@ void main() {
         ),
       ),
     );
+
     await tester.pump();
   }
 
@@ -76,11 +78,17 @@ void main() {
       expect(find.text('Bruno'), findsOneWidget);
     });
 
-    testWidgets('renderiza lista vazia sem tiles', (tester) async {
+    testWidgets('renderiza estado vazio sem tiles', (tester) async {
       await pumpScreen(tester, list: const []);
 
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(MeetingPresenceScreen)),
+      );
+
       expect(find.byType(PresenceAttendeeTile), findsNothing);
-      expect(find.byType(FilledButton), findsOneWidget);
+      expect(find.text(l10n.meetingPresenceEmptyTitle), findsOneWidget);
+      expect(find.text(l10n.meetingPresenceEmptyDescription), findsOneWidget);
+      expect(find.byType(AppButton), findsOneWidget);
     });
 
     testWidgets('marca os tiles conforme o conjunto marked', (tester) async {
@@ -101,13 +109,14 @@ void main() {
         (_) async =>
             Success<List<MeetingAttendanceEntity>, GroupFailure>(attendees),
       );
-      await cubit.load('meeting-1');
 
+      await cubit.load('meeting-1');
       await pumpScreen(tester);
 
       final tile = tester.widget<PresenceAttendeeTile>(
         find.byType(PresenceAttendeeTile).first,
       );
+
       expect(tile.onChanged, isNotNull);
 
       tile.onChanged!();
@@ -122,17 +131,21 @@ void main() {
         (_) async =>
             Success<List<MeetingAttendanceEntity>, GroupFailure>(attendees),
       );
+
       when(
         () => repository.setMeetingPresence('meeting-1', any()),
       ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
-      await cubit.load('meeting-1');
 
+      await cubit.load('meeting-1');
       await pumpScreen(tester);
 
-      final button = tester.widget<FilledButton>(find.byType(FilledButton));
-      expect(button.onPressed, isNotNull);
+      final buttonFinder = find.byType(AppButton);
+      final button = tester.widget<AppButton>(buttonFinder);
 
-      await tester.tap(find.byType(FilledButton));
+      expect(button.onPressed, isNotNull);
+      expect(button.isLoading, isFalse);
+
+      await tester.tap(buttonFinder);
       await tester.pump();
 
       verify(() => repository.setMeetingPresence('meeting-1', any())).called(1);
@@ -143,14 +156,17 @@ void main() {
     ) async {
       await pumpScreen(tester, isSubmitting: true);
 
-      final button = tester.widget<FilledButton>(find.byType(FilledButton));
+      final button = tester.widget<AppButton>(find.byType(AppButton));
+
       expect(button.onPressed, isNull);
+      expect(button.isLoading, isTrue);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
       final tiles = tester.widgetList<PresenceAttendeeTile>(
         find.byType(PresenceAttendeeTile),
       );
-      expect(tiles.every((t) => t.onChanged == null), isTrue);
+
+      expect(tiles.every((tile) => tile.onChanged == null), isTrue);
     });
 
     testWidgets('em readOnly esconde o botão e desabilita os tiles', (
@@ -158,12 +174,13 @@ void main() {
     ) async {
       await pumpScreen(tester, readOnly: true, marked: {'u-1'});
 
-      expect(find.byType(FilledButton), findsNothing);
+      expect(find.byType(AppButton), findsNothing);
 
       final tiles = tester.widgetList<PresenceAttendeeTile>(
         find.byType(PresenceAttendeeTile),
       );
-      expect(tiles.every((t) => t.onChanged == null), isTrue);
+
+      expect(tiles.every((tile) => tile.onChanged == null), isTrue);
 
       final opacity = tester.widget<Opacity>(
         find.ancestor(
@@ -171,6 +188,7 @@ void main() {
           matching: find.byType(Opacity),
         ),
       );
+
       expect(opacity.opacity, 0.5);
     });
 
@@ -183,6 +201,7 @@ void main() {
           matching: find.byType(Opacity),
         ),
       );
+
       expect(opacity.opacity, 1);
     });
   });

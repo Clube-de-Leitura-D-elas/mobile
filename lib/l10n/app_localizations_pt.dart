@@ -606,6 +606,13 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get meetingPresenceEmptyTitle => 'Nenhum participante nesta reunião';
+
+  @override
+  String get meetingPresenceEmptyDescription =>
+      'Quando houver participantes, eles aparecerão aqui para registrar a presença.';
+
+  @override
   String get meetingEditAction => 'Editar encontro';
 
   @override

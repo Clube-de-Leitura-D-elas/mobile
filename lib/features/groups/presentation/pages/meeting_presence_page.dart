@@ -4,6 +4,7 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/tokens/spacing_tokens.dart';
 import 'package:mobile/design_system/tokens/typography_tokens.dart';
+import 'package:mobile/design_system/widgets/app_toast.dart';
 import 'package:mobile/design_system/widgets/screen_header.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
@@ -29,9 +30,7 @@ class MeetingPresencePage extends StatelessWidget {
         }
 
         final error = (state as MeetingPresenceEditing).submitError!;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error)));
+        context.showErrorToast(error);
       },
       child: BlocBuilder<MeetingPresenceCubit, MeetingPresenceState>(
         builder: (context, state) => switch (state) {
