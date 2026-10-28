@@ -28,6 +28,7 @@ import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MockGoogleSignInPlatform extends Mock
@@ -43,6 +44,7 @@ void main() {
   setUp(() async {
     dotenv.testLoad(fileInput: 'BASE_URL=http://localhost:8080');
     GoogleSignInPlatform.instance = MockGoogleSignInPlatform();
+    SharedPreferences.setMockInitialValues({});
     await serviceLocator.reset();
   });
 

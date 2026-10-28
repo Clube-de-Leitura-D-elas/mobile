@@ -1111,11 +1111,53 @@ abstract class AppLocalizations {
   /// **'Livro: {title}'**
   String meetingDetailsBook(String title);
 
+  /// Título exibido quando uma reunião não possui participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum participante nesta reunião'**
+  String get meetingPresenceEmptyTitle;
+
+  /// Descrição exibida no estado vazio da tela de presença.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quando houver participantes, eles aparecerão aqui para registrar a presença.'**
+  String get meetingPresenceEmptyDescription;
+
   /// No description provided for @meetingEditAction.
   ///
   /// In pt, this message translates to:
   /// **'Editar encontro'**
   String get meetingEditAction;
+
+  /// No description provided for @meetingPresenceHeader.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de Presença'**
+  String get meetingPresenceHeader;
+
+  /// Indicação exibida após o registro da presença do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Presença confirmada'**
+  String get meetingPresenceConfirmed;
+
+  /// No description provided for @invitationConfirmed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmou presença'**
+  String get invitationConfirmed;
+
+  /// No description provided for @invitationNoResponse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem resposta'**
+  String get invitationNoResponse;
+
+  /// No description provided for @invitationDeclined.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusou o convite'**
+  String get invitationDeclined;
 
   /// Título principal da tela de preparação do sorteio
   ///
