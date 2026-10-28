@@ -84,6 +84,8 @@
   "groupEventHistoryEmpty": "Este grupo ainda não realizou encontros.",
   "meetingDetailsHeader": "Detalhes do encontro",
   "meetingEditAction": "Editar encontro",
+  "meetingPresenceEmptyTitle": "Nenhum participante nesta reunião",
+  "meetingPresenceEmptyDescription": "Quando houver participantes, eles aparecerão aqui para registrar a presença.",
   "meetingPresenceHeader": "Lista de Presença",
   "meetingPresenceConfirmed": "Presença confirmada",
   "invitationConfirmed": "Confirmou presença",

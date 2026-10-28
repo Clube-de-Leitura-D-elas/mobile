@@ -21,7 +21,7 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
 
     result.match((attendees) {
       final sorted = [...attendees]
-        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        ..sort((a, b) => _sortKey(a.name).compareTo(_sortKey(b.name)));
       final alreadyRegistered = sorted.any((a) => a.presenceStatus != null);
       emit(
         alreadyRegistered
@@ -29,6 +29,20 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
             : MeetingPresenceEditing(attendees: sorted),
       );
     }, (failure) => emit(MeetingPresenceError(failure.message)));
+  }
+
+  static String _sortKey(String value) {
+    const withDiacritics = 'áàâãäéèêëíìîïóòôõöúùûüçñ';
+    const withoutDiacritics = 'aaaaaeeeeiiiiooooouuuucn';
+
+    var normalized = value.toLowerCase();
+    for (var i = 0; i < withDiacritics.length; i++) {
+      normalized = normalized.replaceAll(
+        withDiacritics[i],
+        withoutDiacritics[i],
+      );
+    }
+    return normalized;
   }
 
   void toggle(String userId) {

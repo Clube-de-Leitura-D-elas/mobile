@@ -57,6 +57,7 @@ void main() {
         _attendee('u-1', 'bruno'),
         _attendee('u-2', 'Ana'),
         _attendee('u-3', 'carla'),
+        _attendee('u-4', 'Ágata'),
       ]);
 
       final states = <MeetingPresenceState>[];
@@ -71,6 +72,7 @@ void main() {
 
       final editing = states.last as MeetingPresenceEditing;
       expect(editing.attendees.map((a) => a.name).toList(), [
+        'Ágata',
         'Ana',
         'bruno',
         'carla',

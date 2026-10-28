@@ -10,6 +10,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_invitation_status
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_presence_screen.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_presence_attendee_tile.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -121,7 +122,7 @@ void main() {
 
       tile.onChanged!();
 
-      expect((cubit.state as dynamic).marked, {'u-1'});
+      expect((cubit.state as MeetingPresenceEditing).marked, {'u-1'});
     });
 
     testWidgets('exibe botão de confirmar habilitado e dispara confirm', (
