@@ -7,6 +7,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
@@ -91,7 +92,7 @@ void main() {
     });
 
     testWidgets(
-      'Hides the meeting section and Minhas tarefas when the host meeting ended',
+      'Given an ended host meeting, When rendering, Then hides next event and Minhas tarefas',
       (tester) async {
         await tester.pumpWidget(
           _wrap(
@@ -107,7 +108,7 @@ void main() {
                 date: '2026-08-29T19:00:00Z',
                 location: 'Z Café TECNOPUC',
                 canManageTasks: true,
-                status: 'ENDED',
+                status: GroupMeetingStatus.ended,
               ),
             ),
           ),
@@ -119,7 +120,7 @@ void main() {
     );
 
     testWidgets(
-      'Shows only Minhas tarefas, without the meeting section, when tasksOnly',
+      'Given tasksOnly, When rendering, Then shows only Minhas tarefas',
       (tester) async {
         await tester.pumpWidget(
           _wrap(

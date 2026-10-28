@@ -77,10 +77,13 @@ class AppGroupCard extends StatelessWidget {
           if (tasksOnly) ...[
             if (meeting != null && meeting.canManageTasks) ...[
               SizedBox(height: spacing.s16),
-              _myTasksButton(context, meeting),
+              _MyTasksButton(
+                meeting: meeting,
+                onPressed: onMyTasksPressed,
+                onClosed: onTasksClosed,
+              ),
             ],
-          ] else if (meeting != null &&
-              !(meeting.isEnded && meeting.canManageTasks)) ...[
+          ] else if (meeting != null && !meeting.hidesNextEventForHost) ...[
             SizedBox(height: spacing.s16),
             GroupCardMeetingHeaderRow(
               expanded: expanded,
@@ -101,19 +104,37 @@ class AppGroupCard extends StatelessWidget {
                     onResponseSuccess: onMeetingResponseSuccess,
                   ),
                 ),
-              if (meeting.canManageTasks) _myTasksButton(context, meeting),
+              if (meeting.canManageTasks)
+                _MyTasksButton(
+                  meeting: meeting,
+                  onPressed: onMyTasksPressed,
+                  onClosed: onTasksClosed,
+                ),
             ],
           ],
         ],
       ),
     );
   }
+}
 
-  Widget _myTasksButton(BuildContext context, GroupMeeting meeting) {
+class _MyTasksButton extends StatelessWidget {
+  final GroupMeeting meeting;
+  final VoidCallback? onPressed;
+  final VoidCallback? onClosed;
+
+  const _MyTasksButton({
+    required this.meeting,
+    required this.onPressed,
+    required this.onClosed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GroupCardMyTasksButton(
       meeting: meeting,
       onPressed:
-          onMyTasksPressed ??
+          onPressed ??
           () async {
             await context.push<Object?>(
               Uri(
@@ -123,7 +144,7 @@ class AppGroupCard extends StatelessWidget {
                 },
               ).toString(),
             );
-            onTasksClosed?.call();
+            onClosed?.call();
           },
     );
   }

@@ -1,5 +1,6 @@
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 
 class GroupModel extends GroupEntity {
@@ -90,7 +91,7 @@ class GroupModel extends GroupEntity {
       canManageTasks: canManageTasks as bool? ?? false,
       tasksDone: tasksDone is int ? tasksDone : 0,
       tasksTotal: tasksTotal is int ? tasksTotal : 2,
-      status: status is String ? status : null,
+      status: _parseMeetingStatus(status),
     );
   }
 
@@ -119,6 +120,13 @@ class GroupModel extends GroupEntity {
       'CONFIRMED' => MeetingInvitationStatus.confirmed,
       'DECLINED' => MeetingInvitationStatus.declined,
       _ => MeetingInvitationStatus.pending,
+    };
+  }
+
+  static GroupMeetingStatus _parseMeetingStatus(dynamic value) {
+    return switch (value) {
+      'ENDED' => GroupMeetingStatus.ended,
+      _ => GroupMeetingStatus.scheduled,
     };
   }
 }

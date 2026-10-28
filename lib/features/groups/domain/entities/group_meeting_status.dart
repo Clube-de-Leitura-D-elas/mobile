@@ -1,0 +1,1 @@
+enum GroupMeetingStatus { scheduled, ended }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 
 class GroupMeeting extends Equatable {
@@ -12,7 +13,7 @@ class GroupMeeting extends Equatable {
   final bool canManageTasks;
   final int tasksDone;
   final int tasksTotal;
-  final String? status;
+  final GroupMeetingStatus status;
 
   const GroupMeeting({
     this.id,
@@ -25,10 +26,13 @@ class GroupMeeting extends Equatable {
     this.canManageTasks = false,
     this.tasksDone = 0,
     this.tasksTotal = 2,
-    this.status,
+    this.status = GroupMeetingStatus.scheduled,
   });
 
-  bool get isEnded => status == 'ENDED';
+  bool get isEnded => status == GroupMeetingStatus.ended;
+
+  /// Encontro encerrado da anfitriã: as tarefas ficam só na tela de pendências.
+  bool get hidesNextEventForHost => isEnded && canManageTasks;
 
   @override
   List<Object?> get props => [
