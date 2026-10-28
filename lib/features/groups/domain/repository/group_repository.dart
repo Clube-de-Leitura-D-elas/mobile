@@ -51,6 +51,11 @@ abstract class GroupRepository {
   Future<Result<List<MeetingAttendanceEntity>, GroupFailure>>
   getMeetingAttendance(String meetingId);
 
+  Future<Result<void, GroupFailure>> setMeetingPresence(
+    String meetingId,
+    List<String> presentUserIds,
+  );
+
   Future<Result<List<PlaceSuggestionEntity>, GroupFailure>> searchPlaces(
     String query,
   );

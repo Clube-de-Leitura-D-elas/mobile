@@ -293,13 +293,14 @@ void main() {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          home: const Scaffold(
-            body: MeetingPhotoPlaceholder(),
-          ),
+          home: const Scaffold(body: MeetingPhotoPlaceholder()),
         ),
       );
 
-      expect(find.byKey(const ValueKey('meeting-photo-loading')), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('meeting-photo-loading')),
+        findsOneWidget,
+      );
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     },
   );

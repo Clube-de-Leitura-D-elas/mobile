@@ -606,7 +606,29 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get meetingPresenceEmptyTitle => 'Nenhum participante nesta reunião';
+
+  @override
+  String get meetingPresenceEmptyDescription =>
+      'Quando houver participantes, eles aparecerão aqui para registrar a presença.';
+
+  @override
   String get meetingEditAction => 'Editar encontro';
+
+  @override
+  String get meetingPresenceHeader => 'Lista de Presença';
+
+  @override
+  String get meetingPresenceConfirmed => 'Presença confirmada';
+
+  @override
+  String get invitationConfirmed => 'Confirmou presença';
+
+  @override
+  String get invitationNoResponse => 'Sem resposta';
+
+  @override
+  String get invitationDeclined => 'Recusou o convite';
 
   @override
   String get rafflePreparationTitle => 'Realizar sorteio';
@@ -1296,7 +1318,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String get meetingPresenceEmptyTitle => 'Nenhum participante nesta reunião';
+
+  @override
+  String get meetingPresenceEmptyDescription =>
+      'Quando houver participantes, eles aparecerão aqui para registrar a presença.';
+
+  @override
   String get meetingEditAction => 'Editar encontro';
+
+  @override
+  String get meetingPresenceHeader => 'Lista de Presença';
+
+  @override
+  String get meetingPresenceConfirmed => 'Presença confirmada';
+
+  @override
+  String get invitationConfirmed => 'Confirmou presença';
+
+  @override
+  String get invitationNoResponse => 'Sem resposta';
+
+  @override
+  String get invitationDeclined => 'Recusou o convite';
 
   @override
   String get rafflePreparationTitle => 'Realizar sorteio';

@@ -233,19 +233,39 @@ class GroupRepositoryImpl implements GroupRepository {
 
     switch (result) {
       case Failure():
-        return const Failure(
-          GroupDetailsFailure(),
-        ); // Reutilizando uma falha existente no GroupFailure
+        return const Failure(MeetingAttendanceFailure());
       case Success(:final data):
         final items = data.data;
         if (items == null) {
-          return const Failure(GroupDetailsFailure());
+          return const Failure(MeetingAttendanceFailure());
         }
 
         final entities = items.map((m) => m.toDomain()).toList()
           ..sort((a, b) => _sortKey(a.name).compareTo(_sortKey(b.name)));
         return Success(entities);
     }
+  }
+
+  @override
+  Future<Result<void, GroupFailure>> setMeetingPresence(
+    String meetingId,
+    List<String> presentUserIds,
+  ) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'set-meeting-presence',
+      body: {'meeting_id': meetingId, 'present_user_ids': presentUserIds},
+    );
+
+    return switch (result) {
+      Failure(:final failure) when failure.code == '403' => const Failure(
+        MeetingPresenceForbiddenFailure(),
+      ),
+      Failure(:final failure) when failure.code == '409' => const Failure(
+        MeetingPresenceAlreadyRegisteredFailure(),
+      ),
+      Failure() => const Failure(MeetingPresenceFailure()),
+      Success() => const Success(null),
+    };
   }
 
   @override

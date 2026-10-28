@@ -22,6 +22,7 @@ import 'package:mobile/features/groups/presentation/cubit/group_participants_cub
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
@@ -91,6 +92,11 @@ class DependenciesContainer {
       () => MeetingPhotosCubit(
         groupRepository: serviceLocator<GroupRepository>(),
         photoPicker: serviceLocator<PhotoPicker>(),
+      ),
+    );
+    serviceLocator.registerFactory<MeetingPresenceCubit>(
+      () => MeetingPresenceCubit(
+        repository: serviceLocator<GroupRepository>(),
       ),
     );
     serviceLocator.registerFactory<MeetingEditCubit>(

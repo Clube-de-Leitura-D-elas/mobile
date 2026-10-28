@@ -135,26 +135,17 @@ class MeetingTasksContent extends StatelessWidget {
   }
 
   /// "Encerrar encontro": modal → lista de presença. O encontro só é
-  /// encerrado quando a lista é concluída (ver `MeetingAttendancePage`);
+  /// encerrado quando a lista é concluída.
   /// voltar dela não muda nada além de recarregar as tarefas.
   Future<void> _confirmConclusion(BuildContext context) async {
     final confirmed = await ConcludeMeetingDialog.show(context);
     if (confirmed != true || !context.mounted) return;
 
-    final date = tasks.schedule.date?.toLocal();
     await context.push<bool>(
       Uri(
-        path: GroupRoutes.meetingAttendance,
+        path: GroupRoutes.meetingPresence,
         queryParameters: {'meeting_id': meetingId},
       ).toString(),
-      extra: {
-        'meetingName':
-            tasks.bookTitle ?? context.l10n.meetingDetailsTitleFallback,
-        'formattedDate': date == null
-            ? ''
-            : DateFormat('dd/MM/yyyy', 'pt_BR').format(date),
-        'concludeOnFinish': true,
-      },
     );
     if (context.mounted) {
       await context.read<MeetingTasksCubit>().refresh();

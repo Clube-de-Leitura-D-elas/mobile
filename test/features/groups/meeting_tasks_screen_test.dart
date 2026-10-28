@@ -59,12 +59,10 @@ MeetingTasksEntity _withState({
 void main() {
   late MockGroupRepository repository;
   late List<String> visited;
-  late Map<String, dynamic>? attendanceExtra;
 
   setUp(() {
     repository = MockGroupRepository();
     visited = [];
-    attendanceExtra = null;
   });
 
   /// Responde `get-meeting-tasks` com cada item da lista, em ordem; o último
@@ -82,9 +80,6 @@ void main() {
     path: path,
     builder: (context, state) {
       visited.add(state.uri.toString());
-      if (path == GroupRoutes.meetingAttendance) {
-        attendanceExtra = state.extra as Map<String, dynamic>?;
-      }
       return Scaffold(
         appBar: ScreenHeader.back(title: path),
         body: TextButton(
@@ -111,7 +106,7 @@ void main() {
         ),
         stubRoute(GroupRoutes.meetingEdit),
         stubRoute(GroupRoutes.meetingRecord),
-        stubRoute(GroupRoutes.meetingAttendance),
+        stubRoute(GroupRoutes.meetingPresence),
       ],
     );
     addTearDown(router.dispose);
@@ -279,38 +274,32 @@ void main() {
     verify(() => repository.getMeetingTasks('meeting-1')).called(1);
   });
 
-  testWidgets(
-    'Sim opens attendance; going back without concluding keeps it open',
-    (tester) async {
-      final inProgress = _withState(
-        status: MeetingTaskStatus.inProgress,
-        canConclude: true,
-      );
-      answerTasks([Success(inProgress)]);
-      await pumpScreen(tester);
+  testWidgets('Sim opens presence; going back keeps the meeting open', (
+    tester,
+  ) async {
+    final inProgress = _withState(
+      status: MeetingTaskStatus.inProgress,
+      canConclude: true,
+    );
+    answerTasks([Success(inProgress)]);
+    await pumpScreen(tester);
 
-      await tester.tap(find.text('Encerrar encontro'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Sim'));
-      await tester.pumpAndSettle();
+    await tester.tap(find.text('Encerrar encontro'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sim'));
+    await tester.pumpAndSettle();
 
-      expect(
-        visited.single,
-        '${GroupRoutes.meetingAttendance}?meeting_id=meeting-1',
-      );
-      expect(attendanceExtra, {
-        'meetingName': 'A Hora da Estrela',
-        'formattedDate': '22/08/2026',
-        'concludeOnFinish': true,
-      });
+    expect(
+      visited.single,
+      '${GroupRoutes.meetingPresence}?meeting_id=meeting-1',
+    );
 
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.pumpAndSettle();
 
-      verifyNever(() => repository.concludeMeeting(any()));
-      expect(buttonWithLabel(tester, 'Encerrar encontro').onPressed, isNotNull);
-    },
-  );
+    verifyNever(() => repository.concludeMeeting(any()));
+    expect(buttonWithLabel(tester, 'Encerrar encontro').onPressed, isNotNull);
+  });
 
   testWidgets('after concluding, task 2 is available and conclusion hides', (
     tester,
