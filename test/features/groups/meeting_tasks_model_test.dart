@@ -10,6 +10,7 @@ void main() {
         'status': 'SCHEDULED',
         'can_manage_tasks': true,
         'can_conclude': false,
+        'can_raffle': true,
         'book_title': 'A Hora da Estrela',
         'book_author': 'Clarice Lispector',
         'group_name': 'Grupo 12',
@@ -27,6 +28,7 @@ void main() {
       expect(model.status, MeetingTaskStatus.scheduled);
       expect(model.canManageTasks, isTrue);
       expect(model.canConclude, isFalse);
+      expect(model.canRaffle, isTrue);
       expect(model.bookTitle, 'A Hora da Estrela');
       expect(model.bookAuthor, 'Clarice Lispector');
       expect(model.groupName, 'Grupo 12');
@@ -87,6 +89,7 @@ void main() {
       });
 
       expect(model.canConclude, isFalse);
+      expect(model.canRaffle, isFalse);
       expect(model.schedule.done, isFalse);
       expect(model.record.status, MeetingRecordStatus.locked);
       expect(model.bookTitle, isNull);

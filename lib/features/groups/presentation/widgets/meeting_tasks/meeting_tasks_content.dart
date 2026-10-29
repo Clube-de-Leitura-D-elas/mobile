@@ -12,6 +12,7 @@ import 'package:mobile/features/groups/presentation/widgets/conclude_meeting_dia
 import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_task_card.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_banner.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_conclude_footer.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_raffle_footer.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 
 class MeetingTasksContent extends StatelessWidget {
@@ -104,7 +105,9 @@ class MeetingTasksContent extends StatelessWidget {
           MeetingTasksConcludeFooter(
             enabled: tasks.canConclude,
             onPressed: () => _confirmConclusion(context),
-          ),
+          )
+        else if (tasks.canRaffle)
+          MeetingTasksRaffleFooter(onPressed: () => _openRaffle(context)),
       ],
     );
   }
@@ -150,13 +153,19 @@ class MeetingTasksContent extends StatelessWidget {
       ).toString(),
     );
     if (present != null && present.isNotEmpty && context.mounted) {
-      // A preparação carrega as elegíveis do servidor, que aplica as regras
-      // (indicação disponível, livro ainda não sorteado no grupo).
-      await context.push<Object?>(
-        RaffleRoutes.preparation,
-        extra: {'meeting_id': meetingId},
-      );
+      await _openRaffle(context);
+    } else if (context.mounted) {
+      await context.read<MeetingTasksCubit>().refresh();
     }
+  }
+
+  /// A preparação carrega as elegíveis do servidor, que aplica as regras
+  /// (indicação disponível, livro ainda não sorteado no grupo).
+  Future<void> _openRaffle(BuildContext context) async {
+    await context.push<Object?>(
+      RaffleRoutes.preparation,
+      extra: {'meeting_id': meetingId},
+    );
     if (context.mounted) {
       await context.read<MeetingTasksCubit>().refresh();
     }
