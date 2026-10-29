@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum MeetingTaskStatus { created, scheduled, inProgress, concluded }
+enum MeetingTaskStatus { created, scheduled, inProgress, ended, concluded }
 
 enum MeetingRecordStatus { locked, pending, draft, published }
 
@@ -57,6 +57,9 @@ class MeetingTasksEntity extends Equatable {
   bool get isPublished => status != MeetingTaskStatus.created;
 
   bool get isConcluded => status == MeetingTaskStatus.concluded;
+
+  /// Encerrado (ENDED) ou concluído: não pode mais ser encerrado.
+  bool get hasEnded => status == MeetingTaskStatus.ended || isConcluded;
 
   int get completedTasks => (schedule.done ? 1 : 0) + (record.done ? 1 : 0);
 

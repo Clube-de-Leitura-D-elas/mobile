@@ -7,6 +7,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
@@ -89,6 +90,88 @@ void main() {
       expect(find.text('18 participantes'), findsOneWidget);
       expect(find.text('Porto Alegre, RS'), findsOneWidget);
     });
+
+    testWidgets(
+      'Given an ended host meeting, When rendering, Then hides next event and Minhas tarefas',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 2',
+              participantsCount: 5,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                canManageTasks: true,
+                status: GroupMeetingStatus.ended,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Próximo evento'), findsNothing);
+        expect(find.text('Minhas tarefas'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'Given an ended meeting and a non-host participant, When rendering, Then hides next event',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 2',
+              participantsCount: 5,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                status: GroupMeetingStatus.ended,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Próximo evento'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'Given tasksOnly, When rendering, Then shows only Minhas tarefas',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 2',
+              participantsCount: 5,
+              cityState: 'Porto Alegre, RS',
+              tasksOnly: true,
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                canManageTasks: true,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Próximo evento'), findsNothing);
+        expect(find.text('Minhas tarefas'), findsOneWidget);
+      },
+    );
 
     testWidgets(
       'Does not render the meeting section when there is no next meeting',
@@ -523,7 +606,7 @@ void main() {
     );
 
     testWidgets(
-      'Shows Minhas tarefas button when canManageTasks is true and navigates to tasks screen',
+      'Shows Minhas tarefas button when tasksOnly and canManageTasks are true and navigates to tasks screen',
       (tester) async {
         final router = GoRouter(
           routes: [
@@ -535,6 +618,7 @@ void main() {
                   groupName: 'Grupo 1',
                   participantsCount: 32,
                   cityState: 'Porto Alegre, RS',
+                  tasksOnly: true,
                   nextMeeting: GroupMeeting(
                     id: 'meeting-1',
                     hostName: 'Roberta',
@@ -585,6 +669,7 @@ void main() {
                   groupName: 'Grupo 1',
                   participantsCount: 32,
                   cityState: 'Porto Alegre, RS',
+                  tasksOnly: true,
                   nextMeeting: const GroupMeeting(
                     id: 'meeting-1',
                     hostName: 'Roberta',
@@ -628,6 +713,33 @@ void main() {
     );
 
     testWidgets(
+      'Does not show Minhas tarefas button on Home card when tasksOnly is false',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                canManageTasks: true,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Minhas tarefas'), findsNothing);
+        expect(find.byType(AppMeetingResponseButtons), findsOneWidget);
+      },
+    );
+
+    testWidgets(
       'Does not show Minhas tarefas button when canManageTasks is false',
       (tester) async {
         await tester.pumpWidget(
@@ -649,6 +761,7 @@ void main() {
         );
 
         expect(find.text('Minhas tarefas'), findsNothing);
+        expect(find.byType(AppMeetingResponseButtons), findsOneWidget);
       },
     );
   });

@@ -98,7 +98,7 @@ class MeetingTasksContent extends StatelessWidget {
             ),
           ),
         ),
-        if (!tasks.isConcluded)
+        if (!tasks.hasEnded)
           MeetingTasksConcludeFooter(
             enabled: tasks.canConclude,
             onPressed: () => _confirmConclusion(context),

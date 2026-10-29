@@ -47,11 +47,6 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(expandedGroupIds: currentExpanded));
   }
 
-  void selectFilter(int index) {
-    if (index < 0 || index >= HomeFilter.values.length) return;
-    emit(state.copyWith(filter: HomeFilter.values[index]));
-  }
-
   void updateSearch(String query) {
     emit(state.copyWith(searchQuery: query));
   }

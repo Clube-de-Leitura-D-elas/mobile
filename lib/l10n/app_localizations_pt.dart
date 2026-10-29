@@ -438,15 +438,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get searchGroupPlaceholder => 'Buscar grupo';
 
   @override
-  String get filterAll => 'Todos';
+  String get homePendingTasksMessage => 'Você tem tarefas pendentes';
 
   @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
+  String get homePendingTasksAction => 'Tarefas';
 
   @override
-  String get filterAnswered => 'Respondidos';
+  String get pendingTasksTitle => 'Tarefas pendentes';
+
+  @override
+  String get emptyPendingTasks => 'Você não tem tarefas pendentes';
 
   @override
   String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';
@@ -457,13 +458,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get emptyGroupsSearch => 'Nenhum grupo encontrado';
-
-  @override
-  String get emptyGroupsUnanswered => 'Nenhum grupo com resposta pendente';
-
-  @override
-  String get emptyGroupsAnswered =>
-      'Você ainda não respondeu a nenhum encontro';
 
   @override
   String groupDetailsNumberLabel(int number) {
@@ -1186,15 +1180,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get searchGroupPlaceholder => 'Buscar grupo';
 
   @override
-  String get filterAll => 'Todos';
+  String get homePendingTasksMessage => 'Você tem tarefas pendentes';
 
   @override
-  String filterUnanswered(int count) {
-    return 'Não respondidos ($count)';
-  }
+  String get homePendingTasksAction => 'Tarefas';
 
   @override
-  String get filterAnswered => 'Respondidos';
+  String get pendingTasksTitle => 'Tarefas pendentes';
+
+  @override
+  String get emptyPendingTasks => 'Você não tem tarefas pendentes';
 
   @override
   String get emptyGroupsTitle => 'Você ainda não participa de nenhum grupo';

@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 
 class GroupCardMyTasksButton extends StatelessWidget {
   final GroupMeeting meeting;
-  final VoidCallback onPressed;
+
+  /// Substitui a navegação padrão para "Suas tarefas".
+  final VoidCallback? onPressed;
+
+  /// Chamado ao voltar de "Suas tarefas", para atualizar o contador.
+  final VoidCallback? onClosed;
 
   const GroupCardMyTasksButton({
     super.key,
     required this.meeting,
-    required this.onPressed,
+    this.onPressed,
+    this.onClosed,
   });
+
+  Future<void> _openTasks(BuildContext context) async {
+    await context.push<Object?>(
+      Uri(
+        path: GroupRoutes.meetingTasks,
+        queryParameters: {if (meeting.id != null) 'meeting_id': meeting.id!},
+      ).toString(),
+    );
+    onClosed?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +40,7 @@ class GroupCardMyTasksButton extends StatelessWidget {
     final borderRadius = BorderRadius.circular(999);
 
     return Semantics(
+      container: true,
       button: true,
       label:
           '${l10n.groupMeetingMyTasksAction}, '
@@ -31,7 +50,7 @@ class GroupCardMyTasksButton extends StatelessWidget {
         color: colors.actionPrimary,
         borderRadius: borderRadius,
         child: InkWell(
-          onTap: onPressed,
+          onTap: onPressed ?? () => _openTasks(context),
           borderRadius: borderRadius,
           child: SizedBox(
             width: double.infinity,

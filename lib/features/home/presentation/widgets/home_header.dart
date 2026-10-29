@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/groups/presentation/widgets/group_filter_chips.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_search_field.dart';
+import 'package:mobile/features/home/presentation/widgets/home_pending_tasks_banner.dart';
 
 class HomeHeader extends StatelessWidget {
-  final int selectedFilterIndex;
-  final ValueChanged<int>? onFilterSelected;
   final ValueChanged<String>? onSearchChanged;
   final TextEditingController? searchController;
-  final int unansweredCount;
+
+  /// Exibe o aviso de tarefas pendentes quando não nulo.
+  final VoidCallback? onPendingTasksPressed;
 
   const HomeHeader({
     super.key,
-    required this.selectedFilterIndex,
-    this.onFilterSelected,
     this.onSearchChanged,
     this.searchController,
-    this.unansweredCount = 3,
+    this.onPendingTasksPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
+    final onPendingTasksPressed = this.onPendingTasksPressed;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(spacing.s16, spacing.s16, spacing.s16, 0),
@@ -36,12 +35,10 @@ class HomeHeader extends StatelessWidget {
             controller: searchController,
             onChanged: onSearchChanged,
           ),
-          SizedBox(height: spacing.s16),
-          GroupFilterChips(
-            selectedIndex: selectedFilterIndex,
-            onSelected: onFilterSelected,
-            unansweredCount: unansweredCount,
-          ),
+          if (onPendingTasksPressed != null) ...[
+            SizedBox(height: spacing.s16),
+            HomePendingTasksBanner(onPressed: onPendingTasksPressed),
+          ],
         ],
       ),
     );

@@ -29,6 +29,9 @@ class AppGroupCard extends StatelessWidget {
   /// Chamado ao voltar de "Suas tarefas", para atualizar o contador.
   final VoidCallback? onTasksClosed;
 
+  /// Mostra só o botão "Minhas tarefas" no lugar do próximo evento.
+  final bool tasksOnly;
+
   const AppGroupCard({
     super.key,
     required this.groupId,
@@ -43,6 +46,7 @@ class AppGroupCard extends StatelessWidget {
     this.onMeetingResponseSuccess,
     this.onMyTasksPressed,
     this.onTasksClosed,
+    this.tasksOnly = false,
   });
 
   @override
@@ -70,7 +74,16 @@ class AppGroupCard extends StatelessWidget {
             participantsCount: participantsCount,
             cityState: cityState,
           ),
-          if (meeting != null) ...[
+          if (tasksOnly) ...[
+            if (meeting != null && meeting.canManageTasks) ...[
+              SizedBox(height: spacing.s16),
+              GroupCardMyTasksButton(
+                meeting: meeting,
+                onPressed: onMyTasksPressed,
+                onClosed: onTasksClosed,
+              ),
+            ],
+          ] else if (meeting != null && !meeting.isEnded) ...[
             SizedBox(height: spacing.s16),
             GroupCardMeetingHeaderRow(
               expanded: expanded,
@@ -79,8 +92,8 @@ class AppGroupCard extends StatelessWidget {
             if (expanded) ...[
               SizedBox(height: spacing.s8),
               GroupCardMeetingDetailsGrid(meeting: meeting),
-              SizedBox(height: spacing.s16),
-              if (meeting.id != null && !meeting.canManageTasks)
+              if (meeting.id != null) ...[
+                SizedBox(height: spacing.s16),
                 BlocProvider(
                   create: (context) => MeetingInvitationCubit(
                     groupRepository: serviceLocator<GroupRepository>(),
@@ -91,23 +104,7 @@ class AppGroupCard extends StatelessWidget {
                     onResponseSuccess: onMeetingResponseSuccess,
                   ),
                 ),
-              if (meeting.canManageTasks)
-                GroupCardMyTasksButton(
-                  meeting: meeting,
-                  onPressed:
-                      onMyTasksPressed ??
-                      () async {
-                        await context.push<Object?>(
-                          Uri(
-                            path: GroupRoutes.meetingTasks,
-                            queryParameters: {
-                              if (meeting.id != null) 'meeting_id': meeting.id!,
-                            },
-                          ).toString(),
-                        );
-                        onTasksClosed?.call();
-                      },
-                ),
+              ],
             ],
           ],
         ],

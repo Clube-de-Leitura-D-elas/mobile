@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
@@ -15,9 +16,12 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
+import 'package:mobile/features/home/presentation/routes/home_routes.dart';
+import 'package:mobile/features/home/presentation/widgets/home_pending_tasks_banner.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -34,6 +38,17 @@ void main() {
     participantsCount: 3,
     cityState: 'Porto Alegre, RS',
   );
+
+  setUp(() {
+    serviceLocator.allowReassignment = true;
+    serviceLocator.registerFactory<GroupRepository>(MockGroupRepository.new);
+  });
+
+  tearDown(() {
+    if (serviceLocator.isRegistered<GroupRepository>()) {
+      serviceLocator.unregister<GroupRepository>();
+    }
+  });
 
   Widget buildSubject(HomeCubit homeCubit, SessionCubit sessionCubit) {
     return MaterialApp(
@@ -71,6 +86,127 @@ void main() {
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
   });
+
+  testWidgets('hides the pending tasks banner when there are no host tasks', (
+    tester,
+  ) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Success([group]));
+    final cubit = HomeCubit(groupRepository: repository);
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(buildSubject(cubit, MockSessionCubit()));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HomePendingTasksBanner), findsNothing);
+    expect(find.text('Todos'), findsNothing);
+  });
+
+  testWidgets('shows the pending tasks banner when the host has tasks', (
+    tester,
+  ) async {
+    final repository = MockGroupRepository();
+    when(() => repository.getMyGroups()).thenAnswer(
+      (_) async => Success([
+        group.copyWith(
+          nextMeeting: const GroupMeeting(
+            id: 'meeting-1',
+            hostName: 'Ana',
+            bookTitle: 'Livro',
+            date: '08/11/2026',
+            location: 'Casa da Ana',
+            canManageTasks: true,
+            tasksDone: 1,
+          ),
+        ),
+      ]),
+    );
+    final cubit = HomeCubit(groupRepository: repository);
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(buildSubject(cubit, MockSessionCubit()));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HomePendingTasksBanner), findsOneWidget);
+    expect(find.text('Você tem tarefas pendentes'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Você tem tarefas pendentes, Tarefas'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+    'opens the pending tasks screen and reloads groups when returning',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(() => repository.getMyGroups()).thenAnswer(
+        (_) async => Success([
+          group.copyWith(
+            nextMeeting: const GroupMeeting(
+              id: 'meeting-1',
+              hostName: 'Ana',
+              bookTitle: 'Livro',
+              date: '08/11/2026',
+              location: 'Casa da Ana',
+              canManageTasks: true,
+              tasksDone: 1,
+            ),
+          ),
+        ]),
+      );
+      final cubit = HomeCubit(groupRepository: repository);
+      addTearDown(cubit.close);
+
+      final router = GoRouter(
+        initialLocation: QuickAccessRoutes.home,
+        routes: [
+          GoRoute(
+            path: QuickAccessRoutes.home,
+            builder: (context, state) =>
+                BlocProvider.value(value: cubit, child: const HomeScreen()),
+          ),
+          GoRoute(
+            path: HomeRoutes.pendingTasks,
+            builder: (context, state) =>
+                const Scaffold(body: Text('Tela de tarefas pendentes')),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
+      await cubit.loadGroups();
+      await tester.pumpAndSettle();
+
+      // O banner inteiro é clicável, não só o chip "Tarefas".
+      await tester.tap(find.text('Você tem tarefas pendentes'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Tela de tarefas pendentes'), findsOneWidget);
+
+      router.pop();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HomeScreen), findsOneWidget);
+      verify(() => repository.getMyGroups()).called(2);
+    },
+  );
 
   testWidgets(
     'shows loading instead of the empty state while fetching groups',

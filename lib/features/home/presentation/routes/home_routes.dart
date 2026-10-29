@@ -7,34 +7,43 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
+import 'package:mobile/features/home/presentation/pages/pending_tasks_screen.dart';
 
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 
 abstract class HomeRoutes {
   static const String home = '/home';
+  static const String pendingTasks = '/pending-tasks';
 
   static List<RouteBase> get routes => [
-        GoRoute(
-          path: home,
-          pageBuilder: (context, state) {
-            final sessionState = context.read<SessionCubit>().state;
-            Widget child = const Scaffold(body: SizedBox.shrink());
-            if (sessionState is AuthenticatedSession) {
-              child = BlocProvider(
-                create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
-                child: HomeScreen(
-                  user: sessionState.user,
-                  profile: sessionState.profile,
-                ),
-              );
-            }
-            return AppPageTransitions.createFadePage(
-              state: state,
-              child: child,
-            );
-          },
+    GoRoute(
+      path: home,
+      pageBuilder: (context, state) {
+        final sessionState = context.read<SessionCubit>().state;
+        Widget child = const Scaffold(body: SizedBox.shrink());
+        if (sessionState is AuthenticatedSession) {
+          child = BlocProvider(
+            create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
+            child: HomeScreen(
+              user: sessionState.user,
+              profile: sessionState.profile,
+            ),
+          );
+        }
+        return AppPageTransitions.createFadePage(state: state, child: child);
+      },
+    ),
+    GoRoute(
+      path: pendingTasks,
+      pageBuilder: (context, state) => AppPageTransitions.createPushPage(
+        state: state,
+        child: BlocProvider(
+          create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
+          child: const PendingTasksScreen(),
         ),
-      ];
+      ),
+    ),
+  ];
 
   /// Route guard for Home feature.
   static String? homeGuard(
@@ -42,9 +51,10 @@ abstract class HomeRoutes {
     GoRouterState state,
     SessionState sessionState,
   ) {
-    final isHome = state.matchedLocation == home;
+    final isProtected =
+        state.matchedLocation == home || state.matchedLocation == pendingTasks;
 
-    if (isHome) {
+    if (isProtected) {
       if (sessionState is! AuthenticatedSession) {
         if (sessionState is LoadingSession) {
           return '/splash';
@@ -59,4 +69,3 @@ abstract class HomeRoutes {
     return null;
   }
 }
-

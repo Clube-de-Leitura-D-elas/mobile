@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 
 void main() {
@@ -76,6 +77,7 @@ void main() {
   Map<String, dynamic> groupJson({
     Object? invitationStatus,
     bool includeStatus = true,
+    Object? meetingStatus,
   }) {
     return {
       'id': 'group-1',
@@ -91,6 +93,7 @@ void main() {
         'date': '2026-10-12T19:00:00Z',
         'location': 'Porto Alegre, RS',
         if (includeStatus) 'invitation_status': invitationStatus,
+        'status': meetingStatus,
       },
     };
   }
@@ -168,5 +171,20 @@ void main() {
     });
 
     expect(group.toDomain().nextMeeting?.canManageTasks, isTrue);
+  });
+
+  test(
+    'Given status ENDED, When parses, Then maps to GroupMeetingStatus.ended',
+    () {
+      final group = GroupModel.fromJson(groupJson(meetingStatus: 'ENDED'));
+
+      expect(group.toDomain().nextMeeting?.status, GroupMeetingStatus.ended);
+    },
+  );
+
+  test('Given status ausente, When parses, Then maps to scheduled', () {
+    final group = GroupModel.fromJson(groupJson());
+
+    expect(group.toDomain().nextMeeting?.status, GroupMeetingStatus.scheduled);
   });
 }

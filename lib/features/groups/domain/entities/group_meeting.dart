@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 
 class GroupMeeting extends Equatable {
@@ -12,6 +13,7 @@ class GroupMeeting extends Equatable {
   final bool canManageTasks;
   final int tasksDone;
   final int tasksTotal;
+  final GroupMeetingStatus status;
 
   const GroupMeeting({
     this.id,
@@ -24,7 +26,10 @@ class GroupMeeting extends Equatable {
     this.canManageTasks = false,
     this.tasksDone = 0,
     this.tasksTotal = 2,
+    this.status = GroupMeetingStatus.scheduled,
   });
+
+  bool get isEnded => status == GroupMeetingStatus.ended;
 
   @override
   List<Object?> get props => [
@@ -38,5 +43,6 @@ class GroupMeeting extends Equatable {
     canManageTasks,
     tasksDone,
     tasksTotal,
+    status,
   ];
 }
