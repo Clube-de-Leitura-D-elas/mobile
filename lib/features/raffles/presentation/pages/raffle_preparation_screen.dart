@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_error_view.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
@@ -29,9 +30,12 @@ class RafflePreparationScreen extends StatelessWidget {
       backgroundColor: colors.bgDefault,
       body: SafeArea(
         child: BlocConsumer<RafflePreparationCubit, RafflePreparationState>(
+          listenWhen: (previous, current) =>
+              current is! RafflePreparationError ||
+              previous is RafflePreparationLoaded,
           listener: (context, state) {
             if (state is RafflePreparationError) {
-              context.showAppToast(state.message);
+              context.showAppToast(context.l10n.raffleErrorMessage);
             } else if (state is RafflePreparationSuccess) {
               context.showAppToast(context.l10n.raffleSuccessToast);
               try {
@@ -40,6 +44,7 @@ class RafflePreparationScreen extends StatelessWidget {
                   extra: {
                     'meeting_id': meetingId,
                     'meeting_title': meetingTitle,
+                    'participants': state.selectedParticipants,
                   },
                 );
               } catch (_) {
@@ -99,6 +104,15 @@ class RafflePreparationScreen extends StatelessWidget {
                     },
                   ),
                 ],
+              );
+            }
+
+            if (state is RafflePreparationError) {
+              return MeetingTasksErrorView(
+                message: context.l10n.raffleErrorMessage,
+                onRetry: () => context
+                    .read<RafflePreparationCubit>()
+                    .loadEligibleParticipants(meetingId),
               );
             }
 

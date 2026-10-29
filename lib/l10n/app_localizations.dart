@@ -1267,6 +1267,18 @@ abstract class AppLocalizations {
   /// **'Sortear novamente'**
   String get raffleDrawAgainButton;
 
+  /// Mensagem exibida quando alguma etapa do sorteio falha
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível concluir o sorteio'**
+  String get raffleErrorMessage;
+
+  /// Aviso abaixo do botão de sortear novamente quando todas as participantes já foram sorteadas
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem mais pessoas para sortear'**
+  String get raffleNoMoreParticipantsToDraw;
+
   /// Aviso emitido quando a lista de participantes elegíveis está vazia
   ///
   /// In pt, this message translates to:

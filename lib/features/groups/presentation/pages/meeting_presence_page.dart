@@ -25,7 +25,11 @@ class MeetingPresencePage extends StatelessWidget {
           (curr is MeetingPresenceClosed && curr.confirmed),
       listener: (context, state) {
         if (state is MeetingPresenceClosed && state.confirmed) {
-          Navigator.of(context).pop(true);
+          Navigator.of(context).pop(
+            state.attendees
+                .where((a) => a.presenceStatus == MeetingPresenceStatus.present)
+                .toList(),
+          );
           return;
         }
 

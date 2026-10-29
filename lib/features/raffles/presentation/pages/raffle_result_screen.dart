@@ -7,6 +7,8 @@ class RaffleResultScreen extends StatelessWidget {
   final RaffleResult result;
   final bool isPersisted;
   final bool isSubmitting;
+
+  final bool canDrawAgain;
   final VoidCallback? onDrawAgain;
   final VoidCallback? onFinish;
 
@@ -15,6 +17,7 @@ class RaffleResultScreen extends StatelessWidget {
     required this.result,
     this.isPersisted = false,
     this.isSubmitting = false,
+    this.canDrawAgain = true,
     this.onDrawAgain,
     this.onFinish,
   });
@@ -44,6 +47,7 @@ class RaffleResultScreen extends StatelessWidget {
           _ResultActionButtons(
             isPersisted: isPersisted,
             isSubmitting: isSubmitting,
+            canDrawAgain: canDrawAgain,
             onDrawAgain: onDrawAgain,
             onFinish: onFinish,
           ),
@@ -237,18 +241,23 @@ class _HostAvatar extends StatelessWidget {
 class _ResultActionButtons extends StatelessWidget {
   final bool isPersisted;
   final bool isSubmitting;
+  final bool canDrawAgain;
   final VoidCallback? onDrawAgain;
   final VoidCallback? onFinish;
 
   const _ResultActionButtons({
     required this.isPersisted,
     required this.isSubmitting,
+    required this.canDrawAgain,
     this.onDrawAgain,
     this.onFinish,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final typography = context.typography;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -260,8 +269,16 @@ class _ResultActionButtons extends StatelessWidget {
           const Gap12(),
           AppButton.secondary(
             label: context.l10n.raffleDrawAgainButton,
-            onPressed: isSubmitting ? null : onDrawAgain,
+            onPressed: isSubmitting || !canDrawAgain ? null : onDrawAgain,
           ),
+          if (!canDrawAgain) ...[
+            const Gap8(),
+            Text(
+              context.l10n.raffleNoMoreParticipantsToDraw,
+              textAlign: TextAlign.center,
+              style: typography.bodySmall.copyWith(color: colors.textMuted),
+            ),
+          ],
         ],
       ],
     );

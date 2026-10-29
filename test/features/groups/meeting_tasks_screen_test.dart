@@ -6,11 +6,15 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_tasks_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_tasks_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -59,10 +63,12 @@ MeetingTasksEntity _withState({
 void main() {
   late MockGroupRepository repository;
   late List<String> visited;
+  late List<MeetingAttendanceEntity> present;
 
   setUp(() {
     repository = MockGroupRepository();
     visited = [];
+    present = [];
   });
 
   /// Responde `get-meeting-tasks` com cada item da lista, em ordem; o último
@@ -83,7 +89,8 @@ void main() {
       return Scaffold(
         appBar: ScreenHeader.back(title: path),
         body: TextButton(
-          onPressed: () => context.pop(true),
+          onPressed: () =>
+              context.pop(path == GroupRoutes.meetingPresence ? present : true),
           child: const Text('stub-done'),
         ),
       );
@@ -107,6 +114,7 @@ void main() {
         stubRoute(GroupRoutes.meetingEdit),
         stubRoute(GroupRoutes.meetingRecord),
         stubRoute(GroupRoutes.meetingPresence),
+        stubRoute(RaffleRoutes.preparation),
       ],
     );
     addTearDown(router.dispose);
@@ -299,6 +307,52 @@ void main() {
 
     verifyNever(() => repository.concludeMeeting(any()));
     expect(buttonWithLabel(tester, 'Encerrar encontro').onPressed, isNotNull);
+  });
+
+  testWidgets('confirming presence opens the raffle with who was present', (
+    tester,
+  ) async {
+    present = const [
+      MeetingAttendanceEntity(
+        id: 'u-1',
+        name: 'Ana',
+        invitationStatus: MeetingInvitationStatus.confirmed,
+        presenceStatus: MeetingPresenceStatus.present,
+      ),
+    ];
+    answerTasks([
+      Success(
+        _withState(status: MeetingTaskStatus.inProgress, canConclude: true),
+      ),
+    ]);
+    await pumpScreen(tester);
+
+    await tester.tap(find.text('Encerrar encontro'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sim'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('stub-done'));
+    await tester.pumpAndSettle();
+
+    expect(visited.last, RaffleRoutes.preparation);
+  });
+
+  testWidgets('no one present skips the raffle', (tester) async {
+    answerTasks([
+      Success(
+        _withState(status: MeetingTaskStatus.inProgress, canConclude: true),
+      ),
+    ]);
+    await pumpScreen(tester);
+
+    await tester.tap(find.text('Encerrar encontro'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sim'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('stub-done'));
+    await tester.pumpAndSettle();
+
+    expect(visited, isNot(contains(RaffleRoutes.preparation)));
   });
 
   testWidgets('after concluding, task 2 is available and conclusion hides', (

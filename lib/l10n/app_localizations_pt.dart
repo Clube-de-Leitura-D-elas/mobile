@@ -683,6 +683,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get raffleDrawAgainButton => 'Sortear novamente';
 
   @override
+  String get raffleErrorMessage => 'Não foi possível concluir o sorteio';
+
+  @override
+  String get raffleNoMoreParticipantsToDraw => 'Sem mais pessoas para sortear';
+
+  @override
   String get raffleNoEligibleParticipants =>
       'Não há participantes elegíveis para o sorteio.';
 
@@ -1435,6 +1441,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get raffleDrawAgainButton => 'Sortear novamente';
+
+  @override
+  String get raffleErrorMessage => 'Não foi possível concluir o sorteio';
+
+  @override
+  String get raffleNoMoreParticipantsToDraw => 'Sem mais pessoas para sortear';
 
   @override
   String get raffleNoEligibleParticipants =>

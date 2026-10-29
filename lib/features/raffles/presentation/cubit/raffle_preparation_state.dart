@@ -40,7 +40,12 @@ class RafflePreparationLoaded extends RafflePreparationState {
 }
 
 class RafflePreparationSuccess extends RafflePreparationState {
-  const RafflePreparationSuccess();
+  final List<RaffleParticipant> selectedParticipants;
+
+  const RafflePreparationSuccess({this.selectedParticipants = const []});
+
+  @override
+  List<Object?> get props => [selectedParticipants];
 }
 
 class RafflePreparationError extends RafflePreparationState {

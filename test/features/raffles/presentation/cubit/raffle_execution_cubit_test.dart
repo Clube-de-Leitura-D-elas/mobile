@@ -39,6 +39,20 @@ void main() {
     bookAuthor: 'Antoine de Saint-Exupéry',
   );
 
+  const tParticipant2 = RaffleParticipant(
+    id: 'p2',
+    name: 'Carla Mendes',
+    hasAttended: true,
+    bookTitle: 'Torto Arado',
+  );
+
+  const tResult2 = RaffleResult(
+    meetingId: tMeetingId,
+    winnerId: 'p2',
+    winnerName: 'Carla Mendes',
+    bookTitle: 'Torto Arado',
+  );
+
   setUp(() {
     mockRepository = MockRaffleRepository();
   });
@@ -50,6 +64,63 @@ void main() {
   });
 
   group('load', () {
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'retry repete o ultimo carregamento depois de um erro',
+      build: () {
+        var calls = 0;
+        when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
+          (_) async => calls++ == 0
+              ? const Failure(TestRaffleFailure('Erro de rede'))
+              : const Success(null),
+        );
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      act: (cubit) async {
+        await cubit.load(
+          tMeetingId,
+          meetingTitle: tMeetingTitle,
+          participants: const [tParticipant],
+        );
+        await cubit.retry();
+      },
+      expect: () => const [
+        RaffleExecutionLoading(),
+        RaffleExecutionError('Erro de rede'),
+        RaffleExecutionLoading(),
+        RaffleExecutionReady(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          eligibleParticipants: [tParticipant],
+        ),
+      ],
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'usa as participantes recebidas da preparacao sem buscar no backend',
+      build: () {
+        when(
+          () => mockRepository.getRaffleResult(tMeetingId),
+        ).thenAnswer((_) async => const Success(null));
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      act: (cubit) => cubit.load(
+        tMeetingId,
+        meetingTitle: tMeetingTitle,
+        participants: const [tParticipant],
+      ),
+      expect: () => const [
+        RaffleExecutionLoading(),
+        RaffleExecutionReady(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          eligibleParticipants: [tParticipant],
+        ),
+      ],
+      verify: (_) {
+        verifyNever(() => mockRepository.getEligibleParticipants(any()));
+      },
+    );
+
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
       'deve emitir [Loading, ResultLoaded] quando ja houver resultado salvo (consulta posterior consistente)',
       build: () {
@@ -167,12 +238,12 @@ void main() {
 
   group('draw', () {
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
-      'deve emitir [isDrawing, ResultLoaded] ao sortear com sucesso a partir de Ready',
+      'deve emitir [isDrawing, ResultLoaded] sem a sorteada na lista ao sortear a partir de Ready',
       build: () {
         when(
           () => mockRepository.drawRaffle(
             meetingId: tMeetingId,
-            eligibleParticipantIds: ['p1'],
+            eligibleParticipantIds: ['p1', 'p2'],
           ),
         ).thenAnswer((_) async => const Success(tResult));
         return RaffleExecutionCubit(repository: mockRepository);
@@ -180,42 +251,42 @@ void main() {
       seed: () => const RaffleExecutionReady(
         meetingId: tMeetingId,
         meetingTitle: tMeetingTitle,
-        eligibleParticipants: [tParticipant],
+        eligibleParticipants: [tParticipant, tParticipant2],
       ),
       act: (cubit) => cubit.draw(),
       expect: () => const [
         RaffleExecutionReady(
           meetingId: tMeetingId,
           meetingTitle: tMeetingTitle,
-          eligibleParticipants: [tParticipant],
+          eligibleParticipants: [tParticipant, tParticipant2],
           isDrawing: true,
         ),
         RaffleExecutionResultLoaded(
           meetingId: tMeetingId,
           meetingTitle: tMeetingTitle,
           result: tResult,
-          eligibleParticipants: [tParticipant],
+          eligibleParticipants: [tParticipant2],
           isPersisted: false,
         ),
       ],
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
-      'deve sortear novamente a partir de um resultado carregado',
+      'deve sortear novamente sem a sorteada anterior e esvaziar a lista na ultima',
       build: () {
         when(
           () => mockRepository.drawRaffle(
             meetingId: tMeetingId,
-            eligibleParticipantIds: ['p1'],
+            eligibleParticipantIds: ['p2'],
           ),
-        ).thenAnswer((_) async => const Success(tResult));
+        ).thenAnswer((_) async => const Success(tResult2));
         return RaffleExecutionCubit(repository: mockRepository);
       },
       seed: () => const RaffleExecutionResultLoaded(
         meetingId: tMeetingId,
         meetingTitle: tMeetingTitle,
         result: tResult,
-        eligibleParticipants: [tParticipant],
+        eligibleParticipants: [tParticipant2],
       ),
       act: (cubit) => cubit.draw(),
       expect: () => const [
@@ -223,16 +294,36 @@ void main() {
           meetingId: tMeetingId,
           meetingTitle: tMeetingTitle,
           result: tResult,
-          eligibleParticipants: [tParticipant],
+          eligibleParticipants: [tParticipant2],
           isSubmitting: true,
         ),
         RaffleExecutionResultLoaded(
           meetingId: tMeetingId,
           meetingTitle: tMeetingTitle,
-          result: tResult,
-          eligibleParticipants: [tParticipant],
+          result: tResult2,
+          eligibleParticipants: [],
         ),
       ],
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'nao sorteia novamente quando nao ha mais ninguem para sortear',
+      build: () => RaffleExecutionCubit(repository: mockRepository),
+      seed: () => const RaffleExecutionResultLoaded(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        result: tResult,
+      ),
+      act: (cubit) => cubit.draw(),
+      expect: () => const <RaffleExecutionState>[],
+      verify: (_) {
+        verifyNever(
+          () => mockRepository.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        );
+      },
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(

@@ -134,6 +134,18 @@ void main() {
     );
   });
 
+  blocTest<RafflePreparationCubit, RafflePreparationState>(
+    'setParticipants mostra as participantes recebidas sem buscar no backend',
+    build: () => RafflePreparationCubit(repository: mockRepository),
+    act: (cubit) => cubit.setParticipants(const [tParticipant]),
+    expect: () => const [
+      RafflePreparationLoaded(participants: [tParticipant]),
+    ],
+    verify: (_) {
+      verifyNever(() => mockRepository.getEligibleParticipants(any()));
+    },
+  );
+
   group('confirmRaffle', () {
     blocTest<RafflePreparationCubit, RafflePreparationState>(
       'deve emitir estado de submissao e sucesso ao confirmar',
@@ -153,8 +165,40 @@ void main() {
           participants: [tParticipant],
           isSubmitting: true,
         ),
-        RafflePreparationSuccess(),
+        RafflePreparationSuccess(selectedParticipants: [tParticipant]),
       ],
+    );
+
+    blocTest<RafflePreparationCubit, RafflePreparationState>(
+      'nao repassa ao sorteio quem foi desmarcada',
+      build: () {
+        when(
+          () => mockRepository.confirmRaffle(
+            meetingId: any(named: 'meetingId'),
+            selectedParticipantIds: any(named: 'selectedParticipantIds'),
+          ),
+        ).thenAnswer((_) async => const Success(null));
+        return RafflePreparationCubit(repository: mockRepository);
+      },
+      seed: () => RafflePreparationLoaded(
+        participants: [
+          tParticipant,
+          tParticipant.copyWith(id: 'p2', isSelected: false),
+        ],
+      ),
+      act: (cubit) => cubit.confirmRaffle(tMeetingId),
+      verify: (cubit) {
+        expect(
+          cubit.state,
+          const RafflePreparationSuccess(selectedParticipants: [tParticipant]),
+        );
+        verify(
+          () => mockRepository.confirmRaffle(
+            meetingId: tMeetingId,
+            selectedParticipantIds: ['p1'],
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<RafflePreparationCubit, RafflePreparationState>(
@@ -226,4 +270,3 @@ void main() {
     });
   });
 }
-

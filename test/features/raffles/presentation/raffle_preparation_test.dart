@@ -38,8 +38,12 @@ class MockRafflePreparationCubit extends Cubit<RafflePreparationState>
 
   void emitSuccess() => emit(const RafflePreparationSuccess());
 
+  String? loadedMeetingId;
+
   @override
-  Future<void> loadEligibleParticipants(String meetingId) async {}
+  Future<void> loadEligibleParticipants(String meetingId) async {
+    loadedMeetingId = meetingId;
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -93,7 +97,11 @@ void main() {
     await tester.pump();
     errorCubit.emitError();
     await tester.pump();
-    expect(find.text('Erro de teste'), findsOneWidget);
+    expect(find.text('Não foi possível concluir o sorteio'), findsOneWidget);
+    expect(find.text('Erro de teste'), findsNothing);
+
+    await tester.tap(find.text('Tentar novamente'));
+    expect(errorCubit.loadedMeetingId, 'meeting-123');
   });
 
   testWidgets('deve voltar quando confirmacao concluir sem router', (

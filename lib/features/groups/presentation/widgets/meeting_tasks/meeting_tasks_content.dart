@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_tasks_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
@@ -11,6 +12,8 @@ import 'package:mobile/features/groups/presentation/widgets/conclude_meeting_dia
 import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_task_card.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_banner.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_conclude_footer.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 
 class MeetingTasksContent extends StatelessWidget {
   const MeetingTasksContent({
@@ -141,12 +144,29 @@ class MeetingTasksContent extends StatelessWidget {
     final confirmed = await ConcludeMeetingDialog.show(context);
     if (confirmed != true || !context.mounted) return;
 
-    await context.push<bool>(
+    final present = await context.push<List<MeetingAttendanceEntity>>(
       Uri(
         path: GroupRoutes.meetingPresence,
         queryParameters: {'meeting_id': meetingId},
       ).toString(),
     );
+    if (present != null && present.isNotEmpty && context.mounted) {
+      await context.push<Object?>(
+        RaffleRoutes.preparation,
+        extra: {
+          'meeting_id': meetingId,
+          'participants': [
+            for (final attendee in present)
+              RaffleParticipant(
+                id: attendee.id,
+                name: attendee.name,
+                avatarUrl: attendee.photoUrl,
+                hasAttended: true,
+              ),
+          ],
+        },
+      );
+    }
     if (context.mounted) {
       await context.read<MeetingTasksCubit>().refresh();
     }

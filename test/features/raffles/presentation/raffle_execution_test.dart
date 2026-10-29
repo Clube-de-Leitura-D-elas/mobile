@@ -16,6 +16,12 @@ class MockRaffleExecutionCubit extends Cubit<RaffleExecutionState>
 
   bool drawCalled = false;
   bool confirmResultCalled = false;
+  bool retryCalled = false;
+
+  @override
+  Future<void> retry() async {
+    retryCalled = true;
+  }
 
   @override
   Future<void> draw() async {
@@ -32,7 +38,11 @@ class MockRaffleExecutionCubit extends Cubit<RaffleExecutionState>
   void emitSuccess(RaffleResult result) => emit(RaffleExecutionSuccess(result));
 
   @override
-  Future<void> load(String meetingId, {String? meetingTitle}) async {}
+  Future<void> load(
+    String meetingId, {
+    String? meetingTitle,
+    List<RaffleParticipant>? participants,
+  }) async {}
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -239,6 +249,25 @@ void main() {
     expect(find.byIcon(Icons.person), findsOneWidget);
   });
 
+  testWidgets(
+    'desabilita sortear novamente e avisa quando nao ha mais ninguem',
+    (tester) async {
+      final cubit = MockRaffleExecutionCubit(
+        const RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult,
+        ),
+      );
+      await tester.pumpWidget(buildWidget(cubit));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sem mais pessoas para sortear'), findsOneWidget);
+      await tester.tap(find.text('Sortear novamente'));
+      expect(cubit.drawCalled, isFalse);
+    },
+  );
+
   testWidgets('deve exibir estado de desenho e desabilitar botao', (
     tester,
   ) async {
@@ -262,11 +291,11 @@ void main() {
     await tester.pumpWidget(buildWidget(cubit));
     cubit.emitError();
     await tester.pump();
-    expect(find.text('Erro de teste'), findsOneWidget);
+    expect(find.text('Não foi possível concluir o sorteio'), findsOneWidget);
+    expect(find.text('Erro de teste'), findsNothing);
 
-    cubit.emitSuccess(tResult);
-    await tester.pump();
-    expect(find.text('Erro de teste'), findsOneWidget);
+    await tester.tap(find.text('Tentar novamente'));
+    expect(cubit.retryCalled, isTrue);
   });
 
   testWidgets(

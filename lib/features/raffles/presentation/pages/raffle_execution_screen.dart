@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_error_view.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_state.dart';
 import 'package:mobile/features/raffles/presentation/pages/raffle_result_screen.dart';
@@ -35,9 +36,7 @@ class RaffleExecutionScreen extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<RaffleExecutionCubit, RaffleExecutionState>(
           listener: (context, state) {
-            if (state is RaffleExecutionError) {
-              context.showAppToast(state.message);
-            } else if (state is RaffleExecutionSuccess) {
+            if (state is RaffleExecutionSuccess) {
               context.showAppToast(context.l10n.raffleSavedSuccessToast);
               Navigator.of(context).pop();
             }
@@ -58,6 +57,7 @@ class RaffleExecutionScreen extends StatelessWidget {
                 result: state.result,
                 isPersisted: state.isPersisted,
                 isSubmitting: state.isSubmitting,
+                canDrawAgain: state.eligibleParticipants.isNotEmpty,
                 onDrawAgain: () {
                   context.read<RaffleExecutionCubit>().draw();
                 },
@@ -83,6 +83,13 @@ class RaffleExecutionScreen extends StatelessWidget {
               return _ReadyDrawView(
                 state: state,
                 onDraw: () => context.read<RaffleExecutionCubit>().draw(),
+              );
+            }
+
+            if (state is RaffleExecutionError) {
+              return MeetingTasksErrorView(
+                message: context.l10n.raffleErrorMessage,
+                onRetry: () => context.read<RaffleExecutionCubit>().retry(),
               );
             }
 
