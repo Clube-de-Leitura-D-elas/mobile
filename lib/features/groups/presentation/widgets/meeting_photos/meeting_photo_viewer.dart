@@ -139,12 +139,12 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
     final confirmed = await MeetingPhotoDeleteDialog.show(context);
     if (confirmed != true || !mounted) return;
     setState(() => _isDeleting = true);
-    final deleted = await deleter(widget.photo.id);
-    if (!mounted) return;
-    if (deleted) {
-      Navigator.of(context).pop();
-    } else {
-      setState(() => _isDeleting = false);
+    var deleted = false;
+    try {
+      deleted = await deleter(widget.photo.id);
+    } finally {
+      if (mounted && !deleted) setState(() => _isDeleting = false);
     }
+    if (deleted && mounted) Navigator.of(context).pop();
   }
 }

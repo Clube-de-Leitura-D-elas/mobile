@@ -443,6 +443,30 @@ void main() {
     );
 
     testWidgets(
+      'given the removal fails, when confirming, then keeps the viewer open with the action enabled',
+      (tester) async {
+        when(() => cubit.deletePhoto(any())).thenAnswer((_) async => false);
+        await pumpSection(tester, _loadedEmpty.copyWith(photos: _photos));
+        await tester.pump();
+
+        await tester.tap(find.byType(MeetingPhotoThumbnail).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('meeting-photo-delete')));
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.byKey(const ValueKey('meeting-photo-delete-confirm')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Foto 1 de 4'), findsOneWidget);
+        final delete = tester.widget<IconButton>(
+          find.byKey(const ValueKey('meeting-photo-delete')),
+        );
+        expect(delete.onPressed, isNotNull);
+      },
+    );
+
+    testWidgets(
       'given the member cancels the confirmation, when removing, then keeps the photo',
       (tester) async {
         await pumpSection(tester, _loadedEmpty.copyWith(photos: _photos));

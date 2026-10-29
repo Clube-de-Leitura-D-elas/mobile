@@ -290,23 +290,40 @@ void main() {
   });
 
   group('deleteMeetingPhoto not found', () {
+    void answer404(String message) {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'delete-meeting-photo',
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            Failure(FunctionSupabaseFailure(message: message, code: '404')),
+      );
+    }
+
     test(
-      'given the photo is already gone (404), when deleting, then treats it as removed',
+      'given the photo is already gone, when deleting, then treats it as removed',
       () async {
-        when(
-          () => mockSupabaseService.invokeFunction<void>(
-            functionName: 'delete-meeting-photo',
-            body: any(named: 'body'),
-          ),
-        ).thenAnswer(
-          (_) async => const Failure(
-            FunctionSupabaseFailure(message: 'not found', code: '404'),
-          ),
-        );
+        answer404('photo not found in this meeting');
 
         final result = await repository.deleteMeetingPhoto('meeting-1', 'p1');
 
         expect(result, const Success<void, GroupFailure>(null));
+      },
+    );
+
+    test(
+      'given any other 404 (meeting missing, function not deployed), when deleting, then fails',
+      () async {
+        answer404('meeting not found');
+
+        final result = await repository.deleteMeetingPhoto('meeting-1', 'p1');
+
+        expect(
+          result,
+          const Failure<void, GroupFailure>(MeetingPhotoDeleteFailure()),
+        );
       },
     );
   });

@@ -298,6 +298,8 @@ class GroupRepositoryImpl implements GroupRepository {
     };
   }
 
+  static const _photoNotFoundMessage = 'photo not found in this meeting';
+
   @override
   Future<Result<void, GroupFailure>> deleteMeetingPhoto(
     String meetingId,
@@ -308,8 +310,12 @@ class GroupRepositoryImpl implements GroupRepository {
       body: {'meeting_id': meetingId, 'photo_id': photoId},
     );
     return switch (result) {
-      // 404: a foto já não está no encontro (outra pessoa removeu antes).
-      Failure(:final failure) when failure.code == '404' => const Success(null),
+      // A foto já não está no encontro (outra pessoa removeu antes). Outros
+      // 404 (encontro inexistente, função fora do ar) continuam sendo erro.
+      Failure(:final failure)
+          when failure.code == '404' &&
+              failure.message == _photoNotFoundMessage =>
+        const Success(null),
       Failure() => const Failure(MeetingPhotoDeleteFailure()),
       Success() => const Success(null),
     };

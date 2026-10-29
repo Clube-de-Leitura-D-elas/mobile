@@ -85,11 +85,12 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
     _isDeleting = true;
     emit(state.copyWith(clearNotice: true));
 
-    final result = await groupRepository.deleteMeetingPhoto(
-      _meetingId,
-      photoId,
-    );
-    _isDeleting = false;
+    final Result<void, GroupFailure> result;
+    try {
+      result = await groupRepository.deleteMeetingPhoto(_meetingId, photoId);
+    } finally {
+      _isDeleting = false;
+    }
     if (isClosed) return false;
 
     switch (result) {
