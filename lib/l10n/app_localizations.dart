@@ -1392,6 +1392,138 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Logo do Clube de Leitura D\'Elas'**
   String get appLogoSemanticLabel;
+
+  /// Título do visualizador de fotos do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto {index} de {total}'**
+  String meetingPhotoViewerTitle(int index, int total);
+
+  /// Rótulo de acessibilidade para abrir a foto em tela cheia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir foto {index} do encontro'**
+  String meetingPhotoOpenSemanticLabel(int index);
+
+  /// Ação para baixar a foto do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Baixar'**
+  String get meetingPhotoDownload;
+
+  /// Erro ao abrir a foto para download.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir a foto para baixar.'**
+  String get meetingPhotoDownloadFailed;
+
+  /// Ação para remover a foto do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover'**
+  String get meetingPhotoDelete;
+
+  /// Título da confirmação de remoção de foto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover foto'**
+  String get meetingPhotoDeleteDialogTitle;
+
+  /// Mensagem da confirmação de remoção de foto.
+  ///
+  /// In pt, this message translates to:
+  /// **'A foto deixa de aparecer no encontro. Deseja remover?'**
+  String get meetingPhotoDeleteDialogMessage;
+
+  /// Botão que cancela a remoção da foto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get meetingPhotoDeleteDialogCancel;
+
+  /// Aviso de foto removida.
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto removida.'**
+  String get meetingPhotoDeleted;
+
+  /// Erro ao remover a foto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível remover a foto. Tente novamente.'**
+  String get meetingPhotoDeleteFailed;
+
+  /// Título do bloco de texto de divulgação do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Texto de divulgação'**
+  String get meetingPromoTextTitle;
+
+  /// Texto exibido quando o encontro não tem texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum texto de divulgação anexado.'**
+  String get meetingPromoTextEmpty;
+
+  /// Botão para anexar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar texto'**
+  String get meetingPromoTextAdd;
+
+  /// Botão para editar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar'**
+  String get meetingPromoTextEdit;
+
+  /// Botão para copiar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Copiar'**
+  String get meetingPromoTextCopy;
+
+  /// Aviso de texto de divulgação copiado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Texto copiado.'**
+  String get meetingPromoTextCopied;
+
+  /// Placeholder do editor de texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escreva o texto que acompanha as fotos na divulgação'**
+  String get meetingPromoTextHint;
+
+  /// Contador de caracteres do texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} de {max} caracteres'**
+  String meetingPromoTextCounter(int count, int max);
+
+  /// Erro de texto de divulgação longo demais.
+  ///
+  /// In pt, this message translates to:
+  /// **'O texto passa do limite de {max} caracteres.'**
+  String meetingPromoTextTooLong(int max);
+
+  /// Botão para salvar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar'**
+  String get meetingPromoTextSave;
+
+  /// Aviso de texto de divulgação salvo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Texto de divulgação salvo.'**
+  String get meetingPromoTextSaved;
+
+  /// Erro ao salvar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar o texto de divulgação. Tente novamente.'**
+  String get meetingPromoTextSaveFailed;
 }
 
 class _AppLocalizationsDelegate

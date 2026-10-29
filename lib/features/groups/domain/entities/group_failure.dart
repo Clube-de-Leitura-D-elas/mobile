@@ -140,3 +140,16 @@ class MeetingConclusionFailure extends GroupFailure {
     super.message = 'Não foi possível encerrar o encontro. Tente novamente.',
   });
 }
+
+class MeetingPhotoDeleteFailure extends GroupFailure {
+  const MeetingPhotoDeleteFailure({
+    super.message = 'Não foi possível remover a foto. Tente novamente.',
+  });
+}
+
+class MeetingPromoTextUpdateFailure extends GroupFailure {
+  const MeetingPromoTextUpdateFailure({
+    super.message =
+        'Não foi possível salvar o texto de divulgação. Tente novamente.',
+  });
+}

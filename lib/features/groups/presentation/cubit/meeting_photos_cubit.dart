@@ -17,6 +17,7 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
 
   String _meetingId = '';
   bool _isPicking = false;
+  bool _isDeleting = false;
 
   Future<void> load(String meetingId) async {
     _meetingId = meetingId;
@@ -34,6 +35,8 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
             status: MeetingPhotosStatus.loaded,
             photos: data.photos,
             canAddPhotos: data.canAddPhotos,
+            promoText: data.promoText,
+            clearPromoText: data.promoText == null,
           ),
         );
     }
@@ -73,6 +76,74 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
     if (state.isUploading || state.failedPhotos.isEmpty) return;
     emit(state.copyWith(clearNotice: true));
     await _upload(state.failedPhotos, pendingFailures: const []);
+  }
+
+  /// Remove a foto do encontro. Devolve `true` quando a remoção foi aceita,
+  /// para a tela fechar o visualizador.
+  Future<bool> deletePhoto(String photoId) async {
+    if (state.isUploading || _isDeleting) return false;
+    _isDeleting = true;
+    emit(state.copyWith(clearNotice: true));
+
+    Result<void, GroupFailure> result;
+    try {
+      result = await groupRepository.deleteMeetingPhoto(_meetingId, photoId);
+    } catch (_) {
+      result = const Failure(MeetingPhotoDeleteFailure());
+    } finally {
+      _isDeleting = false;
+    }
+    if (isClosed) return false;
+
+    switch (result) {
+      case Failure():
+        emit(state.copyWith(notice: const MeetingPhotoDeleteFailedNotice()));
+        return false;
+      case Success():
+        emit(
+          state.copyWith(
+            photos: state.photos
+                .where((photo) => photo.id != photoId)
+                .toList(growable: false),
+            notice: const MeetingPhotoDeletedNotice(),
+          ),
+        );
+        return true;
+    }
+  }
+
+  /// Salva o texto de divulgação; texto vazio limpa o campo. Devolve `true`
+  /// quando salvou, para a tela fechar o editor.
+  Future<bool> savePromoText(String text) async {
+    if (state.isSavingPromoText) return false;
+    emit(state.copyWith(isSavingPromoText: true, clearNotice: true));
+
+    final result = await groupRepository.updateMeetingPromoText(
+      _meetingId,
+      text,
+    );
+    if (isClosed) return false;
+
+    switch (result) {
+      case Failure():
+        emit(
+          state.copyWith(
+            isSavingPromoText: false,
+            notice: const MeetingPromoTextSaveFailedNotice(),
+          ),
+        );
+        return false;
+      case Success(:final data):
+        emit(
+          state.copyWith(
+            isSavingPromoText: false,
+            promoText: data,
+            clearPromoText: data == null,
+            notice: const MeetingPromoTextSavedNotice(),
+          ),
+        );
+        return true;
+    }
   }
 
   Future<void> _uploadSelection(List<PickedPhoto> selection) async {

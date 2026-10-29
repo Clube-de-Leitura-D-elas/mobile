@@ -64,4 +64,35 @@ void main() {
       );
     });
   });
+
+  group('MeetingPhotosModel promo_text', () {
+    test('given a promo_text, when parsed, then maps it to the domain', () {
+      final model = MeetingPhotosModel.fromEnvelope(const {
+        'photos': [],
+        'promo_text': 'Venham!',
+        'can_add_photos': true,
+      });
+
+      expect(model.toDomain().promoText, 'Venham!');
+    });
+
+    test('given a null promo_text, when parsed, then has no text', () {
+      final model = MeetingPhotosModel.fromEnvelope(const {
+        'photos': [],
+        'promo_text': null,
+      });
+
+      expect(model.toDomain().promoText, isNull);
+    });
+
+    test('given a non-string promo_text, when parsed, then throws', () {
+      expect(
+        () => MeetingPhotosModel.fromEnvelope(const {
+          'photos': [],
+          'promo_text': 42,
+        }),
+        throwsFormatException,
+      );
+    });
+  });
 }

@@ -1027,5 +1027,119 @@
   "appLogoSemanticLabel": "Logo do Clube de Leitura D'Elas",
   "@appLogoSemanticLabel": {
     "description": "Descrição de acessibilidade do logotipo do aplicativo"
+  },
+  "meetingPhotoViewerTitle": "Foto {index} de {total}",
+  "@meetingPhotoViewerTitle": {
+    "description": "Título do visualizador de fotos do encontro.",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "meetingPhotoOpenSemanticLabel": "Abrir foto {index} do encontro",
+  "@meetingPhotoOpenSemanticLabel": {
+    "description": "Rótulo de acessibilidade para abrir a foto em tela cheia.",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "meetingPhotoDownload": "Baixar",
+  "@meetingPhotoDownload": {
+    "description": "Ação para baixar a foto do encontro."
+  },
+  "meetingPhotoDownloadFailed": "Não foi possível abrir a foto para baixar.",
+  "@meetingPhotoDownloadFailed": {
+    "description": "Erro ao abrir a foto para download."
+  },
+  "meetingPhotoDelete": "Remover",
+  "@meetingPhotoDelete": {
+    "description": "Ação para remover a foto do encontro."
+  },
+  "meetingPhotoDeleteDialogTitle": "Remover foto",
+  "@meetingPhotoDeleteDialogTitle": {
+    "description": "Título da confirmação de remoção de foto."
+  },
+  "meetingPhotoDeleteDialogMessage": "A foto deixa de aparecer no encontro. Deseja remover?",
+  "@meetingPhotoDeleteDialogMessage": {
+    "description": "Mensagem da confirmação de remoção de foto."
+  },
+  "meetingPhotoDeleteDialogCancel": "Cancelar",
+  "@meetingPhotoDeleteDialogCancel": {
+    "description": "Botão que cancela a remoção da foto."
+  },
+  "meetingPhotoDeleted": "Foto removida.",
+  "@meetingPhotoDeleted": {
+    "description": "Aviso de foto removida."
+  },
+  "meetingPhotoDeleteFailed": "Não foi possível remover a foto. Tente novamente.",
+  "@meetingPhotoDeleteFailed": {
+    "description": "Erro ao remover a foto."
+  },
+  "meetingPromoTextTitle": "Texto de divulgação",
+  "@meetingPromoTextTitle": {
+    "description": "Título do bloco de texto de divulgação do encontro."
+  },
+  "meetingPromoTextEmpty": "Nenhum texto de divulgação anexado.",
+  "@meetingPromoTextEmpty": {
+    "description": "Texto exibido quando o encontro não tem texto de divulgação."
+  },
+  "meetingPromoTextAdd": "Adicionar texto",
+  "@meetingPromoTextAdd": {
+    "description": "Botão para anexar o texto de divulgação."
+  },
+  "meetingPromoTextEdit": "Editar",
+  "@meetingPromoTextEdit": {
+    "description": "Botão para editar o texto de divulgação."
+  },
+  "meetingPromoTextCopy": "Copiar",
+  "@meetingPromoTextCopy": {
+    "description": "Botão para copiar o texto de divulgação."
+  },
+  "meetingPromoTextCopied": "Texto copiado.",
+  "@meetingPromoTextCopied": {
+    "description": "Aviso de texto de divulgação copiado."
+  },
+  "meetingPromoTextHint": "Escreva o texto que acompanha as fotos na divulgação",
+  "@meetingPromoTextHint": {
+    "description": "Placeholder do editor de texto de divulgação."
+  },
+  "meetingPromoTextCounter": "{count} de {max} caracteres",
+  "@meetingPromoTextCounter": {
+    "description": "Contador de caracteres do texto de divulgação.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "meetingPromoTextTooLong": "O texto passa do limite de {max} caracteres.",
+  "@meetingPromoTextTooLong": {
+    "description": "Erro de texto de divulgação longo demais.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "meetingPromoTextSave": "Salvar",
+  "@meetingPromoTextSave": {
+    "description": "Botão para salvar o texto de divulgação."
+  },
+  "meetingPromoTextSaved": "Texto de divulgação salvo.",
+  "@meetingPromoTextSaved": {
+    "description": "Aviso de texto de divulgação salvo."
+  },
+  "meetingPromoTextSaveFailed": "Não foi possível salvar o texto de divulgação. Tente novamente.",
+  "@meetingPromoTextSaveFailed": {
+    "description": "Erro ao salvar o texto de divulgação."
   }
 }

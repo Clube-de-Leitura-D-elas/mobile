@@ -6,6 +6,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_content.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_promo_text.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 class MeetingPhotosSection extends StatelessWidget {
@@ -32,6 +33,8 @@ class MeetingPhotosSection extends StatelessWidget {
             ),
             SizedBox(height: context.spacing.s12),
             const MeetingPhotosContent(),
+            SizedBox(height: context.spacing.s24),
+            const MeetingPromoText(),
           ],
         ),
       ),
@@ -51,6 +54,10 @@ class MeetingPhotosSection extends StatelessWidget {
       MeetingPhotosRejectedNotice(:final count) => l10n.meetingPhotosRejected(
         count,
       ),
+      MeetingPhotoDeletedNotice() => l10n.meetingPhotoDeleted,
+      MeetingPhotoDeleteFailedNotice() => l10n.meetingPhotoDeleteFailed,
+      MeetingPromoTextSavedNotice() => l10n.meetingPromoTextSaved,
+      MeetingPromoTextSaveFailedNotice() => l10n.meetingPromoTextSaveFailed,
     };
   }
 }

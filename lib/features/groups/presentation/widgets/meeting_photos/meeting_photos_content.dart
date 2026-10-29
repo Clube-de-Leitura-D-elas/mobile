@@ -5,6 +5,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_state.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photo_viewer.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_empty_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_grid.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_message.dart';
@@ -70,6 +71,15 @@ class _MeetingPhotosLoadedContent extends StatelessWidget {
                 state.photos.length < MeetingPhotoLimits.perMeeting,
             onAdd: onAdd,
             onReload: cubit.reload,
+            onOpen: (index) => MeetingPhotoViewer.open(
+              context,
+              photo: state.photos[index],
+              index: index,
+              total: state.photos.length,
+              onDelete: state.canAddPhotos && !state.isUploading
+                  ? cubit.deletePhoto
+                  : null,
+            ),
           ),
         if (progress != null) ...[
           SizedBox(height: spacing.s16),

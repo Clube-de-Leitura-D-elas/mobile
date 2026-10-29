@@ -72,4 +72,16 @@ abstract class GroupRepository {
   );
 
   Future<Result<void, GroupFailure>> concludeMeeting(String meetingId);
+
+  Future<Result<void, GroupFailure>> deleteMeetingPhoto(
+    String meetingId,
+    String photoId,
+  );
+
+  /// Salva o texto de divulgação do encontro. Texto vazio limpa o campo;
+  /// devolve o texto como ficou salvo (aparado) ou `null`.
+  Future<Result<String?, GroupFailure>> updateMeetingPromoText(
+    String meetingId,
+    String text,
+  );
 }

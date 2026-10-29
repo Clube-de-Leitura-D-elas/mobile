@@ -10,6 +10,7 @@ class MeetingPhotoThumbnail extends StatelessWidget {
     required this.photo,
     required this.index,
     required this.onReload,
+    this.onOpen,
   });
 
   static const radius = 8.0;
@@ -17,6 +18,7 @@ class MeetingPhotoThumbnail extends StatelessWidget {
   final MeetingPhotoEntity photo;
   final int index;
   final VoidCallback onReload;
+  final VoidCallback? onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +26,25 @@ class MeetingPhotoThumbnail extends StatelessWidget {
 
     return Semantics(
       image: true,
-      label: context.l10n.meetingPhotoSemanticLabel(index + 1),
+      button: onOpen != null,
+      label: onOpen == null
+          ? context.l10n.meetingPhotoSemanticLabel(index + 1)
+          : context.l10n.meetingPhotoOpenSemanticLabel(index + 1),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: LayoutBuilder(
-          builder: (context, constraints) => Image.network(
-            photo.url,
-            fit: BoxFit.cover,
-            cacheWidth: (constraints.maxWidth * pixelRatio).ceil(),
-            loadingBuilder: (context, child, progress) =>
-                progress == null ? child : const MeetingPhotoPlaceholder(),
-            errorBuilder: (context, error, stackTrace) =>
-                MeetingPhotoPlaceholder(onReload: onReload),
+        child: GestureDetector(
+          onTap: onOpen,
+          child: LayoutBuilder(
+            builder: (context, constraints) => Image.network(
+              photo.url,
+              fit: BoxFit.cover,
+              cacheWidth: (constraints.maxWidth * pixelRatio).ceil(),
+              loadingBuilder: (context, child, progress) =>
+                  progress == null ? child : const MeetingPhotoPlaceholder(),
+              errorBuilder: (context, error, stackTrace) => onOpen == null
+                  ? MeetingPhotoPlaceholder(onReload: onReload)
+                  : const MeetingPhotoPlaceholder(failed: true),
+            ),
           ),
         ),
       ),
@@ -44,14 +53,21 @@ class MeetingPhotoThumbnail extends StatelessWidget {
 }
 
 class MeetingPhotoPlaceholder extends StatelessWidget {
-  const MeetingPhotoPlaceholder({super.key, this.onReload});
+  const MeetingPhotoPlaceholder({
+    super.key,
+    this.onReload,
+    this.failed = false,
+  });
 
   final VoidCallback? onReload;
+
+  /// Falhou, mas o toque fica com a miniatura (abre a foto em tela cheia).
+  final bool failed;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final isLoading = onReload == null;
+    final isLoading = onReload == null && !failed;
     final l10n = Localizations.of<AppLocalizations>(context, AppLocalizations);
     final retryLabel = l10n?.meetingPhotosRetryButton ?? 'Tentar novamente';
 
@@ -64,17 +80,17 @@ class MeetingPhotoPlaceholder extends StatelessWidget {
                 color: colors.textMuted,
               ),
             )
-          : Icon(Icons.refresh, color: colors.textMuted),
+          : Icon(
+              failed ? Icons.broken_image_outlined : Icons.refresh,
+              color: colors.textMuted,
+            ),
     );
 
-    if (!isLoading) {
+    if (onReload != null) {
       content = Semantics(
         button: true,
         label: retryLabel,
-        child: InkWell(
-          onTap: onReload,
-          child: content,
-        ),
+        child: InkWell(onTap: onReload, child: content),
       );
     }
 

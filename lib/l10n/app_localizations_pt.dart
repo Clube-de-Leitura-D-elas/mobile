@@ -759,6 +759,85 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appLogoSemanticLabel => 'Logo do Clube de Leitura D\'Elas';
+
+  @override
+  String meetingPhotoViewerTitle(int index, int total) {
+    return 'Foto $index de $total';
+  }
+
+  @override
+  String meetingPhotoOpenSemanticLabel(int index) {
+    return 'Abrir foto $index do encontro';
+  }
+
+  @override
+  String get meetingPhotoDownload => 'Baixar';
+
+  @override
+  String get meetingPhotoDownloadFailed =>
+      'Não foi possível abrir a foto para baixar.';
+
+  @override
+  String get meetingPhotoDelete => 'Remover';
+
+  @override
+  String get meetingPhotoDeleteDialogTitle => 'Remover foto';
+
+  @override
+  String get meetingPhotoDeleteDialogMessage =>
+      'A foto deixa de aparecer no encontro. Deseja remover?';
+
+  @override
+  String get meetingPhotoDeleteDialogCancel => 'Cancelar';
+
+  @override
+  String get meetingPhotoDeleted => 'Foto removida.';
+
+  @override
+  String get meetingPhotoDeleteFailed =>
+      'Não foi possível remover a foto. Tente novamente.';
+
+  @override
+  String get meetingPromoTextTitle => 'Texto de divulgação';
+
+  @override
+  String get meetingPromoTextEmpty => 'Nenhum texto de divulgação anexado.';
+
+  @override
+  String get meetingPromoTextAdd => 'Adicionar texto';
+
+  @override
+  String get meetingPromoTextEdit => 'Editar';
+
+  @override
+  String get meetingPromoTextCopy => 'Copiar';
+
+  @override
+  String get meetingPromoTextCopied => 'Texto copiado.';
+
+  @override
+  String get meetingPromoTextHint =>
+      'Escreva o texto que acompanha as fotos na divulgação';
+
+  @override
+  String meetingPromoTextCounter(int count, int max) {
+    return '$count de $max caracteres';
+  }
+
+  @override
+  String meetingPromoTextTooLong(int max) {
+    return 'O texto passa do limite de $max caracteres.';
+  }
+
+  @override
+  String get meetingPromoTextSave => 'Salvar';
+
+  @override
+  String get meetingPromoTextSaved => 'Texto de divulgação salvo.';
+
+  @override
+  String get meetingPromoTextSaveFailed =>
+      'Não foi possível salvar o texto de divulgação. Tente novamente.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

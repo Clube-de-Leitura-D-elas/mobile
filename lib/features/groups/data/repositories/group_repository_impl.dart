@@ -298,6 +298,53 @@ class GroupRepositoryImpl implements GroupRepository {
     };
   }
 
+  static const _photoNotFoundMessage = 'photo not found in this meeting';
+
+  @override
+  Future<Result<void, GroupFailure>> deleteMeetingPhoto(
+    String meetingId,
+    String photoId,
+  ) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'delete-meeting-photo',
+      body: {'meeting_id': meetingId, 'photo_id': photoId},
+    );
+    return switch (result) {
+      // A foto já não está no encontro (outra pessoa removeu antes). Outros
+      // 404 (encontro inexistente, função fora do ar) continuam sendo erro.
+      Failure(:final failure)
+          when failure.code == '404' &&
+              failure.message == _photoNotFoundMessage =>
+        const Success(null),
+      Failure() => const Failure(MeetingPhotoDeleteFailure()),
+      Success() => const Success(null),
+    };
+  }
+
+  @override
+  Future<Result<String?, GroupFailure>> updateMeetingPromoText(
+    String meetingId,
+    String text,
+  ) async {
+    final result = await supabaseService.invokeFunction<String?>(
+      functionName: 'update-meeting-promo-text',
+      body: {'meeting_id': meetingId, 'promo_text': text},
+      decoder: _promoTextFromEnvelope,
+    );
+    return switch (result) {
+      Failure() => const Failure(MeetingPromoTextUpdateFailure()),
+      Success(:final data) => Success(data.data),
+    };
+  }
+
+  static String? _promoTextFromEnvelope(dynamic json) {
+    final promoText = (json as Map<String, dynamic>)['promo_text'];
+    if (promoText != null && promoText is! String) {
+      throw const FormatException('Invalid promo text response.');
+    }
+    return promoText as String?;
+  }
+
   /// Ordenação alfabética insensível a acentos ("Ágata" junto de "Ana").
   static String _sortKey(String name) {
     const accented = 'áàâãäéèêëíìîïóòôõöúùûüçñ';

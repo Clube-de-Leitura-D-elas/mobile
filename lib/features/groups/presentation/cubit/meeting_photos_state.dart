@@ -54,6 +54,22 @@ class MeetingPhotosRejectedNotice extends MeetingPhotosNotice {
   List<Object?> get props => [count];
 }
 
+class MeetingPhotoDeletedNotice extends MeetingPhotosNotice {
+  const MeetingPhotoDeletedNotice();
+}
+
+class MeetingPhotoDeleteFailedNotice extends MeetingPhotosNotice {
+  const MeetingPhotoDeleteFailedNotice();
+}
+
+class MeetingPromoTextSavedNotice extends MeetingPhotosNotice {
+  const MeetingPromoTextSavedNotice();
+}
+
+class MeetingPromoTextSaveFailedNotice extends MeetingPhotosNotice {
+  const MeetingPromoTextSaveFailedNotice();
+}
+
 class MeetingPhotosState extends Equatable {
   const MeetingPhotosState({
     this.status = MeetingPhotosStatus.loading,
@@ -62,6 +78,8 @@ class MeetingPhotosState extends Equatable {
     this.failedPhotos = const [],
     this.notice,
     this.canAddPhotos = true,
+    this.promoText,
+    this.isSavingPromoText = false,
   });
 
   final MeetingPhotosStatus status;
@@ -74,6 +92,9 @@ class MeetingPhotosState extends Equatable {
   /// adicionar foto aparece; o envio é validado de novo no backend.
   final bool canAddPhotos;
 
+  final String? promoText;
+  final bool isSavingPromoText;
+
   bool get isUploading => progress != null;
 
   MeetingPhotosState copyWith({
@@ -85,6 +106,9 @@ class MeetingPhotosState extends Equatable {
     MeetingPhotosNotice? notice,
     bool clearNotice = false,
     bool? canAddPhotos,
+    String? promoText,
+    bool clearPromoText = false,
+    bool? isSavingPromoText,
   }) {
     return MeetingPhotosState(
       status: status ?? this.status,
@@ -93,6 +117,8 @@ class MeetingPhotosState extends Equatable {
       failedPhotos: failedPhotos ?? this.failedPhotos,
       notice: clearNotice ? null : notice ?? this.notice,
       canAddPhotos: canAddPhotos ?? this.canAddPhotos,
+      promoText: clearPromoText ? null : promoText ?? this.promoText,
+      isSavingPromoText: isSavingPromoText ?? this.isSavingPromoText,
     );
   }
 
@@ -104,5 +130,7 @@ class MeetingPhotosState extends Equatable {
     failedPhotos,
     notice,
     canAddPhotos,
+    promoText,
+    isSavingPromoText,
   ];
 }
