@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
@@ -37,6 +38,17 @@ void main() {
     participantsCount: 3,
     cityState: 'Porto Alegre, RS',
   );
+
+  setUp(() {
+    serviceLocator.allowReassignment = true;
+    serviceLocator.registerFactory<GroupRepository>(MockGroupRepository.new);
+  });
+
+  tearDown(() {
+    if (serviceLocator.isRegistered<GroupRepository>()) {
+      serviceLocator.unregister<GroupRepository>();
+    }
+  });
 
   Widget buildSubject(HomeCubit homeCubit, SessionCubit sessionCubit) {
     return MaterialApp(
