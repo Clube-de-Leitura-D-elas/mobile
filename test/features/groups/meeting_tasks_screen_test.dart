@@ -63,11 +63,13 @@ MeetingTasksEntity _withState({
 void main() {
   late MockGroupRepository repository;
   late List<String> visited;
+  late List<Object?> extras;
   late List<MeetingAttendanceEntity> present;
 
   setUp(() {
     repository = MockGroupRepository();
     visited = [];
+    extras = [];
     present = [];
   });
 
@@ -86,6 +88,7 @@ void main() {
     path: path,
     builder: (context, state) {
       visited.add(state.uri.toString());
+      extras.add(state.extra);
       return Scaffold(
         appBar: ScreenHeader.back(title: path),
         body: TextButton(
@@ -309,7 +312,7 @@ void main() {
     expect(buttonWithLabel(tester, 'Encerrar encontro').onPressed, isNotNull);
   });
 
-  testWidgets('confirming presence opens the raffle with who was present', (
+  testWidgets('confirming presence opens the raffle for the meeting', (
     tester,
   ) async {
     present = const [
@@ -335,6 +338,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(visited.last, RaffleRoutes.preparation);
+    // Só o encontro: as elegíveis vêm do servidor, com as regras do sorteio.
+    expect(extras.last, {'meeting_id': 'meeting-1'});
   });
 
   testWidgets('no one present skips the raffle', (tester) async {
