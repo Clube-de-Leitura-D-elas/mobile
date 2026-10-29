@@ -571,6 +571,34 @@ void main() {
     );
   });
 
+  group('deletePhoto concurrency', () {
+    late Completer<Result<void, GroupFailure>> pending;
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given a removal is in flight, when deleting again, then ignores the second call',
+      build: () {
+        pending = Completer<Result<void, GroupFailure>>();
+        when(
+          () => repository.deleteMeetingPhoto(meetingId, 'existing'),
+        ).thenAnswer((_) => pending.future);
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        final first = cubit.deletePhoto('existing');
+        expect(await cubit.deletePhoto('existing'), isFalse);
+        pending.complete(const Success(null));
+        expect(await first, isTrue);
+      },
+      verify: (cubit) {
+        verify(
+          () => repository.deleteMeetingPhoto(meetingId, 'existing'),
+        ).called(1);
+        expect(cubit.state.photos, isEmpty);
+      },
+    );
+  });
+
   group('savePromoText', () {
     blocTest<MeetingPhotosCubit, MeetingPhotosState>(
       'given the meeting has a promo text, when loading, then keeps it in the state',

@@ -308,6 +308,8 @@ class GroupRepositoryImpl implements GroupRepository {
       body: {'meeting_id': meetingId, 'photo_id': photoId},
     );
     return switch (result) {
+      // 404: a foto já não está no encontro (outra pessoa removeu antes).
+      Failure(:final failure) when failure.code == '404' => const Success(null),
       Failure() => const Failure(MeetingPhotoDeleteFailure()),
       Success() => const Success(null),
     };

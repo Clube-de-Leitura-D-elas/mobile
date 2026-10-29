@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart' as launcher;
 typedef MeetingPhotoDeleter = Future<bool> Function(String photoId);
 typedef MeetingPhotoLauncher = Future<bool> Function(Uri uri);
 
-class MeetingPhotoViewer extends StatelessWidget {
+class MeetingPhotoViewer extends StatefulWidget {
   const MeetingPhotoViewer({
     super.key,
     required this.photo,
@@ -49,29 +49,46 @@ class MeetingPhotoViewer extends StatelessWidget {
   }
 
   @override
+  State<MeetingPhotoViewer> createState() => _MeetingPhotoViewerState();
+}
+
+class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
+  bool _isDeleting = false;
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final deleter = onDelete;
+    final deleter = widget.onDelete;
 
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: Text(l10n.meetingPhotoViewerTitle(index + 1, total)),
+        title: Text(
+          l10n.meetingPhotoViewerTitle(widget.index + 1, widget.total),
+        ),
         actions: [
           IconButton(
             key: const ValueKey('meeting-photo-download'),
             tooltip: l10n.meetingPhotoDownload,
             icon: const Icon(Icons.download_outlined),
-            onPressed: () => _download(context),
+            onPressed: _download,
           ),
           if (deleter != null)
             IconButton(
               key: const ValueKey('meeting-photo-delete'),
               tooltip: l10n.meetingPhotoDelete,
-              icon: const Icon(Icons.delete_outline),
-              onPressed: () => _delete(context, deleter),
+              icon: _isDeleting
+                  ? const SizedBox.square(
+                      dimension: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.delete_outline),
+              onPressed: _isDeleting ? null : () => _delete(deleter),
             ),
         ],
       ),
@@ -80,9 +97,9 @@ class MeetingPhotoViewer extends StatelessWidget {
           child: Center(
             child: Semantics(
               image: true,
-              label: l10n.meetingPhotoSemanticLabel(index + 1),
+              label: l10n.meetingPhotoSemanticLabel(widget.index + 1),
               child: Image.network(
-                photo.url,
+                widget.photo.url,
                 fit: BoxFit.contain,
                 loadingBuilder: (context, child, progress) => progress == null
                     ? child
@@ -99,32 +116,35 @@ class MeetingPhotoViewer extends StatelessWidget {
     );
   }
 
-  Future<void> _download(BuildContext context) async {
+  Future<void> _download() async {
     final launch =
-        onDownload ??
+        widget.onDownload ??
         (uri) => launcher.launchUrl(
           uri,
           mode: launcher.LaunchMode.externalApplication,
         );
-    final uri = Uri.tryParse(photo.url);
+    final uri = Uri.tryParse(widget.photo.url);
     var opened = false;
     try {
       opened = uri != null && await launch(uri);
     } catch (_) {
       opened = false;
     }
-    if (!opened && context.mounted) {
+    if (!opened && mounted) {
       context.showErrorToast(context.l10n.meetingPhotoDownloadFailed);
     }
   }
 
-  Future<void> _delete(
-    BuildContext context,
-    MeetingPhotoDeleter deleter,
-  ) async {
+  Future<void> _delete(MeetingPhotoDeleter deleter) async {
     final confirmed = await MeetingPhotoDeleteDialog.show(context);
-    if (confirmed != true) return;
-    final deleted = await deleter(photo.id);
-    if (deleted && context.mounted) Navigator.of(context).pop();
+    if (confirmed != true || !mounted) return;
+    setState(() => _isDeleting = true);
+    final deleted = await deleter(widget.photo.id);
+    if (!mounted) return;
+    if (deleted) {
+      Navigator.of(context).pop();
+    } else {
+      setState(() => _isDeleting = false);
+    }
   }
 }

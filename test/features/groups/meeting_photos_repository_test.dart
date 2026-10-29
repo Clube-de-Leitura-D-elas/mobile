@@ -289,6 +289,28 @@ void main() {
     );
   });
 
+  group('deleteMeetingPhoto not found', () {
+    test(
+      'given the photo is already gone (404), when deleting, then treats it as removed',
+      () async {
+        when(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: 'delete-meeting-photo',
+            body: any(named: 'body'),
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(
+            FunctionSupabaseFailure(message: 'not found', code: '404'),
+          ),
+        );
+
+        final result = await repository.deleteMeetingPhoto('meeting-1', 'p1');
+
+        expect(result, const Success<void, GroupFailure>(null));
+      },
+    );
+  });
+
   group('updateMeetingPromoText', () {
     void answerWith(
       Result<SupabaseResponse<String?>, SupabaseFailure> Function(
