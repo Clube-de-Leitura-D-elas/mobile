@@ -24,6 +24,10 @@ class MockGroupRepository extends Mock implements GroupRepository {}
 class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
 
+class MockBuildContext extends Mock implements BuildContext {}
+
+class MockGoRouterState extends Mock implements GoRouterState {}
+
 void main() {
   const testUser = UserEntity(
     name: 'Ana',
@@ -121,5 +125,43 @@ void main() {
     expect(find.byType(PendingTasksScreen), findsOneWidget);
     expect(find.text('Você não tem tarefas pendentes'), findsOneWidget);
     verify(() => repository.getMyGroups()).called(1);
+  });
+
+  group('HomeRoutes.homeGuard', () {
+    late MockBuildContext context;
+    late MockGoRouterState routerState;
+
+    setUp(() {
+      context = MockBuildContext();
+      routerState = MockGoRouterState();
+    });
+
+    test('redirects unauthenticated access on /pending-tasks to /login', () {
+      when(
+        () => routerState.matchedLocation,
+      ).thenReturn(HomeRoutes.pendingTasks);
+
+      final redirect = HomeRoutes.homeGuard(
+        context,
+        routerState,
+        const GuestSession(),
+      );
+
+      expect(redirect, '/login');
+    });
+
+    test('allows authenticated access on /pending-tasks', () {
+      when(
+        () => routerState.matchedLocation,
+      ).thenReturn(HomeRoutes.pendingTasks);
+
+      final redirect = HomeRoutes.homeGuard(
+        context,
+        routerState,
+        const AuthenticatedSession(user: testUser),
+      );
+
+      expect(redirect, isNull);
+    });
   });
 }

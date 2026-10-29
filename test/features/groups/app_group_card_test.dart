@@ -735,6 +735,7 @@ void main() {
         );
 
         expect(find.text('Minhas tarefas'), findsNothing);
+        expect(find.byType(AppMeetingResponseButtons), findsOneWidget);
       },
     );
 
@@ -760,6 +761,7 @@ void main() {
         );
 
         expect(find.text('Minhas tarefas'), findsNothing);
+        expect(find.byType(AppMeetingResponseButtons), findsOneWidget);
       },
     );
   });

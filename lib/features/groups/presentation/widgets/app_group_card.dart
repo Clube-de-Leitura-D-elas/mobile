@@ -92,7 +92,7 @@ class AppGroupCard extends StatelessWidget {
             if (expanded) ...[
               SizedBox(height: spacing.s8),
               GroupCardMeetingDetailsGrid(meeting: meeting),
-              if (meeting.id != null && !meeting.canManageTasks) ...[
+              if (meeting.id != null) ...[
                 SizedBox(height: spacing.s16),
                 BlocProvider(
                   create: (context) => MeetingInvitationCubit(

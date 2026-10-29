@@ -51,9 +51,10 @@ abstract class HomeRoutes {
     GoRouterState state,
     SessionState sessionState,
   ) {
-    final isHome = state.matchedLocation == home;
+    final isProtected =
+        state.matchedLocation == home || state.matchedLocation == pendingTasks;
 
-    if (isHome) {
+    if (isProtected) {
       if (sessionState is! AuthenticatedSession) {
         if (sessionState is LoadingSession) {
           return '/splash';
