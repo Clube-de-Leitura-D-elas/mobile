@@ -40,6 +40,7 @@ class GroupCardMyTasksButton extends StatelessWidget {
     final borderRadius = BorderRadius.circular(999);
 
     return Semantics(
+      container: true,
       button: true,
       label:
           '${l10n.groupMeetingMyTasksAction}, '
