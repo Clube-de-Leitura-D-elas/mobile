@@ -92,8 +92,8 @@ class AppGroupCard extends StatelessWidget {
             if (expanded) ...[
               SizedBox(height: spacing.s8),
               GroupCardMeetingDetailsGrid(meeting: meeting),
-              SizedBox(height: spacing.s16),
-              if (meeting.id != null && !meeting.canManageTasks)
+              if (meeting.id != null && !meeting.canManageTasks) ...[
+                SizedBox(height: spacing.s16),
                 BlocProvider(
                   create: (context) => MeetingInvitationCubit(
                     groupRepository: serviceLocator<GroupRepository>(),
@@ -104,12 +104,7 @@ class AppGroupCard extends StatelessWidget {
                     onResponseSuccess: onMeetingResponseSuccess,
                   ),
                 ),
-              if (meeting.canManageTasks)
-                GroupCardMyTasksButton(
-                  meeting: meeting,
-                  onPressed: onMyTasksPressed,
-                  onClosed: onTasksClosed,
-                ),
+              ],
             ],
           ],
         ],

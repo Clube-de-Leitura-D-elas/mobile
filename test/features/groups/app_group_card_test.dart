@@ -606,7 +606,7 @@ void main() {
     );
 
     testWidgets(
-      'Shows Minhas tarefas button when canManageTasks is true and navigates to tasks screen',
+      'Shows Minhas tarefas button when tasksOnly and canManageTasks are true and navigates to tasks screen',
       (tester) async {
         final router = GoRouter(
           routes: [
@@ -618,6 +618,7 @@ void main() {
                   groupName: 'Grupo 1',
                   participantsCount: 32,
                   cityState: 'Porto Alegre, RS',
+                  tasksOnly: true,
                   nextMeeting: GroupMeeting(
                     id: 'meeting-1',
                     hostName: 'Roberta',
@@ -668,6 +669,7 @@ void main() {
                   groupName: 'Grupo 1',
                   participantsCount: 32,
                   cityState: 'Porto Alegre, RS',
+                  tasksOnly: true,
                   nextMeeting: const GroupMeeting(
                     id: 'meeting-1',
                     hostName: 'Roberta',
@@ -707,6 +709,32 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(closedCount, 1);
+      },
+    );
+
+    testWidgets(
+      'Does not show Minhas tarefas button on Home card when tasksOnly is false',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                id: 'meeting-1',
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '2026-08-29T19:00:00Z',
+                location: 'Z Café TECNOPUC',
+                canManageTasks: true,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Minhas tarefas'), findsNothing);
       },
     );
 
