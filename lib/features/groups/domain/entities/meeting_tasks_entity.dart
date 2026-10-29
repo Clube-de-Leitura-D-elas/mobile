@@ -32,6 +32,7 @@ class MeetingTasksEntity extends Equatable {
     required this.status,
     required this.canManageTasks,
     required this.canConclude,
+    this.canRaffle = false,
     required this.schedule,
     required this.record,
     this.bookTitle,
@@ -45,6 +46,10 @@ class MeetingTasksEntity extends Equatable {
   final MeetingTaskStatus status;
   final bool canManageTasks;
   final bool canConclude;
+
+  /// Encerrado e sem sorteio gravado: a anfitriã ou a coordenação ainda
+  /// pode (re)abrir o sorteio.
+  final bool canRaffle;
   final MeetingScheduleTask schedule;
   final MeetingRecordTask record;
 
@@ -71,6 +76,7 @@ class MeetingTasksEntity extends Equatable {
     status,
     canManageTasks,
     canConclude,
+    canRaffle,
     schedule,
     record,
     bookTitle,

@@ -6,6 +6,7 @@ class MeetingTasksModel extends MeetingTasksEntity {
     required super.status,
     required super.canManageTasks,
     required super.canConclude,
+    super.canRaffle,
     required super.schedule,
     required super.record,
     super.bookTitle,
@@ -21,6 +22,7 @@ class MeetingTasksModel extends MeetingTasksEntity {
     final status = _status(json['status']);
     final canManageTasks = json['can_manage_tasks'];
     final canConclude = json['can_conclude'];
+    final canRaffle = json['can_raffle'];
     final tasks = json['tasks'];
     if (meetingId is! String || canManageTasks is! bool) {
       throw const FormatException('Invalid meeting tasks response.');
@@ -38,6 +40,7 @@ class MeetingTasksModel extends MeetingTasksEntity {
       status: status,
       canManageTasks: canManageTasks,
       canConclude: canConclude is bool ? canConclude : false,
+      canRaffle: canRaffle is bool ? canRaffle : false,
       schedule: schedule,
       record: record,
       bookTitle: _optionalString(json['book_title']),

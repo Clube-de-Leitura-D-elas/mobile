@@ -49,12 +49,14 @@ final _scheduled = MeetingTasksEntity(
 MeetingTasksEntity _withState({
   MeetingTaskStatus? status,
   bool? canConclude,
+  bool canRaffle = false,
   MeetingRecordStatus? record,
 }) => MeetingTasksEntity(
   meetingId: _scheduled.meetingId,
   status: status ?? _scheduled.status,
   canManageTasks: true,
   canConclude: canConclude ?? _scheduled.canConclude,
+  canRaffle: canRaffle,
   schedule: _scheduled.schedule,
   record: MeetingRecordTask(record ?? _scheduled.record.status),
   bookTitle: _scheduled.bookTitle,
@@ -411,6 +413,49 @@ void main() {
     expect(find.text('Todas as tarefas concluídas'), findsOneWidget);
     expect(find.byIcon(Icons.check_circle), findsNWidgets(2));
     expect(find.text('Enviar fotos'), findsNothing);
+  });
+
+  testWidgets(
+    'given an ended meeting without a raffle, when leaving the raffle, then the raffle can be opened again',
+    (tester) async {
+      answerTasks([
+        Success(
+          _withState(
+            status: MeetingTaskStatus.ended,
+            canRaffle: true,
+            record: MeetingRecordStatus.pending,
+          ),
+        ),
+      ]);
+      await pumpScreen(tester);
+
+      expect(find.text('Encerrar encontro'), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('meeting_tasks_raffle')));
+      await tester.pumpAndSettle();
+      expect(visited.last, RaffleRoutes.preparation);
+      expect(extras.last, {'meeting_id': 'meeting-1'});
+
+      await tester.tap(find.text('stub-done'));
+      await tester.pumpAndSettle();
+
+      verify(() => repository.getMeetingTasks('meeting-1')).called(2);
+      expect(find.text('Realizar sorteio'), findsOneWidget);
+    },
+  );
+
+  testWidgets('a recorded raffle hides the raffle button', (tester) async {
+    answerTasks([
+      Success(
+        _withState(
+          status: MeetingTaskStatus.concluded,
+          record: MeetingRecordStatus.published,
+        ),
+      ),
+    ]);
+    await pumpScreen(tester);
+
+    expect(find.text('Realizar sorteio'), findsNothing);
+    expect(find.text('Encerrar encontro'), findsNothing);
   });
 
   testWidgets('draft record keeps the button and shows the draft tag', (
