@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
 import 'package:mobile/features/raffles/presentation/pages/raffle_preparation_screen.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 class MockRafflePreparationCubit extends Cubit<RafflePreparationState>
@@ -224,4 +226,71 @@ void main() {
     tester.view.resetPhysicalSize();
     tester.view.resetDevicePixelRatio();
   });
+
+  testWidgets(
+    'given the raffle is confirmed, when the draw closes, then completes the push that opened the preparation',
+    (tester) async {
+      final cubit = MockRafflePreparationCubit(
+        const RafflePreparationLoaded(participants: []),
+      );
+      var openerResumed = false;
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => TextButton(
+              onPressed: () async {
+                await context.push<Object?>(RaffleRoutes.preparation);
+                openerResumed = true;
+              },
+              child: const Text('open'),
+            ),
+          ),
+          GoRoute(
+            path: RaffleRoutes.preparation,
+            builder: (context, state) =>
+                BlocProvider<RafflePreparationCubit>.value(
+                  value: cubit,
+                  child: const RafflePreparationScreen(meetingId: 'meeting-1'),
+                ),
+          ),
+          GoRoute(
+            path: RaffleRoutes.draw,
+            builder: (context, state) => TextButton(
+              onPressed: () => context.pop(),
+              child: const Text('draw-done'),
+            ),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('pt', 'BR'),
+          routerConfig: router,
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      cubit.emitSuccess();
+      await tester.pumpAndSettle();
+      expect(find.text('draw-done'), findsOneWidget);
+
+      await tester.tap(find.text('draw-done'));
+      await tester.pumpAndSettle();
+
+      expect(openerResumed, isTrue);
+      expect(find.text('open'), findsOneWidget);
+    },
+  );
 }

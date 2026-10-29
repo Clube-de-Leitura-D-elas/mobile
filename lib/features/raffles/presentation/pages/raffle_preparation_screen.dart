@@ -38,18 +38,7 @@ class RafflePreparationScreen extends StatelessWidget {
               context.showAppToast(context.l10n.raffleErrorMessage);
             } else if (state is RafflePreparationSuccess) {
               context.showAppToast(context.l10n.raffleSuccessToast);
-              try {
-                context.pushReplacement(
-                  RaffleRoutes.draw,
-                  extra: {
-                    'meeting_id': meetingId,
-                    'meeting_title': meetingTitle,
-                    'participants': state.selectedParticipants,
-                  },
-                );
-              } catch (_) {
-                Navigator.of(context).pop();
-              }
+              _openDraw(context, state.selectedParticipants);
             }
           },
           builder: (context, state) {
@@ -121,6 +110,28 @@ class RafflePreparationScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // push + pop em vez de pushReplacement: no go_router, o pushReplacement
+  // nunca completa o Future de quem abriu a preparação, e as tarefas do
+  // encontro não recarregam depois do sorteio.
+  Future<void> _openDraw(
+    BuildContext context,
+    List<RaffleParticipant> selected,
+  ) async {
+    try {
+      await context.push<Object?>(
+        RaffleRoutes.draw,
+        extra: {
+          'meeting_id': meetingId,
+          'meeting_title': meetingTitle,
+          'participants': selected,
+        },
+      );
+    } catch (_) {
+      // Sem GoRouter acima (telas isoladas): só fecha a preparação.
+    }
+    if (context.mounted) Navigator.of(context).pop();
   }
 }
 
