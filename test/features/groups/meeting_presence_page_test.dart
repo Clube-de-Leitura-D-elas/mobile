@@ -173,14 +173,16 @@ void main() {
       AppToast.dismiss();
     });
 
-    testWidgets('faz pop(true) quando a presença é confirmada', (tester) async {
+    testWidgets('faz pop com as presentes quando a presença é confirmada', (
+      tester,
+    ) async {
       stubAttendance([_attendee('u-1', 'Ana')]);
 
       when(
         () => repository.setMeetingPresence(meetingId, any()),
       ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
 
-      bool? popResult;
+      List<MeetingAttendanceEntity>? popResult;
 
       await tester.pumpWidget(
         buildApp(
@@ -189,15 +191,16 @@ void main() {
               body: Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    popResult = await Navigator.of(context).push<bool>(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            BlocProvider<MeetingPresenceCubit>.value(
-                              value: cubit,
-                              child: const MeetingPresencePage(),
-                            ),
-                      ),
-                    );
+                    popResult = await Navigator.of(context)
+                        .push<List<MeetingAttendanceEntity>>(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                BlocProvider<MeetingPresenceCubit>.value(
+                                  value: cubit,
+                                  child: const MeetingPresencePage(),
+                                ),
+                          ),
+                        );
                   },
                   child: const Text('abrir'),
                 ),
@@ -212,13 +215,14 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       await cubit.load(meetingId);
+      cubit.toggle('u-1');
       await tester.pump();
 
       await tester.tap(find.byType(AppButton));
       await tester.pumpAndSettle();
 
       expect(find.byType(MeetingPresencePage), findsNothing);
-      expect(popResult, isTrue);
+      expect(popResult?.map((a) => a.id), ['u-1']);
     });
 
     testWidgets('não faz pop quando o Closed vem do carregamento inicial', (

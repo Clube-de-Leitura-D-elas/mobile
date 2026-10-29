@@ -895,6 +895,67 @@
   "@raffleSuccessToast": {
     "description": "Mensagem de sucesso exibida no toast após a realização do sorteio"
   },
+  "raffleDrawScreenTitle": "Realizar Sorteio",
+  "@raffleDrawScreenTitle": {
+    "description": "Título no header da tela de realização do sorteio"
+  },
+  "raffleBookDrawTitle": "Sorteio do Livro - {month}",
+  "@raffleBookDrawTitle": {
+    "description": "Título principal com o mês do sorteio do livro",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "raffleDrawButton": "SORTEAR",
+  "@raffleDrawButton": {
+    "description": "Texto do botão central principal para realizar o sorteio"
+  },
+  "raffleDisclaimer": "O sorteio é automático e aleatório.\nA participação é voluntária.",
+  "@raffleDisclaimer": {
+    "description": "Texto informativo no rodapé sobre a aleatoriedade do sorteio"
+  },
+  "raffleResultTitle": "Resultado do Sorteio",
+  "@raffleResultTitle": {
+    "description": "Título do cabeçalho da tela de resultado do sorteio"
+  },
+  "raffleDrawnBookLabel": "Livro sorteado",
+  "@raffleDrawnBookLabel": {
+    "description": "Rótulo superior acima do livro sorteado"
+  },
+  "raffleHostLabel": "Anfitriã",
+  "@raffleHostLabel": {
+    "description": "Rótulo identificando a anfitriã sorteada"
+  },
+  "raffleHostAnnounceLabel": "A Anfitriã da vez é",
+  "@raffleHostAnnounceLabel": {
+    "description": "Frase anunciando a anfitriã da vez"
+  },
+  "raffleFinishButton": "Concluir",
+  "@raffleFinishButton": {
+    "description": "Texto do botão principal de concluir e registrar o resultado"
+  },
+  "raffleDrawAgainButton": "Sortear novamente",
+  "@raffleDrawAgainButton": {
+    "description": "Texto do botão secundário para sortear novamente"
+  },
+  "raffleErrorMessage": "Não foi possível concluir o sorteio",
+  "@raffleErrorMessage": {
+    "description": "Mensagem exibida quando alguma etapa do sorteio falha"
+  },
+  "raffleNoMoreParticipantsToDraw": "Sem mais pessoas para sortear",
+  "@raffleNoMoreParticipantsToDraw": {
+    "description": "Aviso abaixo do botão de sortear novamente quando todas as participantes já foram sorteadas"
+  },
+  "raffleNoEligibleParticipants": "Não há participantes elegíveis para o sorteio.",
+  "@raffleNoEligibleParticipants": {
+    "description": "Aviso emitido quando a lista de participantes elegíveis está vazia"
+  },
+  "raffleSavedSuccessToast": "Sorteio registrado com sucesso! Nova anfitriã definida.",
+  "@raffleSavedSuccessToast": {
+    "description": "Mensagem de sucesso após registrar o sorteio e definir a nova anfitriã"
+  },
 
   "groupMeetingMyTasksProgress": "{done} de {total} tarefas concluídas",
   "@groupMeetingMyTasksProgress": {

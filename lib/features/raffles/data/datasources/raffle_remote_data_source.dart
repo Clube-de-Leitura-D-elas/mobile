@@ -1,6 +1,7 @@
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/raffles/data/models/raffle_participant_model.dart';
+import 'package:mobile/features/raffles/data/models/raffle_result_model.dart';
 
 abstract class RaffleRemoteDataSource {
   Future<List<RaffleParticipantModel>> getEligibleParticipants(
@@ -10,6 +11,12 @@ abstract class RaffleRemoteDataSource {
     String meetingId,
     List<String> selectedParticipantIds,
   );
+  Future<RaffleResultModel?> getRaffleResult(String meetingId);
+  Future<RaffleResultModel> drawRaffle({
+    required String meetingId,
+    required List<String> eligibleParticipantIds,
+  });
+  Future<void> saveRaffleResult(RaffleResultModel result);
 }
 
 class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
@@ -57,5 +64,58 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
     );
 
     result.match((_) => null, (failure) => throw Exception(failure.message));
+  }
+
+  @override
+  Future<RaffleResultModel?> getRaffleResult(String meetingId) async {
+    final result = await supabaseService.invokeFunction<Map<String, dynamic>?>(
+      functionName: 'get-meeting-raffle-result',
+      body: {'meeting_id': meetingId},
+      decoder: (data) {
+        if (data == null) return null;
+        if (data is Map<String, dynamic>) {
+          if (data.isEmpty) return null;
+          return data;
+        }
+        return null;
+      },
+    );
+
+    return result.match((response) {
+      final data = response.data;
+      if (data == null) return null;
+      return RaffleResultModel.fromJson(data);
+    }, (failure) => throw Exception(failure.message));
+  }
+
+  @override
+  Future<RaffleResultModel> drawRaffle({
+    required String meetingId,
+    required List<String> eligibleParticipantIds,
+  }) async {
+    final result = await supabaseService.invokeFunction<RaffleResultModel>(
+      functionName: 'draw-meeting-raffle',
+      body: {
+        'meeting_id': meetingId,
+        'eligible_participant_ids': eligibleParticipantIds,
+      },
+      decoder: (data) =>
+          RaffleResultModel.fromJson(data as Map<String, dynamic>),
+    );
+
+    return result.match(
+      (response) => response.data!,
+      (failure) => throw Exception(failure.message),
+    );
+  }
+
+  @override
+  Future<void> saveRaffleResult(RaffleResultModel result) async {
+    final res = await supabaseService.invokeFunction<void>(
+      functionName: 'confirm-meeting-raffle-winner',
+      body: result.toJson(),
+    );
+
+    res.match((_) => null, (failure) => throw Exception(failure.message));
   }
 }

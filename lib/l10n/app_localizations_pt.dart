@@ -650,6 +650,53 @@ class AppLocalizationsPt extends AppLocalizations {
   String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
 
   @override
+  String get raffleDrawScreenTitle => 'Realizar Sorteio';
+
+  @override
+  String raffleBookDrawTitle(String month) {
+    return 'Sorteio do Livro - $month';
+  }
+
+  @override
+  String get raffleDrawButton => 'SORTEAR';
+
+  @override
+  String get raffleDisclaimer =>
+      'O sorteio é automático e aleatório.\nA participação é voluntária.';
+
+  @override
+  String get raffleResultTitle => 'Resultado do Sorteio';
+
+  @override
+  String get raffleDrawnBookLabel => 'Livro sorteado';
+
+  @override
+  String get raffleHostLabel => 'Anfitriã';
+
+  @override
+  String get raffleHostAnnounceLabel => 'A Anfitriã da vez é';
+
+  @override
+  String get raffleFinishButton => 'Concluir';
+
+  @override
+  String get raffleDrawAgainButton => 'Sortear novamente';
+
+  @override
+  String get raffleErrorMessage => 'Não foi possível concluir o sorteio';
+
+  @override
+  String get raffleNoMoreParticipantsToDraw => 'Sem mais pessoas para sortear';
+
+  @override
+  String get raffleNoEligibleParticipants =>
+      'Não há participantes elegíveis para o sorteio.';
+
+  @override
+  String get raffleSavedSuccessToast =>
+      'Sorteio registrado com sucesso! Nova anfitriã definida.';
+
+  @override
   String groupMeetingMyTasksProgress(int done, int total) {
     return '$done de $total tarefas concluídas';
   }
@@ -1440,4 +1487,51 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
+
+  @override
+  String get raffleDrawScreenTitle => 'Realizar Sorteio';
+
+  @override
+  String raffleBookDrawTitle(String month) {
+    return 'Sorteio do Livro - $month';
+  }
+
+  @override
+  String get raffleDrawButton => 'SORTEAR';
+
+  @override
+  String get raffleDisclaimer =>
+      'O sorteio é automático e aleatório.\nA participação é voluntária.';
+
+  @override
+  String get raffleResultTitle => 'Resultado do Sorteio';
+
+  @override
+  String get raffleDrawnBookLabel => 'Livro sorteado';
+
+  @override
+  String get raffleHostLabel => 'Anfitriã';
+
+  @override
+  String get raffleHostAnnounceLabel => 'A Anfitriã da vez é';
+
+  @override
+  String get raffleFinishButton => 'Concluir';
+
+  @override
+  String get raffleDrawAgainButton => 'Sortear novamente';
+
+  @override
+  String get raffleErrorMessage => 'Não foi possível concluir o sorteio';
+
+  @override
+  String get raffleNoMoreParticipantsToDraw => 'Sem mais pessoas para sortear';
+
+  @override
+  String get raffleNoEligibleParticipants =>
+      'Não há participantes elegíveis para o sorteio.';
+
+  @override
+  String get raffleSavedSuccessToast =>
+      'Sorteio registrado com sucesso! Nova anfitriã definida.';
 }

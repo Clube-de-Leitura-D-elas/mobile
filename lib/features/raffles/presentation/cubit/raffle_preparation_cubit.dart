@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
 
@@ -22,6 +23,10 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     );
   }
 
+  void setParticipants(List<RaffleParticipant> participants) {
+    emit(RafflePreparationLoaded(participants: participants));
+  }
+
   void toggleParticipantSelection(String participantId) {
     if (state is! RafflePreparationLoaded) return;
 
@@ -42,10 +47,10 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
 
     final currentState = state as RafflePreparationLoaded;
 
-    final selectedIds = currentState.participants
+    final selected = currentState.participants
         .where((p) => p.isSelected)
-        .map((p) => p.id)
         .toList();
+    final selectedIds = selected.map((p) => p.id).toList();
 
     if (selectedIds.isEmpty) return;
 
@@ -57,9 +62,12 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     );
     if (isClosed) return;
 
-    result.match((_) => emit(const RafflePreparationSuccess()), (failure) {
-      emit(RafflePreparationError(failure.message));
-      emit(currentState.copyWith(isSubmitting: false));
-    });
+    result.match(
+      (_) => emit(RafflePreparationSuccess(selectedParticipants: selected)),
+      (failure) {
+        emit(RafflePreparationError(failure.message));
+        emit(currentState.copyWith(isSubmitting: false));
+      },
+    );
   }
 }

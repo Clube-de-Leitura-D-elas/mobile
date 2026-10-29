@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+﻿// ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,6 +25,7 @@ import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -43,6 +44,7 @@ void main() {
 
   setUp(() async {
     dotenv.testLoad(fileInput: 'BASE_URL=http://localhost:8080');
+    SharedPreferences.setMockInitialValues({});
     GoogleSignInPlatform.instance = MockGoogleSignInPlatform();
     SharedPreferences.setMockInitialValues({});
     await serviceLocator.reset();
@@ -104,6 +106,10 @@ void main() {
       expect(
         serviceLocator<RafflePreparationCubit>(),
         isA<RafflePreparationCubit>(),
+      );
+      expect(
+        serviceLocator<RaffleExecutionCubit>(),
+        isA<RaffleExecutionCubit>(),
       );
     },
   );
