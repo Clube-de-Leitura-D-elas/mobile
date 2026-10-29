@@ -467,6 +467,29 @@ void main() {
     );
 
     testWidgets(
+      'given the removal throws, when confirming, then re-enables the action',
+      (tester) async {
+        when(() => cubit.deletePhoto(any())).thenThrow(StateError('boom'));
+        await pumpSection(tester, _loadedEmpty.copyWith(photos: _photos));
+        await tester.pump();
+
+        await tester.tap(find.byType(MeetingPhotoThumbnail).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('meeting-photo-delete')));
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.byKey(const ValueKey('meeting-photo-delete-confirm')),
+        );
+        await tester.pumpAndSettle();
+
+        final delete = tester.widget<IconButton>(
+          find.byKey(const ValueKey('meeting-photo-delete')),
+        );
+        expect(delete.onPressed, isNotNull);
+      },
+    );
+
+    testWidgets(
       'given the member cancels the confirmation, when removing, then keeps the photo',
       (tester) async {
         await pumpSection(tester, _loadedEmpty.copyWith(photos: _photos));

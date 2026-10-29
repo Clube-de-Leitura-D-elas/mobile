@@ -142,9 +142,14 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
     var deleted = false;
     try {
       deleted = await deleter(widget.photo.id);
-    } finally {
-      if (mounted && !deleted) setState(() => _isDeleting = false);
+    } catch (_) {
+      deleted = false;
     }
-    if (deleted && mounted) Navigator.of(context).pop();
+    if (!mounted) return;
+    if (deleted) {
+      Navigator.of(context).pop();
+    } else {
+      setState(() => _isDeleting = false);
+    }
   }
 }

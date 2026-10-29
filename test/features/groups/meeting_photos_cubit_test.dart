@@ -599,6 +599,35 @@ void main() {
     );
   });
 
+  group('deletePhoto exception', () {
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the repository throws, when deleting, then notifies the error and allows a new attempt',
+      build: () {
+        var calls = 0;
+        when(
+          () => repository.deleteMeetingPhoto(meetingId, 'existing'),
+        ).thenAnswer((_) async {
+          calls++;
+          if (calls == 1) throw StateError('boom');
+          return const Success(null);
+        });
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        expect(await cubit.deletePhoto('existing'), isFalse);
+        expect(cubit.state.notice, const MeetingPhotoDeleteFailedNotice());
+        expect(await cubit.deletePhoto('existing'), isTrue);
+      },
+      verify: (cubit) {
+        verify(
+          () => repository.deleteMeetingPhoto(meetingId, 'existing'),
+        ).called(2);
+        expect(cubit.state.photos, isEmpty);
+      },
+    );
+  });
+
   group('savePromoText', () {
     blocTest<MeetingPhotosCubit, MeetingPhotosState>(
       'given the meeting has a promo text, when loading, then keeps it in the state',
