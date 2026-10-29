@@ -259,23 +259,23 @@ void main() {
   );
 
   testWidgets(
-    'given a thumbnail fails to load, when tapping the placeholder, then reloads the photos',
+    'given a thumbnail fails to load, when tapping it, then opens the photo so it can still be removed',
     (tester) async {
+      when(() => cubit.deletePhoto(any())).thenAnswer((_) async => true);
       await pumpSection(tester, _loadedEmpty.copyWith(photos: [_photos.first]));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey('meeting-photo-error')), findsOneWidget);
 
-      final retrySemantics = find.byWidgetPredicate(
-        (w) =>
-            w is Semantics &&
-            w.properties.label == 'Tentar novamente' &&
-            w.properties.button == true,
-      );
-      expect(retrySemantics, findsOneWidget);
-
       await tester.tap(find.byKey(const ValueKey('meeting-photo-error')));
-      verify(() => cubit.reload()).called(1);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Foto 1 de 1'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('meeting-photo-delete')),
+        findsOneWidget,
+      );
+      verifyNever(() => cubit.reload());
     },
   );
 
@@ -304,4 +304,183 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     },
   );
+
+  group('promo text', () {
+    setUp(() {
+      when(() => cubit.savePromoText(any())).thenAnswer((_) async => true);
+    });
+
+    testWidgets(
+      'given no promo text and the member can edit, when saving one, then sends it to the cubit',
+      (tester) async {
+        await pumpSection(tester, _loadedEmpty);
+
+        expect(find.text('Texto de divulgação'), findsOneWidget);
+        expect(
+          find.text('Nenhum texto de divulgação anexado.'),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('meeting-promo-text-copy')),
+          findsNothing,
+        );
+
+        await tester.tap(find.text('Adicionar texto'));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.descendant(
+            of: find.byKey(const ValueKey('meeting-promo-text-field')),
+            matching: find.byType(TextField),
+          ),
+          'Venham ao próximo!',
+        );
+        await tester.pump();
+        expect(find.text('18 de 2000 caracteres'), findsOneWidget);
+        await tester.tap(find.byKey(const ValueKey('meeting-promo-text-save')));
+        await tester.pumpAndSettle();
+
+        verify(() => cubit.savePromoText('Venham ao próximo!')).called(1);
+        expect(
+          find.byKey(const ValueKey('meeting-promo-text-save')),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets(
+      'given a text over the limit, when editing, then blocks saving',
+      (tester) async {
+        await pumpSection(tester, _loadedEmpty);
+
+        await tester.tap(find.text('Adicionar texto'));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.descendant(
+            of: find.byKey(const ValueKey('meeting-promo-text-field')),
+            matching: find.byType(TextField),
+          ),
+          'a' * 2001,
+        );
+        await tester.pump();
+
+        expect(
+          find.text('O texto passa do limite de 2000 caracteres.'),
+          findsOneWidget,
+        );
+        final save = tester.widget<AppButton>(
+          find.byKey(const ValueKey('meeting-promo-text-save')),
+        );
+        expect(save.onPressed, isNull);
+      },
+    );
+
+    testWidgets(
+      'given a promo text and a read-only member, when rendered, then shows the text with copy and no edit',
+      (tester) async {
+        await pumpSection(
+          tester,
+          _loadedEmpty.copyWith(promoText: 'Texto pronto', canAddPhotos: false),
+        );
+
+        expect(find.text('Texto pronto'), findsOneWidget);
+        expect(
+          find.byKey(const ValueKey('meeting-promo-text-copy')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('meeting-promo-text-edit')),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets(
+      'given no promo text and a read-only member, when rendered, then shows only the empty message',
+      (tester) async {
+        await pumpSection(tester, _loadedEmpty.copyWith(canAddPhotos: false));
+
+        expect(
+          find.text('Nenhum texto de divulgação anexado.'),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('meeting-promo-text-edit')),
+          findsNothing,
+        );
+      },
+    );
+  });
+
+  group('photo viewer', () {
+    setUp(() {
+      when(() => cubit.deletePhoto(any())).thenAnswer((_) async => true);
+    });
+
+    testWidgets(
+      'given the member can manage the record, when removing a photo, then confirms and calls the cubit',
+      (tester) async {
+        await pumpSection(tester, _loadedEmpty.copyWith(photos: _photos));
+        await tester.pump();
+
+        await tester.tap(find.byType(MeetingPhotoThumbnail).at(1));
+        await tester.pumpAndSettle();
+        expect(find.text('Foto 2 de 4'), findsOneWidget);
+        expect(
+          find.byKey(const ValueKey('meeting-photo-download')),
+          findsOneWidget,
+        );
+
+        await tester.tap(find.byKey(const ValueKey('meeting-photo-delete')));
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.byKey(const ValueKey('meeting-photo-delete-confirm')),
+        );
+        await tester.pumpAndSettle();
+
+        verify(() => cubit.deletePhoto('p1')).called(1);
+        expect(find.text('Foto 2 de 4'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'given the member cancels the confirmation, when removing, then keeps the photo',
+      (tester) async {
+        await pumpSection(tester, _loadedEmpty.copyWith(photos: _photos));
+        await tester.pump();
+
+        await tester.tap(find.byType(MeetingPhotoThumbnail).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('meeting-photo-delete')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Cancelar'));
+        await tester.pumpAndSettle();
+
+        verifyNever(() => cubit.deletePhoto(any()));
+        expect(find.text('Foto 1 de 4'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'given a read-only member, when opening a photo, then can download but not remove',
+      (tester) async {
+        await pumpSection(
+          tester,
+          _loadedEmpty.copyWith(photos: _photos, canAddPhotos: false),
+        );
+        await tester.pump();
+
+        await tester.tap(find.byType(MeetingPhotoThumbnail).first);
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const ValueKey('meeting-photo-download')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('meeting-photo-delete')),
+          findsNothing,
+        );
+      },
+    );
+  });
 }

@@ -529,4 +529,141 @@ void main() {
       },
     );
   });
+
+  group('deletePhoto', () {
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the removal succeeds, when deleting, then drops the photo and notifies',
+      build: () {
+        when(
+          () => repository.deleteMeetingPhoto(meetingId, 'existing'),
+        ).thenAnswer((_) async => const Success(null));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        expect(await cubit.deletePhoto('existing'), isTrue);
+      },
+      skip: 1,
+      expect: () => [
+        loaded.copyWith(
+          photos: const [],
+          notice: const MeetingPhotoDeletedNotice(),
+        ),
+      ],
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the removal fails, when deleting, then keeps the photo and notifies the error',
+      build: () {
+        when(
+          () => repository.deleteMeetingPhoto(meetingId, 'existing'),
+        ).thenAnswer((_) async => const Failure(MeetingPhotoDeleteFailure()));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        expect(await cubit.deletePhoto('existing'), isFalse);
+      },
+      skip: 1,
+      expect: () => [
+        loaded.copyWith(notice: const MeetingPhotoDeleteFailedNotice()),
+      ],
+    );
+  });
+
+  group('savePromoText', () {
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the meeting has a promo text, when loading, then keeps it in the state',
+      build: () {
+        when(() => repository.getMeetingPhotos(meetingId)).thenAnswer(
+          (_) async => Success(
+            MeetingPhotosEntity(
+              photos: [existing],
+              canAddPhotos: true,
+              promoText: 'Texto salvo',
+            ),
+          ),
+        );
+        return MeetingPhotosCubit(
+          groupRepository: repository,
+          photoPicker: picker,
+        );
+      },
+      act: (cubit) => cubit.load(meetingId),
+      expect: () => [
+        const MeetingPhotosState(),
+        loaded.copyWith(promoText: 'Texto salvo'),
+      ],
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the save succeeds, when saving, then stores the text returned by the backend',
+      build: () {
+        when(
+          () => repository.updateMeetingPromoText(meetingId, '  Novo texto  '),
+        ).thenAnswer((_) async => const Success('Novo texto'));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        expect(await cubit.savePromoText('  Novo texto  '), isTrue);
+      },
+      skip: 1,
+      expect: () => [
+        loaded.copyWith(isSavingPromoText: true),
+        loaded.copyWith(
+          promoText: 'Novo texto',
+          notice: const MeetingPromoTextSavedNotice(),
+        ),
+      ],
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given an empty text, when saving, then clears the promo text',
+      build: () {
+        when(() => repository.getMeetingPhotos(meetingId)).thenAnswer(
+          (_) async => Success(
+            MeetingPhotosEntity(
+              photos: [existing],
+              canAddPhotos: true,
+              promoText: 'Antigo',
+            ),
+          ),
+        );
+        when(
+          () => repository.updateMeetingPromoText(meetingId, ''),
+        ).thenAnswer((_) async => const Success(null));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        await cubit.savePromoText('');
+      },
+      verify: (cubit) {
+        expect(cubit.state.promoText, isNull);
+        expect(cubit.state.isSavingPromoText, isFalse);
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the save fails, when saving, then keeps the old text and notifies the error',
+      build: () {
+        when(
+          () => repository.updateMeetingPromoText(meetingId, 'x'),
+        ).thenAnswer(
+          (_) async => const Failure(MeetingPromoTextUpdateFailure()),
+        );
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        expect(await cubit.savePromoText('x'), isFalse);
+      },
+      skip: 1,
+      expect: () => [
+        loaded.copyWith(isSavingPromoText: true),
+        loaded.copyWith(notice: const MeetingPromoTextSaveFailedNotice()),
+      ],
+    );
+  });
 }

@@ -11,6 +11,7 @@ class MeetingPhotosGrid extends StatelessWidget {
     required this.showAddTile,
     required this.onAdd,
     required this.onReload,
+    this.onOpen,
   });
 
   static const _columns = 3;
@@ -19,6 +20,7 @@ class MeetingPhotosGrid extends StatelessWidget {
   final bool showAddTile;
   final VoidCallback? onAdd;
   final VoidCallback onReload;
+  final ValueChanged<int>? onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,7 @@ class MeetingPhotosGrid extends StatelessWidget {
               photo: photos[index],
               index: index,
               onReload: onReload,
+              onOpen: onOpen == null ? null : () => onOpen!(index),
             )
           : MeetingPhotosAddTile(onTap: onAdd),
     );

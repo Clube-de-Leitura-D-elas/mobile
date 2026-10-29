@@ -241,4 +241,137 @@ void main() {
       },
     );
   });
+
+  group('deleteMeetingPhoto', () {
+    test(
+      'given the function succeeds, when deleting, then sends the meeting and photo ids',
+      () async {
+        when(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: 'delete-meeting-photo',
+            body: any(named: 'body'),
+          ),
+        ).thenAnswer((_) async => const Success(SupabaseResponse()));
+
+        final result = await repository.deleteMeetingPhoto('meeting-1', 'p1');
+
+        expect(result, const Success<void, GroupFailure>(null));
+        verify(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: 'delete-meeting-photo',
+            body: {'meeting_id': 'meeting-1', 'photo_id': 'p1'},
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'given the function fails, when deleting, then returns MeetingPhotoDeleteFailure',
+      () async {
+        when(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: 'delete-meeting-photo',
+            body: any(named: 'body'),
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(
+            FunctionSupabaseFailure(message: 'Forbidden', code: '403'),
+          ),
+        );
+
+        final result = await repository.deleteMeetingPhoto('meeting-1', 'p1');
+
+        expect(
+          result,
+          const Failure<void, GroupFailure>(MeetingPhotoDeleteFailure()),
+        );
+      },
+    );
+  });
+
+  group('updateMeetingPromoText', () {
+    void answerWith(
+      Result<SupabaseResponse<String?>, SupabaseFailure> Function(
+        String? Function(dynamic) decoder,
+      )
+      build,
+    ) {
+      when(
+        () => mockSupabaseService.invokeFunction<String?>(
+          functionName: 'update-meeting-promo-text',
+          body: any(named: 'body'),
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (invocation) async => build(
+          invocation.namedArguments[#decoder] as String? Function(dynamic),
+        ),
+      );
+    }
+
+    test(
+      'given the function saves the text, when updating, then returns the saved text',
+      () async {
+        answerWith(
+          (decoder) => Success(
+            SupabaseResponse(
+              data: decoder({'meeting_id': 'meeting-1', 'promo_text': 'Oi'}),
+            ),
+          ),
+        );
+
+        final result = await repository.updateMeetingPromoText(
+          'meeting-1',
+          ' Oi ',
+        );
+
+        expect(result, const Success<String?, GroupFailure>('Oi'));
+        verify(
+          () => mockSupabaseService.invokeFunction<String?>(
+            functionName: 'update-meeting-promo-text',
+            body: {'meeting_id': 'meeting-1', 'promo_text': ' Oi '},
+            decoder: any(named: 'decoder'),
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'given the function clears the text, when updating, then returns null',
+      () async {
+        answerWith(
+          (decoder) => Success(
+            SupabaseResponse(
+              data: decoder({'meeting_id': 'meeting-1', 'promo_text': null}),
+            ),
+          ),
+        );
+
+        final result = await repository.updateMeetingPromoText('meeting-1', '');
+
+        expect(result, const Success<String?, GroupFailure>(null));
+      },
+    );
+
+    test(
+      'given the function fails, when updating, then returns MeetingPromoTextUpdateFailure',
+      () async {
+        answerWith(
+          (_) => const Failure(
+            FunctionSupabaseFailure(message: 'Too long', code: '400'),
+          ),
+        );
+
+        final result = await repository.updateMeetingPromoText(
+          'meeting-1',
+          'x',
+        );
+
+        expect(
+          result,
+          const Failure<String?, GroupFailure>(MeetingPromoTextUpdateFailure()),
+        );
+      },
+    );
+  });
 }
