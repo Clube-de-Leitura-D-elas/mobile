@@ -178,7 +178,6 @@
   "raffleConfirmDialogTitle": "Confirmar sorteio",
   "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",
   "raffleConfirmDialogCancel": "Cancelar",
-  "raffleSuccessToast": "Sorteio realizado com sucesso!",
   "raffleDrawScreenTitle": "Realizar Sorteio",
   "raffleBookDrawTitle": "Sorteio do Livro - {month}",
   "raffleDrawButton": "SORTEAR",

@@ -647,9 +647,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get raffleConfirmDialogCancel => 'Cancelar';
 
   @override
-  String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
-
-  @override
   String get raffleDrawScreenTitle => 'Realizar Sorteio';
 
   @override
@@ -1484,9 +1481,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get raffleConfirmDialogCancel => 'Cancelar';
-
-  @override
-  String get raffleSuccessToast => 'Sorteio realizado com sucesso!';
 
   @override
   String get raffleDrawScreenTitle => 'Realizar Sorteio';

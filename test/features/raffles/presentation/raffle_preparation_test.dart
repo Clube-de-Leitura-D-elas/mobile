@@ -285,6 +285,7 @@ void main() {
       cubit.emitSuccess();
       await tester.pumpAndSettle();
       expect(find.text('draw-done'), findsOneWidget);
+      expect(find.text('Sorteio realizado com sucesso!'), findsNothing);
 
       await tester.tap(find.text('draw-done'));
       await tester.pumpAndSettle();
