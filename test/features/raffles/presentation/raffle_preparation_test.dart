@@ -202,7 +202,6 @@ void main() {
     expect(find.byTooltip('Voltar'), findsOneWidget);
     expect(find.widgetWithText(AppButton, 'Voltar'), findsNothing);
     expect(find.text('Mariana de Souza'), findsOneWidget);
-    expect(find.text('Mariana de Souza'), findsOneWidget);
     expect(find.text('Alana Mendes (Excluída)'), findsOneWidget);
     expect(find.text('Já foi sorteada neste ciclo'), findsOneWidget);
 
@@ -261,7 +260,9 @@ void main() {
                 MaterialPageRoute<void>(
                   builder: (_) => BlocProvider<RafflePreparationCubit>.value(
                     value: cubit,
-                    child: const RafflePreparationScreen(meetingId: 'meeting-1'),
+                    child: const RafflePreparationScreen(
+                      meetingId: 'meeting-1',
+                    ),
                   ),
                 ),
               ),
@@ -340,6 +341,7 @@ void main() {
       cubit.emitSuccess();
       await tester.pumpAndSettle();
       expect(find.text('draw-done'), findsOneWidget);
+      expect(find.text('Sorteio realizado com sucesso!'), findsNothing);
 
       await tester.tap(find.text('draw-done'));
       await tester.pumpAndSettle();

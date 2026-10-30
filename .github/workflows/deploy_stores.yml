@@ -104,7 +104,7 @@ jobs:
   # ==========================================
   deploy-ios:
     if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == 'ios' || github.event_name == 'release' }}
-    runs-on: macos-14
+    runs-on: macos-latest
 
     steps:
       - name: Checkout do Repositório
@@ -150,11 +150,12 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH $(security list-keychains -d user | tr -d '"')
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH || true
 
-      - name: Instalar Dependências Flutter e CocoaPods
+      - name: Instalar Dependências Flutter e Preparar iOS
         run: |
+          flutter config --no-enable-swift-package-manager
           flutter pub get
           flutter gen-l10n
-          cd ios && pod install
+          cd ios && pod install --repo-update
 
       - name: Compilar e Publicar no TestFlight via Fastlane
         working-directory: ios

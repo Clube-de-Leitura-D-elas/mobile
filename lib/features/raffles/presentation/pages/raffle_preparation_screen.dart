@@ -38,7 +38,6 @@ class RafflePreparationScreen extends StatelessWidget {
             if (state is RafflePreparationError) {
               context.showAppToast(context.l10n.raffleErrorMessage);
             } else if (state is RafflePreparationSuccess) {
-              context.showAppToast(context.l10n.raffleSuccessToast);
               _openDraw(context, state.selectedParticipants);
             }
           },
