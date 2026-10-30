@@ -150,11 +150,11 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH $(security list-keychains -d user | tr -d '"')
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH || true
 
-      - name: Instalar Dependências Flutter e CocoaPods
+      - name: Instalar Dependências Flutter e Preparar iOS
         run: |
           flutter pub get
           flutter gen-l10n
-          cd ios && pod install
+          flutter build ios --config-only --release --no-codesign
 
       - name: Compilar e Publicar no TestFlight via Fastlane
         working-directory: ios
