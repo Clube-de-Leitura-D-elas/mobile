@@ -12,7 +12,28 @@
           "package_name": "com.clubedeleituradelas.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "86038929253-dppat0686sn8o3lr3prqk7tpiilcbt06.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.clubedeleituradelas.app",
+            "certificate_hash": "eaffc8d121a2b44853e6ccb5a43cac2e71fa03c1"
+          }
+        },
+        {
+          "client_id": "86038929253-van0q5cisali9g74oie82rhi850dlh0i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.clubedeleituradelas.app",
+            "certificate_hash": "7060bc1da9597430ec7c3dd6bbc7427accd4b5d5"
+          }
+        },
+        {
+          "client_id": "86038929253-bijrkoi0kpu79gqg1fps8eiegm6apd82.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBWrsUfD_36qY22MHqcRr8KyaSTXShtlLI"
@@ -20,7 +41,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "86038929253-bijrkoi0kpu79gqg1fps8eiegm6apd82.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "86038929253-nhg431h091l841dv3dof80n84gqja9od.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.clubedeleituradelas.app"
+              }
+            }
+          ]
         }
       }
     }

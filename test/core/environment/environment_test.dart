@@ -15,5 +15,6 @@ void main() {
     expect(env.supabaseAnonKey, equals(''));
     expect(env.hasSupabaseConfig, isFalse);
     expect(env.iosClientId, equals(''));
+    expect(env.webClientId, equals(''));
   });
 }

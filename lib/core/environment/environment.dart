@@ -19,4 +19,6 @@ class Environment {
       supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
 
   String get iosClientId => dotenv.env['IOS_CLIENT_ID'] ?? '';
+
+  String get webClientId => dotenv.env['WEB_CLIENT_ID'] ?? '';
 }

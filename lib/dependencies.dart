@@ -57,7 +57,10 @@ class DependenciesContainer {
       );
 
     serviceLocator<GoogleSignIn>().initialize(
-      clientId: environment.iosClientId,
+      clientId:
+          environment.iosClientId.isNotEmpty ? environment.iosClientId : null,
+      serverClientId:
+          environment.webClientId.isNotEmpty ? environment.webClientId : null,
     );
 
     serviceLocator.registerLazySingleton<AuthRepository>(
