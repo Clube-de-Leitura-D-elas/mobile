@@ -104,7 +104,7 @@ jobs:
   # ==========================================
   deploy-ios:
     if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == 'ios' || github.event_name == 'release' }}
-    runs-on: macos-14
+    runs-on: macos-latest
 
     steps:
       - name: Checkout do Repositório

@@ -1213,12 +1213,6 @@ abstract class AppLocalizations {
   /// **'Cancelar'**
   String get raffleConfirmDialogCancel;
 
-  /// Mensagem de sucesso exibida no toast após a realização do sorteio
-  ///
-  /// In pt, this message translates to:
-  /// **'Sorteio realizado com sucesso!'**
-  String get raffleSuccessToast;
-
   /// Título no header da tela de realização do sorteio
   ///
   /// In pt, this message translates to:

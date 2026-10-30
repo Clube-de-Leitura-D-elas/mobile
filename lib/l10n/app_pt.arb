@@ -899,10 +899,6 @@
   "@raffleConfirmDialogCancel": {
     "description": "Texto do botão de cancelamento na caixa de diálogo do sorteio"
   },
-  "raffleSuccessToast": "Sorteio realizado com sucesso!",
-  "@raffleSuccessToast": {
-    "description": "Mensagem de sucesso exibida no toast após a realização do sorteio"
-  },
   "raffleDrawScreenTitle": "Realizar Sorteio",
   "@raffleDrawScreenTitle": {
     "description": "Título no header da tela de realização do sorteio"
