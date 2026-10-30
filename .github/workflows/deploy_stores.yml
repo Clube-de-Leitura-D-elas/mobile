@@ -152,9 +152,10 @@ jobs:
 
       - name: Instalar Dependências Flutter e Preparar iOS
         run: |
+          flutter config --no-enable-swift-package-manager
           flutter pub get
           flutter gen-l10n
-          flutter build ios --config-only --release --no-codesign
+          cd ios && pod install --repo-update
 
       - name: Compilar e Publicar no TestFlight via Fastlane
         working-directory: ios
