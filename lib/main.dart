@@ -26,25 +26,47 @@ Future<void> mainAsync() async {
       : WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  final environment = Environment.instance;
-  await environment.load();
+  try {
+    final environment = Environment.instance;
+    await environment.load();
 
-  if (environment.hasSupabaseConfig) {
-    await Supabase.initialize(
-      url: environment.supabaseUrl,
-      publishableKey: environment.supabaseAnonKey,
+    if (environment.hasSupabaseConfig) {
+      await Supabase.initialize(
+        url: environment.supabaseUrl,
+        publishableKey: environment.supabaseAnonKey,
+      );
+    } else {
+      debugPrint(
+        'Supabase não configurado. Defina SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY no .env.',
+      );
+    }
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
     );
-  } else {
-    debugPrint(
-      'Supabase não configurado. Defina SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY no .env.',
+
+    DependenciesContainer();
+    runApp(const MainApp());
+  } catch (error, stackTrace) {
+    debugPrint('Erro durante a inicialização do app: $error\n$stackTrace');
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                'Erro ao inicializar o aplicativo:\n$error',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
+  } finally {
+    FlutterNativeSplash.remove();
   }
-
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  DependenciesContainer();
-  runApp(const MainApp());
-  FlutterNativeSplash.remove();
 }
 
 class MainApp extends StatelessWidget {
