@@ -10,6 +10,12 @@ platform :ios do
       is_key_content_base64: false
     )
 
+    # Faz o download automático / gerenciamento do Provisioning Profile da App Store via API Key
+    get_provisioning_profile(
+      api_key: api_key,
+      app_identifier: "com.clubedeleituradelas.app"
+    )
+
     # Gera o IPA pronto para distribuição
     build_app(
       workspace: "Runner.xcworkspace",
