@@ -1,0 +1,166 @@
+name: Deploy to Stores (Fastlane)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Qual plataforma publicar?'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - android
+          - ios
+      android_track:
+        description: 'Faixa do Android (Google Play)'
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+          - internal
+          - alpha
+          - production
+  release:
+    types: [published]
+
+jobs:
+  # ==========================================
+  # ANDROID DEPLOY (Google Play)
+  # ==========================================
+  deploy-android:
+    if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == 'android' || github.event_name == 'release' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Java / JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Configurar Ruby + Bundler (Fastlane)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          working-directory: android
+          bundler-cache: true
+
+      - name: Criar arquivo .env
+        run: |
+          if [ -n "${{ secrets.ENV_FILE }}" ]; then
+            echo "${{ secrets.ENV_FILE }}" > .env
+          elif [ ! -f .env ]; then
+            cp .env.example .env || touch .env
+          fi
+
+      - name: Decodificar Upload Keystore e criar key.properties
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > ${{ runner.temp }}/upload-keystore.jks
+          cat <<EOF > android/key.properties
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=${KEY_ALIAS:-upload}
+          storeFile=${{ runner.temp }}/upload-keystore.jks
+          EOF
+
+      - name: Instalar Dependências Flutter
+        run: flutter pub get
+
+      - name: Gerar Arquivos de Localização (ARB / l10n)
+        run: flutter gen-l10n
+
+      - name: Gerar App Bundle (.aab) Assinado
+        run: flutter build appbundle --release
+
+      - name: Criar JSON da Service Account do Google Play
+        env:
+          PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
+        run: |
+          echo "$PLAY_STORE_CONFIG_JSON" > android/fastlane/play-store-credentials.json
+
+      - name: Publicar no Google Play via Fastlane
+        working-directory: android
+        run: |
+          TRACK="${{ github.event.inputs.android_track || 'internal' }}"
+          bundle exec fastlane "$TRACK"
+
+  # ==========================================
+  # IOS DEPLOY (Apple TestFlight)
+  # ==========================================
+  deploy-ios:
+    if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == 'ios' || github.event_name == 'release' }}
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Configurar Ruby + Bundler (Fastlane)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          working-directory: ios
+          bundler-cache: true
+
+      - name: Criar arquivo .env
+        run: |
+          if [ -n "${{ secrets.ENV_FILE }}" ]; then
+            echo "${{ secrets.ENV_FILE }}" > .env
+          elif [ ! -f .env ]; then
+            cp .env.example .env || touch .env
+          fi
+
+      - name: Instalar Certificado de Distribuição Apple no Keychain
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: "temp-ci-keychain-pass"
+        run: |
+          CERT_PATH=${{ runner.temp }}/build_certificate.p12
+          KEYCHAIN_PATH=${{ runner.temp }}/app-signing.keychain-db
+
+          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode > $CERT_PATH
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          security import $CERT_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH $(security list-keychains -d user | tr -d '"')
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+      - name: Instalar Dependências Flutter e CocoaPods
+        run: |
+          flutter pub get
+          flutter gen-l10n
+          cd ios && pod install
+
+      - name: Compilar e Publicar no TestFlight via Fastlane
+        working-directory: ios
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          bundle exec fastlane beta
