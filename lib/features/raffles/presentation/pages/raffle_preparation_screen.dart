@@ -28,6 +28,7 @@ class RafflePreparationScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: colors.bgDefault,
+      appBar: ScreenHeader.back(title: context.l10n.rafflePreparationTitle),
       body: SafeArea(
         child: BlocConsumer<RafflePreparationCubit, RafflePreparationState>(
           listenWhen: (previous, current) =>
@@ -78,10 +79,9 @@ class RafflePreparationScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  _ActionButtons(
+                  _ContinueButton(
                     isSubmitting: state.isSubmitting,
                     canConfirm: hasSelected,
-                    onBack: () => Navigator.of(context).pop(),
                     onContinue: () async {
                       final confirmed = await ConfirmRaffleDialog.show(context);
                       if (confirmed == true && context.mounted) {
@@ -145,12 +145,7 @@ class _RaffleHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Gap(32),
-        Text(
-          context.l10n.rafflePreparationTitle,
-          style: typography.headingH2.copyWith(color: colors.textDefault),
-        ),
-        const Gap4(),
+        const Gap16(),
         Text(
           context.l10n.rafflePreparationSubtitle,
           style: typography.bodyDefault.copyWith(color: colors.textMuted),
@@ -205,16 +200,14 @@ class _ParticipantsTable extends StatelessWidget {
   }
 }
 
-class _ActionButtons extends StatelessWidget {
+class _ContinueButton extends StatelessWidget {
   final bool isSubmitting;
   final bool canConfirm;
-  final VoidCallback onBack;
   final VoidCallback onContinue;
 
-  const _ActionButtons({
+  const _ContinueButton({
     required this.isSubmitting,
     required this.canConfirm,
-    required this.onBack,
     required this.onContinue,
   });
 
@@ -224,22 +217,12 @@ class _ActionButtons extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.all(spacing.s24),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppButton.secondary(
-              label: context.l10n.back,
-              onPressed: onBack,
-            ),
-          ),
-          const Gap16(),
-          Expanded(
-            child: AppButton.primary(
-              label: context.l10n.continueAction,
-              onPressed: isSubmitting || !canConfirm ? null : onContinue,
-            ),
-          ),
-        ],
+      child: SizedBox(
+        width: double.infinity,
+        child: AppButton.primary(
+          label: context.l10n.continueAction,
+          onPressed: isSubmitting || !canConfirm ? null : onContinue,
+        ),
       ),
     );
   }

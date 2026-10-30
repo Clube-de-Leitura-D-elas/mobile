@@ -121,13 +121,11 @@ void main() {
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('pt', 'BR'),
-        home: Scaffold(
-          body: BlocProvider<RafflePreparationCubit>.value(
-            value: cubit,
-            child: const RafflePreparationScreen(
-              meetingId: 'meeting-123',
-              meetingTitle: 'Julho',
-            ),
+        home: BlocProvider<RafflePreparationCubit>.value(
+          value: cubit,
+          child: const RafflePreparationScreen(
+            meetingId: 'meeting-123',
+            meetingTitle: 'Julho',
           ),
         ),
       ),
@@ -187,16 +185,22 @@ void main() {
         locale: const Locale('pt', 'BR'),
         home: BlocProvider<RafflePreparationCubit>.value(
           value: cubit,
-          child: const Scaffold(
-            body: RafflePreparationScreen(meetingId: 'mock-id-123'),
-          ),
+          child: const RafflePreparationScreen(meetingId: 'mock-id-123'),
         ),
       ),
     );
     await tester.pumpAndSettle(); // Renderiza a tela inicial
 
-    // 3. Capturar visualmente se os participantes aparecem
-    expect(find.text('Realizar sorteio'), findsOneWidget);
+    // 3. Capturar visualmente o cabeçalho e os participantes
+    expect(
+      find.descendant(
+        of: find.byType(ScreenHeader),
+        matching: find.text('Realizar sorteio'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.byTooltip('Voltar'), findsOneWidget);
+    expect(find.widgetWithText(AppButton, 'Voltar'), findsNothing);
     expect(find.text('Mariana de Souza'), findsOneWidget);
     expect(find.text('Alana Mendes (Excluída)'), findsOneWidget);
     expect(find.text('Já foi sorteada neste ciclo'), findsOneWidget);
@@ -210,7 +214,12 @@ void main() {
     await tester.tap(checkboxBeatriz, warnIfMissed: false);
     await tester.pumpAndSettle();
 
-    // 5. Clicar no botão 'Continuar' no rodapé
+    // 5. Clicar no botão 'Continuar' no rodapé, que ocupa toda a largura
+    // (tela de 390 de largura menos o padding s24 de cada lado)
+    expect(
+      tester.getSize(find.widgetWithText(AppButton, 'Continuar')).width,
+      390 - 2 * 24,
+    );
     final botaoContinuar = find.text('Continuar');
     expect(botaoContinuar, findsOneWidget);
     await tester.tap(botaoContinuar);
@@ -226,6 +235,53 @@ void main() {
     tester.view.resetPhysicalSize();
     tester.view.resetDevicePixelRatio();
   });
+
+  testWidgets(
+    'given the preparation is open, when the back arrow is tapped, then returns to the previous screen',
+    (tester) async {
+      final cubit = MockRafflePreparationCubit(
+        const RafflePreparationLoaded(participants: []),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('pt', 'BR'),
+          home: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => BlocProvider<RafflePreparationCubit>.value(
+                    value: cubit,
+                    child: const RafflePreparationScreen(
+                      meetingId: 'meeting-1',
+                    ),
+                  ),
+                ),
+              ),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      expect(find.byType(RafflePreparationScreen), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Voltar'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(RafflePreparationScreen), findsNothing);
+      expect(find.text('open'), findsOneWidget);
+    },
+  );
 
   testWidgets(
     'given the raffle is confirmed, when the draw closes, then completes the push that opened the preparation',
