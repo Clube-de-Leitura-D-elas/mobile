@@ -122,7 +122,7 @@ void main() {
 
       tile.onChanged!();
 
-      expect((cubit.state as MeetingPresenceEditing).marked, {'u-1'});
+      expect((cubit.state as MeetingPresenceEditing).marked, {'u-2'});
     });
 
     testWidgets('exibe botão de confirmar habilitado e dispara confirm', (

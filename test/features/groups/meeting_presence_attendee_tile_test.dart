@@ -51,31 +51,41 @@ void main() {
       AppLocalizations.of(tester.element(find.byType(PresenceAttendeeTile)));
 
   group('PresenceAttendeeTile', () {
-    testWidgets('mostra o nome e o status confirmado', (tester) async {
-      await pumpTile(tester, attendee: _attendee(), onChanged: () {});
+    testWidgets('marcado mostra o nome e presente', (tester) async {
+      await pumpTile(
+        tester,
+        attendee: _attendee(),
+        isChecked: true,
+        onChanged: () {},
+      );
 
       expect(find.text('Ana'), findsOneWidget);
-      expect(find.text(l10nOf(tester).invitationConfirmed), findsOneWidget);
+      expect(find.text(l10nOf(tester).meetingPresencePresent), findsOneWidget);
     });
 
-    testWidgets('mostra o status sem resposta quando pendente', (tester) async {
+    testWidgets('desmarcado mostra ausente', (tester) async {
+      await pumpTile(
+        tester,
+        attendee: _attendee(),
+        isChecked: false,
+        onChanged: () {},
+      );
+
+      expect(find.text(l10nOf(tester).meetingPresenceAbsent), findsOneWidget);
+    });
+
+    testWidgets('o status segue a checkbox, não a resposta ao convite', (
+      tester,
+    ) async {
       await pumpTile(
         tester,
         attendee: _attendee(status: MeetingInvitationStatus.pending),
+        isChecked: true,
         onChanged: () {},
       );
 
-      expect(find.text(l10nOf(tester).invitationNoResponse), findsOneWidget);
-    });
-
-    testWidgets('mostra o status recusado', (tester) async {
-      await pumpTile(
-        tester,
-        attendee: _attendee(status: MeetingInvitationStatus.declined),
-        onChanged: () {},
-      );
-
-      expect(find.text(l10nOf(tester).invitationDeclined), findsOneWidget);
+      expect(find.text(l10nOf(tester).meetingPresencePresent), findsOneWidget);
+      expect(find.text(l10nOf(tester).invitationNoResponse), findsNothing);
     });
 
     testWidgets('o checkbox reflete isChecked', (tester) async {
@@ -94,6 +104,55 @@ void main() {
         onChanged: () {},
       );
       expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isFalse);
+    });
+
+    testWidgets('expõe um nó acessível com nome, status e checkbox', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pumpTile(
+        tester,
+        attendee: _attendee(),
+        isChecked: true,
+        onChanged: () {},
+      );
+
+      expect(
+        tester.getSemantics(find.byType(PresenceAttendeeTile)),
+        isSemantics(
+          label: 'Ana, Presente',
+          hasCheckedState: true,
+          isChecked: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          hasTapAction: true,
+        ),
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('sem onChanged o nó acessível fica desabilitado', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pumpTile(
+        tester,
+        attendee: _attendee(),
+        isChecked: false,
+        onChanged: null,
+      );
+
+      expect(
+        tester.getSemantics(find.byType(PresenceAttendeeTile)),
+        isSemantics(
+          label: 'Ana, Ausente',
+          isChecked: false,
+          hasEnabledState: true,
+          isEnabled: false,
+          hasTapAction: false,
+        ),
+      );
+      semantics.dispose();
     });
 
     testWidgets('tocar no tile dispara onChanged', (tester) async {
