@@ -25,6 +25,11 @@ class MeetingTasksContent extends StatelessWidget {
   final String meetingId;
   final MeetingTasksEntity tasks;
 
+  /// A edição de data e local só é aceita pelo servidor enquanto o encontro
+  /// está agendado.
+  bool get _canEditSchedule =>
+      tasks.schedule.done && tasks.status == MeetingTaskStatus.scheduled;
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
@@ -60,13 +65,11 @@ class MeetingTasksContent extends StatelessWidget {
                       ? MeetingTaskCardState.done
                       : MeetingTaskCardState.active,
                   actionLabel: l10n.meetingTasksScheduleAction,
-                  onPressed: () => _openAndReload(
-                    context,
-                    Uri(
-                      path: GroupRoutes.meetingEdit,
-                      queryParameters: {'meeting_id': meetingId},
-                    ).toString(),
-                  ),
+                  onPressed: () => _openMeetingEdit(context),
+                  onEdit: _canEditSchedule
+                      ? () => _openMeetingEdit(context)
+                      : null,
+                  editLabel: l10n.meetingTasksScheduleEditAction,
                 ),
                 SizedBox(height: spacing.s12),
                 MeetingTaskCard(
@@ -129,6 +132,15 @@ class MeetingTasksContent extends StatelessWidget {
         : '${date.hour}h${date.minute.toString().padLeft(2, '0')}';
     return '${day[0].toUpperCase()}${day.substring(1)} · $hour';
   }
+
+  /// Abre a edição de data e local (usada para marcar e para editar).
+  Future<void> _openMeetingEdit(BuildContext context) => _openAndReload(
+    context,
+    Uri(
+      path: GroupRoutes.meetingEdit,
+      queryParameters: {'meeting_id': meetingId},
+    ).toString(),
+  );
 
   /// Abre uma das telas reutilizadas e, ao voltar, recarrega as tarefas para
   /// atualizar o estado e o contador.

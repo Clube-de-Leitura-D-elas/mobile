@@ -1363,6 +1363,12 @@ abstract class AppLocalizations {
   /// **'Marcar agora'**
   String get meetingTasksScheduleAction;
 
+  /// Tooltip e rótulo de acessibilidade do botão de editar data e local no card de tarefas do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar data e local'**
+  String get meetingTasksScheduleEditAction;
+
   /// Título da tarefa de enviar fotos e registro do encontro
   ///
   /// In pt, this message translates to:

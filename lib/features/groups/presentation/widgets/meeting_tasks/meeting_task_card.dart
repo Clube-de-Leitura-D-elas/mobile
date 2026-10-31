@@ -14,6 +14,8 @@ class MeetingTaskCard extends StatelessWidget {
     required this.state,
     required this.actionLabel,
     required this.onPressed,
+    this.onEdit,
+    this.editLabel,
     this.tag,
   });
 
@@ -22,6 +24,9 @@ class MeetingTaskCard extends StatelessWidget {
   final MeetingTaskCardState state;
   final String actionLabel;
   final VoidCallback onPressed;
+
+  final VoidCallback? onEdit;
+  final String? editLabel;
   final String? tag;
 
   @override
@@ -31,6 +36,9 @@ class MeetingTaskCard extends StatelessWidget {
     final spacing = context.spacing;
     final locked = state == MeetingTaskCardState.locked;
     final tag = this.tag;
+    final onEdit = this.onEdit;
+    final editLabel = this.editLabel;
+    final isDone = state == MeetingTaskCardState.done;
 
     return AppCard(
       variant: state == MeetingTaskCardState.active
@@ -49,7 +57,15 @@ class MeetingTaskCard extends StatelessWidget {
                   ),
                 ),
               ),
-              if (state == MeetingTaskCardState.done)
+              if (isDone && onEdit != null && editLabel != null)
+                IconButton(
+                  icon: const Icon(Icons.edit_outlined),
+                  color: colors.textBrand,
+                  tooltip: editLabel,
+                  onPressed: onEdit,
+                  visualDensity: VisualDensity.compact,
+                ),
+              if (isDone)
                 Icon(
                   Icons.check_circle,
                   color: colors.feedbackSuccess,
