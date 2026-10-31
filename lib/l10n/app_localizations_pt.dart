@@ -890,7 +890,17 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get meetingPromoTextSaveFailed =>
-      'Não foi possível salvar o texto de divulgação. Tente novamente.';
+      'Nao foi possivel salvar o texto de divulgacao. Tente novamente.';
+
+  @override
+  String starRatingSemanticLabel(String rating, int maxStars) {
+    return '$rating de $maxStars estrelas';
+  }
+
+  @override
+  String starRatingInputStarLabel(int starValue, int maxStars) {
+    return '$starValue de $maxStars estrelas';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1543,4 +1553,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get raffleSavedSuccessToast =>
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
+
+  @override
+  String starRatingSemanticLabel(String rating, int maxStars) {
+    return '$rating de $maxStars estrelas';
+  }
+
+  @override
+  String starRatingInputStarLabel(int starValue, int maxStars) {
+    return '$starValue de $maxStars estrelas';
+  }
 }
