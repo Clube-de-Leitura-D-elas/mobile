@@ -85,6 +85,8 @@
   "meetingPresenceEmptyDescription": "Quando houver participantes, eles aparecerão aqui para registrar a presença.",
   "meetingPresenceHeader": "Lista de Presença",
   "meetingPresenceConfirmed": "Presença confirmada",
+  "meetingPresencePresent": "Presente",
+  "meetingPresenceAbsent": "Ausente",
   "invitationConfirmed": "Confirmou presença",
   "invitationNoResponse": "Sem resposta",
   "invitationDeclined": "Recusou o convite",

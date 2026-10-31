@@ -1141,6 +1141,18 @@ abstract class AppLocalizations {
   /// **'Presença confirmada'**
   String get meetingPresenceConfirmed;
 
+  /// Indicação exibida na lista de presença para a participante marcada
+  ///
+  /// In pt, this message translates to:
+  /// **'Presente'**
+  String get meetingPresencePresent;
+
+  /// Indicação exibida na lista de presença para a participante desmarcada
+  ///
+  /// In pt, this message translates to:
+  /// **'Ausente'**
+  String get meetingPresenceAbsent;
+
   /// No description provided for @invitationConfirmed.
   ///
   /// In pt, this message translates to:

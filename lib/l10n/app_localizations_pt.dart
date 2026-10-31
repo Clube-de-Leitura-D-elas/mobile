@@ -616,6 +616,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingPresenceConfirmed => 'Presença confirmada';
 
   @override
+  String get meetingPresencePresent => 'Presente';
+
+  @override
+  String get meetingPresenceAbsent => 'Ausente';
+
+  @override
   String get invitationConfirmed => 'Confirmou presença';
 
   @override
@@ -1450,6 +1456,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get meetingPresenceConfirmed => 'Presença confirmada';
+
+  @override
+  String get meetingPresencePresent => 'Presente';
+
+  @override
+  String get meetingPresenceAbsent => 'Ausente';
 
   @override
   String get invitationConfirmed => 'Confirmou presença';

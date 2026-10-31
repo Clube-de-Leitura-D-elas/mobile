@@ -858,6 +858,14 @@
   "@meetingPresenceConfirmed": {
     "description": "Indicação exibida após o registro da presença do encontro"
   },
+  "meetingPresencePresent": "Presente",
+  "@meetingPresencePresent": {
+    "description": "Indicação exibida na lista de presença para a participante marcada"
+  },
+  "meetingPresenceAbsent": "Ausente",
+  "@meetingPresenceAbsent": {
+    "description": "Indicação exibida na lista de presença para a participante desmarcada"
+  },
   "invitationConfirmed": "Confirmou presença",
   "invitationNoResponse": "Sem resposta",
  "invitationDeclined": "Recusou o convite",
