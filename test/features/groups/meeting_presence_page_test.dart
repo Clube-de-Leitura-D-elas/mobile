@@ -109,7 +109,7 @@ void main() {
       );
     });
 
-    testWidgets('marcar um participante atualiza a tela', (tester) async {
+    testWidgets('desmarcar um participante atualiza a tela', (tester) async {
       stubAttendance([_attendee('u-1', 'Ana'), _attendee('u-2', 'Bruno')]);
 
       await tester.pumpWidget(buildApp());
@@ -123,7 +123,7 @@ void main() {
         find.byType(MeetingPresenceScreen),
       );
 
-      expect(screen.marked, {'u-2'});
+      expect(screen.marked, {'u-1'});
     });
 
     testWidgets('exibe a lista somente leitura no estado Closed', (
@@ -215,7 +215,6 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       await cubit.load(meetingId);
-      cubit.toggle('u-1');
       await tester.pump();
 
       await tester.tap(find.byType(AppButton));

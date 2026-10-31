@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
 
 class PresenceAttendeeTile extends StatelessWidget {
@@ -21,26 +20,33 @@ class PresenceAttendeeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final hint = switch (attendee.invitationStatus) {
-      MeetingInvitationStatus.confirmed => l10n.invitationConfirmed,
-      MeetingInvitationStatus.pending => l10n.invitationNoResponse,
-      MeetingInvitationStatus.declined => l10n.invitationDeclined,
-    };
+    final hint = isChecked
+        ? l10n.meetingPresencePresent
+        : l10n.meetingPresenceAbsent;
 
-    return ListTile(
-      leading: AppParticipantAvatar(photoUrl: attendee.photoUrl),
-      title: Text(attendee.name, style: context.typography.bodyDefault),
-      subtitle: Text(
-        hint,
-        style: context.typography.bodyDefault.copyWith(
-          color: context.colors.textMuted,
+    return Semantics(
+      container: true,
+      checked: isChecked,
+      enabled: onChanged != null,
+      label: '${attendee.name}, $hint',
+      onTap: onChanged,
+      child: ExcludeSemantics(
+        child: ListTile(
+          leading: AppParticipantAvatar(photoUrl: attendee.photoUrl),
+          title: Text(attendee.name, style: context.typography.bodyDefault),
+          subtitle: Text(
+            hint,
+            style: context.typography.bodyDefault.copyWith(
+              color: context.colors.textMuted,
+            ),
+          ),
+          trailing: Checkbox(
+            value: isChecked,
+            onChanged: onChanged == null ? null : (_) => onChanged!(),
+          ),
+          onTap: onChanged,
         ),
       ),
-      trailing: Checkbox(
-        value: isChecked,
-        onChanged: onChanged == null ? null : (_) => onChanged!(),
-      ),
-      onTap: onChanged,
     );
   }
 }

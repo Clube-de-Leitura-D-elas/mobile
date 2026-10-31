@@ -26,7 +26,10 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
       emit(
         alreadyRegistered
             ? MeetingPresenceClosed(sorted)
-            : MeetingPresenceEditing(attendees: sorted),
+            : MeetingPresenceEditing(
+                attendees: sorted,
+                marked: {for (final a in sorted) a.id},
+              ),
       );
     }, (failure) => emit(MeetingPresenceError(failure.message)));
   }

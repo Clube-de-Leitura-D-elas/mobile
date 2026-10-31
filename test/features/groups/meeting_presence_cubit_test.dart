@@ -77,7 +77,7 @@ void main() {
         'bruno',
         'carla',
       ]);
-      expect(editing.marked, isEmpty);
+      expect(editing.marked, {'u-1', 'u-2', 'u-3', 'u-4'});
       expect(editing.isSubmitting, isFalse);
       expect(editing.submitError, isNull);
       verify(() => repository.getMeetingAttendance(meetingId)).called(1);
@@ -154,29 +154,29 @@ void main() {
       await cubit.load(meetingId);
     });
 
-    test('marca um participante ainda não marcado', () {
+    test('desmarca um participante marcado', () {
       cubit.toggle('u-1');
 
       final state = cubit.state as MeetingPresenceEditing;
-      expect(state.marked, {'u-1'});
+      expect(state.marked, {'u-2'});
     });
 
-    test('desmarca um participante já marcado', () {
+    test('marca de novo um participante desmarcado', () {
       cubit
         ..toggle('u-1')
         ..toggle('u-1');
 
       final state = cubit.state as MeetingPresenceEditing;
-      expect(state.marked, isEmpty);
+      expect(state.marked, {'u-1', 'u-2'});
     });
 
-    test('permite marcar vários participantes', () {
+    test('permite desmarcar vários participantes', () {
       cubit
         ..toggle('u-1')
         ..toggle('u-2');
 
       final state = cubit.state as MeetingPresenceEditing;
-      expect(state.marked, {'u-1', 'u-2'});
+      expect(state.marked, isEmpty);
     });
 
     test('limpa o submitError ao alternar uma marcação', () async {
@@ -205,7 +205,7 @@ void main() {
 
       cubit.toggle('u-2');
 
-      expect((cubit.state as MeetingPresenceEditing).marked, {'u-1'});
+      expect((cubit.state as MeetingPresenceEditing).marked, {'u-2'});
 
       blocker.complete(const Success<void, GroupFailure>(null));
       await pending;
@@ -238,9 +238,7 @@ void main() {
           () => repository.setMeetingPresence(meetingId, any()),
         ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
 
-        cubit
-          ..toggle('u-1')
-          ..toggle('u-3');
+        cubit.toggle('u-2');
 
         final states = <MeetingPresenceState>[];
         final sub = cubit.stream.listen(states.add);
@@ -275,11 +273,37 @@ void main() {
       },
     );
 
+    test('em sucesso sem alterações marca todos como presentes', () async {
+      when(
+        () => repository.setMeetingPresence(meetingId, any()),
+      ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
+
+      await cubit.confirm();
+
+      final closed = cubit.state as MeetingPresenceClosed;
+      expect(
+        closed.attendees.every(
+          (a) => a.presenceStatus == MeetingPresenceStatus.present,
+        ),
+        isTrue,
+      );
+      verify(
+        () => repository.setMeetingPresence(
+          meetingId,
+          any(that: unorderedEquals(['u-1', 'u-2', 'u-3'])),
+        ),
+      ).called(1);
+    });
+
     test('em sucesso sem marcações marca todos como ausentes', () async {
       when(
         () => repository.setMeetingPresence(meetingId, any()),
       ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
 
+      cubit
+        ..toggle('u-1')
+        ..toggle('u-2')
+        ..toggle('u-3');
       await cubit.confirm();
 
       final closed = cubit.state as MeetingPresenceClosed;
@@ -329,7 +353,7 @@ void main() {
         final editing = cubit.state as MeetingPresenceEditing;
         expect(editing.isSubmitting, isFalse);
         expect(editing.submitError, failure.message);
-        expect(editing.marked, {'u-2'});
+        expect(editing.marked, {'u-1', 'u-3'});
       });
     }
 
