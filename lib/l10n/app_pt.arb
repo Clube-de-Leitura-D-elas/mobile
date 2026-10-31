@@ -1020,6 +1020,10 @@
   "@meetingTasksScheduleAction": {
     "description": "Botão que abre a edição do encontro"
   },
+  "meetingTasksScheduleEditAction": "Editar data e local",
+  "@meetingTasksScheduleEditAction": {
+    "description": "Tooltip e rótulo de acessibilidade do botão de editar data e local no card de tarefas do encontro"
+  },
   "meetingTasksRecordTitle": "2. Enviar fotos do encontro",
   "@meetingTasksRecordTitle": {
     "description": "Título da tarefa de enviar fotos e registro do encontro"

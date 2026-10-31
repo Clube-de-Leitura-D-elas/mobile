@@ -752,6 +752,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingTasksScheduleAction => 'Marcar agora';
 
   @override
+  String get meetingTasksScheduleEditAction => 'Editar data e local';
+
+  @override
   String get meetingTasksRecordTitle => '2. Enviar fotos do encontro';
 
   @override
