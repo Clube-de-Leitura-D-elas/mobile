@@ -5,6 +5,8 @@
 
 Plataforma mobile/web responsiva para gestão e organização do Clube de Leitura D'Elas.
 
+> Regras de código e de review (para pessoas, agentes de IA e o CodeRabbit): [`AGENTS.md`](AGENTS.md).
+
 ---
 
 ## 🛠️ Tecnologias
