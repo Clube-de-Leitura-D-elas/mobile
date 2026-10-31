@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# Revisor automático dos PRs. As regras do repositório ficam no AGENTS.md;
+# este arquivo só liga o bot e aponta para elas.
+language: pt-BR
+tone_instructions: >-
+  Revise como uma pessoa sênior do time: direta, em pt-BR, explicando o porquê e
+  sugerindo a correção. O time está aprendendo; aponte o que importa, sem nits de gosto.
+reviews:
+  profile: chill
+  auto_approvals:
+    enabled: true
+    allow_author_approval: false
+    max_merge_risk: moderate
+  high_level_summary: true
+  poem: false
+  in_progress_fortune: false
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    base_branches:
+      - "^main$"
+  path_filters:
+    - "!lib/l10n/app_localizations*.dart"
+    - "!pubspec.lock"
+  path_instructions:
+    - path: "**/*"
+      instructions: >-
+        Use o AGENTS.md da raiz como critério de review: as seções "Regras" e
+        "Checklist de review" valem como regras do repositório. Uma regra quebrada é
+        achado, mesmo que o código funcione. As regras valem para o código novo ou
+        alterado no PR: não peça refactor de código legado que o PR não tocou. A seção
+        "Ambiente local" do AGENTS.md não é regra de review.
+    - path: "lib/features/**"
+      instructions: >-
+        Aplique "Arquitetura", "Textos" e "Acessibilidade" do AGENTS.md: Supabase só na
+        camada data via SupabaseService, Failure tratado, contrato igual ao da Edge
+        Function do repositório backend, estado em Cubit, texto só via context.l10n,
+        Semantics e alvo de toque de 48×48 nos elementos novos.
+    - path: "lib/{features,design_system}/**/{widgets,pages}/**"
+      instructions: >-
+        Aplique "Design system" do AGENTS.md: cor, espaçamento e tipografia só pelos
+        tokens (context.colors, context.spacing, context.typography) e widgets App*
+        reaproveitados; aponte widget que duplica um do design system. Modal novo usa
+        AppDialog.
+    - path: "lib/l10n/*.arb"
+      instructions: >-
+        Toda chave nova no app_pt.arb tem a entrada @chave com description (o
+        app_pt_BR.arb não leva). Texto existente alterado só no app_pt.arb não muda
+        nada em aparelho pt_BR: confira se o app_pt_BR.arb também foi alterado.
+    - path: "test/**"
+      instructions: >-
+        Aplique "Testes" do AGENTS.md: o teste espelha o caminho de lib/, usa mocktail e
+        precisa falhar se o comportamento quebrar. Datasource confere o nome da function
+        e o body; cubit confere a sequência de estados.
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - AGENTS.md
