@@ -1620,6 +1620,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível salvar o texto de divulgação. Tente novamente.'**
   String get meetingPromoTextSaveFailed;
+
+  /// Chip de status de leitura: livro já lido pela leitora.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já lido'**
+  String get readingStatusRead;
+
+  /// Chip de status de leitura: livro que a leitora quer ler.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quero ler'**
+  String get readingStatusWantToRead;
+
+  /// Chip no detalhe do livro para marcar o livro como lido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar como lido'**
+  String get readingStatusMarkAsRead;
 }
 
 class _AppLocalizationsDelegate
