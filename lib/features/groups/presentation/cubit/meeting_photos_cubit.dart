@@ -47,7 +47,9 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
     await load(_meetingId);
   }
 
-  Future<void> pickAndUpload() async {
+  Future<void> pickAndUpload({
+    Future<String?> Function()? captionPicker,
+  }) async {
     if (state.isUploading || _isPicking) return;
     emit(state.copyWith(clearNotice: true));
 
@@ -68,7 +70,7 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
       case Failure(:final failure):
         emit(state.copyWith(notice: _pickerNotice(failure)));
       case Success(:final data):
-        await _uploadSelection(data);
+        await _uploadSelection(data, captionPicker: captionPicker);
     }
   }
 
@@ -146,13 +148,27 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
     }
   }
 
-  Future<void> _uploadSelection(List<PickedPhoto> selection) async {
+  Future<void> _uploadSelection(
+    List<PickedPhoto> selection, {
+    Future<String?> Function()? captionPicker,
+  }) async {
     final accepted = selection.where(_isAccepted).toList(growable: false);
     final skipped = selection.length - accepted.length;
     if (skipped > 0) {
       emit(state.copyWith(notice: MeetingPhotosSkippedNotice(skipped)));
     }
-    await _upload(accepted, pendingFailures: state.failedPhotos);
+    if (captionPicker == null) {
+      await _upload(accepted, pendingFailures: state.failedPhotos);
+      return;
+    }
+
+    final captioned = <PickedPhoto>[];
+    for (final photo in accepted) {
+      final caption = await captionPicker();
+      if (caption == null) return;
+      captioned.add(photo.copyWith(caption: caption.isEmpty ? null : caption));
+    }
+    await _upload(captioned, pendingFailures: state.failedPhotos);
   }
 
   Future<void> _upload(
@@ -166,12 +182,20 @@ class MeetingPhotosCubit extends Cubit<MeetingPhotosState> {
     for (var index = 0; index < queue.length; index++) {
       _emitProgress(index + 1, queue.length);
       final photo = queue[index];
-      final result = await groupRepository.addMeetingPhoto(
-        _meetingId,
-        photo.id,
-        photo.bytes,
-        photo.contentType ?? '',
-      );
+      final result = photo.caption == null
+          ? await groupRepository.addMeetingPhoto(
+              _meetingId,
+              photo.id,
+              photo.bytes,
+              photo.contentType ?? '',
+            )
+          : await groupRepository.addMeetingPhoto(
+              _meetingId,
+              photo.id,
+              photo.bytes,
+              photo.contentType ?? '',
+              caption: photo.caption,
+            );
       if (isClosed) return;
 
       switch (result) {

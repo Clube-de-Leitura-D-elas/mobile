@@ -36,6 +36,29 @@ Widget _app(Widget child) => MaterialApp(
 
 void main() {
   group('MeetingPhotoViewer download', () {
+    testWidgets(
+      'given a caption, when viewing the photo, then shows it below',
+      (tester) async {
+        await tester.pumpWidget(
+          _app(
+            const MeetingPhotoViewer(
+              photo: MeetingPhotoEntity(
+                id: 'p1',
+                url: 'https://a/p1.jpg',
+                caption: 'Legenda completa da foto',
+              ),
+              index: 0,
+              total: 1,
+            ),
+          ),
+        );
+
+        final caption = find.text('Legenda completa da foto');
+        expect(caption, findsOneWidget);
+        expect(tester.getTopLeft(caption).dy, greaterThan(0));
+      },
+    );
+
     Future<void> pumpViewer(
       WidgetTester tester,
       MeetingPhotoLauncher onDownload,

@@ -343,6 +343,28 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get meetingPhotoCaptionTitle => 'Legenda da foto';
+
+  @override
+  String get meetingPhotoCaptionHint => 'Escreva uma legenda para esta foto';
+
+  @override
+  String meetingPhotoCaptionCounter(int current, int max) {
+    return '$current de $max';
+  }
+
+  @override
+  String meetingPhotoCaptionTooLong(int max) {
+    return 'A legenda deve ter no máximo $max caracteres.';
+  }
+
+  @override
+  String get meetingPhotoCaptionSave => 'Salvar legenda';
+
+  @override
+  String get meetingPhotoCaptionSkip => 'Sem legenda';
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -827,6 +849,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingPhotoDownload => 'Baixar';
 
   @override
+  String get meetingPhotoPrevious => 'Foto anterior';
+
+  @override
+  String get meetingPhotoNext => 'Próxima foto';
+
+  @override
   String get meetingPhotoDownloadFailed =>
       'Não foi possível abrir a foto para baixar.';
 
@@ -1241,6 +1269,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String get meetingPhotoCaptionTitle => 'Legenda da foto';
+
+  @override
+  String get meetingPhotoCaptionHint => 'Escreva uma legenda para esta foto';
+
+  @override
+  String meetingPhotoCaptionCounter(int current, int max) {
+    return '$current de $max';
+  }
+
+  @override
+  String meetingPhotoCaptionTooLong(int max) {
+    return 'A legenda deve ter no máximo $max caracteres.';
+  }
+
+  @override
+  String get meetingPhotoCaptionSave => 'Salvar legenda';
+
+  @override
+  String get meetingPhotoCaptionSkip => 'Sem legenda';
+
+  @override
   String get onboardingReviewTitle => 'Verifique os seus dados';
 
   @override
@@ -1552,4 +1602,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get raffleSavedSuccessToast =>
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
+
+  @override
+  String get meetingPhotoPrevious => 'Foto anterior';
+
+  @override
+  String get meetingPhotoNext => 'Próxima foto';
 }

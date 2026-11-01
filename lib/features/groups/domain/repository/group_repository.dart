@@ -45,8 +45,9 @@ abstract class GroupRepository {
     String meetingId,
     String photoId,
     Uint8List bytes,
-    String contentType,
-  );
+    String contentType, {
+    String? caption,
+  });
 
   Future<Result<List<MeetingAttendanceEntity>, GroupFailure>>
   getMeetingAttendance(String meetingId);

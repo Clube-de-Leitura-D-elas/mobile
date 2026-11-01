@@ -26,25 +26,38 @@ class MeetingPhotosGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.spacing.s8;
 
-    return GridView.builder(
-      key: const ValueKey('meeting-photos-grid'),
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: _columns,
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-      ),
-      itemCount: photos.length + (showAddTile ? 1 : 0),
-      itemBuilder: (context, index) => index < photos.length
-          ? MeetingPhotoThumbnail(
-              photo: photos[index],
-              index: index,
-              onReload: onReload,
-              onOpen: onOpen == null ? null : () => onOpen!(index),
-            )
-          : MeetingPhotosAddTile(onTap: onAdd),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final tileWidth =
+            (constraints.maxWidth - spacing * (_columns - 1)) / _columns;
+        return GridView.builder(
+          key: const ValueKey('meeting-photos-grid'),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: _columns,
+            mainAxisExtent: tileWidth + MeetingPhotoThumbnail.captionHeight,
+            mainAxisSpacing: spacing,
+            crossAxisSpacing: spacing,
+          ),
+          itemCount: photos.length + (showAddTile ? 1 : 0),
+          itemBuilder: (context, index) => index < photos.length
+              ? MeetingPhotoThumbnail(
+                  photo: photos[index],
+                  index: index,
+                  onReload: onReload,
+                  onOpen: onOpen == null ? null : () => onOpen!(index),
+                )
+              : Align(
+                  alignment: Alignment.topCenter,
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: MeetingPhotosAddTile(onTap: onAdd),
+                  ),
+                ),
+        );
+      },
     );
   }
 }

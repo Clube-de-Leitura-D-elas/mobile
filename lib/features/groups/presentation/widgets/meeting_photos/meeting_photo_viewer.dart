@@ -14,6 +14,7 @@ class MeetingPhotoViewer extends StatefulWidget {
     required this.photo,
     required this.index,
     required this.total,
+    this.photos = const [],
     this.onDelete,
     this.onDownload,
   });
@@ -21,6 +22,7 @@ class MeetingPhotoViewer extends StatefulWidget {
   final MeetingPhotoEntity photo;
   final int index;
   final int total;
+  final List<MeetingPhotoEntity> photos;
 
   /// Nulo quando a participante não pode remover (só anfitriã/coordenação).
   final MeetingPhotoDeleter? onDelete;
@@ -30,16 +32,19 @@ class MeetingPhotoViewer extends StatefulWidget {
 
   static Future<void> open(
     BuildContext context, {
-    required MeetingPhotoEntity photo,
+    MeetingPhotoEntity? photo,
+    List<MeetingPhotoEntity> photos = const [],
     required int index,
     required int total,
     MeetingPhotoDeleter? onDelete,
   }) {
+    final gallery = photos.isEmpty ? [photo!] : photos;
     return Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => MeetingPhotoViewer(
-          photo: photo,
+          photo: gallery[index],
+          photos: gallery,
           index: index,
           total: total,
           onDelete: onDelete,
@@ -54,6 +59,23 @@ class MeetingPhotoViewer extends StatefulWidget {
 
 class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
   bool _isDeleting = false;
+  late int _currentIndex = widget.index;
+
+  MeetingPhotoEntity get _photo =>
+      widget.photos.isEmpty ? widget.photo : widget.photos[_currentIndex];
+
+  bool get _hasPrevious => _currentIndex > 0;
+  bool get _hasNext =>
+      _currentIndex <
+      (widget.photos.isEmpty ? widget.total : widget.photos.length) - 1;
+
+  void _showPrevious() {
+    if (_hasPrevious) setState(() => _currentIndex--);
+  }
+
+  void _showNext() {
+    if (_hasNext) setState(() => _currentIndex++);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +83,15 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
     final deleter = widget.onDelete;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         title: Text(
-          l10n.meetingPhotoViewerTitle(widget.index + 1, widget.total),
+          l10n.meetingPhotoViewerTitle(
+            _currentIndex + 1,
+            widget.photos.isEmpty ? widget.total : widget.photos.length,
+          ),
         ),
         actions: [
           IconButton(
@@ -93,23 +118,99 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
         ],
       ),
       body: SafeArea(
-        child: InteractiveViewer(
-          child: Center(
-            child: Semantics(
-              image: true,
-              label: l10n.meetingPhotoSemanticLabel(widget.index + 1),
-              child: Image.network(
-                widget.photo.url,
-                fit: BoxFit.contain,
-                loadingBuilder: (context, child, progress) => progress == null
-                    ? child
-                    : const CircularProgressIndicator(color: Colors.white),
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.broken_image_outlined,
-                  color: Colors.white,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LayoutBuilder(
+                builder: (context, constraints) => Padding(
+                  padding: EdgeInsets.only(top: context.spacing.s8),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      InteractiveViewer(
+                        child: Semantics(
+                          image: true,
+                          label: l10n.meetingPhotoSemanticLabel(
+                            _currentIndex + 1,
+                          ),
+                          child: Image.network(
+                            _photo.url,
+                            width: constraints.maxWidth,
+                            fit: BoxFit.contain,
+                            loadingBuilder: (context, child, progress) =>
+                                progress == null
+                                ? child
+                                : const SizedBox(
+                                    height: 48,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                            errorBuilder: (context, error, stackTrace) =>
+                                const SizedBox(
+                                  height: 48,
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.broken_image_outlined,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                          ),
+                        ),
+                      ),
+                      if (_hasPrevious)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            tooltip: l10n.meetingPhotoPrevious,
+                            icon: const Icon(
+                              Icons.chevron_left,
+                              color: Colors.white,
+                              size: 40,
+                            ),
+                            onPressed: _showPrevious,
+                          ),
+                        ),
+                      if (_hasNext)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            tooltip: l10n.meetingPhotoNext,
+                            icon: const Icon(
+                              Icons.chevron_right,
+                              color: Colors.white,
+                              size: 40,
+                            ),
+                            onPressed: _showNext,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+              if (_photo.caption case final caption?)
+                if (caption.trim().isNotEmpty)
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.fromLTRB(
+                      context.spacing.s16,
+                      context.spacing.s8,
+                      context.spacing.s16,
+                      context.spacing.s16,
+                    ),
+                    color: Colors.white,
+                    child: Text(
+                      caption,
+                      style: context.typography.bodyDefault.copyWith(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+            ],
           ),
         ),
       ),
@@ -123,7 +224,7 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
           uri,
           mode: launcher.LaunchMode.externalApplication,
         );
-    final uri = Uri.tryParse(widget.photo.url);
+    final uri = Uri.tryParse(_photo.url);
     var opened = false;
     try {
       opened = uri != null && await launch(uri);
@@ -141,7 +242,7 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
     setState(() => _isDeleting = true);
     var deleted = false;
     try {
-      deleted = await deleter(widget.photo.id);
+      deleted = await deleter(_photo.id);
     } catch (_) {
       deleted = false;
     }

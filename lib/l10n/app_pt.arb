@@ -403,6 +403,35 @@
         }
       }
     },
+    "meetingPhotoCaptionTitle": "Legenda da foto",
+    "@meetingPhotoCaptionTitle": {
+      "description": "Título do editor de legenda de uma foto do encontro"
+    },
+    "meetingPhotoCaptionHint": "Escreva uma legenda para esta foto",
+    "@meetingPhotoCaptionHint": {
+      "description": "Dica do campo de legenda da foto"
+    },
+    "meetingPhotoCaptionCounter": "{current} de {max}",
+    "@meetingPhotoCaptionCounter": {
+      "description": "Contador de caracteres da legenda da foto",
+      "placeholders": {
+        "current": { "type": "int" },
+        "max": { "type": "int" }
+      }
+    },
+    "meetingPhotoCaptionTooLong": "A legenda deve ter no máximo {max} caracteres.",
+    "@meetingPhotoCaptionTooLong": {
+      "description": "Erro para legenda acima do limite",
+      "placeholders": { "max": { "type": "int" } }
+    },
+    "meetingPhotoCaptionSave": "Salvar legenda",
+    "@meetingPhotoCaptionSave": {
+      "description": "Confirma a legenda da foto"
+    },
+    "meetingPhotoCaptionSkip": "Sem legenda",
+    "@meetingPhotoCaptionSkip": {
+      "description": "Envia a foto sem legenda"
+    },
 
     "@@Onboarding": "--- Onboarding ---",
     "onboardingReviewTitle": "Verifique os seus dados",
@@ -1121,6 +1150,14 @@
   "meetingPhotoDownload": "Baixar",
   "@meetingPhotoDownload": {
     "description": "Ação para baixar a foto do encontro."
+  },
+  "meetingPhotoPrevious": "Foto anterior",
+  "@meetingPhotoPrevious": {
+    "description": "Ação para exibir a foto anterior no visualizador"
+  },
+  "meetingPhotoNext": "Próxima foto",
+  "@meetingPhotoNext": {
+    "description": "Ação para exibir a próxima foto no visualizador"
   },
   "meetingPhotoDownloadFailed": "Não foi possível abrir a foto para baixar.",
   "@meetingPhotoDownloadFailed": {

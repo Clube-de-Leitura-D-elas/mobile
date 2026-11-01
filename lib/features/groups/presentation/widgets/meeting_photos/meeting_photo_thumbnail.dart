@@ -14,6 +14,7 @@ class MeetingPhotoThumbnail extends StatelessWidget {
   });
 
   static const radius = 8.0;
+  static const captionHeight = 20.0;
 
   final MeetingPhotoEntity photo;
   final int index;
@@ -30,23 +31,51 @@ class MeetingPhotoThumbnail extends StatelessWidget {
       label: onOpen == null
           ? context.l10n.meetingPhotoSemanticLabel(index + 1)
           : context.l10n.meetingPhotoOpenSemanticLabel(index + 1),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius),
-        child: GestureDetector(
-          onTap: onOpen,
-          child: LayoutBuilder(
-            builder: (context, constraints) => Image.network(
-              photo.url,
-              fit: BoxFit.cover,
-              cacheWidth: (constraints.maxWidth * pixelRatio).ceil(),
-              loadingBuilder: (context, child, progress) =>
-                  progress == null ? child : const MeetingPhotoPlaceholder(),
-              errorBuilder: (context, error, stackTrace) => onOpen == null
-                  ? MeetingPhotoPlaceholder(onReload: onReload)
-                  : const MeetingPhotoPlaceholder(failed: true),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AspectRatio(
+            aspectRatio: 1,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(radius),
+              child: GestureDetector(
+                onTap: onOpen,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => Image.network(
+                    photo.url,
+                    fit: BoxFit.cover,
+                    cacheWidth: (constraints.maxWidth * pixelRatio).ceil(),
+                    loadingBuilder: (context, child, progress) =>
+                        progress == null
+                        ? child
+                        : const MeetingPhotoPlaceholder(),
+                    errorBuilder: (context, error, stackTrace) => onOpen == null
+                        ? MeetingPhotoPlaceholder(onReload: onReload)
+                        : const MeetingPhotoPlaceholder(failed: true),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          if (photo.caption case final caption?)
+            if (caption.trim().isNotEmpty)
+              SizedBox(height: captionHeight, child: _caption(context)),
+        ],
+      ),
+    );
+  }
+
+  Widget _caption(BuildContext context) {
+    final caption = photo.caption;
+    if (caption == null || caption.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Text(
+      caption,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: context.typography.caption.copyWith(
+        color: context.colors.textDefault,
       ),
     );
   }
@@ -60,8 +89,6 @@ class MeetingPhotoPlaceholder extends StatelessWidget {
   });
 
   final VoidCallback? onReload;
-
-  /// Falhou, mas o toque fica com a miniatura (abre a foto em tela cheia).
   final bool failed;
 
   @override

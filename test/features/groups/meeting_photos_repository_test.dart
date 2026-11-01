@@ -171,6 +171,42 @@ void main() {
     );
 
     test(
+      'given a caption, when uploading, then sends it in the request',
+      () async {
+        answerUpload(
+          const Success(
+            SupabaseResponse(
+              data: MeetingPhotoModel(
+                id: 'photo-1',
+                url: 'https://a/1.jpg',
+                caption: 'Nosso encontro',
+              ),
+            ),
+          ),
+        );
+
+        await repository.addMeetingPhoto(
+          'meeting-1',
+          'photo-1',
+          bytes,
+          'image/jpeg',
+          caption: 'Nosso encontro',
+        );
+
+        final body =
+            verify(
+                  () => mockSupabaseService.invokeFunction<MeetingPhotoModel>(
+                    functionName: 'add-meeting-photo',
+                    body: captureAny(named: 'body'),
+                    decoder: any(named: 'decoder'),
+                  ),
+                ).captured.single
+                as Map<String, dynamic>;
+        expect(body['caption'], 'Nosso encontro');
+      },
+    );
+
+    test(
       'given the meeting is full (409), when uploading, then returns MeetingPhotoLimitFailure',
       () async {
         answerUpload(
