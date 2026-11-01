@@ -28,12 +28,21 @@ class BookListTile extends StatelessWidget {
   final VoidCallback? onStatusTap;
   final bool isStatusLoading;
 
+  /// Altura mínima do toque no título e no bloco de autor e gênero.
+  static const double hitHeight = 48;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final spacing = context.spacing;
     final typography = context.typography;
     final status = this.status;
+    final hasMeta = author.isNotEmpty || genre.isNotEmpty;
+    final label = [
+      title,
+      if (author.isNotEmpty) author,
+      if (genre.isNotEmpty) genre,
+    ].join(', ');
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -52,18 +61,21 @@ class BookListTile extends StatelessWidget {
               Semantics(
                 button: onTap != null,
                 enabled: onTap != null,
-                label: '$title, $author, $genre',
+                label: label,
                 child: InkWell(
                   onTap: onTap,
                   child: ExcludeSemantics(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: typography.headingH3.copyWith(
-                          color: colors.textDefault,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: hitHeight),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: typography.headingH3.copyWith(
+                            color: colors.textDefault,
+                          ),
                         ),
                       ),
                     ),
@@ -78,28 +90,36 @@ class BookListTile extends StatelessWidget {
                     child: InkWell(
                       onTap: onTap,
                       child: ExcludeSemantics(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (author.isNotEmpty)
-                              Text(
-                                author,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: typography.bodySmallEmphasis.copyWith(
-                                  color: colors.textMuted,
-                                ),
-                              ),
-                            if (genre.isNotEmpty)
-                              Text(
-                                genre,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: typography.labelTag.copyWith(
-                                  color: colors.textMuted,
-                                ),
-                              ),
-                          ],
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: hasMeta ? hitHeight : 0,
+                          ),
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (author.isNotEmpty)
+                                  Text(
+                                    author,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: typography.bodySmallEmphasis
+                                        .copyWith(color: colors.textMuted),
+                                  ),
+                                if (genre.isNotEmpty)
+                                  Text(
+                                    genre,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: typography.labelTag.copyWith(
+                                      color: colors.textMuted,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),

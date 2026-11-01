@@ -23,6 +23,7 @@ void main() {
         name: 'Roberta Fiore',
         rating: 4.5,
         comment: 'Um livro muito envolvente.',
+        photoUrl: 'https://example.com/roberta.jpg',
       ),
     );
 
@@ -36,6 +37,17 @@ void main() {
     final avatar = tester.widget<AppParticipantAvatar>(
       find.byType(AppParticipantAvatar),
     );
-    expect(avatar.diameter, BookReviewTile.avatarDiameter);
+    expect(avatar.diameter, 24);
+    expect(avatar.photoUrl, 'https://example.com/roberta.jpg');
+  });
+
+  testWidgets('hides the comment when it is empty', (tester) async {
+    await _pumpTile(
+      tester,
+      const BookReviewTile(name: 'Roberta Fiore', rating: 5, comment: ''),
+    );
+
+    expect(find.text('Roberta Fiore'), findsOneWidget);
+    expect(find.text(''), findsNothing);
   });
 }

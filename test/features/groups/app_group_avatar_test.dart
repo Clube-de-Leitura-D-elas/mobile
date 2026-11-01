@@ -61,6 +61,20 @@ void main() {
       },
     );
 
+    testWidgets('uses the diameter passed by the caller', (tester) async {
+      await tester.pumpWidget(
+        _wrap(const AppGroupAvatar(photoUrl: null, diameter: 48)),
+      );
+
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is SizedBox && widget.width == 48 && widget.height == 48,
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('Uses a 56x56 circular avatar', (tester) async {
       await tester.pumpWidget(_wrap(const AppGroupAvatar(photoUrl: null)));
 
