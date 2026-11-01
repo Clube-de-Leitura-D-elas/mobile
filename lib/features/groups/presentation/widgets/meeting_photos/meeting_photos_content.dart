@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photo_viewer.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photo_caption_editor.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_empty_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_grid.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_message.dart';
@@ -46,7 +46,11 @@ class _MeetingPhotosLoadedContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<MeetingPhotosCubit>();
-    final onAdd = state.isUploading ? null : cubit.pickAndUpload;
+    final onAdd = state.isUploading
+        ? null
+        : () => cubit.pickAndUpload(
+            captionPicker: () => MeetingPhotoCaptionEditor.show(context),
+          );
     final progress = state.progress;
     final spacing = context.spacing;
 
@@ -65,15 +69,13 @@ class _MeetingPhotosLoadedContent extends StatelessWidget {
           )
         else
           MeetingPhotosGrid(
-            photos: state.photos,
-            showAddTile:
-                state.canAddPhotos &&
-                state.photos.length < MeetingPhotoLimits.perMeeting,
+            photos: state.photos.take(2).toList(growable: false),
+            showAddTile: state.canAddPhotos,
             onAdd: onAdd,
             onReload: cubit.reload,
             onOpen: (index) => MeetingPhotoViewer.open(
               context,
-              photo: state.photos[index],
+              photos: state.photos,
               index: index,
               total: state.photos.length,
               onDelete: state.canAddPhotos && !state.isUploading

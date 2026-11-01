@@ -727,6 +727,42 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}'**
   String meetingPhotosRejected(int count);
 
+  /// Título do editor de legenda de uma foto do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Legenda da foto'**
+  String get meetingPhotoCaptionTitle;
+
+  /// Dica do campo de legenda da foto
+  ///
+  /// In pt, this message translates to:
+  /// **'Escreva uma legenda para esta foto'**
+  String get meetingPhotoCaptionHint;
+
+  /// Contador de caracteres da legenda da foto
+  ///
+  /// In pt, this message translates to:
+  /// **'{current} de {max}'**
+  String meetingPhotoCaptionCounter(int current, int max);
+
+  /// Erro para legenda acima do limite
+  ///
+  /// In pt, this message translates to:
+  /// **'A legenda deve ter no máximo {max} caracteres.'**
+  String meetingPhotoCaptionTooLong(int max);
+
+  /// Confirma a legenda da foto
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar legenda'**
+  String get meetingPhotoCaptionSave;
+
+  /// Envia a foto sem legenda
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem legenda'**
+  String get meetingPhotoCaptionSkip;
+
   /// Título principal do review de cadastro
   ///
   /// In pt, this message translates to:
@@ -1572,6 +1608,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Baixar'**
   String get meetingPhotoDownload;
+
+  /// Ação para exibir a foto anterior no visualizador
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto anterior'**
+  String get meetingPhotoPrevious;
+
+  /// Ação para exibir a próxima foto no visualizador
+  ///
+  /// In pt, this message translates to:
+  /// **'Próxima foto'**
+  String get meetingPhotoNext;
 
   /// Erro ao abrir a foto para download.
   ///

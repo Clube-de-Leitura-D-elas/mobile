@@ -188,16 +188,22 @@ class GroupRepositoryImpl implements GroupRepository {
     String meetingId,
     String photoId,
     Uint8List bytes,
-    String contentType,
-  ) async {
+    String contentType, {
+    String? caption,
+  }) async {
+    final body = <String, dynamic>{
+      'meeting_id': meetingId,
+      'photo_id': photoId,
+      'content_type': contentType,
+      'data_base64': await compute(base64Encode, bytes),
+    };
+    if (caption != null) {
+      body['caption'] = caption;
+    }
+
     final result = await supabaseService.invokeFunction<MeetingPhotoModel>(
       functionName: 'add-meeting-photo',
-      body: {
-        'meeting_id': meetingId,
-        'photo_id': photoId,
-        'content_type': contentType,
-        'data_base64': await compute(base64Encode, bytes),
-      },
+      body: body,
       decoder: MeetingPhotoModel.fromEnvelope,
     );
 

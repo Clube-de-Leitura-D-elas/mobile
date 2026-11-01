@@ -36,6 +36,124 @@ Widget _app(Widget child) => MaterialApp(
 
 void main() {
   group('MeetingPhotoViewer download', () {
+    testWidgets(
+      'given a caption, when viewing the photo, then shows it below',
+      (tester) async {
+        await tester.pumpWidget(
+          _app(
+            MeetingPhotoViewer(
+              photo: MeetingPhotoEntity(
+                id: 'p1',
+                url: 'https://a/p1.jpg',
+                caption: 'Legenda completa da foto',
+              ),
+              index: 0,
+              total: 1,
+            ),
+          ),
+        );
+
+        final caption = find.text('Legenda completa da foto');
+        expect(caption, findsOneWidget);
+        expect(tester.getTopLeft(caption).dy, greaterThan(0));
+      },
+    );
+
+    testWidgets(
+      'given a photo gallery, when navigating, then updates photo, caption, and counter',
+      (tester) async {
+        const photos = [
+          MeetingPhotoEntity(
+            id: 'p1',
+            url: 'https://a/p1.jpg',
+            caption: 'Legenda 1',
+          ),
+          MeetingPhotoEntity(
+            id: 'p2',
+            url: 'https://a/p2.jpg',
+            caption: 'Legenda 2',
+          ),
+          MeetingPhotoEntity(
+            id: 'p3',
+            url: 'https://a/p3.jpg',
+            caption: 'Legenda 3',
+          ),
+        ];
+
+        await tester.pumpWidget(
+          _app(
+            MeetingPhotoViewer(
+              photo: photos[1],
+              photos: photos,
+              index: 1,
+              total: 3,
+            ),
+          ),
+        );
+
+        expect(find.text('Foto 2 de 3'), findsOneWidget);
+        expect(find.text('Legenda 2'), findsOneWidget);
+        expect(find.byTooltip('Foto anterior'), findsOneWidget);
+        expect(find.byTooltip('Próxima foto'), findsOneWidget);
+
+        await tester.tap(find.byTooltip('Próxima foto'));
+        await tester.pump();
+
+        expect(find.text('Foto 3 de 3'), findsOneWidget);
+        expect(find.text('Legenda 3'), findsOneWidget);
+        expect(find.byTooltip('Foto anterior'), findsOneWidget);
+        expect(find.byTooltip('Próxima foto'), findsNothing);
+
+        await tester.tap(find.byTooltip('Foto anterior'));
+        await tester.pump();
+
+        expect(find.text('Foto 2 de 3'), findsOneWidget);
+        expect(find.text('Legenda 2'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'given the expanded viewer, then uses a white theme with black text and white arrows',
+      (tester) async {
+        await tester.pumpWidget(
+          _app(
+            const MeetingPhotoViewer(
+              photo: MeetingPhotoEntity(
+                id: 'p1',
+                url: 'https://a/p1.jpg',
+                caption: 'Legenda preta',
+              ),
+              index: 0,
+              total: 2,
+              photos: [
+                MeetingPhotoEntity(
+                  id: 'p1',
+                  url: 'https://a/p1.jpg',
+                  caption: 'Legenda preta',
+                ),
+                MeetingPhotoEntity(id: 'p2', url: 'https://a/p2.jpg'),
+              ],
+            ),
+          ),
+        );
+
+        final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+        expect(scaffold.backgroundColor, Colors.white);
+        final appBar = tester.widget<AppBar>(find.byType(AppBar));
+        expect(appBar.backgroundColor, Colors.white);
+        expect(appBar.foregroundColor, Colors.black);
+
+        final caption = tester.widget<Text>(find.text('Legenda preta'));
+        expect(caption.style?.color, Colors.black);
+
+        final next = tester.widget<IconButton>(
+          find.widgetWithIcon(IconButton, Icons.chevron_right),
+        );
+        final nextIcon = next.icon as Icon;
+        expect(nextIcon.color, Colors.white);
+      },
+    );
+
     Future<void> pumpViewer(
       WidgetTester tester,
       MeetingPhotoLauncher onDownload,
