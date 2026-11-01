@@ -190,6 +190,30 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get profilePhotoEditButtonLabel => 'Editar foto de perfil';
+
+  @override
+  String get editProfilePhotoDialogTitle => 'Editar foto';
+
+  @override
+  String get editProfilePhotoChangeButton => 'Trocar foto';
+
+  @override
+  String get profilePhotoPreviewSemanticLabel => 'Foto de perfil atual';
+
+  @override
+  String get editProfilePhotoUploadFailed =>
+      'Não foi possível atualizar a foto. Tente novamente.';
+
+  @override
+  String get editProfilePhotoRejected =>
+      'Esta foto não pode ser usada como foto de perfil.';
+
+  @override
+  String get editProfilePhotoTooLarge =>
+      'A foto passa do tamanho máximo permitido.';
+
+  @override
   String get logoutDialogTitle => 'Sair da conta';
 
   @override
@@ -1115,6 +1139,30 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
     );
     return '$_temp0';
   }
+
+  @override
+  String get profilePhotoEditButtonLabel => 'Editar foto de perfil';
+
+  @override
+  String get editProfilePhotoDialogTitle => 'Editar foto';
+
+  @override
+  String get editProfilePhotoChangeButton => 'Trocar foto';
+
+  @override
+  String get profilePhotoPreviewSemanticLabel => 'Foto de perfil atual';
+
+  @override
+  String get editProfilePhotoUploadFailed =>
+      'Não foi possível atualizar a foto. Tente novamente.';
+
+  @override
+  String get editProfilePhotoRejected =>
+      'Esta foto não pode ser usada como foto de perfil.';
+
+  @override
+  String get editProfilePhotoTooLarge =>
+      'A foto passa do tamanho máximo permitido.';
 
   @override
   String get logoutDialogTitle => 'Sair da conta';

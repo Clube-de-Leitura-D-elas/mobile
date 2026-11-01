@@ -228,6 +228,34 @@
         }
       }
     },
+    "profilePhotoEditButtonLabel": "Editar foto de perfil",
+    "@profilePhotoEditButtonLabel": {
+      "description": "Rótulo de acessibilidade do avatar que abre o modal de edição da foto"
+    },
+    "editProfilePhotoDialogTitle": "Editar foto",
+    "@editProfilePhotoDialogTitle": {
+      "description": "Título do modal de edição da foto de perfil"
+    },
+    "editProfilePhotoChangeButton": "Trocar foto",
+    "@editProfilePhotoChangeButton": {
+      "description": "Botão que abre a galeria para trocar a foto de perfil"
+    },
+    "profilePhotoPreviewSemanticLabel": "Foto de perfil atual",
+    "@profilePhotoPreviewSemanticLabel": {
+      "description": "Rótulo de acessibilidade da foto grande no modal de edição"
+    },
+    "editProfilePhotoUploadFailed": "Não foi possível atualizar a foto. Tente novamente.",
+    "@editProfilePhotoUploadFailed": {
+      "description": "Toast quando o envio da foto de perfil falha"
+    },
+    "editProfilePhotoRejected": "Esta foto não pode ser usada como foto de perfil.",
+    "@editProfilePhotoRejected": {
+      "description": "Toast quando o backend recusa a foto de perfil"
+    },
+    "editProfilePhotoTooLarge": "A foto passa do tamanho máximo permitido.",
+    "@editProfilePhotoTooLarge": {
+      "description": "Toast quando a foto de perfil excede o limite de tamanho"
+    },
     "logoutDialogTitle": "Sair da conta",
     "@logoutDialogTitle": {
       "description": "Título do modal de confirmação de logout"

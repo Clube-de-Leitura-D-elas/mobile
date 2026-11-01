@@ -29,6 +29,8 @@ import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
+import 'package:mobile/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
@@ -57,10 +59,12 @@ class DependenciesContainer {
       );
 
     serviceLocator<GoogleSignIn>().initialize(
-      clientId:
-          environment.iosClientId.isNotEmpty ? environment.iosClientId : null,
-      serverClientId:
-          environment.webClientId.isNotEmpty ? environment.webClientId : null,
+      clientId: environment.iosClientId.isNotEmpty
+          ? environment.iosClientId
+          : null,
+      serverClientId: environment.webClientId.isNotEmpty
+          ? environment.webClientId
+          : null,
     );
 
     serviceLocator.registerLazySingleton<AuthRepository>(
@@ -99,9 +103,7 @@ class DependenciesContainer {
       ),
     );
     serviceLocator.registerFactory<MeetingPresenceCubit>(
-      () => MeetingPresenceCubit(
-        repository: serviceLocator<GroupRepository>(),
-      ),
+      () => MeetingPresenceCubit(repository: serviceLocator<GroupRepository>()),
     );
     serviceLocator.registerFactory<MeetingEditCubit>(
       () =>
@@ -136,8 +138,7 @@ class DependenciesContainer {
       () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
     );
     serviceLocator.registerFactory<ClaimTokenCubit>(
-      () =>
-          ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
+      () => ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
     );
 
     serviceLocator.registerFactory<OnboardingReviewCubit>(
@@ -148,6 +149,12 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<PasswordValidationCubit>(
       () => PasswordValidationCubit(),
+    );
+
+    serviceLocator.registerLazySingleton<ProfileRepository>(
+      () => ProfileRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
     );
 
     // --- Raffles Feature ---
@@ -170,9 +177,8 @@ class DependenciesContainer {
     );
 
     serviceLocator.registerFactory<RaffleExecutionCubit>(
-      () => RaffleExecutionCubit(
-        repository: serviceLocator<RaffleRepository>(),
-      ),
+      () =>
+          RaffleExecutionCubit(repository: serviceLocator<RaffleRepository>()),
     );
   }
 }
