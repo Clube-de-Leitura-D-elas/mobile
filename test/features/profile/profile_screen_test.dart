@@ -34,6 +34,13 @@ void main() {
     );
   }
 
+  Finder logoutButton() => find.ancestor(
+    of: find.byWidgetPredicate(
+      (widget) => widget is AppIcon && widget.icon == AppIcons.leave,
+    ),
+    matching: find.byType(InkWell),
+  );
+
   UserProfileEntity buildProfile({String name = 'Roberta'}) {
     final now = DateTime.now();
     return UserProfileEntity(
@@ -88,7 +95,7 @@ void main() {
   testWidgets('O botão de sair tem alvo de toque de 48x48', (tester) async {
     await tester.pumpWidget(buildSubject());
 
-    final size = tester.getSize(find.byType(InkWell));
+    final size = tester.getSize(logoutButton());
     expect(size.width, greaterThanOrEqualTo(48));
     expect(size.height, greaterThanOrEqualTo(48));
   });
@@ -107,8 +114,7 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject());
 
-    final iconButton = find.byType(InkWell);
-    await tester.tap(iconButton);
+    await tester.tap(logoutButton());
     await tester.pumpAndSettle();
 
     expect(find.byType(LogoutConfirmDialog), findsOneWidget);
@@ -119,10 +125,16 @@ void main() {
 
     expect(
       find.byWidgetPredicate(
-        (w) =>
-            w is Semantics &&
-            w.properties.button == true &&
-            (w.properties.label ?? '').isNotEmpty,
+        (widget) =>
+            widget is Semantics && widget.properties.label == 'Sair da conta',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'Editar foto de perfil',
       ),
       findsOneWidget,
     );
@@ -133,7 +145,7 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject());
 
-    await tester.tap(find.byType(InkWell));
+    await tester.tap(logoutButton());
     await tester.pumpAndSettle();
     expect(find.byType(LogoutConfirmDialog), findsOneWidget);
 
@@ -149,7 +161,7 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject());
 
-    await tester.tap(find.byType(InkWell));
+    await tester.tap(logoutButton());
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.close));
@@ -164,7 +176,7 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject());
 
-    await tester.tap(find.byType(InkWell));
+    await tester.tap(logoutButton());
     await tester.pumpAndSettle();
 
     await tester.tapAt(const Offset(1, 1));
@@ -179,7 +191,7 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject());
 
-    await tester.tap(find.byType(InkWell));
+    await tester.tap(logoutButton());
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Sair'));
