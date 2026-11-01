@@ -57,7 +57,10 @@ void main() {
       act: (cubit) => cubit.pickAndUpload(),
       expect: () => [
         const EditProfilePhotoState(status: EditProfilePhotoStatus.uploading),
-        const EditProfilePhotoState(photoUrl: 'https://cdn.example/new.jpg'),
+        const EditProfilePhotoState(
+          photoUrl: 'https://cdn.example/new.jpg',
+          status: EditProfilePhotoStatus.success,
+        ),
       ],
     );
 
@@ -158,6 +161,35 @@ void main() {
     );
 
     blocTest<EditProfilePhotoCubit, EditProfilePhotoState>(
+      'emits success when the returned url does not change',
+      build: () {
+        when(
+          () => picker.pickFromGallery(limit: 1),
+        ).thenAnswer((_) async => Success([_photo()]));
+        when(
+          () => repository.setProfilePhoto(
+            bytes: any(named: 'bytes'),
+            contentType: any(named: 'contentType'),
+          ),
+        ).thenAnswer(
+          (_) async => const Success('https://cdn.example/same.jpg'),
+        );
+        return buildCubit(initialPhotoUrl: 'https://cdn.example/same.jpg');
+      },
+      act: (cubit) => cubit.pickAndUpload(),
+      expect: () => [
+        const EditProfilePhotoState(
+          photoUrl: 'https://cdn.example/same.jpg',
+          status: EditProfilePhotoStatus.uploading,
+        ),
+        const EditProfilePhotoState(
+          photoUrl: 'https://cdn.example/same.jpg',
+          status: EditProfilePhotoStatus.success,
+        ),
+      ],
+    );
+
+    blocTest<EditProfilePhotoCubit, EditProfilePhotoState>(
       'emits an upload failed notice',
       build: () {
         when(
@@ -227,15 +259,28 @@ void main() {
       await cubit.close();
     });
 
-    test('stops when the cubit closes during pick or upload', () async {
-      final duringPick = buildCubit();
+    test('stops when the cubit closes during the gallery pick', () async {
+      final cubit = buildCubit();
       when(() => picker.pickFromGallery(limit: 1)).thenAnswer((_) async {
-        await duringPick.close();
+        await cubit.close();
         return Success([_photo()]);
       });
-      await duringPick.pickAndUpload();
 
-      final duringUpload = buildCubit();
+      await cubit.pickAndUpload();
+
+      verify(() => picker.pickFromGallery(limit: 1)).called(1);
+      verifyNever(
+        () => repository.setProfilePhoto(
+          bytes: any(named: 'bytes'),
+          contentType: any(named: 'contentType'),
+        ),
+      );
+      expect(cubit.isClosed, isTrue);
+      expect(cubit.state, const EditProfilePhotoState());
+    });
+
+    test('stops when the cubit closes during the upload', () async {
+      final cubit = buildCubit();
       when(
         () => picker.pickFromGallery(limit: 1),
       ).thenAnswer((_) async => Success([_photo()]));
@@ -245,10 +290,21 @@ void main() {
           contentType: any(named: 'contentType'),
         ),
       ).thenAnswer((_) async {
-        await duringUpload.close();
+        await cubit.close();
         return const Failure(ProfilePhotoUploadFailure());
       });
-      await duringUpload.pickAndUpload();
+
+      await cubit.pickAndUpload();
+
+      verify(() => picker.pickFromGallery(limit: 1)).called(1);
+      verify(
+        () => repository.setProfilePhoto(
+          bytes: any(named: 'bytes'),
+          contentType: 'image/jpeg',
+        ),
+      ).called(1);
+      expect(cubit.isClosed, isTrue);
+      expect(cubit.state.status, EditProfilePhotoStatus.uploading);
     });
   });
 

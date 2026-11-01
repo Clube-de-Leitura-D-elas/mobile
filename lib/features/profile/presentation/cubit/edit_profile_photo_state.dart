@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum EditProfilePhotoStatus { idle, uploading }
+enum EditProfilePhotoStatus { idle, uploading, success }
 
 sealed class EditProfilePhotoNotice extends Equatable {
   const EditProfilePhotoNotice();

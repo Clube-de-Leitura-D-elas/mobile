@@ -46,9 +46,8 @@ class EditProfilePhotoDialog extends StatelessWidget {
         if (current.notice != null && previous.notice != current.notice) {
           return true;
         }
-        return !current.isUploading &&
-            current.photoUrl != null &&
-            current.photoUrl != previous.photoUrl;
+        return previous.status != EditProfilePhotoStatus.success &&
+            current.status == EditProfilePhotoStatus.success;
       },
       listener: (context, state) {
         final notice = state.notice;

@@ -72,7 +72,7 @@ class EditProfilePhotoCubit extends Cubit<EditProfilePhotoState> {
         emit(
           state.copyWith(
             photoUrl: data,
-            status: EditProfilePhotoStatus.idle,
+            status: EditProfilePhotoStatus.success,
             clearNotice: true,
           ),
         );
