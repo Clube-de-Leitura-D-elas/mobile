@@ -126,13 +126,32 @@ void main() {
     });
 
     testWidgets('conta a data de entrada no fuso do aparelho', (tester) async {
-      // Entrada às 22h de 15/10 no horário local, vinda do backend em UTC.
-      // Em São Paulo isso já é 16/10 em UTC, o que daria 0 meses em 15/11.
-      final joinedAt = DateTime(2026, 10, 15, 22).toUtc();
+      // Em UTC a data local e a UTC são iguais e o teste não pegaria a falta
+      // do toLocal(); o CI roda com TZ=America/Sao_Paulo.
+      final offset = DateTime(2026, 10, 15).timeZoneOffset;
+      expect(
+        offset,
+        isNot(Duration.zero),
+        reason: 'Rode os testes com um fuso não UTC (TZ=America/Sao_Paulo).',
+      );
+
+      // Entrada local perto da meia-noite, que em UTC cai em outro dia.
+      // Fuso negativo: 15/10 23h local é 16/10 em UTC (0 meses em 15/11).
+      // Fuso positivo: 16/10 00h30 local é 15/10 em UTC (1 mês em 15/11).
+      final joinedLocal = offset.isNegative
+          ? DateTime(2026, 10, 15, 23)
+          : DateTime(2026, 10, 16, 0, 30);
+      final joinedAt = joinedLocal.toUtc();
+      expect(joinedAt.day, isNot(joinedLocal.day));
 
       await pumpHeader(tester, joinedAt: joinedAt);
 
-      expect(find.text('1 mês no clube'), findsOneWidget);
+      expect(
+        find.text(
+          offset.isNegative ? '1 mês no clube' : 'Chegou ao clube este mês',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('o avatar fica fora da leitura de tela', (tester) async {
