@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mobile/design_system/icons/app_icons.dart';
+import 'package:mobile/design_system/tokens/color_tokens.dart';
+import 'package:mobile/design_system/tokens/spacing_tokens.dart';
+import 'package:mobile/design_system/tokens/typography_tokens.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 
-import '../../l10n/app_localizations.dart';
-import '../icons/app_icons.dart';
-import '../tokens/color_tokens.dart';
-import '../tokens/spacing_tokens.dart';
-import '../tokens/typography_tokens.dart';
 import 'app_icon.dart';
 
 /// Campo de busca em pílula do design system.
