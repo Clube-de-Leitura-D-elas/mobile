@@ -1295,5 +1295,9 @@
   "readingStatusMarkAsRead": "Marcar como lido",
   "@readingStatusMarkAsRead": {
     "description": "Chip no detalhe do livro para marcar o livro como lido."
+  },
+  "bookGroupAlreadySuggested": "já indicado",
+  "@bookGroupAlreadySuggested": {
+    "description": "Tag do grupo que já recebeu a indicação deste livro e não pode recebê-la de novo."
   }
 }

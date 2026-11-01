@@ -1716,6 +1716,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Marcar como lido'**
   String get readingStatusMarkAsRead;
+
+  /// Tag do grupo que já recebeu a indicação deste livro e não pode recebê-la de novo.
+  ///
+  /// In pt, this message translates to:
+  /// **'já indicado'**
+  String get bookGroupAlreadySuggested;
 }
 
 class _AppLocalizationsDelegate

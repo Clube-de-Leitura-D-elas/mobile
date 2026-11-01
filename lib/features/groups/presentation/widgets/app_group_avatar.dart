@@ -4,8 +4,13 @@ import 'package:mobile/design_system/design_system.dart';
 
 class AppGroupAvatar extends StatelessWidget {
   final String? photoUrl;
+  final double diameter;
 
-  const AppGroupAvatar({super.key, required this.photoUrl});
+  const AppGroupAvatar({
+    super.key,
+    required this.photoUrl,
+    this.diameter = size,
+  });
 
   static const double size = 56;
 
@@ -21,8 +26,8 @@ class AppGroupAvatar extends StatelessWidget {
 
     return ClipOval(
       child: SizedBox(
-        width: size,
-        height: size,
+        width: diameter,
+        height: diameter,
         child: url == null
             ? placeholder()
             : CachedNetworkImage(
