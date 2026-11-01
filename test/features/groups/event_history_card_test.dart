@@ -74,6 +74,8 @@ void main() {
   ) async {
     await tester.pumpWidget(_wrap(const EventHistoryCard(meeting: _meeting)));
 
+    expect(find.byType(AppBookCover), findsOneWidget);
+    expect(tester.getSize(find.byType(AppBookCover)), const Size(80, 112));
     expect(find.byType(AppIcon), findsOneWidget);
   });
 
