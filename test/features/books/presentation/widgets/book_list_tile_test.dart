@@ -293,6 +293,81 @@ void main() {
       );
     },
   );
+
+  testWidgets('relayouts when the chip, the author and the gap change', (
+    tester,
+  ) async {
+    const withChip = BookListTile(
+      title: 'Duna',
+      author: 'Frank Herbert',
+      genre: 'Ficção',
+      status: ReadingStatusChipState.markAsRead,
+    );
+
+    Future<void> pump({
+      required double width,
+      required double gap,
+      required BookListTile tile,
+    }) {
+      final theme = AppTheme.light;
+      return tester.pumpWidget(
+        MaterialApp(
+          themeAnimationDuration: Duration.zero,
+          theme: theme.copyWith(
+            extensions: [
+              for (final extension in theme.extensions.values)
+                if (extension is AppSpacingTokens)
+                  extension.copyWith(s8: gap)
+                else
+                  extension,
+            ],
+          ),
+          locale: const Locale('pt'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SizedBox(width: width, child: tile),
+          ),
+        ),
+      );
+    }
+
+    await pump(
+      width: 900,
+      gap: 8,
+      tile: const BookListTile(title: 'Duna', author: '', genre: ''),
+    );
+    await pump(width: 900, gap: 8, tile: withChip);
+
+    expect(find.text('Frank Herbert'), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.byType(AppReadingStatusChip)).dy,
+      lessThan(tester.getBottomLeft(find.text('Frank Herbert')).dy),
+    );
+
+    final chipWidth = tester.getSize(find.byType(AppReadingStatusChip)).width;
+    final inset =
+        tester.getTopLeft(find.text('Frank Herbert')).dx -
+        tester.getTopLeft(find.byType(BookListTile)).dx;
+    await pump(width: inset + chipWidth + 32, gap: 20, tile: withChip);
+
+    final meta = find
+        .ancestor(of: find.text('Ficção'), matching: find.byType(Column))
+        .first;
+    expect(
+      tester.getTopLeft(find.byType(AppReadingStatusChip)).dy -
+          tester.getBottomLeft(meta).dy,
+      20,
+    );
+
+    await pump(width: inset + chipWidth + 32, gap: 20, tile: withChip);
+    expect(
+      tester.getTopLeft(find.byType(AppReadingStatusChip)).dy -
+          tester.getBottomLeft(meta).dy,
+      20,
+    );
+    expect(tester.takeException(), isNull);
+  });
 }
 
 bool _expectLabeledTap(SemanticsNode node) {
