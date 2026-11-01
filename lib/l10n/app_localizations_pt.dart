@@ -963,6 +963,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get readingStatusMarkAsRead => 'Marcar como lido';
+
+  @override
+  String get bookGroupAlreadySuggested => 'já indicado';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
