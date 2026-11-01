@@ -438,6 +438,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get searchGroupPlaceholder => 'Buscar grupo';
 
   @override
+  String get clearSearchTooltip => 'Limpar busca';
+
+  @override
   String get homePendingTasksMessage => 'Você tem tarefas pendentes';
 
   @override
@@ -1319,6 +1322,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get clearSearchTooltip => 'Limpar busca';
 
   @override
   String get homePendingTasksMessage => 'Você tem tarefas pendentes';

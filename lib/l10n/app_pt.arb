@@ -485,6 +485,10 @@
   "@searchGroupPlaceholder": {
     "description": "Placeholder do campo de busca de grupos"
   },
+  "clearSearchTooltip": "Limpar busca",
+  "@clearSearchTooltip": {
+    "description": "Tooltip e rótulo de acessibilidade do botão que limpa o campo de busca"
+  },
   "homePendingTasksMessage": "Você tem tarefas pendentes",
   "@homePendingTasksMessage": {
     "description": "Aviso na home quando a anfitriã tem tarefas pendentes"

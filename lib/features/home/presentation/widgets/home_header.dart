@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/groups/presentation/widgets/group_search_field.dart';
 import 'package:mobile/features/home/presentation/widgets/home_pending_tasks_banner.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -31,7 +30,8 @@ class HomeHeader extends StatelessWidget {
         children: [
           const _HomeTitle(),
           SizedBox(height: spacing.s16),
-          GroupSearchField(
+          AppSearchField(
+            hintText: context.l10n.searchGroupPlaceholder,
             controller: searchController,
             onChanged: onSearchChanged,
           ),
