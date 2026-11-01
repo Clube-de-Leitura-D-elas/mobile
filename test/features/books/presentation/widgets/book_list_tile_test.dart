@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/widgets/book_list_tile.dart';
@@ -201,4 +202,106 @@ void main() {
     expect(rowTaps, 1);
     expect(chipTaps, 1);
   });
+
+  testWidgets('the author block is not an unlabeled semantic button', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await _pumpTile(
+      tester,
+      BookListTile(
+        title: 'Duna',
+        author: 'Frank Herbert',
+        genre: 'Ficção',
+        status: ReadingStatusChipState.markAsRead,
+        onTap: () {},
+        onStatusTap: () {},
+      ),
+    );
+
+    final roots = <SemanticsNode>[];
+    void collectRoots(PipelineOwner owner) {
+      final root = owner.semanticsOwner?.rootSemanticsNode;
+      if (root != null) {
+        roots.add(root);
+      }
+      owner.visitChildren(collectRoots);
+    }
+
+    collectRoots(tester.binding.rootPipelineOwner);
+    expect(roots, isNotEmpty);
+    for (final node in roots.expand(collectAllSemanticsNodesFrom)) {
+      _expectLabeledTap(node);
+    }
+
+    expect(
+      find.bySemanticsLabel('Duna, Frank Herbert, Ficção'),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Marcar como lido'), findsOneWidget);
+    handle.dispose();
+  });
+
+  testWidgets(
+    'mark as read chip wraps below the author on a narrow large-text row',
+    (tester) async {
+      const tile = BookListTile(
+        title: 'Harry Potter e o Prisioneiro de Azkaban',
+        author: 'J. K. Rowling',
+        genre: 'Fantasia',
+        status: ReadingStatusChipState.markAsRead,
+      );
+
+      Future<void> pumpAt(double width) {
+        return tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            locale: const Locale('pt'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            builder: (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: const TextScaler.linear(2)),
+                child: child!,
+              );
+            },
+            home: Scaffold(
+              body: SizedBox(width: width, child: tile),
+            ),
+          ),
+        );
+      }
+
+      await pumpAt(900);
+      expect(
+        tester.getTopLeft(find.text('Marcar como lido')).dy,
+        lessThan(tester.getBottomLeft(find.text('J. K. Rowling')).dy),
+      );
+      final chipWidth = tester.getSize(find.byType(AppReadingStatusChip)).width;
+      final inset =
+          tester.getTopLeft(find.text('J. K. Rowling')).dx -
+          tester.getTopLeft(find.byType(BookListTile)).dx;
+      // Folga menor que o alvo de 48 do autor: o chip cabe sozinho e desce.
+      await pumpAt(inset + chipWidth + 32);
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.getTopLeft(find.text('Marcar como lido')).dy,
+        greaterThanOrEqualTo(tester.getBottomLeft(find.text('Fantasia')).dy),
+      );
+    },
+  );
+}
+
+bool _expectLabeledTap(SemanticsNode node) {
+  final data = node.getSemanticsData();
+  final isTappable =
+      data.hasAction(SemanticsAction.tap) || data.flagsCollection.isButton;
+  if (isTappable) {
+    expect(data.label.trim(), isNotEmpty);
+  }
+  node.visitChildren(_expectLabeledTap);
+  return true;
 }
