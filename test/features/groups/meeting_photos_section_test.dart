@@ -130,7 +130,10 @@ void main() {
 
       expect(find.byType(MeetingPhotoThumbnail), findsNWidgets(2));
       expect(find.byType(Image), findsNWidgets(2));
-      expect(find.text('Adicionar fotos'), findsNothing);
+      expect(
+        find.byKey(const ValueKey('meeting-photos-add-tile')),
+        findsOneWidget,
+      );
       final grid = tester.widget<GridView>(
         find.byKey(const ValueKey('meeting-photos-grid')),
       );
