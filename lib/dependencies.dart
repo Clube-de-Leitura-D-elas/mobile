@@ -29,6 +29,8 @@ import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
+import 'package:mobile/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
@@ -148,6 +150,12 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<PasswordValidationCubit>(
       () => PasswordValidationCubit(),
+    );
+
+    serviceLocator.registerLazySingleton<ProfileRepository>(
+      () => ProfileRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
     );
 
     // --- Raffles Feature ---

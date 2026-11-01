@@ -1,15 +1,33 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/media/photo_picker.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
+import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
+import 'package:mobile/features/profile/presentation/widgets/edit_profile_photo_dialog.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockProfileRepository extends Mock implements ProfileRepository {}
+
+class MockPhotoPicker extends Mock implements PhotoPicker {}
 
 void main() {
   // "Hoje" fixo para os testes não dependerem do relógio real.
   final today = DateTime(2026, 11, 15);
 
-  Future<void> pumpHeader(WidgetTester tester, {DateTime? joinedAt}) {
+  setUpAll(() => registerFallbackValue(Uint8List(0)));
+
+  Future<void> pumpHeader(
+    WidgetTester tester, {
+    DateTime? joinedAt,
+    String? photoUrl,
+  }) {
     return tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
@@ -21,6 +39,7 @@ void main() {
             name: 'Roberta',
             joinedAt: joinedAt,
             now: () => today,
+            photoUrl: photoUrl,
           ),
         ),
       ),
@@ -160,6 +179,107 @@ void main() {
         find.ancestor(
           of: find.byType(AppParticipantAvatar),
           matching: find.byType(ExcludeSemantics),
+        ),
+        findsOneWidget,
+      );
+      expect(find.bySemanticsLabel('Editar foto de perfil'), findsOneWidget);
+    });
+
+    testWidgets('abre o modal ao tocar no avatar e atualiza a foto', (
+      tester,
+    ) async {
+      const photoUrl = 'https://cdn.example/new.jpg';
+      final repository = MockProfileRepository();
+      final picker = MockPhotoPicker();
+      serviceLocator.allowReassignment = true;
+      serviceLocator.registerSingleton<ProfileRepository>(repository);
+      serviceLocator.registerSingleton<PhotoPicker>(picker);
+      addTearDown(() {
+        serviceLocator.unregister<ProfileRepository>();
+        serviceLocator.unregister<PhotoPicker>();
+      });
+
+      when(() => picker.pickFromGallery(limit: 1)).thenAnswer(
+        (_) async => Success([
+          PickedPhoto(
+            id: 'pick-1',
+            bytes: Uint8List.fromList([0xFF, 0xD8]),
+            contentType: 'image/jpeg',
+          ),
+        ]),
+      );
+      when(
+        () => repository.setProfilePhoto(
+          bytes: any(named: 'bytes'),
+          contentType: 'image/jpeg',
+        ),
+      ).thenAnswer((_) async => const Success(photoUrl));
+
+      await pumpHeader(tester);
+      await tester.tap(find.bySemanticsLabel('Editar foto de perfil'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EditProfilePhotoDialog), findsOneWidget);
+      expect(find.text('Editar foto'), findsOneWidget);
+
+      await tester.tap(find.text('Trocar foto'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(EditProfilePhotoDialog), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is AppParticipantAvatar && widget.photoUrl == photoUrl,
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('fechar o modal sem trocar mantém a foto anterior', (
+      tester,
+    ) async {
+      serviceLocator.allowReassignment = true;
+      serviceLocator.registerSingleton<ProfileRepository>(
+        MockProfileRepository(),
+      );
+      serviceLocator.registerSingleton<PhotoPicker>(MockPhotoPicker());
+      addTearDown(() {
+        serviceLocator.unregister<ProfileRepository>();
+        serviceLocator.unregister<PhotoPicker>();
+      });
+
+      await pumpHeader(tester, photoUrl: 'https://cdn.example/old.jpg');
+      await tester.tap(find.bySemanticsLabel('Editar foto de perfil'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EditProfilePhotoDialog), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is AppParticipantAvatar &&
+              widget.photoUrl == 'https://cdn.example/old.jpg',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('atualiza o avatar quando a url do perfil muda', (
+      tester,
+    ) async {
+      await pumpHeader(tester);
+      await pumpHeader(
+        tester,
+        photoUrl: 'https://cdn.example/from-profile.jpg',
+      );
+
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is AppParticipantAvatar &&
+              widget.photoUrl == 'https://cdn.example/from-profile.jpg',
         ),
         findsOneWidget,
       );

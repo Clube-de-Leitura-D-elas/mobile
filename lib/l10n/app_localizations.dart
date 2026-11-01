@@ -415,6 +415,48 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 ano no clube} other{{count} anos no clube}}'**
   String profileClubTimeYears(int count);
 
+  /// Rótulo de acessibilidade do avatar que abre o modal de edição da foto
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar foto de perfil'**
+  String get profilePhotoEditButtonLabel;
+
+  /// Título do modal de edição da foto de perfil
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar foto'**
+  String get editProfilePhotoDialogTitle;
+
+  /// Botão que abre a galeria para trocar a foto de perfil
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocar foto'**
+  String get editProfilePhotoChangeButton;
+
+  /// Rótulo de acessibilidade da foto grande no modal de edição
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto de perfil atual'**
+  String get profilePhotoPreviewSemanticLabel;
+
+  /// Toast quando o envio da foto de perfil falha
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível atualizar a foto. Tente novamente.'**
+  String get editProfilePhotoUploadFailed;
+
+  /// Toast quando o backend recusa a foto de perfil
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta foto não pode ser usada como foto de perfil.'**
+  String get editProfilePhotoRejected;
+
+  /// Toast quando a foto de perfil excede o limite de tamanho
+  ///
+  /// In pt, this message translates to:
+  /// **'A foto passa do tamanho máximo permitido.'**
+  String get editProfilePhotoTooLarge;
+
   /// Título do modal de confirmação de logout
   ///
   /// In pt, this message translates to:

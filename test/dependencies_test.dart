@@ -1,4 +1,4 @@
-﻿// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,6 +25,8 @@ import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
@@ -83,6 +85,7 @@ void main() {
       );
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
+      expect(serviceLocator<ProfileRepository>(), isA<ProfileRepositoryImpl>());
       expect(serviceLocator<MeetingPhotosCubit>(), isA<MeetingPhotosCubit>());
       expect(serviceLocator<MeetingEditCubit>(), isA<MeetingEditCubit>());
       expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
@@ -99,10 +102,7 @@ void main() {
         serviceLocator<RaffleRemoteDataSource>(),
         isA<RaffleRemoteDataSourceImpl>(),
       );
-      expect(
-        serviceLocator<RaffleRepository>(),
-        isA<RaffleRepositoryImpl>(),
-      );
+      expect(serviceLocator<RaffleRepository>(), isA<RaffleRepositoryImpl>());
       expect(
         serviceLocator<RafflePreparationCubit>(),
         isA<RafflePreparationCubit>(),
