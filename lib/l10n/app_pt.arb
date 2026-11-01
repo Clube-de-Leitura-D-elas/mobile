@@ -1210,5 +1210,19 @@
   "meetingPromoTextSaveFailed": "Não foi possível salvar o texto de divulgação. Tente novamente.",
   "@meetingPromoTextSaveFailed": {
     "description": "Erro ao salvar o texto de divulgação."
+  },
+
+  "@@Books": "--- Books ---",
+  "readingStatusRead": "Já lido",
+  "@readingStatusRead": {
+    "description": "Chip de status de leitura: livro já lido pela leitora."
+  },
+  "readingStatusWantToRead": "Quero ler",
+  "@readingStatusWantToRead": {
+    "description": "Chip de status de leitura: livro que a leitora quer ler."
+  },
+  "readingStatusMarkAsRead": "Marcar como lido",
+  "@readingStatusMarkAsRead": {
+    "description": "Chip no detalhe do livro para marcar o livro como lido."
   }
 }

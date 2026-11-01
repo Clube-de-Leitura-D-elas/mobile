@@ -891,6 +891,15 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get meetingPromoTextSaveFailed =>
       'Não foi possível salvar o texto de divulgação. Tente novamente.';
+
+  @override
+  String get readingStatusRead => 'Já lido';
+
+  @override
+  String get readingStatusWantToRead => 'Quero ler';
+
+  @override
+  String get readingStatusMarkAsRead => 'Marcar como lido';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
