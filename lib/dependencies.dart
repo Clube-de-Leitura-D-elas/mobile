@@ -59,12 +59,10 @@ class DependenciesContainer {
       );
 
     serviceLocator<GoogleSignIn>().initialize(
-      clientId: environment.iosClientId.isNotEmpty
-          ? environment.iosClientId
-          : null,
-      serverClientId: environment.webClientId.isNotEmpty
-          ? environment.webClientId
-          : null,
+      clientId:
+          environment.iosClientId.isNotEmpty ? environment.iosClientId : null,
+      serverClientId:
+          environment.webClientId.isNotEmpty ? environment.webClientId : null,
     );
 
     serviceLocator.registerLazySingleton<AuthRepository>(
@@ -103,7 +101,9 @@ class DependenciesContainer {
       ),
     );
     serviceLocator.registerFactory<MeetingPresenceCubit>(
-      () => MeetingPresenceCubit(repository: serviceLocator<GroupRepository>()),
+      () => MeetingPresenceCubit(
+        repository: serviceLocator<GroupRepository>(),
+      ),
     );
     serviceLocator.registerFactory<MeetingEditCubit>(
       () =>
@@ -138,7 +138,8 @@ class DependenciesContainer {
       () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
     );
     serviceLocator.registerFactory<ClaimTokenCubit>(
-      () => ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
+      () =>
+          ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
     );
 
     serviceLocator.registerFactory<OnboardingReviewCubit>(
@@ -177,8 +178,9 @@ class DependenciesContainer {
     );
 
     serviceLocator.registerFactory<RaffleExecutionCubit>(
-      () =>
-          RaffleExecutionCubit(repository: serviceLocator<RaffleRepository>()),
+      () => RaffleExecutionCubit(
+        repository: serviceLocator<RaffleRepository>(),
+      ),
     );
   }
 }
