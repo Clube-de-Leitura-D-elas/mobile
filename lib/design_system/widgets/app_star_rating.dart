@@ -224,6 +224,7 @@ class _InputStarRating extends StatelessWidget {
             enabled: isEnabled,
             selected: isFilled,
             label: '$starValue de ${widget.maxStars} estrelas',
+            onTap: isEnabled ? () => widget.onChanged!(starValue) : null,
             child: ExcludeSemantics(
               child: _StarButton(
                 starValue: starValue,
