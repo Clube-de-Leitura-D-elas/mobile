@@ -1210,10 +1210,9 @@
   "meetingPromoTextSaved": "Texto de divulgação salvo.",
   "@meetingPromoTextSaved": {
     "description": "Aviso de texto de divulgação salvo."
-  },
-  "meetingPromoTextSaveFailed": "Nao foi possivel salvar o texto de divulgacao. Tente novamente.",
+  "meetingPromoTextSaveFailed": "Não foi possível salvar o texto de divulgação. Tente novamente.",
   "@meetingPromoTextSaveFailed": {
-    "description": "Erro ao salvar o texto de divulgacao."
+    "description": "Erro ao salvar o texto de divulgação."
   },
 
   "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
