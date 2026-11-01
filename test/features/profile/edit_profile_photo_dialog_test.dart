@@ -29,6 +29,7 @@ void main() {
   });
 
   Future<void> openDialog(WidgetTester tester) async {
+    await tester.pumpWidget(const SizedBox.shrink());
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
@@ -109,5 +110,108 @@ void main() {
       findsOneWidget,
     );
     expect(find.byType(EditProfilePhotoDialog), findsOneWidget);
+  });
+
+  void stubPickedPhoto() {
+    when(() => picker.pickFromGallery(limit: 1)).thenAnswer(
+      (_) async => Success([
+        PickedPhoto(
+          id: 'pick-1',
+          bytes: Uint8List.fromList([0xFF, 0xD8]),
+          contentType: 'image/jpeg',
+        ),
+      ]),
+    );
+  }
+
+  testWidgets('shows a toast when the photo is rejected', (tester) async {
+    stubPickedPhoto();
+    when(
+      () => repository.setProfilePhoto(
+        bytes: any(named: 'bytes'),
+        contentType: any(named: 'contentType'),
+      ),
+    ).thenAnswer((_) async => const Failure(ProfilePhotoRejectedFailure()));
+
+    await openDialog(tester);
+    await tester.tap(find.text('Trocar foto'));
+    await tester.pump();
+
+    expect(
+      find.text('Esta foto não pode ser usada como foto de perfil.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shows a toast when the photo is too large', (tester) async {
+    stubPickedPhoto();
+    when(
+      () => repository.setProfilePhoto(
+        bytes: any(named: 'bytes'),
+        contentType: any(named: 'contentType'),
+      ),
+    ).thenAnswer((_) async => const Failure(ProfilePhotoTooLargeFailure()));
+
+    await openDialog(tester);
+    await tester.tap(find.text('Trocar foto'));
+    await tester.pump();
+
+    expect(
+      find.text('A foto passa do tamanho máximo permitido.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shows a toast when gallery access is denied', (tester) async {
+    when(
+      () => picker.pickFromGallery(limit: 1),
+    ).thenAnswer((_) async => const Failure(PhotoAccessDeniedFailure()));
+
+    await openDialog(tester);
+    await tester.tap(find.text('Trocar foto'));
+    await tester.pump();
+
+    expect(
+      find.text(
+        'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shows a toast when the gallery fails to open', (tester) async {
+    when(
+      () => picker.pickFromGallery(limit: 1),
+    ).thenAnswer((_) async => const Failure(PhotoPickerUnknownFailure()));
+
+    await openDialog(tester);
+    await tester.tap(find.text('Trocar foto'));
+    await tester.pump();
+
+    expect(
+      find.text('Não foi possível abrir a galeria. Tente novamente.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shows a toast when the picked file has no content type', (
+    tester,
+  ) async {
+    when(() => picker.pickFromGallery(limit: 1)).thenAnswer(
+      (_) async => Success([
+        PickedPhoto(id: 'pick-1', bytes: Uint8List.fromList([0xFF, 0xD8])),
+      ]),
+    );
+
+    await openDialog(tester);
+    await tester.tap(find.text('Trocar foto'));
+    await tester.pump();
+
+    expect(
+      find.text(
+        '1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.',
+      ),
+      findsOneWidget,
+    );
   });
 }

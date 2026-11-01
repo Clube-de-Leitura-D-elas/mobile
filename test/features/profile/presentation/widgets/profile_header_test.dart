@@ -23,7 +23,11 @@ void main() {
 
   setUpAll(() => registerFallbackValue(Uint8List(0)));
 
-  Future<void> pumpHeader(WidgetTester tester, {DateTime? joinedAt}) {
+  Future<void> pumpHeader(
+    WidgetTester tester, {
+    DateTime? joinedAt,
+    String? photoUrl,
+  }) {
     return tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
@@ -35,6 +39,7 @@ void main() {
             name: 'Roberta',
             joinedAt: joinedAt,
             now: () => today,
+            photoUrl: photoUrl,
           ),
         ),
       ),
@@ -226,6 +231,55 @@ void main() {
         find.byWidgetPredicate(
           (widget) =>
               widget is AppParticipantAvatar && widget.photoUrl == photoUrl,
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('fechar o modal sem trocar mantém a foto anterior', (
+      tester,
+    ) async {
+      serviceLocator.allowReassignment = true;
+      serviceLocator.registerSingleton<ProfileRepository>(
+        MockProfileRepository(),
+      );
+      serviceLocator.registerSingleton<PhotoPicker>(MockPhotoPicker());
+      addTearDown(() {
+        serviceLocator.unregister<ProfileRepository>();
+        serviceLocator.unregister<PhotoPicker>();
+      });
+
+      await pumpHeader(tester, photoUrl: 'https://cdn.example/old.jpg');
+      await tester.tap(find.bySemanticsLabel('Editar foto de perfil'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EditProfilePhotoDialog), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is AppParticipantAvatar &&
+              widget.photoUrl == 'https://cdn.example/old.jpg',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('atualiza o avatar quando a url do perfil muda', (
+      tester,
+    ) async {
+      await pumpHeader(tester);
+      await pumpHeader(
+        tester,
+        photoUrl: 'https://cdn.example/from-profile.jpg',
+      );
+
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is AppParticipantAvatar &&
+              widget.photoUrl == 'https://cdn.example/from-profile.jpg',
         ),
         findsOneWidget,
       );
