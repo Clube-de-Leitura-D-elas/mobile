@@ -61,6 +61,18 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  void stubPickedPhoto() {
+    when(() => picker.pickFromGallery(limit: 1)).thenAnswer(
+      (_) async => Success([
+        PickedPhoto(
+          id: 'pick-1',
+          bytes: Uint8List.fromList([0xFF, 0xD8]),
+          contentType: 'image/jpeg',
+        ),
+      ]),
+    );
+  }
+
   testWidgets('shows title, preview and change button', (tester) async {
     await openDialog(tester);
 
@@ -80,6 +92,59 @@ void main() {
     await tester.pump();
 
     verify(() => picker.pickFromGallery(limit: 1)).called(1);
+  });
+
+  testWidgets('closes and returns the same photo url', (tester) async {
+    const photoUrl = 'https://cdn.example/same.jpg';
+    String? result;
+    stubPickedPhoto();
+    when(
+      () => repository.setProfilePhoto(
+        bytes: any(named: 'bytes'),
+        contentType: any(named: 'contentType'),
+      ),
+    ).thenAnswer((_) async => const Success(photoUrl));
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt'),
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () async {
+                result = await showDialog<String>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => BlocProvider(
+                    create: (_) => EditProfilePhotoCubit(
+                      profileRepository: repository,
+                      photoPicker: picker,
+                      initialPhotoUrl: photoUrl,
+                    ),
+                    child: const EditProfilePhotoDialog(
+                      initialPhotoUrl: photoUrl,
+                    ),
+                  ),
+                );
+              },
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Trocar foto'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.byType(EditProfilePhotoDialog), findsNothing);
+    expect(result, photoUrl);
   });
 
   testWidgets('shows an error toast and stays open when upload fails', (
@@ -111,18 +176,6 @@ void main() {
     );
     expect(find.byType(EditProfilePhotoDialog), findsOneWidget);
   });
-
-  void stubPickedPhoto() {
-    when(() => picker.pickFromGallery(limit: 1)).thenAnswer(
-      (_) async => Success([
-        PickedPhoto(
-          id: 'pick-1',
-          bytes: Uint8List.fromList([0xFF, 0xD8]),
-          contentType: 'image/jpeg',
-        ),
-      ]),
-    );
-  }
 
   testWidgets('shows a toast when the photo is rejected', (tester) async {
     stubPickedPhoto();
