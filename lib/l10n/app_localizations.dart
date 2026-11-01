@@ -1621,23 +1621,24 @@ abstract class AppLocalizations {
   /// **'Texto de divulgação salvo.'**
   String get meetingPromoTextSaved;
 
-  /// Erro ao salvar o texto de divulgacao.
+  /// Erro ao salvar o texto de divulgação.
   ///
   /// In pt, this message translates to:
-  /// **'Nao foi possivel salvar o texto de divulgacao. Tente novamente.'**
+  /// **'Não foi possível salvar o texto de divulgação. Tente novamente.'**
   String get meetingPromoTextSaveFailed;
 
-  /// Rotulo de acessibilidade do componente de avaliacao em estrelas
+  /// Rótulo de acessibilidade do componente de avaliação em estrelas
   ///
   /// In pt, this message translates to:
   /// **'{rating} de {maxStars} estrelas'**
   String starRatingSemanticLabel(String rating, int maxStars);
 
-  /// Rotulo de acessibilidade de cada estrela no modo input
+  /// Rótulo de acessibilidade de cada estrela no modo input
   ///
   /// In pt, this message translates to:
   /// **'{starValue} de {maxStars} estrelas'**
   String starRatingInputStarLabel(int starValue, int maxStars);
+
   /// Chip de status de leitura: livro já lido pela leitora.
   ///
   /// In pt, this message translates to:

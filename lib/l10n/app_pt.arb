@@ -1,4 +1,4 @@
-﻿{
+{
   "@@locale": "pt",
 
     "@@Common": "--- Common ---",
@@ -1218,7 +1218,7 @@
 
   "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
   "@starRatingSemanticLabel": {
-    "description": "Rotulo de acessibilidade do componente de avaliacao em estrelas",
+    "description": "Rótulo de acessibilidade do componente de avaliação em estrelas",
     "placeholders": {
       "rating": { "type": "String" },
       "maxStars": { "type": "int" }
@@ -1226,7 +1226,7 @@
   },
   "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas",
   "@starRatingInputStarLabel": {
-    "description": "Rotulo de acessibilidade de cada estrela no modo input",
+    "description": "Rótulo de acessibilidade de cada estrela no modo input",
     "placeholders": {
       "starValue": { "type": "int" },
       "maxStars": { "type": "int" }

@@ -893,7 +893,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get meetingPromoTextSaveFailed =>
-      'Nao foi possivel salvar o texto de divulgacao. Tente novamente.';
+      'Não foi possível salvar o texto de divulgação. Tente novamente.';
 
   @override
   String starRatingSemanticLabel(String rating, int maxStars) {
@@ -904,7 +904,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String starRatingInputStarLabel(int starValue, int maxStars) {
     return '$starValue de $maxStars estrelas';
   }
-      'Não foi possível salvar o texto de divulgação. Tente novamente.';
 
   @override
   String get readingStatusRead => 'Já lido';
