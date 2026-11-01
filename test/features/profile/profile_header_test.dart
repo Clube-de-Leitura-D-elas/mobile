@@ -125,34 +125,33 @@ void main() {
       expect(find.text('2 anos no clube'), findsOneWidget);
     });
 
-    testWidgets('conta a data de entrada no fuso do aparelho', (tester) async {
-      // Em UTC a data local e a UTC são iguais e o teste não pegaria a falta
-      // do toLocal(); o CI roda com TZ=America/Sao_Paulo.
-      final offset = DateTime(2026, 10, 15).timeZoneOffset;
-      expect(
-        offset,
-        isNot(Duration.zero),
-        reason: 'Rode os testes com um fuso não UTC (TZ=America/Sao_Paulo).',
-      );
+    // Em UTC a data local e a UTC são iguais e não há o que testar, então o
+    // caso é pulado; o CI roda com TZ=America/Sao_Paulo para executá-lo.
+    final offset = DateTime(2026, 10, 15).timeZoneOffset;
 
-      // Entrada local perto da meia-noite, que em UTC cai em outro dia.
-      // Fuso negativo: 15/10 23h local é 16/10 em UTC (0 meses em 15/11).
-      // Fuso positivo: 16/10 00h30 local é 15/10 em UTC (1 mês em 15/11).
-      final joinedLocal = offset.isNegative
-          ? DateTime(2026, 10, 15, 23)
-          : DateTime(2026, 10, 16, 0, 30);
-      final joinedAt = joinedLocal.toUtc();
-      expect(joinedAt.day, isNot(joinedLocal.day));
+    testWidgets(
+      'conta a data de entrada no fuso do aparelho',
+      skip: offset == Duration.zero,
+      (tester) async {
+        // Entrada local perto da meia-noite, que em UTC cai em outro dia.
+        // Fuso negativo: 15/10 23h local é 16/10 em UTC (0 meses em 15/11).
+        // Fuso positivo: 16/10 00h30 local é 15/10 em UTC (1 mês em 15/11).
+        final joinedLocal = offset.isNegative
+            ? DateTime(2026, 10, 15, 23)
+            : DateTime(2026, 10, 16, 0, 30);
+        final joinedAt = joinedLocal.toUtc();
+        expect(joinedAt.day, isNot(joinedLocal.day));
 
-      await pumpHeader(tester, joinedAt: joinedAt);
+        await pumpHeader(tester, joinedAt: joinedAt);
 
-      expect(
-        find.text(
-          offset.isNegative ? '1 mês no clube' : 'Chegou ao clube este mês',
-        ),
-        findsOneWidget,
-      );
-    });
+        expect(
+          find.text(
+            offset.isNegative ? '1 mês no clube' : 'Chegou ao clube este mês',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets('o avatar fica fora da leitura de tela', (tester) async {
       await pumpHeader(tester);
