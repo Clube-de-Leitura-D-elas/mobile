@@ -847,6 +847,12 @@ abstract class AppLocalizations {
   /// **'Buscar grupo'**
   String get searchGroupPlaceholder;
 
+  /// Tooltip e rótulo de acessibilidade do botão que limpa o campo de busca
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar busca'**
+  String get clearSearchTooltip;
+
   /// Aviso na home quando a anfitriã tem tarefas pendentes
   ///
   /// In pt, this message translates to:

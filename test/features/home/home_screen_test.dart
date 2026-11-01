@@ -401,6 +401,49 @@ void main() {
   );
 
   testWidgets(
+    'filters groups after the search field debounce and clears the filter',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(
+        () => repository.getMyGroups(),
+      ).thenAnswer((_) async => const Success([group]));
+
+      final cubit = HomeCubit(groupRepository: repository);
+      final sessionCubit = MockSessionCubit();
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(buildSubject(cubit, sessionCubit));
+      await cubit.loadGroups();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Buscar grupo'), findsOneWidget);
+
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(AppSearchField),
+          matching: find.byType(TextField),
+        ),
+        'Inexistente',
+      );
+      await tester.pump();
+
+      expect(cubit.state.searchQuery, isEmpty);
+
+      await tester.pump(AppSearchField.defaultDebounce);
+      await tester.pumpAndSettle();
+
+      expect(cubit.state.searchQuery, 'Inexistente');
+      expect(find.text('Nenhum grupo encontrado'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Limpar busca'));
+      await tester.pumpAndSettle();
+
+      expect(cubit.state.searchQuery, isEmpty);
+      expect(find.text('Grupo 1'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
     'uses onNavigationItemSelected callback and accepts user/profile',
     (tester) async {
       final repository = MockGroupRepository();
