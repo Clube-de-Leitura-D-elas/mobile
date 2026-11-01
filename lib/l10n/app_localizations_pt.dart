@@ -164,6 +164,32 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileLogoutButtonLabel => 'Sair da conta';
 
   @override
+  String get profileTitle => 'Meu Perfil';
+
+  @override
+  String profileClubTimeMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meses no clube',
+      one: '1 mês no clube',
+      zero: 'Chegou ao clube este mês',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileClubTimeYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count anos no clube',
+      one: '1 ano no clube',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get logoutDialogTitle => 'Sair da conta';
 
   @override
@@ -1063,6 +1089,32 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get profileLogoutButtonLabel => 'Sair da conta';
+
+  @override
+  String get profileTitle => 'Meu Perfil';
+
+  @override
+  String profileClubTimeMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meses no clube',
+      one: '1 mês no clube',
+      zero: 'Chegou ao clube este mês',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileClubTimeYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count anos no clube',
+      one: '1 ano no clube',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get logoutDialogTitle => 'Sair da conta';

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_screen.dart';
 import 'package:mobile/features/profile/presentation/widgets/logout_confirm_dialog.dart';
+import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -19,7 +21,7 @@ void main() {
     when(() => mockCubit.logOut()).thenAnswer((_) async {});
   });
 
-  Widget buildSubject() {
+  Widget buildSubject({UserProfileEntity? profile}) {
     return BlocProvider<SessionCubit>.value(
       value: mockCubit,
       child: MaterialApp(
@@ -27,10 +29,69 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('pt'),
-        home: const Scaffold(body: ProfileScreen()),
+        home: Scaffold(body: ProfileScreen(profile: profile)),
       ),
     );
   }
+
+  UserProfileEntity buildProfile({String name = 'Roberta'}) {
+    final now = DateTime.now();
+    return UserProfileEntity(
+      id: 'p-1',
+      name: name,
+      email: 'roberta@example.com',
+      address: '',
+      phoneNumber: '',
+      birthday: '',
+      instagram: '',
+      educationDegree: '',
+      jobPosition: '',
+      userId: 'u-1',
+      isActive: true,
+      createdAt: DateTime(now.year, now.month - 3),
+    );
+  }
+
+  testWidgets('Deve exibir o título como cabeçalho', (tester) async {
+    await tester.pumpWidget(buildSubject());
+
+    expect(find.text('Meu Perfil'), findsOneWidget);
+    expect(
+      find.ancestor(
+        of: find.text('Meu Perfil'),
+        matching: find.byWidgetPredicate(
+          (w) => w is Semantics && w.properties.header == true,
+        ),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Deve exibir o nome e o tempo no clube do perfil', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(profile: buildProfile()));
+
+    expect(find.byType(ProfileHeader), findsOneWidget);
+    expect(find.text('Roberta'), findsOneWidget);
+    expect(find.text('3 meses no clube'), findsOneWidget);
+  });
+
+  testWidgets('Deve usar o nome padrão quando o perfil não tem nome', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(profile: buildProfile(name: '')));
+
+    expect(find.text('Usuária'), findsOneWidget);
+  });
+
+  testWidgets('O botão de sair tem alvo de toque de 48x48', (tester) async {
+    await tester.pumpWidget(buildSubject());
+
+    final size = tester.getSize(find.byType(InkWell));
+    expect(size.width, greaterThanOrEqualTo(48));
+    expect(size.height, greaterThanOrEqualTo(48));
+  });
 
   testWidgets('Deve exibir o ícone de leave na ProfileScreen', (tester) async {
     await tester.pumpWidget(buildSubject());

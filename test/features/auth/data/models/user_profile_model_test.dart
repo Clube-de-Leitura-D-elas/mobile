@@ -58,6 +58,25 @@ void main() {
       expect(profile.address, equals('Second St 456'));
       expect(profile.phoneNumber, equals(''));
       expect(profile.isActive, isTrue);
+      expect(profile.createdAt, isNull);
+    });
+
+    test('fromMap parses created_at as the club join date', () {
+      final profile = UserProfileModel.fromMap({
+        'id': 'p-3',
+        'created_at': '2025-03-15T12:30:00+00:00',
+      });
+
+      expect(profile.createdAt, DateTime.utc(2025, 3, 15, 12, 30));
+    });
+
+    test('fromMap ignores an invalid created_at', () {
+      final profile = UserProfileModel.fromMap({
+        'id': 'p-4',
+        'created_at': 'not-a-date',
+      });
+
+      expect(profile.createdAt, isNull);
     });
   });
 }

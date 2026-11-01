@@ -27,6 +27,7 @@ class UserProfileModel {
       jobPosition: (map['job'] as String?) ?? (map['job_position'] as String?) ?? '',
       userId: map['user_id'] as String? ?? '',
       isActive: map['is_Active'] as bool? ?? map['is_active'] as bool? ?? true,
+      createdAt: DateTime.tryParse(map['created_at'] as String? ?? ''),
     );
   }
 }
