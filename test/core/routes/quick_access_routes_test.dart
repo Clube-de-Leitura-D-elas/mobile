@@ -1,14 +1,21 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGoRouter extends Mock implements GoRouter {}
+
+class MockSessionCubit extends MockCubit<SessionState>
+    implements SessionCubit {}
 
 void main() {
   group('QuickAccessRoutes', () {
@@ -81,14 +88,20 @@ void main() {
           initialLocation: '/search',
           routes: QuickAccessRoutes.routes,
         );
+        final sessionCubit = MockSessionCubit();
+        when(() => sessionCubit.state).thenReturn(const GuestSession());
 
+        // No app o SessionCubit fica acima do MaterialApp (main.dart).
         await tester.pumpWidget(
-          MaterialApp.router(
-            theme: AppTheme.light,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: const Locale('pt'),
-            routerConfig: router,
+          BlocProvider<SessionCubit>.value(
+            value: sessionCubit,
+            child: MaterialApp.router(
+              theme: AppTheme.light,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: const Locale('pt'),
+              routerConfig: router,
+            ),
           ),
         );
         await tester.pumpAndSettle();

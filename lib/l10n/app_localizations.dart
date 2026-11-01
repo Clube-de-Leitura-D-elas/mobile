@@ -397,6 +397,24 @@ abstract class AppLocalizations {
   /// **'Sair da conta'**
   String get profileLogoutButtonLabel;
 
+  /// Título da tela de perfil
+  ///
+  /// In pt, this message translates to:
+  /// **'Meu Perfil'**
+  String get profileTitle;
+
+  /// Tempo no clube, abaixo do nome no perfil, quando é menos de um ano
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Chegou ao clube este mês} =1{1 mês no clube} other{{count} meses no clube}}'**
+  String profileClubTimeMonths(int count);
+
+  /// Tempo no clube, abaixo do nome no perfil, a partir de um ano
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 ano no clube} other{{count} anos no clube}}'**
+  String profileClubTimeYears(int count);
+
   /// Título do modal de confirmação de logout
   ///
   /// In pt, this message translates to:

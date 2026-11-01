@@ -34,6 +34,25 @@ void main() {
       expect(sizedBox.height, 56);
     });
 
+    testWidgets('aceita um diâmetro maior e acompanha o ícone', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: const Scaffold(
+            body: Center(
+              child: AppParticipantAvatar(photoUrl: null, diameter: 112),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSize(find.byType(AppParticipantAvatar)),
+        const Size(112, 112),
+      );
+      expect(tester.widget<Icon>(find.byType(Icon)).size, 48);
+    });
+
     testWidgets('exibe ícone padrão quando a URL é null', (tester) async {
       await tester.pumpWidget(createWidget(null));
 

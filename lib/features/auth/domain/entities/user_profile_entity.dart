@@ -12,6 +12,7 @@ class UserProfileEntity extends Equatable {
   final String jobPosition;
   final String userId;
   final bool isActive;
+  final DateTime? createdAt;
 
   const UserProfileEntity({
     required this.id,
@@ -25,20 +26,22 @@ class UserProfileEntity extends Equatable {
     required this.jobPosition,
     required this.userId,
     required this.isActive,
+    this.createdAt,
   });
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        email,
-        address,
-        phoneNumber,
-        birthday,
-        instagram,
-        educationDegree,
-        jobPosition,
-        userId,
-        isActive,
-      ];
+    id,
+    name,
+    email,
+    address,
+    phoneNumber,
+    birthday,
+    instagram,
+    educationDegree,
+    jobPosition,
+    userId,
+    isActive,
+    createdAt,
+  ];
 }
