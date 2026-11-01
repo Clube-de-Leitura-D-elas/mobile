@@ -42,6 +42,10 @@ jobs:
         run: flutter analyze
 
       - name: Run tests with coverage
+        # Fuso não UTC: os testes de data precisam de uma virada de dia entre
+        # o horário local e o UTC (ver profile_header_test.dart).
+        env:
+          TZ: America/Sao_Paulo
         run: flutter test --coverage
 
       - name: Remove generated l10n files from coverage

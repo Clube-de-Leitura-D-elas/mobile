@@ -60,6 +60,9 @@
   "jobPositionLabel": "Cargo / Profissão",
   "authUserIdLabel": "ID Auth (Supabase User ID)",
   "profileLogoutButtonLabel": "Sair da conta",
+  "profileTitle": "Meu Perfil",
+  "profileClubTimeMonths": "{count, plural, =0{Chegou ao clube este mês} =1{1 mês no clube} other{{count} meses no clube}}",
+  "profileClubTimeYears": "{count, plural, =1{1 ano no clube} other{{count} anos no clube}}",
   "logoutDialogTitle": "Sair da conta",
   "logoutDialogMessage": "Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.",
   "logoutDialogCancel": "Cancelar",
@@ -174,6 +177,7 @@
   "selectOptionHint": "Selecione",
   "myGroupsTitle": "Meus grupos",
   "searchGroupPlaceholder": "Buscar grupo",
+  "clearSearchTooltip": "Limpar busca",
   "homePendingTasksMessage": "Você tem tarefas pendentes",
   "homePendingTasksAction": "Tarefas",
   "pendingTasksTitle": "Tarefas pendentes",
@@ -201,5 +205,7 @@
   "raffleErrorMessage": "Não foi possível concluir o sorteio",
   "raffleNoMoreParticipantsToDraw": "Sem mais pessoas para sortear",
   "raffleNoEligibleParticipants": "Não há participantes elegíveis para o sorteio.",
-  "raffleSavedSuccessToast": "Sorteio registrado com sucesso! Nova anfitriã definida."
+  "raffleSavedSuccessToast": "Sorteio registrado com sucesso! Nova anfitriã definida.",
+  "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
+  "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas"
 }

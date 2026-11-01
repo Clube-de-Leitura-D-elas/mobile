@@ -164,6 +164,32 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileLogoutButtonLabel => 'Sair da conta';
 
   @override
+  String get profileTitle => 'Meu Perfil';
+
+  @override
+  String profileClubTimeMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meses no clube',
+      one: '1 mês no clube',
+      zero: 'Chegou ao clube este mês',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileClubTimeYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count anos no clube',
+      one: '1 ano no clube',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get logoutDialogTitle => 'Sair da conta';
 
   @override
@@ -458,6 +484,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get clearSearchTooltip => 'Limpar busca';
 
   @override
   String get homePendingTasksMessage => 'Você tem tarefas pendentes';
@@ -921,6 +950,16 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível salvar o texto de divulgação. Tente novamente.';
 
   @override
+  String starRatingSemanticLabel(String rating, int maxStars) {
+    return '$rating de $maxStars estrelas';
+  }
+
+  @override
+  String starRatingInputStarLabel(int starValue, int maxStars) {
+    return '$starValue de $maxStars estrelas';
+  }
+
+  @override
   String get readingStatusRead => 'Já lido';
 
   @override
@@ -1088,6 +1127,32 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get profileLogoutButtonLabel => 'Sair da conta';
+
+  @override
+  String get profileTitle => 'Meu Perfil';
+
+  @override
+  String profileClubTimeMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meses no clube',
+      one: '1 mês no clube',
+      zero: 'Chegou ao clube este mês',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileClubTimeYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count anos no clube',
+      one: '1 ano no clube',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get logoutDialogTitle => 'Sair da conta';
@@ -1371,6 +1436,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get searchGroupPlaceholder => 'Buscar grupo';
 
   @override
+  String get clearSearchTooltip => 'Limpar busca';
+
+  @override
   String get homePendingTasksMessage => 'Você tem tarefas pendentes';
 
   @override
@@ -1608,4 +1676,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get meetingPhotoNext => 'Próxima foto';
+
+  @override
+  String starRatingSemanticLabel(String rating, int maxStars) {
+    return '$rating de $maxStars estrelas';
+  }
+
+  @override
+  String starRatingInputStarLabel(int starValue, int maxStars) {
+    return '$starValue de $maxStars estrelas';
+  }
 }

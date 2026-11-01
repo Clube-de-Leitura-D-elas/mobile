@@ -397,6 +397,24 @@ abstract class AppLocalizations {
   /// **'Sair da conta'**
   String get profileLogoutButtonLabel;
 
+  /// Título da tela de perfil
+  ///
+  /// In pt, this message translates to:
+  /// **'Meu Perfil'**
+  String get profileTitle;
+
+  /// Tempo no clube, abaixo do nome no perfil, quando é menos de um ano
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Chegou ao clube este mês} =1{1 mês no clube} other{{count} meses no clube}}'**
+  String profileClubTimeMonths(int count);
+
+  /// Tempo no clube, abaixo do nome no perfil, a partir de um ano
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 ano no clube} other{{count} anos no clube}}'**
+  String profileClubTimeYears(int count);
+
   /// Título do modal de confirmação de logout
   ///
   /// In pt, this message translates to:
@@ -882,6 +900,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Buscar grupo'**
   String get searchGroupPlaceholder;
+
+  /// Tooltip e rótulo de acessibilidade do botão que limpa o campo de busca
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar busca'**
+  String get clearSearchTooltip;
 
   /// Aviso na home quando a anfitriã tem tarefas pendentes
   ///
@@ -1668,6 +1692,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível salvar o texto de divulgação. Tente novamente.'**
   String get meetingPromoTextSaveFailed;
+
+  /// Rótulo de acessibilidade do componente de avaliação em estrelas
+  ///
+  /// In pt, this message translates to:
+  /// **'{rating} de {maxStars} estrelas'**
+  String starRatingSemanticLabel(String rating, int maxStars);
+
+  /// Rótulo de acessibilidade de cada estrela no modo input
+  ///
+  /// In pt, this message translates to:
+  /// **'{starValue} de {maxStars} estrelas'**
+  String starRatingInputStarLabel(int starValue, int maxStars);
 
   /// Chip de status de leitura: livro já lido pela leitora.
   ///

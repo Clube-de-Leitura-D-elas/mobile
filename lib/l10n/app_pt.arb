@@ -206,6 +206,28 @@
     "@profileLogoutButtonLabel": {
       "description": "Rótulo de acessibilidade para o botão de logout no perfil"
     },
+    "profileTitle": "Meu Perfil",
+    "@profileTitle": {
+      "description": "Título da tela de perfil"
+    },
+    "profileClubTimeMonths": "{count, plural, =0{Chegou ao clube este mês} =1{1 mês no clube} other{{count} meses no clube}}",
+    "@profileClubTimeMonths": {
+      "description": "Tempo no clube, abaixo do nome no perfil, quando é menos de um ano",
+      "placeholders": {
+        "count": {
+          "type": "int"
+        }
+      }
+    },
+    "profileClubTimeYears": "{count, plural, =1{1 ano no clube} other{{count} anos no clube}}",
+    "@profileClubTimeYears": {
+      "description": "Tempo no clube, abaixo do nome no perfil, a partir de um ano",
+      "placeholders": {
+        "count": {
+          "type": "int"
+        }
+      }
+    },
     "logoutDialogTitle": "Sair da conta",
     "@logoutDialogTitle": {
       "description": "Título do modal de confirmação de logout"
@@ -513,6 +535,10 @@
   "searchGroupPlaceholder": "Buscar grupo",
   "@searchGroupPlaceholder": {
     "description": "Placeholder do campo de busca de grupos"
+  },
+  "clearSearchTooltip": "Limpar busca",
+  "@clearSearchTooltip": {
+    "description": "Tooltip e rótulo de acessibilidade do botão que limpa o campo de busca"
   },
   "homePendingTasksMessage": "Você tem tarefas pendentes",
   "@homePendingTasksMessage": {
@@ -1247,6 +1273,23 @@
   "meetingPromoTextSaveFailed": "Não foi possível salvar o texto de divulgação. Tente novamente.",
   "@meetingPromoTextSaveFailed": {
     "description": "Erro ao salvar o texto de divulgação."
+  },
+
+  "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
+  "@starRatingSemanticLabel": {
+    "description": "Rótulo de acessibilidade do componente de avaliação em estrelas",
+    "placeholders": {
+      "rating": { "type": "String" },
+      "maxStars": { "type": "int" }
+    }
+  },
+  "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas",
+  "@starRatingInputStarLabel": {
+    "description": "Rótulo de acessibilidade de cada estrela no modo input",
+    "placeholders": {
+      "starValue": { "type": "int" },
+      "maxStars": { "type": "int" }
+    }
   },
 
   "@@Books": "--- Books ---",
