@@ -103,6 +103,141 @@ void main() {
       expect(_clearButton, findsOneWidget);
     });
 
+    testWidgets('Reports the copied text when the controller is removed '
+        'during the debounce', (tester) async {
+      final calls = <String>[];
+      final controller = TextEditingController();
+      addTearDown(controller.dispose);
+
+      await _pumpField(
+        tester,
+        AppSearchField(
+          hintText: _hint,
+          controller: controller,
+          onChanged: calls.add,
+        ),
+      );
+      await tester.enterText(find.byType(TextField), 'Duna');
+      await _pumpField(
+        tester,
+        AppSearchField(hintText: _hint, onChanged: calls.add),
+      );
+      await tester.pump(AppSearchField.defaultDebounce);
+
+      expect(calls, ['Duna']);
+    });
+
+    testWidgets('Switches from its own controller to an external one', (
+      tester,
+    ) async {
+      final calls = <String>[];
+      final controller = TextEditingController(text: 'Duna');
+      addTearDown(controller.dispose);
+
+      await _pumpField(
+        tester,
+        AppSearchField(hintText: _hint, onChanged: calls.add),
+      );
+      await tester.enterText(find.byType(TextField), 'Du');
+      await _pumpField(
+        tester,
+        AppSearchField(
+          hintText: _hint,
+          controller: controller,
+          onChanged: calls.add,
+        ),
+      );
+
+      expect(find.text('Duna'), findsOneWidget);
+      expect(find.text('Du'), findsNothing);
+
+      // O debounce pendente envia o texto do controller que está na tela.
+      await tester.pump(AppSearchField.defaultDebounce);
+      expect(calls, ['Duna']);
+
+      // O controller próprio foi descartado e o externo segue funcionando.
+      await tester.enterText(find.byType(TextField), 'Duna 2');
+      expect(controller.text, 'Duna 2');
+
+      await tester.tap(_clearButton);
+      await tester.pump();
+
+      expect(controller.text, isEmpty);
+      expect(calls, ['Duna', '']);
+    });
+
+    testWidgets('Switches between two external controllers', (tester) async {
+      final calls = <String>[];
+      final first = TextEditingController();
+      final second = TextEditingController(text: 'Fundação');
+      addTearDown(first.dispose);
+      addTearDown(second.dispose);
+
+      await _pumpField(
+        tester,
+        AppSearchField(
+          hintText: _hint,
+          controller: first,
+          onChanged: calls.add,
+        ),
+      );
+      await tester.enterText(find.byType(TextField), 'Duna');
+      await _pumpField(
+        tester,
+        AppSearchField(
+          hintText: _hint,
+          controller: second,
+          onChanged: calls.add,
+        ),
+      );
+      await tester.pump(AppSearchField.defaultDebounce);
+
+      expect(find.text('Fundação'), findsOneWidget);
+      expect(calls, ['Fundação']);
+    });
+
+    testWidgets('Keeps the hint as the semantic label with or without text', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+
+      await _pumpField(tester, const AppSearchField(hintText: _hint));
+
+      expect(
+        tester.getSemantics(find.byType(TextField)),
+        isSemantics(label: _hint, isTextField: true),
+      );
+
+      await tester.enterText(find.byType(TextField), 'Duna');
+      await tester.pump();
+
+      expect(
+        tester.getSemantics(find.byType(TextField)),
+        isSemantics(label: _hint, value: 'Duna', isTextField: true),
+      );
+
+      semantics.dispose();
+    });
+
+    testWidgets('Uses spacing tokens for the inner paddings', (tester) async {
+      await _pumpField(tester, const AppSearchField(hintText: _hint));
+
+      const spacing = AppSpacingTokens.standard;
+      final container = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byType(AppSearchField),
+              matching: find.byType(Container),
+            )
+            .first,
+      );
+
+      expect(
+        container.padding,
+        EdgeInsetsDirectional.only(start: spacing.s12 + spacing.s2),
+      );
+    });
+
     testWidgets('Hides the clear button while the field is empty', (
       tester,
     ) async {

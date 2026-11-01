@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../icons/app_icons.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'app_icon.dart';
 
@@ -74,11 +75,12 @@ class _AppSearchFieldState extends State<AppSearchField> {
     super.dispose();
   }
 
-  void _handleChanged(String value) {
+  void _handleChanged(String _) {
     _debounceTimer?.cancel();
+    // Lê o texto no disparo: o controller pode ter sido trocado na espera.
     _debounceTimer = Timer(
       widget.debounce,
-      () => widget.onChanged?.call(value),
+      () => widget.onChanged?.call(_controller.text),
     );
   }
 
@@ -95,8 +97,12 @@ class _AppSearchFieldState extends State<AppSearchField> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final spacing = context.spacing;
     final typography = context.typography;
-    final l10n = Localizations.of<AppLocalizations>(context, AppLocalizations);
+    final l10n = AppLocalizations.of(context);
+    // 14 e 10 do Figma, compostos a partir da escala de espaçamento.
+    final edgeInset = spacing.s12 + spacing.s2;
+    final iconGap = spacing.s8 + spacing.s2;
 
     return Container(
       height: AppSearchField.height,
@@ -109,7 +115,7 @@ class _AppSearchFieldState extends State<AppSearchField> {
           strokeAlign: BorderSide.strokeAlignOutside,
         ),
       ),
-      padding: const EdgeInsetsDirectional.only(start: 14),
+      padding: EdgeInsetsDirectional.only(start: edgeInset),
       child: Row(
         children: [
           ExcludeSemantics(
@@ -119,22 +125,34 @@ class _AppSearchFieldState extends State<AppSearchField> {
               color: colors.textMuted,
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: iconGap),
           Expanded(
-            child: TextField(
-              controller: _controller,
-              onChanged: _handleChanged,
-              onSubmitted: _notifyNow,
-              textInputAction: TextInputAction.search,
-              style: typography.bodyDefault.copyWith(color: colors.textDefault),
-              decoration: InputDecoration(
-                isDense: true,
-                hintText: widget.hintText,
-                hintStyle: typography.bodyDefault.copyWith(
-                  color: colors.actionDisabledFg,
+            // O hint some ao digitar; o rótulo mantém o campo identificado
+            // para o leitor de tela.
+            child: Semantics(
+              label: widget.hintText,
+              child: TextField(
+                controller: _controller,
+                onChanged: _handleChanged,
+                onSubmitted: _notifyNow,
+                textInputAction: TextInputAction.search,
+                style: typography.bodyDefault.copyWith(
+                  color: colors.textDefault,
                 ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
+                decoration: InputDecoration(
+                  isDense: true,
+                  // Fora da semântica: o rótulo acima já anuncia o hint.
+                  hint: ExcludeSemantics(
+                    child: Text(
+                      widget.hintText,
+                      style: typography.bodyDefault.copyWith(
+                        color: colors.actionDisabledFg,
+                      ),
+                    ),
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                ),
               ),
             ),
           ),
@@ -143,14 +161,14 @@ class _AppSearchFieldState extends State<AppSearchField> {
             builder: (context, value, _) {
               // Mantém o respiro da borda direita quando o botão some.
               if (value.text.isEmpty) {
-                return const SizedBox(width: 14);
+                return SizedBox(width: edgeInset);
               }
 
               return SizedBox.square(
                 dimension: AppSearchField.height,
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  tooltip: l10n?.clearSearchTooltip ?? 'Limpar busca',
+                  tooltip: l10n.clearSearchTooltip,
                   onPressed: _clear,
                   icon: Icon(Icons.close, size: 20, color: colors.textMuted),
                 ),
