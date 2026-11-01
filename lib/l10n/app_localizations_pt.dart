@@ -438,6 +438,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get searchGroupPlaceholder => 'Buscar grupo';
 
   @override
+  String get clearSearchTooltip => 'Limpar busca';
+
+  @override
   String get homePendingTasksMessage => 'Você tem tarefas pendentes';
 
   @override
@@ -901,6 +904,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String starRatingInputStarLabel(int starValue, int maxStars) {
     return '$starValue de $maxStars estrelas';
   }
+      'Não foi possível salvar o texto de divulgação. Tente novamente.';
+
+  @override
+  String get readingStatusRead => 'Já lido';
+
+  @override
+  String get readingStatusWantToRead => 'Quero ler';
+
+  @override
+  String get readingStatusMarkAsRead => 'Marcar como lido';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1320,6 +1333,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get searchGroupPlaceholder => 'Buscar grupo';
+
+  @override
+  String get clearSearchTooltip => 'Limpar busca';
 
   @override
   String get homePendingTasksMessage => 'Você tem tarefas pendentes';

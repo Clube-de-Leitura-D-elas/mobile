@@ -485,6 +485,10 @@
   "@searchGroupPlaceholder": {
     "description": "Placeholder do campo de busca de grupos"
   },
+  "clearSearchTooltip": "Limpar busca",
+  "@clearSearchTooltip": {
+    "description": "Tooltip e rótulo de acessibilidade do botão que limpa o campo de busca"
+  },
   "homePendingTasksMessage": "Você tem tarefas pendentes",
   "@homePendingTasksMessage": {
     "description": "Aviso na home quando a anfitriã tem tarefas pendentes"
@@ -1227,5 +1231,20 @@
       "starValue": { "type": "int" },
       "maxStars": { "type": "int" }
     }
+    "description": "Erro ao salvar o texto de divulgação."
+  },
+
+  "@@Books": "--- Books ---",
+  "readingStatusRead": "Já lido",
+  "@readingStatusRead": {
+    "description": "Chip de status de leitura: livro já lido pela leitora."
+  },
+  "readingStatusWantToRead": "Quero ler",
+  "@readingStatusWantToRead": {
+    "description": "Chip de status de leitura: livro que a leitora quer ler."
+  },
+  "readingStatusMarkAsRead": "Marcar como lido",
+  "@readingStatusMarkAsRead": {
+    "description": "Chip no detalhe do livro para marcar o livro como lido."
   }
 }

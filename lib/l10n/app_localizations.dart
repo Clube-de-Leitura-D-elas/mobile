@@ -847,6 +847,12 @@ abstract class AppLocalizations {
   /// **'Buscar grupo'**
   String get searchGroupPlaceholder;
 
+  /// Tooltip e rótulo de acessibilidade do botão que limpa o campo de busca
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar busca'**
+  String get clearSearchTooltip;
+
   /// Aviso na home quando a anfitriã tem tarefas pendentes
   ///
   /// In pt, this message translates to:
@@ -1632,6 +1638,23 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{starValue} de {maxStars} estrelas'**
   String starRatingInputStarLabel(int starValue, int maxStars);
+  /// Chip de status de leitura: livro já lido pela leitora.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já lido'**
+  String get readingStatusRead;
+
+  /// Chip de status de leitura: livro que a leitora quer ler.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quero ler'**
+  String get readingStatusWantToRead;
+
+  /// Chip no detalhe do livro para marcar o livro como lido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar como lido'**
+  String get readingStatusMarkAsRead;
 }
 
 class _AppLocalizationsDelegate

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
-import 'package:mobile/features/groups/presentation/widgets/event_history_book_cover.dart';
 
 class EventHistoryCard extends StatelessWidget {
   const EventHistoryCard({
@@ -33,7 +32,7 @@ class EventHistoryCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EventHistoryBookCover(imageUrl: meeting.bookCoverUrl),
+          AppBookCover(imageUrl: meeting.bookCoverUrl),
           SizedBox(width: spacing.s12),
           Expanded(
             child: Column(

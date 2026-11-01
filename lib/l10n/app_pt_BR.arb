@@ -166,6 +166,7 @@
   "selectOptionHint": "Selecione",
   "myGroupsTitle": "Meus grupos",
   "searchGroupPlaceholder": "Buscar grupo",
+  "clearSearchTooltip": "Limpar busca",
   "homePendingTasksMessage": "Você tem tarefas pendentes",
   "homePendingTasksAction": "Tarefas",
   "pendingTasksTitle": "Tarefas pendentes",
