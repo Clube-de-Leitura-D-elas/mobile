@@ -1645,6 +1645,18 @@ abstract class AppLocalizations {
   /// **'Não foi possível salvar o texto de divulgação. Tente novamente.'**
   String get meetingPromoTextSaveFailed;
 
+  /// Rótulo de acessibilidade do componente de avaliação em estrelas
+  ///
+  /// In pt, this message translates to:
+  /// **'{rating} de {maxStars} estrelas'**
+  String starRatingSemanticLabel(String rating, int maxStars);
+
+  /// Rótulo de acessibilidade de cada estrela no modo input
+  ///
+  /// In pt, this message translates to:
+  /// **'{starValue} de {maxStars} estrelas'**
+  String starRatingInputStarLabel(int starValue, int maxStars);
+
   /// Chip de status de leitura: livro já lido pela leitora.
   ///
   /// In pt, this message translates to:

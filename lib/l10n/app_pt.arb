@@ -1238,6 +1238,23 @@
     "description": "Erro ao salvar o texto de divulgação."
   },
 
+  "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
+  "@starRatingSemanticLabel": {
+    "description": "Rótulo de acessibilidade do componente de avaliação em estrelas",
+    "placeholders": {
+      "rating": { "type": "String" },
+      "maxStars": { "type": "int" }
+    }
+  },
+  "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas",
+  "@starRatingInputStarLabel": {
+    "description": "Rótulo de acessibilidade de cada estrela no modo input",
+    "placeholders": {
+      "starValue": { "type": "int" },
+      "maxStars": { "type": "int" }
+    }
+  },
+
   "@@Books": "--- Books ---",
   "readingStatusRead": "Já lido",
   "@readingStatusRead": {

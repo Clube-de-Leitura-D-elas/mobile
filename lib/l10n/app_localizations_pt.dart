@@ -922,6 +922,16 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível salvar o texto de divulgação. Tente novamente.';
 
   @override
+  String starRatingSemanticLabel(String rating, int maxStars) {
+    return '$rating de $maxStars estrelas';
+  }
+
+  @override
+  String starRatingInputStarLabel(int starValue, int maxStars) {
+    return '$starValue de $maxStars estrelas';
+  }
+
+  @override
   String get readingStatusRead => 'Já lido';
 
   @override
@@ -1610,4 +1620,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get raffleSavedSuccessToast =>
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
+
+  @override
+  String starRatingSemanticLabel(String rating, int maxStars) {
+    return '$rating de $maxStars estrelas';
+  }
+
+  @override
+  String starRatingInputStarLabel(int starValue, int maxStars) {
+    return '$starValue de $maxStars estrelas';
+  }
 }

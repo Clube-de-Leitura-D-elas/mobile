@@ -197,5 +197,7 @@
   "raffleErrorMessage": "Não foi possível concluir o sorteio",
   "raffleNoMoreParticipantsToDraw": "Sem mais pessoas para sortear",
   "raffleNoEligibleParticipants": "Não há participantes elegíveis para o sorteio.",
-  "raffleSavedSuccessToast": "Sorteio registrado com sucesso! Nova anfitriã definida."
+  "raffleSavedSuccessToast": "Sorteio registrado com sucesso! Nova anfitriã definida.",
+  "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
+  "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas"
 }
