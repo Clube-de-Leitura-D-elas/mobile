@@ -129,9 +129,34 @@ void main() {
   group('reload', () {
     blocTest<MeetingPhotosCubit, MeetingPhotosState>(
       'given the state is not uploading, when reloading, then loads the meeting photos',
-      build: buildLoadedCubit,
-      act: (cubit) => cubit.reload(),
-      expect: () => [loaded],
+      build: () {
+        when(
+          () => repository.getMeetingPhotos(meetingId),
+        ).thenAnswer((_) async => Success(_photos([existing])));
+        return MeetingPhotosCubit(
+          groupRepository: repository,
+          photoPicker: picker,
+        );
+      },
+      act: (cubit) async {
+        await cubit.load(meetingId);
+        when(
+          () => repository.getMeetingPhotos(meetingId),
+        ).thenAnswer((_) async => Success(_photos([_photo('reloaded')])));
+        await cubit.reload();
+      },
+      expect: () => [
+        const MeetingPhotosState(status: MeetingPhotosStatus.loading),
+        loaded,
+        loaded.copyWith(status: MeetingPhotosStatus.loading),
+        loaded.copyWith(
+          photos: [_photo('reloaded')],
+          status: MeetingPhotosStatus.loaded,
+        ),
+      ],
+      verify: (_) {
+        verify(() => repository.getMeetingPhotos(meetingId)).called(2);
+      },
     );
 
     blocTest<MeetingPhotosCubit, MeetingPhotosState>(
@@ -197,13 +222,50 @@ void main() {
             'image/jpeg',
             caption: 'Legenda',
           ),
-        ).thenAnswer((_) async => Success(_photo('captioned')));
-        return buildLoadedCubit();
+        ).thenAnswer(
+          (_) async => const Success(
+            MeetingPhotoEntity(
+              id: 'captioned',
+              url: 'https://a/captioned.jpg',
+              caption: 'Legenda',
+            ),
+          ),
+        );
+        return MeetingPhotosCubit(
+          groupRepository: repository,
+          photoPicker: picker,
+        );
       },
       act: (cubit) async {
-        await Future<void>.delayed(Duration.zero);
+        await cubit.load(meetingId);
         await cubit.pickAndUpload(captionPicker: () async => 'Legenda');
       },
+      expect: () => [
+        const MeetingPhotosState(status: MeetingPhotosStatus.loading),
+        loaded,
+        loaded.copyWith(progress: _progress(1, 1)),
+        loaded.copyWith(
+          progress: _progress(1, 1),
+          photos: [
+            existing,
+            MeetingPhotoEntity(
+              id: 'captioned',
+              url: 'https://a/captioned.jpg',
+              caption: 'Legenda',
+            ),
+          ],
+        ),
+        loaded.copyWith(
+          photos: [
+            existing,
+            MeetingPhotoEntity(
+              id: 'captioned',
+              url: 'https://a/captioned.jpg',
+              caption: 'Legenda',
+            ),
+          ],
+        ),
+      ],
       verify: (_) {
         verify(
           () => repository.addMeetingPhoto(
