@@ -224,7 +224,7 @@ void main() {
           ),
         ).thenAnswer(
           (_) async => const Success(
-            MeetingPhotoEntity(
+            const MeetingPhotoEntity(
               id: 'captioned',
               url: 'https://a/captioned.jpg',
               caption: 'Legenda',
@@ -248,7 +248,7 @@ void main() {
           progress: _progress(1, 1),
           photos: [
             existing,
-            MeetingPhotoEntity(
+            const MeetingPhotoEntity(
               id: 'captioned',
               url: 'https://a/captioned.jpg',
               caption: 'Legenda',
