@@ -53,6 +53,7 @@ class BookListTile extends StatelessWidget {
       button: onTap != null,
       enabled: onTap != null ? true : null,
       label: label,
+      onTap: onTap,
       child: InkWell(
         excludeFromSemantics: true,
         onTap: onTap,

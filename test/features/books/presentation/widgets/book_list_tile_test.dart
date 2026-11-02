@@ -205,6 +205,43 @@ void main() {
     expect(chipTaps, 1);
   });
 
+  testWidgets('the row semantics tap opens the row and not the chip', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    var rowTaps = 0;
+    var chipTaps = 0;
+    await _pumpTile(
+      tester,
+      BookListTile(
+        title: 'Duna',
+        author: 'Frank Herbert',
+        genre: 'Ficção',
+        status: ReadingStatusChipState.markAsRead,
+        onTap: () => rowTaps++,
+        onStatusTap: () => chipTaps++,
+      ),
+    );
+
+    final row = tester.getSemantics(
+      find.bySemanticsLabel('Duna, Frank Herbert, Ficção'),
+    );
+    final chip = tester.getSemantics(find.bySemanticsLabel('Marcar como lido'));
+    expect(row.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
+    expect(chip.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
+
+    row.owner!.performAction(row.id, SemanticsAction.tap);
+    await tester.pump();
+    expect(rowTaps, 1);
+    expect(chipTaps, 0);
+
+    chip.owner!.performAction(chip.id, SemanticsAction.tap);
+    await tester.pump();
+    expect(rowTaps, 1);
+    expect(chipTaps, 1);
+    handle.dispose();
+  });
+
   testWidgets('the author block is not an unlabeled semantic button', (
     tester,
   ) async {
