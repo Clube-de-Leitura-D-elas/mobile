@@ -21,14 +21,19 @@ class AppGroupAvatar extends StatelessWidget {
 
     Widget placeholder() => ColoredBox(
       color: colors.surfaceSunken,
-      child: Icon(Icons.groups_outlined, color: colors.textMuted),
+      child: Icon(
+        Icons.groups_outlined,
+        // 24 no diâmetro padrão, crescendo junto com o avatar.
+        size: diameter * 3 / 7,
+        color: colors.textMuted,
+      ),
     );
 
     return ClipOval(
       child: SizedBox(
         width: diameter,
         height: diameter,
-        child: url == null
+        child: url == null || url.isEmpty
             ? placeholder()
             : CachedNetworkImage(
                 imageUrl: url,

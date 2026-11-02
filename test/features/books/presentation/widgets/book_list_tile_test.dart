@@ -349,7 +349,8 @@ void main() {
     final inset =
         tester.getTopLeft(find.text('Frank Herbert')).dx -
         tester.getTopLeft(find.byType(BookListTile)).dx;
-    await pump(width: inset + chipWidth + 32, gap: 20, tile: withChip);
+    final narrow = inset + chipWidth + 32;
+    await pump(width: narrow, gap: 8, tile: withChip);
 
     final meta = find
         .ancestor(of: find.text('Ficção'), matching: find.byType(Column))
@@ -357,16 +358,189 @@ void main() {
     expect(
       tester.getTopLeft(find.byType(AppReadingStatusChip)).dy -
           tester.getBottomLeft(meta).dy,
+      8,
+    );
+
+    await pump(width: narrow, gap: 20, tile: withChip);
+    expect(
+      tester.getTopLeft(find.byType(AppReadingStatusChip)).dy -
+          tester.getBottomLeft(meta).dy,
       20,
     );
 
-    await pump(width: inset + chipWidth + 32, gap: 20, tile: withChip);
+    await pump(width: narrow, gap: 20, tile: withChip);
     expect(
       tester.getTopLeft(find.byType(AppReadingStatusChip)).dy -
           tester.getBottomLeft(meta).dy,
       20,
     );
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('aligns the text with the top of the cover', (tester) async {
+    await _pumpTile(
+      tester,
+      const BookListTile(
+        title: 'Duna',
+        author: 'Frank Herbert',
+        genre: 'Ficção',
+        status: ReadingStatusChipState.read,
+      ),
+    );
+
+    final textColumn = find
+        .ancestor(of: find.text('Duna'), matching: find.byType(Column))
+        .first;
+    expect(
+      tester.getTopLeft(textColumn).dy,
+      tester.getTopLeft(find.byType(AppBookCover)).dy,
+    );
+  });
+
+  testWidgets('the gap between the cover and the title opens the row', (
+    tester,
+  ) async {
+    var rowTaps = 0;
+    var chipTaps = 0;
+    await _pumpTile(
+      tester,
+      BookListTile(
+        title: 'Duna',
+        author: 'Frank Herbert',
+        genre: 'Ficção',
+        status: ReadingStatusChipState.markAsRead,
+        onTap: () => rowTaps++,
+        onStatusTap: () => chipTaps++,
+      ),
+    );
+
+    final cover = tester.getRect(find.byType(AppBookCover));
+    final title = tester.getTopLeft(find.text('Duna'));
+    await tester.tapAt(Offset((cover.right + title.dx) / 2, cover.center.dy));
+    await tester.pump();
+
+    expect(rowTaps, 1);
+    expect(chipTaps, 0);
+  });
+
+  testWidgets('lays out when the width is not bounded', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        locale: const Locale('pt'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: Row(
+            children: [
+              BookListTile(
+                title: 'Duna',
+                author: 'Frank Herbert',
+                genre: 'Ficção',
+                status: ReadingStatusChipState.markAsRead,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Duna'), findsOneWidget);
+    expect(find.text('Marcar como lido'), findsOneWidget);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        locale: const Locale('pt'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: Row(
+            children: [
+              BookListTile(
+                title: 'Duna',
+                author: 'Frank Herbert',
+                genre: 'Ficção',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(AppReadingStatusChip), findsNothing);
+  });
+
+  testWidgets('dry layout matches the side by side and wrapped rows', (
+    tester,
+  ) async {
+    const tile = BookListTile(
+      title: 'Duna',
+      author: 'Frank Herbert',
+      genre: 'Ficção',
+      status: ReadingStatusChipState.markAsRead,
+    );
+
+    Future<void> pumpIntrinsic(double width) {
+      return tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          locale: const Locale('pt'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SizedBox(
+              width: width,
+              child: const IntrinsicHeight(child: tile),
+            ),
+          ),
+        ),
+      );
+    }
+
+    await pumpIntrinsic(700);
+    expect(tester.takeException(), isNull);
+    expect(
+      tester.getTopLeft(find.text('Marcar como lido')).dy,
+      lessThan(tester.getBottomLeft(find.text('Frank Herbert')).dy),
+    );
+
+    final chipWidth = tester.getSize(find.byType(AppReadingStatusChip)).width;
+    final inset =
+        tester.getTopLeft(find.text('Frank Herbert')).dx -
+        tester.getTopLeft(find.byType(BookListTile)).dx;
+    await pumpIntrinsic(inset + chipWidth + 32);
+    expect(tester.takeException(), isNull);
+    expect(
+      tester.getTopLeft(find.text('Marcar como lido')).dy,
+      greaterThanOrEqualTo(tester.getBottomLeft(find.text('Ficção')).dy),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        locale: const Locale('pt'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: SizedBox(
+            width: 400,
+            child: IntrinsicHeight(
+              child: BookListTile(
+                title: 'Duna',
+                author: 'Frank Herbert',
+                genre: 'Ficção',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    expect(find.text('Frank Herbert'), findsOneWidget);
+    expect(find.byType(AppReadingStatusChip), findsNothing);
   });
 }
 

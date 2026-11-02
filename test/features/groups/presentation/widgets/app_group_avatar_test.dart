@@ -61,6 +61,28 @@ void main() {
       },
     );
 
+    testWidgets('shows the placeholder when the photo URL is empty', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const AppGroupAvatar(photoUrl: '')));
+
+      expect(find.byIcon(Icons.groups_outlined), findsOneWidget);
+      expect(find.byType(CachedNetworkImage), findsNothing);
+    });
+
+    testWidgets('scales the placeholder icon with the diameter', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(const AppGroupAvatar(photoUrl: null, diameter: 48)),
+      );
+
+      expect(
+        tester.widget<Icon>(find.byIcon(Icons.groups_outlined)).size,
+        48 * 3 / 7,
+      );
+    });
+
     testWidgets('uses the diameter passed by the caller', (tester) async {
       await tester.pumpWidget(
         _wrap(const AppGroupAvatar(photoUrl: null, diameter: 48)),
