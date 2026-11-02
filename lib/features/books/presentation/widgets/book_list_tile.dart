@@ -48,10 +48,13 @@ class BookListTile extends StatelessWidget {
     ].join(', ');
 
     return Semantics(
+      container: true,
+      explicitChildNodes: true,
       button: onTap != null,
-      enabled: onTap != null,
+      enabled: onTap != null ? true : null,
       label: label,
       child: InkWell(
+        excludeFromSemantics: true,
         onTap: onTap,
         child: _BookListLine(
           gap: spacing.s16,

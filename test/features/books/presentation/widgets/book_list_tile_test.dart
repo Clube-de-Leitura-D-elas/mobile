@@ -1,3 +1,5 @@
+import 'dart:ui' show Tristate;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -239,6 +241,26 @@ void main() {
       findsOneWidget,
     );
     expect(find.bySemanticsLabel('Marcar como lido'), findsOneWidget);
+    handle.dispose();
+  });
+
+  testWidgets('a row without a tap does not announce a disabled control', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await _pumpTile(
+      tester,
+      const BookListTile(
+        title: 'Duna',
+        author: 'Frank Herbert',
+        genre: 'Ficção',
+      ),
+    );
+
+    final node = tester.getSemantics(
+      find.bySemanticsLabel('Duna, Frank Herbert, Ficção'),
+    );
+    expect(node.getSemanticsData().flagsCollection.isEnabled, Tristate.none);
     handle.dispose();
   });
 
@@ -506,6 +528,12 @@ void main() {
       tester.getTopLeft(find.text('Marcar como lido')).dy,
       lessThan(tester.getBottomLeft(find.text('Frank Herbert')).dy),
     );
+    expect(
+      tester.getBottomLeft(find.byType(BookListTile)).dy,
+      greaterThanOrEqualTo(
+        tester.getBottomLeft(find.byType(AppReadingStatusChip)).dy,
+      ),
+    );
 
     final chipWidth = tester.getSize(find.byType(AppReadingStatusChip)).width;
     final inset =
@@ -516,6 +544,12 @@ void main() {
     expect(
       tester.getTopLeft(find.text('Marcar como lido')).dy,
       greaterThanOrEqualTo(tester.getBottomLeft(find.text('Ficção')).dy),
+    );
+    expect(
+      tester.getBottomLeft(find.byType(BookListTile)).dy,
+      greaterThanOrEqualTo(
+        tester.getBottomLeft(find.byType(AppReadingStatusChip)).dy,
+      ),
     );
 
     await tester.pumpWidget(
