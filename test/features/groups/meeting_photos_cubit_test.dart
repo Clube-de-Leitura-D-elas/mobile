@@ -224,7 +224,7 @@ void main() {
           ),
         ).thenAnswer(
           (_) async => const Success(
-            const MeetingPhotoEntity(
+            MeetingPhotoEntity(
               id: 'captioned',
               url: 'https://a/captioned.jpg',
               caption: 'Legenda',
@@ -258,7 +258,7 @@ void main() {
         loaded.copyWith(
           photos: [
             existing,
-            MeetingPhotoEntity(
+            const MeetingPhotoEntity(
               id: 'captioned',
               url: 'https://a/captioned.jpg',
               caption: 'Legenda',
