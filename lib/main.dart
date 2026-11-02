@@ -41,9 +41,11 @@ Future<void> mainAsync() async {
       );
     }
 
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    if (!kIsWeb) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
 
     DependenciesContainer();
     runApp(const MainApp());
@@ -85,7 +87,7 @@ class MainApp extends StatelessWidget {
             onGenerateTitle: (context) => context.l10n.appTitle,
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
-            themeMode: ThemeMode.system,
+            themeMode: ThemeMode.light,
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,

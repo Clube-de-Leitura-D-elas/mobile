@@ -9,6 +9,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photo_thumbnail.dart';
+import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photo_caption_editor.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photo_viewer.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_photos_section.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_photos/meeting_promo_text_editor.dart';
@@ -41,7 +42,7 @@ void main() {
       (tester) async {
         await tester.pumpWidget(
           _app(
-            MeetingPhotoViewer(
+            const MeetingPhotoViewer(
               photo: MeetingPhotoEntity(
                 id: 'p1',
                 url: 'https://a/p1.jpg',
@@ -56,6 +57,35 @@ void main() {
         final caption = find.text('Legenda completa da foto');
         expect(caption, findsOneWidget);
         expect(tester.getTopLeft(caption).dy, greaterThan(0));
+      },
+    );
+
+    testWidgets(
+      'given an isolated photo with a global index, when opened, then preserves its counter',
+      (tester) async {
+        await tester.pumpWidget(
+          _app(
+            Builder(
+              builder: (context) => TextButton(
+                onPressed: () => MeetingPhotoViewer.open(
+                  context,
+                  photo: const MeetingPhotoEntity(
+                    id: 'p2',
+                    url: 'https://a/p2.jpg',
+                  ),
+                  index: 1,
+                  total: 3,
+                ),
+                child: const Text('Abrir'),
+              ),
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Abrir'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Foto 2 de 3'), findsOneWidget);
       },
     );
 
@@ -151,6 +181,43 @@ void main() {
         );
         final nextIcon = next.icon as Icon;
         expect(nextIcon.color, Colors.white);
+        expect(find.byType(DecoratedBox), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'given the caption editor, when opened, then uses AppDialog and returns the caption',
+      (tester) async {
+        String? result;
+        await tester.pumpWidget(
+          _app(
+            Builder(
+              builder: (context) => TextButton(
+                onPressed: () async {
+                  result = await MeetingPhotoCaptionEditor.show(context);
+                },
+                child: const Text('Editar legenda'),
+              ),
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Editar legenda'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppDialog), findsOneWidget);
+        expect(find.byTooltip('Fechar'), findsOneWidget);
+        await tester.enterText(
+          find.byKey(const ValueKey('meeting-photo-caption-field')),
+          'Legenda salva',
+        );
+        await tester.tap(
+          find.byKey(const ValueKey('meeting-photo-caption-save')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppDialog), findsNothing);
+        expect(result, 'Legenda salva');
       },
     );
 

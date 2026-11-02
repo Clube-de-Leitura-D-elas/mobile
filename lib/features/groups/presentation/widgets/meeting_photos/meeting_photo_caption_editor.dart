@@ -10,14 +10,8 @@ class MeetingPhotoCaptionEditor extends StatefulWidget {
   const MeetingPhotoCaptionEditor({super.key});
 
   static Future<String?> show(BuildContext context) {
-    return showModalBottomSheet<String>(
+    return showDialog<String>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: context.colors.bgDefault,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-      ),
       builder: (_) => const MeetingPhotoCaptionEditor(),
     );
   }
@@ -55,55 +49,36 @@ class _MeetingPhotoCaptionEditorState extends State<MeetingPhotoCaptionEditor> {
     final spacing = context.spacing;
     const max = MeetingPhotoCaptionLimits.maxLength;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        spacing.s24,
-        spacing.s24,
-        spacing.s24,
-        spacing.s24 + MediaQuery.viewInsetsOf(context).bottom,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.meetingPhotoCaptionTitle,
-            style: context.typography.headingH3.copyWith(
-              color: context.colors.textDefault,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          SizedBox(height: spacing.s16),
-          AppTextField(
-            key: const ValueKey('meeting-photo-caption-field'),
-            controller: _controller,
-            hintText: l10n.meetingPhotoCaptionHint,
-            keyboardType: TextInputType.multiline,
-            maxLines: 4,
-            autofocus: true,
-            helperText: _isTooLong
-                ? null
-                : l10n.meetingPhotoCaptionCounter(
-                    _controller.text.trim().length,
-                    max,
-                  ),
-            errorText: _isTooLong ? l10n.meetingPhotoCaptionTooLong(max) : null,
-          ),
-          SizedBox(height: spacing.s24),
-          AppButton.primary(
-            key: const ValueKey('meeting-photo-caption-save'),
-            label: l10n.meetingPhotoCaptionSave,
-            onPressed: _isTooLong
-                ? null
-                : () => Navigator.of(context).pop(_controller.text.trim()),
-          ),
-          SizedBox(height: spacing.s8),
-          AppButton.secondary(
-            key: const ValueKey('meeting-photo-caption-skip'),
-            label: l10n.meetingPhotoCaptionSkip,
-            onPressed: () => Navigator.of(context).pop(''),
-          ),
-        ],
+    return AppDialog(
+      title: l10n.meetingPhotoCaptionTitle,
+      actions: [
+        AppButton.primary(
+          key: const ValueKey('meeting-photo-caption-save'),
+          label: l10n.meetingPhotoCaptionSave,
+          onPressed: _isTooLong
+              ? null
+              : () => Navigator.of(context).pop(_controller.text.trim()),
+        ),
+        AppButton.secondary(
+          key: const ValueKey('meeting-photo-caption-skip'),
+          label: l10n.meetingPhotoCaptionSkip,
+          onPressed: () => Navigator.of(context).pop(''),
+        ),
+      ],
+      child: AppTextField(
+        key: const ValueKey('meeting-photo-caption-field'),
+        controller: _controller,
+        hintText: l10n.meetingPhotoCaptionHint,
+        keyboardType: TextInputType.multiline,
+        maxLines: 4,
+        autofocus: true,
+        helperText: _isTooLong
+            ? null
+            : l10n.meetingPhotoCaptionCounter(
+                _controller.text.trim().length,
+                max,
+              ),
+        errorText: _isTooLong ? l10n.meetingPhotoCaptionTooLong(max) : null,
       ),
     );
   }

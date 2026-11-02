@@ -39,12 +39,13 @@ class MeetingPhotoViewer extends StatefulWidget {
     MeetingPhotoDeleter? onDelete,
   }) {
     final gallery = photos.isEmpty ? [photo!] : photos;
+    final selectedPhoto = photos.isEmpty ? photo! : gallery[index];
     return Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => MeetingPhotoViewer(
-          photo: gallery[index],
-          photos: gallery,
+          photo: selectedPhoto,
+          photos: photos.isEmpty ? const [] : gallery,
           index: index,
           total: total,
           onDelete: onDelete,
@@ -165,27 +166,49 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
                       if (_hasPrevious)
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: IconButton(
-                            tooltip: l10n.meetingPhotoPrevious,
-                            icon: const Icon(
-                              Icons.chevron_left,
-                              color: Colors.white,
-                              size: 40,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
                             ),
-                            onPressed: _showPrevious,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(
+                                minWidth: 44,
+                                minHeight: 44,
+                              ),
+                              tooltip: l10n.meetingPhotoPrevious,
+                              icon: const Icon(
+                                Icons.chevron_left,
+                                color: Colors.white,
+                                size: 40,
+                              ),
+                              onPressed: _showPrevious,
+                            ),
                           ),
                         ),
                       if (_hasNext)
                         Align(
                           alignment: Alignment.centerRight,
-                          child: IconButton(
-                            tooltip: l10n.meetingPhotoNext,
-                            icon: const Icon(
-                              Icons.chevron_right,
-                              color: Colors.white,
-                              size: 40,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
                             ),
-                            onPressed: _showNext,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(
+                                minWidth: 44,
+                                minHeight: 44,
+                              ),
+                              tooltip: l10n.meetingPhotoNext,
+                              icon: const Icon(
+                                Icons.chevron_right,
+                                color: Colors.white,
+                                size: 40,
+                              ),
+                              onPressed: _showNext,
+                            ),
                           ),
                         ),
                     ],
