@@ -96,6 +96,50 @@ void main() {
   );
 
   test(
+    'given a limit of one and a selected image, when picking, then maps the image',
+    () async {
+      when(
+        () => imagePicker.pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 80,
+          maxWidth: 1920,
+          maxHeight: 1920,
+        ),
+      ).thenAnswer((_) async => file(jpeg));
+
+      final result = await picker.pickFromGallery(limit: 1);
+      final photo = result.unwrap().single;
+
+      expect(photo.bytes, jpeg);
+      expect(photo.contentType, 'image/jpeg');
+      expect(photo.id, matches(_uuidV4));
+    },
+  );
+
+  test(
+    'given the single image picker fails, when picking, then returns an unknown failure',
+    () async {
+      when(
+        () => imagePicker.pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 80,
+          maxWidth: 1920,
+          maxHeight: 1920,
+        ),
+      ).thenThrow(PlatformException(code: 'picker_error'));
+
+      final result = await picker.pickFromGallery(limit: 1);
+
+      expect(
+        result,
+        const Failure<List<PickedPhoto>, PhotoPickerFailure>(
+          PhotoPickerUnknownFailure(),
+        ),
+      );
+    },
+  );
+
+  test(
     'given photo access is denied, when picking, then returns PhotoAccessDeniedFailure',
     () async {
       answerMulti(
@@ -126,6 +170,32 @@ void main() {
           PhotoPickerUnknownFailure(),
         ),
       );
+    },
+  );
+
+  test(
+    'given a picked photo, when copying with a caption, then preserves its data',
+    () {
+      final photo = PickedPhoto(
+        id: 'photo-id',
+        bytes: jpeg,
+        contentType: 'image/jpeg',
+      );
+
+      final copied = photo.copyWith(caption: 'Legenda');
+
+      expect(copied.id, photo.id);
+      expect(copied.bytes, photo.bytes);
+      expect(copied.contentType, photo.contentType);
+      expect(copied.caption, 'Legenda');
+      expect(copied.props, [
+        copied.id,
+        copied.bytes,
+        copied.contentType,
+        copied.caption,
+      ]);
+      expect(const PhotoAccessDeniedFailure().props, isEmpty);
+      expect(const PhotoPickerUnknownFailure().props, isEmpty);
     },
   );
 }

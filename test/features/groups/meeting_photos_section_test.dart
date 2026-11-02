@@ -22,7 +22,13 @@ const _loadedEmpty = MeetingPhotosState(status: MeetingPhotosStatus.loaded);
 
 final _photos = List.generate(
   4,
-  (index) => MeetingPhotoEntity(id: 'p$index', url: 'https://a/p$index.jpg'),
+  (index) => MeetingPhotoEntity(
+    id: 'p$index',
+    url: 'https://a/p$index.jpg',
+    caption: index == 0
+        ? 'Legenda muito longa para aparecer truncada na miniatura'
+        : null,
+  ),
 );
 
 final _failed = [
@@ -43,7 +49,9 @@ void main() {
 
   setUp(() {
     cubit = MockMeetingPhotosCubit();
-    when(() => cubit.pickAndUpload()).thenAnswer((_) async {});
+    when(
+      () => cubit.pickAndUpload(captionPicker: any(named: 'captionPicker')),
+    ).thenAnswer((_) async {});
     when(() => cubit.retryFailed()).thenAnswer((_) async {});
     when(() => cubit.reload()).thenAnswer((_) async {});
   });
@@ -96,7 +104,9 @@ void main() {
       await tester.tap(
         find.byKey(const ValueKey('meeting-photos-empty-state')),
       );
-      verify(() => cubit.pickAndUpload()).called(1);
+      verify(
+        () => cubit.pickAndUpload(captionPicker: any(named: 'captionPicker')),
+      ).called(1);
     },
   );
 
@@ -118,9 +128,12 @@ void main() {
       await pumpSection(tester, _loadedEmpty.copyWith(photos: _photos));
       await tester.pump();
 
-      expect(find.byType(MeetingPhotoThumbnail), findsNWidgets(4));
-      expect(find.byType(Image), findsNWidgets(4));
-      expect(find.text('Adicionar fotos'), findsNothing);
+      expect(find.byType(MeetingPhotoThumbnail), findsNWidgets(2));
+      expect(find.byType(Image), findsNWidgets(2));
+      expect(
+        find.byKey(const ValueKey('meeting-photos-add-tile')),
+        findsOneWidget,
+      );
       final grid = tester.widget<GridView>(
         find.byKey(const ValueKey('meeting-photos-grid')),
       );
@@ -128,10 +141,17 @@ void main() {
           grid.gridDelegate as SliverGridDelegateWithFixedCrossAxisCount;
       expect(delegate.crossAxisCount, 3);
       final first = tester.getSize(find.byType(MeetingPhotoThumbnail).first);
-      expect(first.width, closeTo(first.height, 0.01));
+      expect(first.height, closeTo(first.width + 20, 0.01));
+      final caption = tester.widget<Text>(
+        find.text('Legenda muito longa para aparecer truncada na miniatura'),
+      );
+      expect(caption.maxLines, 1);
+      expect(caption.overflow, TextOverflow.ellipsis);
 
       await tester.tap(find.byKey(const ValueKey('meeting-photos-add-tile')));
-      verify(() => cubit.pickAndUpload()).called(1);
+      verify(
+        () => cubit.pickAndUpload(captionPicker: any(named: 'captionPicker')),
+      ).called(1);
     },
   );
 
@@ -150,7 +170,7 @@ void main() {
   );
 
   testWidgets(
-    'given the member cannot add photos, when rendered with photos, then hides the add tile',
+    'given the member cannot add photos, when rendered with photos, then shows only two photos',
     (tester) async {
       await pumpSection(
         tester,
@@ -158,7 +178,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.byType(MeetingPhotoThumbnail), findsNWidgets(4));
+      expect(find.byType(MeetingPhotoThumbnail), findsNWidgets(2));
       expect(
         find.byKey(const ValueKey('meeting-photos-add-tile')),
         findsNothing,
@@ -167,7 +187,7 @@ void main() {
   );
 
   testWidgets(
-    'given the meeting is full, when rendered, then hides the add tile',
+    'given the meeting is full, when rendered, then keeps the add tile visible',
     (tester) async {
       await pumpSection(
         tester,
@@ -181,7 +201,7 @@ void main() {
 
       expect(
         find.byKey(const ValueKey('meeting-photos-add-tile')),
-        findsNothing,
+        findsOneWidget,
       );
     },
   );
@@ -201,7 +221,9 @@ void main() {
       expect(find.byType(LinearProgressIndicator), findsOneWidget);
 
       await tester.tap(find.byKey(const ValueKey('meeting-photos-add-tile')));
-      verifyNever(() => cubit.pickAndUpload());
+      verifyNever(
+        () => cubit.pickAndUpload(captionPicker: any(named: 'captionPicker')),
+      );
     },
   );
 

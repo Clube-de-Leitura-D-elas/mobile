@@ -126,6 +126,52 @@ void main() {
     );
   });
 
+  group('reload', () {
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the state is not uploading, when reloading, then loads the meeting photos',
+      build: () {
+        when(
+          () => repository.getMeetingPhotos(meetingId),
+        ).thenAnswer((_) async => Success(_photos([existing])));
+        return MeetingPhotosCubit(
+          groupRepository: repository,
+          photoPicker: picker,
+        );
+      },
+      act: (cubit) async {
+        await cubit.load(meetingId);
+        when(
+          () => repository.getMeetingPhotos(meetingId),
+        ).thenAnswer((_) async => Success(_photos([_photo('reloaded')])));
+        await cubit.reload();
+      },
+      expect: () => [
+        const MeetingPhotosState(status: MeetingPhotosStatus.loading),
+        loaded,
+        loaded.copyWith(status: MeetingPhotosStatus.loading),
+        loaded.copyWith(
+          photos: [_photo('reloaded')],
+          status: MeetingPhotosStatus.loaded,
+        ),
+      ],
+      verify: (_) {
+        verify(() => repository.getMeetingPhotos(meetingId)).called(2);
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given an upload is in progress, when reloading, then keeps the upload state',
+      build: () =>
+          MeetingPhotosCubit(groupRepository: repository, photoPicker: picker)
+            ..emit(loaded.copyWith(progress: _progress(1, 2))),
+      act: (cubit) => cubit.reload(),
+      expect: () => const <MeetingPhotosState>[],
+      verify: (_) {
+        verifyNever(() => repository.getMeetingPhotos(any()));
+      },
+    );
+  });
+
   group('pickAndUpload', () {
     final first = _picked(1);
     final second = _picked(2);
@@ -161,6 +207,115 @@ void main() {
       ],
       verify: (_) {
         verify(() => picker.pickFromGallery(limit: 10)).called(1);
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given captions are enabled, when photos are picked, then uploads each caption',
+      build: () {
+        givenPicked([first]);
+        when(
+          () => repository.addMeetingPhoto(
+            meetingId,
+            first.id,
+            first.bytes,
+            'image/jpeg',
+            caption: 'Legenda',
+          ),
+        ).thenAnswer(
+          (_) async => const Success(
+            MeetingPhotoEntity(
+              id: 'captioned',
+              url: 'https://a/captioned.jpg',
+              caption: 'Legenda',
+            ),
+          ),
+        );
+        return MeetingPhotosCubit(
+          groupRepository: repository,
+          photoPicker: picker,
+        );
+      },
+      act: (cubit) async {
+        await cubit.load(meetingId);
+        await cubit.pickAndUpload(captionPicker: () async => 'Legenda');
+      },
+      expect: () => [
+        const MeetingPhotosState(status: MeetingPhotosStatus.loading),
+        loaded,
+        loaded.copyWith(progress: _progress(1, 1)),
+        loaded.copyWith(
+          progress: _progress(1, 1),
+          photos: [
+            existing,
+            const MeetingPhotoEntity(
+              id: 'captioned',
+              url: 'https://a/captioned.jpg',
+              caption: 'Legenda',
+            ),
+          ],
+        ),
+        loaded.copyWith(
+          photos: [
+            existing,
+            const MeetingPhotoEntity(
+              id: 'captioned',
+              url: 'https://a/captioned.jpg',
+              caption: 'Legenda',
+            ),
+          ],
+        ),
+      ],
+      verify: (_) {
+        verify(
+          () => repository.addMeetingPhoto(
+            meetingId,
+            first.id,
+            first.bytes,
+            'image/jpeg',
+            caption: 'Legenda',
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given an empty caption, when photos are picked, then uploads without a caption',
+      build: () {
+        givenPicked([first]);
+        givenUpload(first, Success(_photo('without-caption')));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        await cubit.pickAndUpload(captionPicker: () async => '');
+      },
+      verify: (_) {
+        verify(
+          () => repository.addMeetingPhoto(
+            meetingId,
+            first.id,
+            first.bytes,
+            'image/jpeg',
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given caption entry is cancelled, when photos are picked, then does not upload',
+      build: () {
+        givenPicked([first, second]);
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        await cubit.pickAndUpload(captionPicker: () async => null);
+      },
+      verify: (_) {
+        verifyNever(
+          () => repository.addMeetingPhoto(any(), any(), any(), any()),
+        );
       },
     );
 
@@ -275,6 +430,24 @@ void main() {
           () => repository.addMeetingPhoto(any(), any(), any(), any()),
         );
       },
+    );
+
+    blocTest<MeetingPhotosCubit, MeetingPhotosState>(
+      'given the picker fails unexpectedly, when picking, then emits the picker error notice',
+      build: () {
+        when(
+          () => picker.pickFromGallery(limit: any(named: 'limit')),
+        ).thenAnswer((_) async => const Failure(PhotoPickerUnknownFailure()));
+        return buildLoadedCubit();
+      },
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        await cubit.pickAndUpload();
+      },
+      skip: 1,
+      expect: () => [
+        loaded.copyWith(notice: const MeetingPhotosPickerFailedNotice()),
+      ],
     );
 
     blocTest<MeetingPhotosCubit, MeetingPhotosState>(

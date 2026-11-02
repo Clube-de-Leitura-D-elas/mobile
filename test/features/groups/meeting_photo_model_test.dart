@@ -19,6 +19,20 @@ void main() {
       );
     });
 
+    test(
+      'given a photo json with caption, when parsed, then maps the caption',
+      () {
+        final model = MeetingPhotoModel.fromJson(const {
+          'id': 'photo-1',
+          'url': 'https://cdn.example.com/photo-1.jpg',
+          'caption': 'Nosso encontro',
+        });
+
+        expect(model.caption, 'Nosso encontro');
+        expect(model.toDomain().caption, 'Nosso encontro');
+      },
+    );
+
     test('given a photo without url, when parsed, then throws', () {
       expect(
         () => MeetingPhotoModel.fromJson(const {'id': 'photo-1'}),
