@@ -65,10 +65,9 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
   MeetingPhotoEntity get _photo =>
       widget.photos.isEmpty ? widget.photo : widget.photos[_currentIndex];
 
-  bool get _hasPrevious => _currentIndex > 0;
+  bool get _hasPrevious => widget.photos.isNotEmpty && _currentIndex > 0;
   bool get _hasNext =>
-      _currentIndex <
-      (widget.photos.isEmpty ? widget.total : widget.photos.length) - 1;
+      widget.photos.isNotEmpty && _currentIndex < widget.photos.length - 1;
 
   void _showPrevious() {
     if (_hasPrevious) setState(() => _currentIndex--);
@@ -167,7 +166,7 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: DecoratedBox(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.black54,
                               shape: BoxShape.circle,
                             ),
@@ -191,7 +190,7 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: DecoratedBox(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.black54,
                               shape: BoxShape.circle,
                             ),

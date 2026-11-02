@@ -46,7 +46,6 @@ class _MeetingPhotoCaptionEditorState extends State<MeetingPhotoCaptionEditor> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final spacing = context.spacing;
     const max = MeetingPhotoCaptionLimits.maxLength;
 
     return AppDialog(

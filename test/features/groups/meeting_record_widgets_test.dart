@@ -86,6 +86,8 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Foto 2 de 3'), findsOneWidget);
+        expect(find.byTooltip('Foto anterior'), findsNothing);
+        expect(find.byTooltip('Próxima foto'), findsNothing);
       },
     );
 
