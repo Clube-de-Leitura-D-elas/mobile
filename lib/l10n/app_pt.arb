@@ -1336,5 +1336,18 @@
   "bookGroupAlreadySuggested": "já indicado",
   "@bookGroupAlreadySuggested": {
     "description": "Tag do grupo que já recebeu a indicação deste livro e não pode recebê-la de novo."
+  },
+  "bookDetailWrittenBy": "Escrito por {author}",
+  "@bookDetailWrittenBy": {
+    "description": "Autoria no topo do detalhe do livro.",
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
+  "bookDetailNoRatings": "Ainda sem avaliações",
+  "@bookDetailNoRatings": {
+    "description": "Rótulo de acessibilidade das estrelas no detalhe do livro quando ninguém avaliou."
   }
 }

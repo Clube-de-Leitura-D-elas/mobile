@@ -100,7 +100,9 @@ void main() {
       final row = tester.widget<Row>(find.byType(Row));
       final iconTheme = row.children.whereType<IconTheme>().single;
       final iconIndex = row.children.indexOf(iconTheme);
-      final labelIndex = row.children.indexWhere((w) => w is Text);
+      final labelIndex = row.children.indexWhere(
+        (w) => w is Flexible && w.child is Text,
+      );
 
       expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
       expect(iconIndex, lessThan(labelIndex));
@@ -209,6 +211,37 @@ void main() {
       );
       expect(tester.widget<InkWell>(find.byType(InkWell)).onTap, isNull);
       handle.dispose();
+    });
+
+    testWidgets('Wraps the label instead of overflowing a narrow width', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 120,
+                child: AppChip(
+                  label: 'Marcar como lido',
+                  icon: Icon(Icons.check_circle_outline),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.getSize(find.byType(AppChip)).width,
+        lessThanOrEqualTo(120),
+      );
+      expect(
+        tester.getSize(find.text('Marcar como lido')).height,
+        greaterThan(AppTypographyTokens.standard.labelTag.fontSize!),
+      );
     });
   });
 }
