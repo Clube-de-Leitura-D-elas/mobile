@@ -994,6 +994,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get bookGroupAlreadySuggested => 'já indicado';
+
+  @override
+  String bookDetailWrittenBy(String author) {
+    return 'Escrito por $author';
+  }
+
+  @override
+  String get bookDetailNoRatings => 'Ainda sem avaliações';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1737,4 +1745,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String starRatingInputStarLabel(int starValue, int maxStars) {
     return '$starValue de $maxStars estrelas';
   }
+
+  @override
+  String bookDetailWrittenBy(String author) {
+    return 'Escrito por $author';
+  }
+
+  @override
+  String get bookDetailNoRatings => 'Ainda sem avaliações';
 }

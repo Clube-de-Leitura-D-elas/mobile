@@ -214,5 +214,7 @@
   "raffleNoEligibleParticipants": "Não há participantes elegíveis para o sorteio.",
   "raffleSavedSuccessToast": "Sorteio registrado com sucesso! Nova anfitriã definida.",
   "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
-  "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas"
+  "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas",
+  "bookDetailWrittenBy": "Escrito por {author}",
+  "bookDetailNoRatings": "Ainda sem avaliações"
 }

@@ -154,9 +154,13 @@ class _AppChipContent extends StatelessWidget {
           ),
           const Gap4(),
         ],
-        Text(
-          label,
-          style: context.typography.labelTag.copyWith(color: foreground),
+        // Em tela estreita ou com fonte grande o rótulo quebra em vez de
+        // estourar a largura.
+        Flexible(
+          child: Text(
+            label,
+            style: context.typography.labelTag.copyWith(color: foreground),
+          ),
         ),
       ],
     );

@@ -1770,6 +1770,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'já indicado'**
   String get bookGroupAlreadySuggested;
+
+  /// Autoria no topo do detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escrito por {author}'**
+  String bookDetailWrittenBy(String author);
+
+  /// Rótulo de acessibilidade das estrelas no detalhe do livro quando ninguém avaliou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda sem avaliações'**
+  String get bookDetailNoRatings;
 }
 
 class _AppLocalizationsDelegate
