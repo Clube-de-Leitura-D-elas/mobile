@@ -21,20 +21,91 @@ on:
           - internal
           - alpha
           - production
+      bump_type:
+        description: 'Tipo de incremento de versão no pubspec.yaml'
+        required: true
+        default: 'build_number'
+        type: choice
+        options:
+          - build_number
+          - patch
+          - minor
+          - major
+          - none
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
+  # ==========================================
+  # PREPARAR & BUMP DE VERSÃO
+  # ==========================================
+  prepare-version:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.bump.outputs.new_version }}
+      build_number: ${{ steps.bump.outputs.build_number }}
+      version_name: ${{ steps.bump.outputs.version_name }}
+      git_ref: ${{ steps.push.outputs.git_commit_sha || github.sha }}
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Incrementar Versão no pubspec.yaml
+        id: bump
+        run: |
+          BUMP_TYPE="${{ github.event.inputs.bump_type || 'build_number' }}"
+          python3 .github/scripts/bump_version.py "$BUMP_TYPE"
+
+      - name: Commit e Push da Nova Versão
+        id: push
+        run: |
+          NEW_VER="${{ steps.bump.outputs.new_version }}"
+          if git diff --quiet pubspec.yaml; then
+            echo "Nenhuma alteração de versão necessária."
+            echo "git_commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pubspec.yaml
+          git commit -m "chore(release): bump version to $NEW_VER [skip ci]"
+          git tag "v$NEW_VER"
+
+          TARGET_BRANCH="${{ github.event.release.target_commitish || github.ref_name }}"
+          if [[ "$TARGET_BRANCH" =~ ^v[0-9] ]]; then
+            TARGET_BRANCH="${{ github.event.repository.default_branch || 'develop' }}"
+          fi
+
+          echo "Enviando commit e tags para a branch $TARGET_BRANCH..."
+          git push origin HEAD:"$TARGET_BRANCH" --tags
+          echo "git_commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
   # ==========================================
   # ANDROID DEPLOY (Google Play)
   # ==========================================
   deploy-android:
+    needs: [prepare-version]
     if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == 'android' || github.event_name == 'release' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do Repositório
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-version.outputs.git_ref }}
 
       - name: Configurar Java / JDK 17
         uses: actions/setup-java@v4
@@ -103,12 +174,15 @@ jobs:
   # IOS DEPLOY (Apple TestFlight)
   # ==========================================
   deploy-ios:
+    needs: [prepare-version]
     if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == 'ios' || github.event_name == 'release' }}
     runs-on: macos-latest
 
     steps:
       - name: Checkout do Repositório
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-version.outputs.git_ref }}
 
       - name: Configurar Flutter
         uses: subosito/flutter-action@v2
