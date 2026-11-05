@@ -540,6 +540,12 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get groupDetailsHeader => 'Detalhes do grupo';
+
+  @override
+  String get groupDetailsRetryButton => 'Tentar novamente';
+
+  @override
   String get groupNextEventTitle => 'Próximo evento';
 
   @override
@@ -1515,6 +1521,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get emptyGroupsMessage =>
       'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.';
+
+  @override
+  String get groupDetailsHeader => 'Detalhes do grupo';
+
+  @override
+  String get groupDetailsRetryButton => 'Tentar novamente';
 
   @override
   String get groupNextEventTitle => 'Próximo evento';

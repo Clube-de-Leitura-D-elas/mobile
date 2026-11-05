@@ -12,6 +12,7 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/notifications/domain/repositories/notifications_repository.dart';
 import 'package:mobile/firebase_options.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -46,6 +47,7 @@ Future<void> mainAsync() async {
     );
 
     DependenciesContainer();
+    await serviceLocator<NotificationsRepository>().setupNotificationInteractions();
     runApp(const MainApp());
   } catch (error, stackTrace) {
     debugPrint('Erro durante a inicialização do app: $error\n$stackTrace');

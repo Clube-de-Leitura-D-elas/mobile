@@ -8,16 +8,25 @@ import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/notifications/domain/repositories/notifications_repository.dart';
+import 'package:mobile/features/notifications/domain/usecases/sync_fcm_token_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionCubit extends Cubit<SessionState> {
   final AuthRepository authRepository;
   final SupabaseService supabaseService;
+  final SyncFcmTokenUseCase? syncFcmTokenUseCase;
+  final NotificationsRepository? notificationsRepository;
 
   StreamSubscription<AuthState>? _authStateSubscription;
+  StreamSubscription<String>? _tokenRefreshSubscription;
 
-  SessionCubit({required this.authRepository, required this.supabaseService})
-    : super(const LoadingSession()) {
+  SessionCubit({
+    required this.authRepository,
+    required this.supabaseService,
+    this.syncFcmTokenUseCase,
+    this.notificationsRepository,
+  }) : super(const LoadingSession()) {
     _listenToAuthState();
     _checkCurrentSession();
   }
@@ -185,6 +194,26 @@ class SessionCubit extends Cubit<SessionState> {
       '[SessionCubit] Profile found! Emitting AuthenticatedSession for ${user.name}',
     );
     emit(AuthenticatedSession(user: user, profile: data));
+    _triggerFcmTokenSync();
+  }
+
+  void _triggerFcmTokenSync() {
+    syncFcmTokenUseCase?.execute().then((result) {
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] FCM Token sync completed: $result');
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] Error executing FCM Token sync: $error');
+      }
+    });
+
+    if (_tokenRefreshSubscription == null && notificationsRepository != null) {
+      _tokenRefreshSubscription = notificationsRepository!.onTokenRefresh.listen((_) {
+        debugPrint('[SessionCubit] FCM Token refreshed, re-syncing...');
+        unawaited(syncFcmTokenUseCase?.execute());
+      });
+    }
   }
 
   Future<void> refreshProfile() async {
@@ -196,7 +225,10 @@ class SessionCubit extends Cubit<SessionState> {
 
   Future<void> logOut() async {
     debugPrint('[SessionCubit] Logging out user and clearing Supabase session');
+    unawaited(_tokenRefreshSubscription?.cancel());
+    _tokenRefreshSubscription = null;
     emit(const LoadingSession());
+    unawaited(notificationsRepository?.clearDeviceToken());
     await supabaseService.signOut();
     emit(const GuestSession());
   }
@@ -208,6 +240,7 @@ class SessionCubit extends Cubit<SessionState> {
   @override
   Future<void> close() {
     _authStateSubscription?.cancel();
+    _tokenRefreshSubscription?.cancel();
     return super.close();
   }
 }

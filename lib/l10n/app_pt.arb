@@ -605,6 +605,14 @@
       }
     }
   },
+  "groupDetailsHeader": "Detalhes do grupo",
+  "@groupDetailsHeader": {
+    "description": "Título exibido no cabeçalho da tela de detalhes do grupo ao carregar ou em erro"
+  },
+  "groupDetailsRetryButton": "Tentar novamente",
+  "@groupDetailsRetryButton": {
+    "description": "Texto do botão para tentar recarregar os detalhes do grupo"
+  },
   "groupNextEventTitle": "Próximo evento",
   "@groupNextEventTitle": {
     "description": "Título da seção do próximo evento nos detalhes do grupo"

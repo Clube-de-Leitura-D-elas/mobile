@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
-import 'package:mobile/features/splash/presentation/pages/splash_screen.dart';
-
+import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
+import 'package:mobile/features/splash/presentation/pages/splash_screen.dart';
 
 abstract class SplashRoutes {
   static const String splash = '/splash';
@@ -29,7 +29,7 @@ abstract class SplashRoutes {
 
     if (isSplash) {
       if (sessionState is AuthenticatedSession) {
-        return '/home';
+        return NotificationNavigationService.consumePendingRoute() ?? '/home';
       }
       if (sessionState is NeedsClaimSession) {
         return OnboardingRoutes.claimToken;
@@ -42,5 +42,3 @@ abstract class SplashRoutes {
     return null;
   }
 }
-
-
