@@ -26,6 +26,10 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
+import 'package:mobile/features/notifications/data/repositories/notifications_repository_impl.dart';
+import 'package:mobile/features/notifications/domain/repositories/notifications_repository.dart';
+import 'package:mobile/features/notifications/domain/usecases/sync_fcm_token_use_case.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
@@ -127,10 +131,30 @@ class DependenciesContainer {
       ),
     );
 
+    serviceLocator.registerLazySingleton<NotificationsRemoteDataSource>(
+      () => NotificationsRemoteDataSourceImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerLazySingleton<NotificationsRepository>(
+      () => NotificationsRepositoryImpl(
+        remoteDataSource: serviceLocator<NotificationsRemoteDataSource>(),
+      ),
+    );
+
+    serviceLocator.registerLazySingleton<SyncFcmTokenUseCase>(
+      () => SyncFcmTokenUseCase(
+        repository: serviceLocator<NotificationsRepository>(),
+      ),
+    );
+
     serviceLocator.registerFactory<SessionCubit>(
       () => SessionCubit(
         authRepository: serviceLocator<AuthRepository>(),
         supabaseService: serviceLocator<SupabaseService>(),
+        syncFcmTokenUseCase: serviceLocator<SyncFcmTokenUseCase>(),
+        notificationsRepository: serviceLocator<NotificationsRepository>(),
       ),
     );
 
