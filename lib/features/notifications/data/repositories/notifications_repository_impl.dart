@@ -55,5 +55,10 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   }
 
   @override
+  Future<void> setupNotificationInteractions() async {
+    await _remoteDataSource.setupNotificationInteractions();
+  }
+
+  @override
   Stream<String> get onTokenRefresh => _remoteDataSource.onTokenRefresh;
 }

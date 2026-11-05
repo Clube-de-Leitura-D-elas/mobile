@@ -3,11 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 
 abstract class NotificationsRemoteDataSource {
   Future<NotificationSettings> requestPermissions();
   Future<String?> getDeviceToken();
   Future<Result<void, SupabaseFailure>> saveTokenToBackend(String? token);
+  Future<void> setupNotificationInteractions();
   Stream<String> get onTokenRefresh;
 }
 
@@ -57,6 +59,42 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
       Success() => const Success(null),
       Failure(:final failure) => Failure(failure),
     };
+  }
+
+  @override
+  Future<void> setupNotificationInteractions() async {
+    try {
+      final initialMessage = await _messaging.getInitialMessage();
+      if (initialMessage != null && initialMessage.data.isNotEmpty) {
+        if (kDebugMode) {
+          debugPrint(
+            '[NotificationsDataSource] Initial message opened: ${initialMessage.data}',
+          );
+        }
+        NotificationNavigationService.handleNotificationClick(
+          initialMessage.data,
+          isColdStart: true,
+        );
+      }
+
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        if (kDebugMode) {
+          debugPrint(
+            '[NotificationsDataSource] Message opened from background: ${message.data}',
+          );
+        }
+        NotificationNavigationService.handleNotificationClick(
+          message.data,
+          isColdStart: false,
+        );
+      });
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        debugPrint(
+          '[NotificationsDataSource] Error setting up notification interactions: $e\n$stackTrace',
+        );
+      }
+    }
   }
 
   @override

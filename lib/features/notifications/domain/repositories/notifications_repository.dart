@@ -4,5 +4,6 @@ import 'package:mobile/features/notifications/domain/entities/notification_failu
 abstract class NotificationsRepository {
   Future<Result<void, NotificationFailure>> syncDeviceToken();
   Future<Result<void, NotificationFailure>> clearDeviceToken();
+  Future<void> setupNotificationInteractions();
   Stream<String> get onTokenRefresh;
 }
