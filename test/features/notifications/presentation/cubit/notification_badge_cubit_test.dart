@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -9,6 +11,8 @@ import 'package:mocktail/mocktail.dart';
 
 class MockNotificationRepository extends Mock
     implements NotificationRepository {}
+
+typedef PageResult = Result<NotificationsPageEntity, NotificationFailure>;
 
 void main() {
   late MockNotificationRepository repository;
@@ -53,4 +57,60 @@ void main() {
     expect: () => <int>[],
     verify: (cubit) => expect(cubit.state, 3),
   );
+
+  group('overlapping refreshes', () {
+    late List<Completer<PageResult>> calls;
+    late NotificationBadgeCubit cubit;
+
+    PageResult unread(int count) => Success(
+      NotificationsPageEntity(items: const [], total: 50, unreadCount: count),
+    );
+
+    setUp(() {
+      calls = [];
+      when(() => repository.getNotifications(page: 1)).thenAnswer((_) {
+        final call = Completer<PageResult>();
+        calls.add(call);
+        return call.future;
+      });
+      cubit = NotificationBadgeCubit(repository: repository);
+      addTearDown(cubit.close);
+    });
+
+    test('ignores an older response that arrives last', () async {
+      final older = cubit.refresh();
+      final newer = cubit.refresh();
+
+      calls[1].complete(unread(1));
+      await newer;
+      calls[0].complete(unread(5));
+      await older;
+
+      expect(cubit.state, 1);
+    });
+
+    test('applies responses that arrive in order', () async {
+      final older = cubit.refresh();
+      final newer = cubit.refresh();
+
+      calls[0].complete(unread(5));
+      await older;
+      calls[1].complete(unread(1));
+      await newer;
+
+      expect(cubit.state, 1);
+    });
+
+    test('keeps an older success when the newer request fails', () async {
+      final older = cubit.refresh();
+      final newer = cubit.refresh();
+
+      calls[1].complete(const Failure(NotificationsLoadFailure()));
+      await newer;
+      calls[0].complete(unread(5));
+      await older;
+
+      expect(cubit.state, 5);
+    });
+  });
 }
