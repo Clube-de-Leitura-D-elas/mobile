@@ -13,7 +13,13 @@ class GroupCardMeetingDetailsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
-    final formattedDate = _formatMeetingDate(meeting.date);
+    final parsedDate = DateTime.tryParse(meeting.date)?.toLocal();
+    final formattedDate = parsedDate == null
+        ? meeting.date
+        : DateFormat('dd/MM/yyyy', 'pt_BR').format(parsedDate);
+    final formattedTime = parsedDate == null
+        ? '--:--'
+        : DateFormat('HH:mm', 'pt_BR').format(parsedDate);
     final l10n = context.l10n;
 
     return Column(
@@ -23,14 +29,14 @@ class GroupCardMeetingDetailsGrid extends StatelessWidget {
           children: [
             Expanded(
               child: AppGroupInfoRow(
-                icon: AppIcons.user,
-                label: meeting.hostName,
+                icon: AppIcons.calendar,
+                label: formattedDate,
               ),
             ),
             Expanded(
               child: AppGroupInfoRow(
-                icon: AppIcons.book,
-                label: meeting.bookTitle,
+                icon: AppIcons.clock,
+                label: formattedTime,
               ),
             ),
           ],
@@ -40,8 +46,8 @@ class GroupCardMeetingDetailsGrid extends StatelessWidget {
           children: [
             Expanded(
               child: AppGroupInfoRow(
-                icon: AppIcons.calendar,
-                label: formattedDate,
+                icon: AppIcons.book,
+                label: meeting.bookTitle,
               ),
             ),
             Expanded(
@@ -57,11 +63,4 @@ class GroupCardMeetingDetailsGrid extends StatelessWidget {
       ],
     );
   }
-}
-
-String _formatMeetingDate(String value) {
-  final date = DateTime.tryParse(value);
-  if (date == null) return value;
-
-  return DateFormat('dd/MM/yyyy', 'pt_BR').format(date.toLocal());
 }

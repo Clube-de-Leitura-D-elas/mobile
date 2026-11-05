@@ -10,6 +10,7 @@ void main() {
         'name': '  Ana Beatriz  ',
         'photo_url': 'https://example.com/ana.jpg',
         'role': 'coordinator',
+        'is_host': true,
       });
 
       expect(
@@ -19,6 +20,7 @@ void main() {
           name: 'Ana Beatriz',
           photoUrl: 'https://example.com/ana.jpg',
           isCoordinator: true,
+          isHost: true,
         ),
       );
     });
@@ -31,6 +33,7 @@ void main() {
 
       expect(model.photoUrl, isNull);
       expect(model.isCoordinator, isFalse);
+      expect(model.isHost, isFalse);
     });
 
     test('given a blank photo url, then treats it as no photo', () {

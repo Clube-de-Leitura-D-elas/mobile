@@ -120,7 +120,7 @@ class _GroupCardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppGroupCard(
-      key: ValueKey('group_card_${group.id}'),
+      key: ValueKey('group_card_${group.id}_${group.nextMeeting?.id ?? ''}'),
       groupId: group.id,
       groupName: context.l10n.groupDetailsNumberLabel(group.number),
       participantsCount: group.participantsCount,

@@ -1,1 +1,1 @@
-enum GroupMeetingStatus { scheduled, ended }
+enum GroupMeetingStatus { created, scheduled, ended }

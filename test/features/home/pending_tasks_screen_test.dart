@@ -67,6 +67,55 @@ void main() {
     expect(find.text('Próximo evento'), findsNothing);
   });
 
+  testWidgets(
+    'renders two cards for the same group when both ENDED and CREATED meetings have pending tasks',
+    (tester) async {
+      const endedMeeting = GroupMeeting(
+        id: 'm-ended',
+        hostName: 'Gabriela',
+        bookTitle: 'O Avesso da Pele',
+        date: '02/11/2026',
+        location: 'PUCRS',
+        canManageTasks: true,
+        tasksDone: 1,
+      );
+      const createdMeeting = GroupMeeting(
+        id: 'm-created',
+        hostName: 'Patrícia',
+        bookTitle: 'Quarto de Despejo',
+        date: '',
+        location: '',
+        canManageTasks: true,
+        tasksDone: 0,
+      );
+      const groupWithTwoPending = GroupEntity(
+        id: 'g2',
+        number: 2,
+        participantsCount: 5,
+        cityState: 'Porto Alegre, RS',
+        nextMeeting: endedMeeting,
+        pendingMeetings: [endedMeeting, createdMeeting],
+      );
+
+      final repository = MockGroupRepository();
+      when(
+        () => repository.getMyGroups(),
+      ).thenAnswer((_) async => const Success([groupWithTwoPending]));
+      final cubit = HomeCubit(groupRepository: repository);
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(buildSubject(cubit));
+      await cubit.loadGroups();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Grupo 2'), findsNWidgets(2));
+      expect(find.text('Anfitriã: Gabriela'), findsOneWidget);
+      expect(find.text('Anfitriã: Patrícia'), findsOneWidget);
+      expect(find.text('1/2'), findsOneWidget);
+      expect(find.text('0/2'), findsOneWidget);
+    },
+  );
+
   testWidgets('shows an empty message when there are no pending tasks', (
     tester,
   ) async {

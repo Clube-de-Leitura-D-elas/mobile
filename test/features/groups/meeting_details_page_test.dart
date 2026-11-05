@@ -80,6 +80,7 @@ void main() {
 
     expect(find.text('Encontro 12'), findsOneWidget);
     expect(find.text('Data: 22/08/2026'), findsOneWidget);
+    expect(find.textContaining('Horário: '), findsOneWidget);
     expect(find.text('Livro: Dom Casmurro'), findsOneWidget);
     expect(find.text('Anfitriã: Beatriz Souza'), findsOneWidget);
     expect(
@@ -95,6 +96,7 @@ void main() {
       tester.widgetList<AppIcon>(find.byType(AppIcon)).map((i) => i.icon),
       containsAllInOrder([
         AppIcons.calendar,
+        AppIcons.clock,
         AppIcons.book,
         AppIcons.user,
         AppIcons.location,
@@ -155,6 +157,7 @@ void main() {
 
     expect(find.text('Encontro'), findsOneWidget);
     expect(find.text('Data: a definir'), findsOneWidget);
+    expect(find.text('Horário: a definir'), findsOneWidget);
     expect(find.text('Local: a definir'), findsOneWidget);
   });
 

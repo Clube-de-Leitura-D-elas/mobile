@@ -8,6 +8,7 @@ class GroupEntity extends Equatable {
   final String cityState;
   final String? photoUrl;
   final GroupMeeting? nextMeeting;
+  final List<GroupMeeting> pendingMeetings;
   final bool hasPendingResponse;
 
   const GroupEntity({
@@ -17,6 +18,7 @@ class GroupEntity extends Equatable {
     required this.cityState,
     this.photoUrl,
     this.nextMeeting,
+    this.pendingMeetings = const [],
     this.hasPendingResponse = false,
   });
 
@@ -27,6 +29,7 @@ class GroupEntity extends Equatable {
     String? cityState,
     String? photoUrl,
     GroupMeeting? nextMeeting,
+    List<GroupMeeting>? pendingMeetings,
     bool? hasPendingResponse,
   }) {
     return GroupEntity(
@@ -36,6 +39,7 @@ class GroupEntity extends Equatable {
       cityState: cityState ?? this.cityState,
       photoUrl: photoUrl ?? this.photoUrl,
       nextMeeting: nextMeeting ?? this.nextMeeting,
+      pendingMeetings: pendingMeetings ?? this.pendingMeetings,
       hasPendingResponse: hasPendingResponse ?? this.hasPendingResponse,
     );
   }
@@ -50,6 +54,7 @@ class GroupEntity extends Equatable {
     cityState,
     photoUrl,
     nextMeeting,
+    pendingMeetings,
     hasPendingResponse,
   ];
 }

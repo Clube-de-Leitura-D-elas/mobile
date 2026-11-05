@@ -73,6 +73,7 @@ class AppGroupCard extends StatelessWidget {
             groupName: groupName,
             participantsCount: participantsCount,
             cityState: cityState,
+            hostName: tasksOnly ? meeting?.hostName : null,
           ),
           if (tasksOnly) ...[
             if (meeting != null && meeting.canManageTasks) ...[
@@ -83,7 +84,9 @@ class AppGroupCard extends StatelessWidget {
                 onClosed: onTasksClosed,
               ),
             ],
-          ] else if (meeting != null && !meeting.isEnded) ...[
+          ] else if (meeting != null &&
+              !meeting.isEnded &&
+              !meeting.isCreated) ...[
             SizedBox(height: spacing.s16),
             GroupCardMeetingHeaderRow(
               expanded: expanded,
