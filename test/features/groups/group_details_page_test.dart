@@ -125,6 +125,18 @@ void main() {
     expect(find.text('Falha ao carregar grupo'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byType(GroupDetailsScreen), findsNothing);
+    expect(find.byType(ScreenHeader), findsOneWidget);
+    expect(find.widgetWithText(AppButton, 'Tentar novamente'), findsOneWidget);
+
+    when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
+      (_) async => const Success(group),
+    );
+
+    await tester.tap(find.widgetWithText(AppButton, 'Tentar novamente'));
+    await tester.pumpAndSettle();
+
+    verify(() => mockRepository.getGroupDetails('group-1')).called(2);
+    expect(find.byType(GroupDetailsScreen), findsOneWidget);
   });
 
   testWidgets('renders group details in the loaded state', (tester) async {

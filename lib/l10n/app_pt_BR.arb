@@ -216,5 +216,7 @@
   "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
   "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas",
   "bookDetailWrittenBy": "Escrito por {author}",
-  "bookDetailNoRatings": "Ainda sem avaliações"
+  "bookDetailNoRatings": "Ainda sem avaliações",
+  "groupDetailsHeader": "Detalhes do grupo",
+  "groupDetailsRetryButton": "Tentar novamente"
 }

@@ -997,6 +997,18 @@ abstract class AppLocalizations {
   /// **'Grupo {number}'**
   String groupDetailsNumberLabel(int number);
 
+  /// Título exibido no cabeçalho da tela de detalhes do grupo ao carregar ou em erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do grupo'**
+  String get groupDetailsHeader;
+
+  /// Texto do botão para tentar recarregar os detalhes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get groupDetailsRetryButton;
+
   /// Título da seção do próximo evento nos detalhes do grupo
   ///
   /// In pt, this message translates to:
