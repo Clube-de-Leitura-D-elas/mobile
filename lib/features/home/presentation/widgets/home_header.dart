@@ -7,6 +7,9 @@ class HomeHeader extends StatelessWidget {
   final ValueChanged<String>? onSearchChanged;
   final TextEditingController? searchController;
 
+  /// Ação exibida à direita do título.
+  final Widget? titleAction;
+
   /// Exibe o aviso de tarefas pendentes quando não nulo.
   final VoidCallback? onPendingTasksPressed;
 
@@ -14,6 +17,7 @@ class HomeHeader extends StatelessWidget {
     super.key,
     this.onSearchChanged,
     this.searchController,
+    this.titleAction,
     this.onPendingTasksPressed,
   });
 
@@ -28,7 +32,12 @@ class HomeHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const _HomeTitle(),
+          Row(
+            children: [
+              const Expanded(child: _HomeTitle()),
+              ?titleAction,
+            ],
+          ),
           SizedBox(height: spacing.s16),
           AppSearchField(
             hintText: context.l10n.searchGroupPlaceholder,

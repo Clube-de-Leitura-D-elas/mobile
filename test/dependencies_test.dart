@@ -13,6 +13,10 @@ import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
+import 'package:mobile/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
@@ -90,6 +94,15 @@ void main() {
       expect(serviceLocator<MeetingEditCubit>(), isA<MeetingEditCubit>());
       expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
       expect(serviceLocator<ClaimTokenCubit>(), isA<ClaimTokenCubit>());
+      expect(
+        serviceLocator<NotificationRepository>(),
+        isA<NotificationRepositoryImpl>(),
+      );
+      expect(
+        serviceLocator<NotificationBadgeCubit>(),
+        isA<NotificationBadgeCubit>(),
+      );
+      expect(serviceLocator<NotificationsCubit>(), isA<NotificationsCubit>());
       expect(
         serviceLocator<OnboardingReviewCubit>(),
         isA<OnboardingReviewCubit>(),

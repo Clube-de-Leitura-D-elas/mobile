@@ -26,6 +26,10 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
+import 'package:mobile/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
@@ -155,6 +159,25 @@ class DependenciesContainer {
     serviceLocator.registerLazySingleton<ProfileRepository>(
       () => ProfileRepositoryImpl(
         supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    // --- Notifications Feature ---
+    serviceLocator.registerLazySingleton<NotificationRepository>(
+      () => NotificationRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<NotificationBadgeCubit>(
+      () => NotificationBadgeCubit(
+        repository: serviceLocator<NotificationRepository>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<NotificationsCubit>(
+      () => NotificationsCubit(
+        repository: serviceLocator<NotificationRepository>(),
       ),
     );
 

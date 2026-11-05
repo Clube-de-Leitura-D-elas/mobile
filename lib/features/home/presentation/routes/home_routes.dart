@@ -8,6 +8,8 @@ import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:mobile/features/home/presentation/pages/pending_tasks_screen.dart';
+import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
+import 'package:mobile/features/notifications/presentation/routes/notification_route_paths.dart';
 
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 
@@ -22,8 +24,16 @@ abstract class HomeRoutes {
         final sessionState = context.read<SessionCubit>().state;
         Widget child = const Scaffold(body: SizedBox.shrink());
         if (sessionState is AuthenticatedSession) {
-          child = BlocProvider(
-            create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
+          child = MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => serviceLocator<HomeCubit>()..loadGroups(),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<NotificationBadgeCubit>()..refresh(),
+              ),
+            ],
             child: HomeScreen(
               user: sessionState.user,
               profile: sessionState.profile,
@@ -52,7 +62,9 @@ abstract class HomeRoutes {
     SessionState sessionState,
   ) {
     final isProtected =
-        state.matchedLocation == home || state.matchedLocation == pendingTasks;
+        state.matchedLocation == home ||
+        state.matchedLocation == pendingTasks ||
+        state.matchedLocation == NotificationRoutePaths.notifications;
 
     if (isProtected) {
       if (sessionState is! AuthenticatedSession) {

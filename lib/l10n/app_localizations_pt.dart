@@ -1002,6 +1002,77 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get bookDetailNoRatings => 'Ainda sem avaliações';
+
+  @override
+  String get notificationsTitle => 'Notificações';
+
+  @override
+  String notificationsUnreadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count não lidas',
+      one: '1 não lida',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsBadgeOverflow => '99+';
+
+  @override
+  String get notificationsEmpty => 'Nenhuma notificação por aqui';
+
+  @override
+  String get notificationsLoadError =>
+      'Não foi possível carregar suas notificações.';
+
+  @override
+  String get notificationsLoadMoreError =>
+      'Não foi possível carregar mais notificações.';
+
+  @override
+  String get notificationsRetry => 'Tentar novamente';
+
+  @override
+  String get notificationsLoading => 'Carregando notificações';
+
+  @override
+  String get notificationsLoadingMore => 'Carregando mais notificações';
+
+  @override
+  String notificationTileUnreadSemantic(String title, String message) {
+    return 'Não lida: $title. $message';
+  }
+
+  @override
+  String notificationTileReadSemantic(String title, String message) {
+    return '$title. $message';
+  }
+
+  @override
+  String get notificationDateNow => 'agora';
+
+  @override
+  String notificationDateMinutes(int count) {
+    return 'há $count min';
+  }
+
+  @override
+  String notificationDateHours(int count) {
+    return 'há $count h';
+  }
+
+  @override
+  String notificationDateDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'há $count dias',
+      one: 'ontem',
+    );
+    return '$_temp0';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1753,4 +1824,75 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get bookDetailNoRatings => 'Ainda sem avaliações';
+
+  @override
+  String get notificationsTitle => 'Notificações';
+
+  @override
+  String notificationsUnreadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count não lidas',
+      one: '1 não lida',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsBadgeOverflow => '99+';
+
+  @override
+  String get notificationsEmpty => 'Nenhuma notificação por aqui';
+
+  @override
+  String get notificationsLoadError =>
+      'Não foi possível carregar suas notificações.';
+
+  @override
+  String get notificationsLoadMoreError =>
+      'Não foi possível carregar mais notificações.';
+
+  @override
+  String get notificationsRetry => 'Tentar novamente';
+
+  @override
+  String get notificationsLoading => 'Carregando notificações';
+
+  @override
+  String get notificationsLoadingMore => 'Carregando mais notificações';
+
+  @override
+  String notificationTileUnreadSemantic(String title, String message) {
+    return 'Não lida: $title. $message';
+  }
+
+  @override
+  String notificationTileReadSemantic(String title, String message) {
+    return '$title. $message';
+  }
+
+  @override
+  String get notificationDateNow => 'agora';
+
+  @override
+  String notificationDateMinutes(int count) {
+    return 'há $count min';
+  }
+
+  @override
+  String notificationDateHours(int count) {
+    return 'há $count h';
+  }
+
+  @override
+  String notificationDateDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'há $count dias',
+      one: 'ontem',
+    );
+    return '$_temp0';
+  }
 }
