@@ -29,7 +29,6 @@ class GroupMeeting extends Equatable {
     this.status = GroupMeetingStatus.scheduled,
   });
 
-  bool get isCreated => status == GroupMeetingStatus.created;
   bool get isEnded => status == GroupMeetingStatus.ended;
 
   @override

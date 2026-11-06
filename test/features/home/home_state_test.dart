@@ -93,43 +93,5 @@ void main() {
         expect(state.pendingTasksGroups, isEmpty);
       },
     );
-
-    test(
-      'Given coordenadora com dois encontros pendentes no mesmo grupo (ENDED e CREATED), Then retorna um item para cada encontro',
-      () {
-        const endedMeeting = GroupMeeting(
-          id: 'm-ended',
-          hostName: 'Gabriela',
-          bookTitle: 'O Avesso da Pele',
-          date: '02/11',
-          location: 'PUCRS',
-          canManageTasks: true,
-          tasksDone: 1,
-        );
-        const createdMeeting = GroupMeeting(
-          id: 'm-created',
-          hostName: 'Patrícia',
-          bookTitle: 'Quarto de Despejo',
-          date: '',
-          location: '',
-          canManageTasks: true,
-          tasksDone: 0,
-        );
-        const group = GroupEntity(
-          id: 'g2',
-          number: 2,
-          participantsCount: 5,
-          cityState: 'Porto Alegre, RS',
-          nextMeeting: endedMeeting,
-          pendingMeetings: [endedMeeting, createdMeeting],
-        );
-
-        const state = HomeState(groups: [group]);
-
-        expect(state.pendingTasksGroups, hasLength(2));
-        expect(state.pendingTasksGroups[0].nextMeeting, endedMeeting);
-        expect(state.pendingTasksGroups[1].nextMeeting, createdMeeting);
-      },
-    );
   });
 }

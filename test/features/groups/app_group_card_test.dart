@@ -146,35 +146,6 @@ void main() {
     );
 
     testWidgets(
-      'Given a created draft meeting on Home, When rendering, Then hides next event',
-      (tester) async {
-        await tester.pumpWidget(
-          _wrap(
-            const AppGroupCard(
-              groupId: 'group-1',
-              groupName: 'Grupo 2',
-              participantsCount: 5,
-              cityState: 'Porto Alegre, RS',
-              nextMeeting: GroupMeeting(
-                id: 'meeting-2',
-                hostName: 'Patrícia',
-                bookTitle: 'Quarto de Despejo',
-                date: '',
-                location: '',
-                canManageTasks: true,
-                tasksDone: 0,
-                status: GroupMeetingStatus.created,
-              ),
-            ),
-          ),
-        );
-
-        expect(find.text('Próximo evento'), findsNothing);
-        expect(find.text('Minhas tarefas'), findsNothing);
-      },
-    );
-
-    testWidgets(
       'Given tasksOnly, When rendering, Then shows host name instead of participants count and only Minhas tarefas',
       (tester) async {
         await tester.pumpWidget(

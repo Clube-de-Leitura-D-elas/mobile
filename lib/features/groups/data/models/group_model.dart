@@ -11,7 +11,6 @@ class GroupModel extends GroupEntity {
     required super.cityState,
     super.photoUrl,
     super.nextMeeting,
-    super.pendingMeetings,
     super.hasPendingResponse,
   });
 
@@ -26,10 +25,6 @@ class GroupModel extends GroupEntity {
     final cityState = json['city_state'];
     final photoUrl = json['photo_url'];
     final nextMeeting = _parseNextMeeting(json['next_meeting']);
-    final pendingMeetings = _parsePendingMeetings(
-      json['pending_meetings'],
-      nextMeeting,
-    );
     final hasPendingResponse = json['has_pending_response'];
 
     if (id is! String ||
@@ -48,7 +43,6 @@ class GroupModel extends GroupEntity {
       cityState: cityState,
       photoUrl: photoUrl as String?,
       nextMeeting: nextMeeting,
-      pendingMeetings: pendingMeetings,
       hasPendingResponse: hasPendingResponse as bool? ?? false,
     );
   }
@@ -59,24 +53,6 @@ class GroupModel extends GroupEntity {
 
     return int.tryParse(name) ??
         int.tryParse(RegExp(r'\d+$').firstMatch(name)?.group(0) ?? '');
-  }
-
-  static List<GroupMeeting> _parsePendingMeetings(
-    dynamic json,
-    GroupMeeting? nextMeeting,
-  ) {
-    if (json == null) {
-      if (nextMeeting != null &&
-          nextMeeting.canManageTasks &&
-          nextMeeting.tasksDone < nextMeeting.tasksTotal) {
-        return [nextMeeting];
-      }
-      return const [];
-    }
-    if (json is! List) {
-      throw const FormatException('Invalid pending meetings.');
-    }
-    return json.map(_parseNextMeeting).whereType<GroupMeeting>().toList();
   }
 
   static GroupMeeting? _parseNextMeeting(dynamic json) {
@@ -99,7 +75,7 @@ class GroupModel extends GroupEntity {
     if (id is! String ||
         hostName is! String ||
         bookTitle is! String ||
-        (date != null && date is! String) ||
+        date is! String ||
         location is! String ||
         (canManageTasks != null && canManageTasks is! bool)) {
       throw const FormatException('Invalid next meeting.');
@@ -109,7 +85,7 @@ class GroupModel extends GroupEntity {
       id: id,
       hostName: hostName,
       bookTitle: bookTitle,
-      date: (date as String?) ?? '',
+      date: date,
       location: location,
       invitationStatus: _parseInvitationStatus(invitationStatus),
       canManageTasks: canManageTasks as bool? ?? false,
@@ -135,7 +111,6 @@ class GroupModel extends GroupEntity {
       cityState: cityState,
       photoUrl: photoUrl,
       nextMeeting: nextMeeting,
-      pendingMeetings: pendingMeetings,
       hasPendingResponse: hasPendingResponse,
     );
   }
@@ -150,7 +125,6 @@ class GroupModel extends GroupEntity {
 
   static GroupMeetingStatus _parseMeetingStatus(dynamic value) {
     return switch (value) {
-      'CREATED' => GroupMeetingStatus.created,
       'ENDED' => GroupMeetingStatus.ended,
       _ => GroupMeetingStatus.scheduled,
     };

@@ -84,9 +84,7 @@ class AppGroupCard extends StatelessWidget {
                 onClosed: onTasksClosed,
               ),
             ],
-          ] else if (meeting != null &&
-              !meeting.isEnded &&
-              !meeting.isCreated) ...[
+          ] else if (meeting != null && !meeting.isEnded) ...[
             SizedBox(height: spacing.s16),
             GroupCardMeetingHeaderRow(
               expanded: expanded,

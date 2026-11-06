@@ -38,18 +38,14 @@ class HomeState extends Equatable {
 
   bool isGroupExpanded(String groupId) => expandedGroupIds.contains(groupId);
 
-  /// Encontros em que a anfitriã ou coordenadora ainda tem tarefas a concluir.
-  List<GroupEntity> get pendingTasksGroups => [
-    for (final group in groups)
-      for (final meeting
-          in group.pendingMeetings.isNotEmpty
-              ? group.pendingMeetings
-              : [if (group.nextMeeting != null) group.nextMeeting!])
-        if (meeting.id != null &&
-            meeting.canManageTasks &&
-            meeting.tasksDone < meeting.tasksTotal)
-          group.copyWith(nextMeeting: meeting),
-  ];
+  /// Grupos em que a anfitriã ainda tem tarefas a concluir no próximo encontro.
+  List<GroupEntity> get pendingTasksGroups => groups.where((group) {
+    final meeting = group.nextMeeting;
+    return meeting != null &&
+        meeting.id != null &&
+        meeting.canManageTasks &&
+        meeting.tasksDone < meeting.tasksTotal;
+  }).toList();
 
   bool get hasPendingTasks => pendingTasksGroups.isNotEmpty;
 
