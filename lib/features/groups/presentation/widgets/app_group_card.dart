@@ -73,6 +73,7 @@ class AppGroupCard extends StatelessWidget {
             groupName: groupName,
             participantsCount: participantsCount,
             cityState: cityState,
+            hostName: tasksOnly ? meeting?.hostName : null,
           ),
           if (tasksOnly) ...[
             if (meeting != null && meeting.canManageTasks) ...[

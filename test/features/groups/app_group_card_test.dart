@@ -146,7 +146,7 @@ void main() {
     );
 
     testWidgets(
-      'Given tasksOnly, When rendering, Then shows only Minhas tarefas',
+      'Given tasksOnly, When rendering, Then shows host name instead of participants count and only Minhas tarefas',
       (tester) async {
         await tester.pumpWidget(
           _wrap(
@@ -169,6 +169,8 @@ void main() {
         );
 
         expect(find.text('Próximo evento'), findsNothing);
+        expect(find.text('Anfitriã: Roberta'), findsOneWidget);
+        expect(find.text('5 participantes'), findsNothing);
         expect(find.text('Minhas tarefas'), findsOneWidget);
       },
     );
@@ -206,7 +208,7 @@ void main() {
             nextMeeting: GroupMeeting(
               hostName: 'Roberta',
               bookTitle: 'Pequeno príncipe',
-              date: '2026-08-29T19:00:00Z',
+              date: '2026-08-29T19:00:00',
               location: 'Z Café TECNOPUC',
             ),
           ),
@@ -214,9 +216,10 @@ void main() {
       );
 
       expect(find.text('Próximo evento'), findsOneWidget);
-      expect(find.text('Roberta'), findsOneWidget);
+      expect(find.text('Roberta'), findsNothing);
       expect(find.text('Pequeno príncipe'), findsOneWidget);
       expect(find.text('29/08/2026'), findsOneWidget);
+      expect(find.text('19:00'), findsOneWidget);
       expect(find.text('Z Café TECNOPUC'), findsOneWidget);
     });
 

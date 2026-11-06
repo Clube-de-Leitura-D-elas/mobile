@@ -5,6 +5,8 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_state.dart';
+import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/next_event_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_error_view.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_skeleton.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/participant_tile.dart';
@@ -19,6 +21,11 @@ class GroupParticipantsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nextEventHostName = context.select<NextEventCubit?, String?>((cubit) {
+      final state = cubit?.state;
+      return state is NextEventLoaded ? state.event.hostName.trim() : null;
+    });
+
     return BlocBuilder<GroupParticipantsCubit, GroupParticipantsState>(
       builder: (context, state) => switch (state) {
         GroupParticipantsLoading() => const GroupParticipantsSkeleton(),
@@ -28,6 +35,7 @@ class GroupParticipantsContent extends StatelessWidget {
         GroupParticipantsEmpty() => const _GroupParticipantsEmptyView(),
         GroupParticipantsLoaded(:final participants) => _GroupParticipantsList(
           participants: participants,
+          nextEventHostName: nextEventHostName,
         ),
       },
     );
@@ -36,11 +44,17 @@ class GroupParticipantsContent extends StatelessWidget {
 
 class _GroupParticipantsList extends StatelessWidget {
   final List<GroupParticipantEntity> participants;
+  final String? nextEventHostName;
 
-  const _GroupParticipantsList({required this.participants});
+  const _GroupParticipantsList({
+    required this.participants,
+    this.nextEventHostName,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final inferredHostId = _inferHostId();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: context.spacing.s16,
@@ -48,10 +62,29 @@ class _GroupParticipantsList extends StatelessWidget {
         for (final participant in participants)
           ParticipantTile(
             key: ValueKey('participant-${participant.id}'),
-            participant: participant,
+            participant: participant.id == inferredHostId
+                ? GroupParticipantEntity(
+                    id: participant.id,
+                    name: participant.name,
+                    photoUrl: participant.photoUrl,
+                    isCoordinator: participant.isCoordinator,
+                    isHost: true,
+                  )
+                : participant,
           ),
       ],
     );
+  }
+
+  String? _inferHostId() {
+    final hostName = nextEventHostName;
+    if (hostName == null || hostName.isEmpty) return null;
+    if (participants.any((p) => p.isHost)) return null;
+
+    final matches = participants
+        .where((p) => p.name.trim() == hostName)
+        .toList(growable: false);
+    return matches.length == 1 ? matches.single.id : null;
   }
 }
 

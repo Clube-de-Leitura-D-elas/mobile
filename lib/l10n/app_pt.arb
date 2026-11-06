@@ -701,6 +701,14 @@
   "@groupParticipantsLoading": {
     "description": "Rótulo acessível do estado de carregamento da lista de participantes"
   },
+  "groupParticipantCoordinatorTag": "Coordenadora",
+  "@groupParticipantCoordinatorTag": {
+    "description": "Tag exibida na lista de participantes para a coordenadora do grupo"
+  },
+  "groupParticipantHostTag": "Anfitriã",
+  "@groupParticipantHostTag": {
+    "description": "Tag exibida na lista de participantes para a anfitriã do encontro atual"
+  },
   "groupNextMeetingLabel": "Próximo evento",
   "@groupNextMeetingLabel": {
     "description": "Rótulo da seção de próximo encontro no card de grupo"
@@ -779,6 +787,19 @@
   "meetingDetailsDateUndefined": "Data: a definir",
   "@meetingDetailsDateUndefined": {
     "description": "Exibido quando o encontro ainda não tem data"
+  },
+  "meetingDetailsTime": "Horário: {time}",
+  "@meetingDetailsTime": {
+    "description": "Horário do encontro já formatado",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingDetailsTimeUndefined": "Horário: a definir",
+  "@meetingDetailsTimeUndefined": {
+    "description": "Exibido quando o encontro ainda não tem horário"
   },
   "meetingDetailsBook": "Livro: {title}",
   "@meetingDetailsBook": {
