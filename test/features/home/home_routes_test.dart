@@ -16,10 +16,17 @@ import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:mobile/features/home/presentation/pages/pending_tasks_screen.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
+import 'package:mobile/features/notifications/domain/entities/notifications_page_entity.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
+import 'package:mobile/features/notifications/presentation/routes/notification_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
+
+class MockNotificationRepository extends Mock
+    implements NotificationRepository {}
 
 class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
@@ -42,9 +49,18 @@ void main() {
 
   late MockGroupRepository repository;
   late MockSessionCubit sessionCubit;
+  late MockNotificationRepository notificationRepository;
 
   setUp(() {
     repository = MockGroupRepository();
+    notificationRepository = MockNotificationRepository();
+    when(
+      () => notificationRepository.getNotifications(page: 1),
+    ).thenAnswer(
+      (_) async => const Success(
+        NotificationsPageEntity(items: [], total: 0, unreadCount: 0),
+      ),
+    );
     sessionCubit = MockSessionCubit();
     when(
       () => repository.getMyGroups(),
@@ -53,11 +69,17 @@ void main() {
     serviceLocator.registerFactory<HomeCubit>(
       () => HomeCubit(groupRepository: repository),
     );
+    serviceLocator.registerFactory<NotificationBadgeCubit>(
+      () => NotificationBadgeCubit(repository: notificationRepository),
+    );
   });
 
   tearDown(() {
     if (serviceLocator.isRegistered<HomeCubit>()) {
       serviceLocator.unregister<HomeCubit>();
+    }
+    if (serviceLocator.isRegistered<NotificationBadgeCubit>()) {
+      serviceLocator.unregister<NotificationBadgeCubit>();
     }
   });
 
@@ -104,6 +126,7 @@ void main() {
 
     expect(find.byType(HomeScreen), findsOneWidget);
     verify(() => repository.getMyGroups()).called(1);
+    verify(() => notificationRepository.getNotifications(page: 1)).called(1);
   });
 
   testWidgets('home route renders an empty page without a session', (
@@ -140,6 +163,20 @@ void main() {
       when(
         () => routerState.matchedLocation,
       ).thenReturn(HomeRoutes.pendingTasks);
+
+      final redirect = HomeRoutes.homeGuard(
+        context,
+        routerState,
+        const GuestSession(),
+      );
+
+      expect(redirect, '/login');
+    });
+
+    test('redirects unauthenticated access on /notificacoes to /login', () {
+      when(
+        () => routerState.matchedLocation,
+      ).thenReturn(NotificationRoutes.notifications);
 
       final redirect = HomeRoutes.homeGuard(
         context,

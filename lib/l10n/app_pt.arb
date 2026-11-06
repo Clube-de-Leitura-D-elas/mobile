@@ -1349,5 +1349,101 @@
   "bookDetailNoRatings": "Ainda sem avaliações",
   "@bookDetailNoRatings": {
     "description": "Rótulo de acessibilidade das estrelas no detalhe do livro quando ninguém avaliou."
+  },
+  "notificationsTitle": "Notificações",
+  "@notificationsTitle": {
+    "description": "Título da tela de notificações."
+  },
+  "notificationsUnreadCount": "{count, plural, =1{1 não lida} other{{count} não lidas}}",
+  "@notificationsUnreadCount": {
+    "description": "Valor de acessibilidade do sino com o total de não lidas.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsBadgeOverflow": "99+",
+  "@notificationsBadgeOverflow": {
+    "description": "Texto do badge do sino quando há mais de 99 não lidas."
+  },
+  "notificationsEmpty": "Nenhuma notificação por aqui",
+  "@notificationsEmpty": {
+    "description": "Estado vazio da tela de notificações."
+  },
+  "notificationsLoadError": "Não foi possível carregar suas notificações.",
+  "@notificationsLoadError": {
+    "description": "Erro ao carregar a lista de notificações."
+  },
+  "notificationsLoadMoreError": "Não foi possível carregar mais notificações.",
+  "@notificationsLoadMoreError": {
+    "description": "Erro ao carregar a próxima página de notificações."
+  },
+  "notificationsRetry": "Tentar novamente",
+  "@notificationsRetry": {
+    "description": "Botão de nova tentativa da tela de notificações."
+  },
+  "notificationsLoading": "Carregando notificações",
+  "@notificationsLoading": {
+    "description": "Rótulo de acessibilidade do skeleton de notificações."
+  },
+  "notificationsLoadingMore": "Carregando mais notificações",
+  "@notificationsLoadingMore": {
+    "description": "Rótulo de acessibilidade do indicador do scroll infinito."
+  },
+  "notificationTileUnreadSemantic": "Não lida: {title}. {message}",
+  "@notificationTileUnreadSemantic": {
+    "description": "Rótulo de acessibilidade de uma notificação não lida.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationTileReadSemantic": "{title}. {message}",
+  "@notificationTileReadSemantic": {
+    "description": "Rótulo de acessibilidade de uma notificação lida.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationDateNow": "agora",
+  "@notificationDateNow": {
+    "description": "Data relativa de uma notificação de menos de um minuto."
+  },
+  "notificationDateMinutes": "há {count} min",
+  "@notificationDateMinutes": {
+    "description": "Data relativa de uma notificação em minutos.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationDateHours": "há {count} h",
+  "@notificationDateHours": {
+    "description": "Data relativa de uma notificação em horas.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationDateDays": "{count, plural, =1{ontem} other{há {count} dias}}",
+  "@notificationDateDays": {
+    "description": "Data relativa de uma notificação em dias.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

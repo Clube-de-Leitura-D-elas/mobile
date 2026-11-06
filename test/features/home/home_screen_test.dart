@@ -22,14 +22,26 @@ import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/home/presentation/widgets/home_pending_tasks_banner.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
+import 'package:mobile/features/notifications/presentation/widgets/notification_bell.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
+class MockNotificationRepository extends Mock
+    implements NotificationRepository {}
+
 class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
+
+Widget withBell(Widget child) => BlocProvider(
+  create: (_) =>
+      NotificationBadgeCubit(repository: MockNotificationRepository()),
+  child: child,
+);
 
 void main() {
   const group = GroupEntity(
@@ -62,10 +74,24 @@ void main() {
       supportedLocales: AppLocalizations.supportedLocales,
       home: BlocProvider.value(
         value: sessionCubit,
-        child: BlocProvider.value(value: homeCubit, child: const HomeScreen()),
+        child: BlocProvider.value(value: homeCubit, child: withBell(const HomeScreen())),
       ),
     );
   }
+
+  testWidgets('shows the notification bell in the header', (tester) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Success([group]));
+    final cubit = HomeCubit(groupRepository: repository);
+
+    await tester.pumpWidget(buildSubject(cubit, MockSessionCubit()));
+    await tester.pump();
+
+    expect(find.byType(NotificationBell), findsOneWidget);
+    expect(find.byTooltip('Notificações'), findsOneWidget);
+  });
 
   testWidgets('renders groups loaded from the repository', (tester) async {
     final repository = MockGroupRepository();
@@ -167,7 +193,7 @@ void main() {
           GoRoute(
             path: QuickAccessRoutes.home,
             builder: (context, state) =>
-                BlocProvider.value(value: cubit, child: const HomeScreen()),
+                BlocProvider.value(value: cubit, child: withBell(const HomeScreen())),
           ),
           GoRoute(
             path: HomeRoutes.pendingTasks,
@@ -293,7 +319,7 @@ void main() {
         GoRoute(
           path: QuickAccessRoutes.home,
           builder: (context, state) =>
-              BlocProvider.value(value: cubit, child: const HomeScreen()),
+              BlocProvider.value(value: cubit, child: withBell(const HomeScreen())),
         ),
         ...QuickAccessRoutes.routes,
       ],
@@ -341,7 +367,7 @@ void main() {
         GoRoute(
           path: QuickAccessRoutes.home,
           builder: (context, state) =>
-              BlocProvider.value(value: cubit, child: const HomeScreen()),
+              BlocProvider.value(value: cubit, child: withBell(const HomeScreen())),
         ),
         ...QuickAccessRoutes.routes,
       ],
@@ -494,10 +520,12 @@ void main() {
             value: sessionCubit,
             child: BlocProvider<HomeCubit>.value(
               value: cubit,
-              child: HomeScreen(
+              child: withBell(
+                HomeScreen(
                 user: testUser,
                 profile: testProfile,
                 onNavigationItemSelected: (index) => selectedIndex = index,
+                ),
               ),
             ),
           ),

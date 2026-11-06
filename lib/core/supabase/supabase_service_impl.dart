@@ -22,13 +22,15 @@ class SupabaseServiceImpl implements SupabaseService {
   Future<Result<SupabaseResponse<T>, SupabaseFailure>> invokeFunction<T>({
     required String functionName,
     Map<String, dynamic>? body,
+    Map<String, String>? queryParameters,
     T Function(dynamic data)? decoder,
   }) async {
     try {
-      if (kDebugMode) debugPrint('[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}');
+      if (kDebugMode) debugPrint('[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}, query: $queryParameters');
       final res = await _client.functions.invoke(
         functionName,
         body: body,
+        queryParameters: queryParameters,
       );
 
       if (kDebugMode) debugPrint('[SupabaseService] Function "$functionName" status: ${res.status}, data: ${res.data}');

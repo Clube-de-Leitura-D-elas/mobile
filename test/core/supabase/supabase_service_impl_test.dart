@@ -223,6 +223,28 @@ void main() {
       expect(result, isA<Failure<User, SupabaseFailure>>());
     });
 
+    test('invokeFunction forwards the query parameters', () async {
+      when(
+        () => mockFunctionsClient.invoke(
+          'get-my-notifications',
+          body: any(named: 'body'),
+          queryParameters: {'page': '2', 'pageSize': '20'},
+        ),
+      ).thenAnswer(
+        (_) async => const FunctionResponse(
+          status: 200,
+          data: {'total': 0},
+        ),
+      );
+
+      final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
+        functionName: 'get-my-notifications',
+        queryParameters: {'page': '2', 'pageSize': '20'},
+      );
+
+      expect(result.unwrap().data, {'total': 0});
+    });
+
     test('invokeFunction returns Success with decoded data', () async {
       when(
         () => mockFunctionsClient.invoke(
