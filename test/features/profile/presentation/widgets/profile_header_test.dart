@@ -27,6 +27,7 @@ void main() {
     WidgetTester tester, {
     DateTime? joinedAt,
     String? photoUrl,
+    ValueChanged<String>? onPhotoChanged,
   }) {
     return tester.pumpWidget(
       MaterialApp(
@@ -40,6 +41,7 @@ void main() {
             joinedAt: joinedAt,
             now: () => today,
             photoUrl: photoUrl,
+            onPhotoChanged: onPhotoChanged,
           ),
         ),
       ),
@@ -215,7 +217,8 @@ void main() {
         ),
       ).thenAnswer((_) async => const Success(photoUrl));
 
-      await pumpHeader(tester);
+      final changes = <String>[];
+      await pumpHeader(tester, onPhotoChanged: changes.add);
       await tester.tap(find.bySemanticsLabel('Editar foto de perfil'));
       await tester.pumpAndSettle();
 
@@ -234,6 +237,7 @@ void main() {
         ),
         findsOneWidget,
       );
+      expect(changes, [photoUrl]);
     });
 
     testWidgets('fechar o modal sem trocar mantém a foto anterior', (
@@ -249,13 +253,19 @@ void main() {
         serviceLocator.unregister<PhotoPicker>();
       });
 
-      await pumpHeader(tester, photoUrl: 'https://cdn.example/old.jpg');
+      final changes = <String>[];
+      await pumpHeader(
+        tester,
+        photoUrl: 'https://cdn.example/old.jpg',
+        onPhotoChanged: changes.add,
+      );
       await tester.tap(find.bySemanticsLabel('Editar foto de perfil'));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.close));
       await tester.pumpAndSettle();
 
       expect(find.byType(EditProfilePhotoDialog), findsNothing);
+      expect(changes, isEmpty);
       expect(
         find.byWidgetPredicate(
           (widget) =>

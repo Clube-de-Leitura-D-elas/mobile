@@ -28,6 +28,7 @@ class UserProfileModel {
       userId: map['user_id'] as String? ?? '',
       isActive: map['is_Active'] as bool? ?? map['is_active'] as bool? ?? true,
       createdAt: DateTime.tryParse(map['created_at'] as String? ?? ''),
+      photoUrl: map['photo_url'] as String?,
     );
   }
 }

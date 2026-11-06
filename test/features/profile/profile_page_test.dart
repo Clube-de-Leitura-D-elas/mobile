@@ -5,11 +5,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
+import 'package:mobile/core/supabase/supabase_service.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
+import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_screen.dart';
+import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -17,6 +22,10 @@ class MockGoRouter extends Mock implements GoRouter {}
 
 class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
+
+class MockAuthRepository extends Mock implements AuthRepository {}
+
+class MockSupabaseService extends Mock implements SupabaseService {}
 
 void main() {
   late MockGoRouter mockGoRouter;
@@ -93,6 +102,72 @@ void main() {
     final screen = tester.widget<ProfileScreen>(find.byType(ProfileScreen));
     expect(screen.profile, profile);
     expect(find.text('Roberta'), findsOneWidget);
+  });
+
+  testWidgets('Mostra a foto vinda da sessão ao abrir a tela', (tester) async {
+    when(() => sessionCubit.state).thenReturn(
+      AuthenticatedSession(
+        user: user,
+        profile: profile.copyWith(photoUrl: 'https://example.com/foto.jpg'),
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+
+    final avatar = tester.widget<AppParticipantAvatar>(
+      find.byType(AppParticipantAvatar),
+    );
+    expect(avatar.photoUrl, 'https://example.com/foto.jpg');
+  });
+
+  testWidgets('A foto editada continua ao recriar a tela na troca de aba', (
+    tester,
+  ) async {
+    final authRepository = MockAuthRepository();
+    final supabaseService = MockSupabaseService();
+    when(() => supabaseService.currentUser).thenReturn(null);
+    when(
+      () => supabaseService.authStateChanges,
+    ).thenAnswer((_) => const Stream.empty());
+    when(() => authRepository.getUserProfile('u-1')).thenAnswer(
+      (_) async =>
+          Success(profile.copyWith(photoUrl: 'https://example.com/antiga.jpg')),
+    );
+
+    final realCubit = SessionCubit(
+      authRepository: authRepository,
+      supabaseService: supabaseService,
+    );
+    addTearDown(realCubit.close);
+    await realCubit.checkUserProfile('u-1', user);
+
+    Widget page() => MaterialApp(
+      theme: AppTheme.light,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('pt'),
+      home: BlocProvider<SessionCubit>.value(
+        value: realCubit,
+        child: InheritedGoRouter(
+          goRouter: mockGoRouter,
+          child: const ProfilePage(),
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(page());
+    tester
+        .widget<ProfileHeader>(find.byType(ProfileHeader))
+        .onPhotoChanged!('https://example.com/nova.jpg');
+    await tester.pump();
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(page());
+
+    final avatar = tester.widget<AppParticipantAvatar>(
+      find.byType(AppParticipantAvatar),
+    );
+    expect(avatar.photoUrl, 'https://example.com/nova.jpg');
   });
 
   testWidgets('Sem sessão autenticada mostra o nome padrão', (tester) async {

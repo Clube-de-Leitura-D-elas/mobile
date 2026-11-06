@@ -13,6 +13,7 @@ class UserProfileEntity extends Equatable {
   final String userId;
   final bool isActive;
   final DateTime? createdAt;
+  final String? photoUrl;
 
   const UserProfileEntity({
     required this.id,
@@ -27,7 +28,26 @@ class UserProfileEntity extends Equatable {
     required this.userId,
     required this.isActive,
     this.createdAt,
+    this.photoUrl,
   });
+
+  UserProfileEntity copyWith({String? photoUrl}) {
+    return UserProfileEntity(
+      id: id,
+      name: name,
+      email: email,
+      address: address,
+      phoneNumber: phoneNumber,
+      birthday: birthday,
+      instagram: instagram,
+      educationDegree: educationDegree,
+      jobPosition: jobPosition,
+      userId: userId,
+      isActive: isActive,
+      createdAt: createdAt,
+      photoUrl: photoUrl ?? this.photoUrl,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -43,5 +63,6 @@ class UserProfileEntity extends Equatable {
     userId,
     isActive,
     createdAt,
+    photoUrl,
   ];
 }
