@@ -28,6 +28,18 @@ GroupEntity _group(
   );
 }
 
+GroupMeeting _pendingMeeting(String id, {int tasksDone = 0}) {
+  return GroupMeeting(
+    id: id,
+    hostName: 'Ana',
+    bookTitle: 'Livro',
+    date: '',
+    location: '',
+    canManageTasks: true,
+    tasksDone: tasksDone,
+  );
+}
+
 String _nameOf(GroupEntity g) => 'Grupo ${g.number}';
 
 void main() {
@@ -93,5 +105,81 @@ void main() {
         expect(state.pendingTasksGroups, isEmpty);
       },
     );
+
+    test(
+      'Given dois encontros pendentes no mesmo grupo, Then uma entrada por encontro',
+      () {
+        final draft = _pendingMeeting('m-draft');
+        final ended = _pendingMeeting('m-ended', tasksDone: 1);
+        final coordinator = _group(
+          5,
+          withMeeting: false,
+        ).copyWith(pendingMeetings: [ended, draft]);
+        final state = HomeState(groups: [first, coordinator]);
+
+        expect(state.pendingTasksGroups.map((group) => group.nextMeeting?.id), [
+          'm-ended',
+          'm-draft',
+        ]);
+        expect(state.pendingTasksGroups.map((group) => group.id), ['g5', 'g5']);
+        expect(state.hasPendingTasks, isTrue);
+      },
+    );
+
+    test(
+      'Given next_meeting com tarefas e pending_meetings vazio, Then ainda aparece',
+      () {
+        final host = _group(4, canManageTasks: true, tasksDone: 1);
+        final state = HomeState(groups: [host]);
+
+        expect(state.pendingTasksGroups.single.nextMeeting?.id, 'm4');
+      },
+    );
+
+    test(
+      'Given next_meeting repetido em pending_meetings, Then aparece uma vez',
+      () {
+        final host = _group(4, canManageTasks: true, tasksDone: 1);
+        final withPending = host.copyWith(
+          pendingMeetings: [host.nextMeeting!, _pendingMeeting('m-draft')],
+        );
+        final state = HomeState(groups: [withPending]);
+
+        expect(state.pendingTasksGroups.map((group) => group.nextMeeting?.id), [
+          'm4',
+          'm-draft',
+        ]);
+      },
+    );
+
+    test(
+      'Given o mesmo encontro duas vezes em pending_meetings, Then aparece uma vez',
+      () {
+        final draft = _pendingMeeting('m-draft');
+        final group = _group(
+          7,
+          withMeeting: false,
+        ).copyWith(pendingMeetings: [draft, draft]);
+
+        expect(HomeState(groups: [group]).pendingTasksGroups, hasLength(1));
+      },
+    );
+
+    test('Given pendente sem permissão ou já concluído, Then fica de fora', () {
+      final done = _pendingMeeting('m-done', tasksDone: 2);
+      const notManager = GroupMeeting(
+        id: 'm-other',
+        hostName: 'Ana',
+        bookTitle: 'Livro',
+        date: '',
+        location: '',
+      );
+      final group = _group(
+        6,
+        withMeeting: false,
+      ).copyWith(pendingMeetings: [done, notManager]);
+
+      expect(HomeState(groups: [group]).pendingTasksGroups, isEmpty);
+    });
   });
 }

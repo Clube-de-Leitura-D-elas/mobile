@@ -106,4 +106,43 @@ void main() {
 
     verify(() => repository.getMyGroups()).called(2);
   });
+
+  testWidgets(
+    'lists one card per pending meeting when a group has two of them',
+    (tester) async {
+      GroupMeeting pending(String id, int tasksDone) => GroupMeeting(
+        id: id,
+        hostName: 'Ana',
+        bookTitle: 'Livro',
+        date: '',
+        location: '',
+        canManageTasks: true,
+        tasksDone: tasksDone,
+      );
+      final repository = MockGroupRepository();
+      when(() => repository.getMyGroups()).thenAnswer(
+        (_) async => Success([
+          GroupEntity(
+            id: 'g1',
+            number: 1,
+            participantsCount: 8,
+            cityState: 'Porto Alegre, RS',
+            pendingMeetings: [pending('m-ended', 1), pending('m-draft', 0)],
+          ),
+        ]),
+      );
+      final cubit = HomeCubit(groupRepository: repository);
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(buildSubject(cubit));
+      await cubit.loadGroups();
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Grupo 1'), findsNWidgets(2));
+      expect(find.text('Minhas tarefas'), findsNWidgets(2));
+      expect(find.text('1/2'), findsOneWidget);
+      expect(find.text('0/2'), findsOneWidget);
+    },
+  );
 }
