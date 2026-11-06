@@ -22,6 +22,7 @@ void main() {
           'job_position': 'Developer',
           'user_id': 'uid-123',
           'is_Active': true,
+          'photo_url': 'https://example.com/foto.jpg',
         }
       };
 
@@ -39,6 +40,13 @@ void main() {
       expect(profile.jobPosition, equals('Developer'));
       expect(profile.userId, equals('uid-123'));
       expect(profile.isActive, isTrue);
+      expect(profile.photoUrl, equals('https://example.com/foto.jpg'));
+    });
+
+    test('fromMap accepts a profile without photo', () {
+      final profile = UserProfileModel.fromMap({'photo_url': null});
+
+      expect(profile.photoUrl, isNull);
     });
 
     test('fromMap parses raw map with address fallback and defaults', () {

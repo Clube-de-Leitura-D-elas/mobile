@@ -414,5 +414,53 @@ void main() {
         verify(() => mockAuthRepository.getUserProfile('user-123')).called(1);
       });
     });
+
+    group('updateProfilePhoto', () {
+      test('replaces the photo and keeps the session authenticated', () async {
+        when(
+          () => mockAuthRepository.getUserProfile('user-123'),
+        ).thenAnswer((_) async => const Success(testProfile));
+        await sessionCubit.checkUserProfile('user-123', testUserEntity);
+
+        final states = <SessionState>[];
+        final subscription = sessionCubit.stream.listen(states.add);
+
+        sessionCubit.updateProfilePhoto('https://example.com/nova.jpg');
+        await Future<void>.delayed(Duration.zero);
+        await subscription.cancel();
+
+        expect(states, [
+          AuthenticatedSession(
+            user: testUserEntity,
+            profile: testProfile.copyWith(
+              photoUrl: 'https://example.com/nova.jpg',
+            ),
+          ),
+        ]);
+        verify(() => mockAuthRepository.getUserProfile('user-123')).called(1);
+      });
+
+      test('does nothing without an authenticated session', () {
+        sessionCubit.updateProfilePhoto('https://example.com/nova.jpg');
+
+        expect(sessionCubit.state, const GuestSession());
+      });
+
+      test('does nothing when the session has no profile', () async {
+        final cubit = SessionCubit(
+          authRepository: mockAuthRepository,
+          supabaseService: mockSupabaseService,
+        );
+        addTearDown(cubit.close);
+        cubit.emit(const AuthenticatedSession(user: testUserEntity));
+
+        cubit.updateProfilePhoto('https://example.com/nova.jpg');
+
+        expect(
+          cubit.state,
+          const AuthenticatedSession(user: testUserEntity),
+        );
+      });
+    });
   });
 }

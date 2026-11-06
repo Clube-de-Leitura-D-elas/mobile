@@ -194,6 +194,22 @@ class SessionCubit extends Cubit<SessionState> {
     }
   }
 
+  /// Troca só a foto: o `refreshProfile` passa por `LoadingSession`, e isso
+  /// tiraria a usuária da tela de perfil.
+  void updateProfilePhoto(String photoUrl) {
+    final session = state;
+    if (session is! AuthenticatedSession) return;
+    final profile = session.profile;
+    if (profile == null) return;
+
+    emit(
+      AuthenticatedSession(
+        user: session.user,
+        profile: profile.copyWith(photoUrl: photoUrl),
+      ),
+    );
+  }
+
   Future<void> logOut() async {
     debugPrint('[SessionCubit] Logging out user and clearing Supabase session');
     emit(const LoadingSession());

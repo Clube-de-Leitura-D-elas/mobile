@@ -14,8 +14,12 @@ class ProfileHeader extends StatefulWidget {
   /// Relógio do cálculo do tempo no clube; os testes passam uma data fixa.
   final DateTime Function() now;
 
-  /// Foto já conhecida. O get-user-profile ainda não devolve a URL.
+  /// Foto atual do perfil.
   final String? photoUrl;
+
+  /// Avisa quem guarda o perfil, para a foto nova não se perder ao recriar a
+  /// tela na troca de aba.
+  final ValueChanged<String>? onPhotoChanged;
 
   const ProfileHeader({
     super.key,
@@ -23,6 +27,7 @@ class ProfileHeader extends StatefulWidget {
     this.joinedAt,
     this.now = DateTime.now,
     this.photoUrl,
+    this.onPhotoChanged,
   });
 
   static const double avatarDiameter = 96;
@@ -66,6 +71,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     );
     if (!mounted || updatedUrl == null) return;
     setState(() => _photoUrl = updatedUrl);
+    widget.onPhotoChanged?.call(updatedUrl);
   }
 
   String? _clubTime(BuildContext context) {
