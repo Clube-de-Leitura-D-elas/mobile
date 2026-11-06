@@ -187,4 +187,77 @@ void main() {
 
     expect(group.toDomain().nextMeeting?.status, GroupMeetingStatus.scheduled);
   });
+
+  group('pending_meetings', () {
+    Map<String, dynamic> pendingMeeting(String id, {String date = ''}) => {
+      'id': id,
+      'status': 'CREATED',
+      'host_name': 'Ana',
+      'book_title': 'Quarto de Despejo',
+      'date': date,
+      'location': '',
+      'can_manage_tasks': true,
+      'tasks_done': 0,
+      'tasks_total': 2,
+    };
+
+    test(
+      'Given pending_meetings, When parses, Then maps every pending meeting',
+      () {
+        final group = GroupModel.fromJson({
+          ...groupJson(),
+          'pending_meetings': [
+            pendingMeeting('meeting-old', date: '2026-10-12T19:00:00Z'),
+            pendingMeeting('meeting-draft'),
+          ],
+        });
+
+        final pending = group.toDomain().pendingMeetings;
+        expect(pending.map((meeting) => meeting.id), [
+          'meeting-old',
+          'meeting-draft',
+        ]);
+        expect(pending.last.date, isEmpty);
+        expect(pending.last.canManageTasks, isTrue);
+        expect(pending.last.tasksDone, 0);
+      },
+    );
+
+    test('Given pending_meetings ausente, When parses, Then lista vazia', () {
+      final group = GroupModel.fromJson(groupJson());
+
+      expect(group.toDomain().pendingMeetings, isEmpty);
+    });
+
+    test(
+      'Given item inválido ou nulo em pending_meetings, When parses, Then ignora só o item',
+      () {
+        final group = GroupModel.fromJson({
+          ...groupJson(),
+          'pending_meetings': [
+            null,
+            const {'id': 'meeting-broken', 'host_name': null},
+            pendingMeeting('meeting-draft'),
+          ],
+        });
+
+        expect(group.toDomain().pendingMeetings.map((meeting) => meeting.id), [
+          'meeting-draft',
+        ]);
+      },
+    );
+
+    test(
+      'Given pending_meetings que não é lista, When parses, Then FormatException',
+      () {
+        expect(
+          () => GroupModel.fromJson({
+            ...groupJson(),
+            'pending_meetings': const {'id': 'meeting-1'},
+          }),
+          throwsFormatException,
+        );
+      },
+    );
+  });
 }
