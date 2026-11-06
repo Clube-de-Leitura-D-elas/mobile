@@ -21,11 +21,10 @@ class GroupParticipantsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nextEventCubit = context.watch<NextEventCubit?>();
-    final nextEventState = nextEventCubit?.state;
-    final nextEventHostName = nextEventState is NextEventLoaded
-        ? nextEventState.event.hostName.trim()
-        : null;
+    final nextEventHostName = context.select<NextEventCubit?, String?>((cubit) {
+      final state = cubit?.state;
+      return state is NextEventLoaded ? state.event.hostName.trim() : null;
+    });
 
     return BlocBuilder<GroupParticipantsCubit, GroupParticipantsState>(
       builder: (context, state) => switch (state) {
@@ -54,8 +53,7 @@ class _GroupParticipantsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hostName = nextEventHostName;
-    final hasExplicitHost = participants.any((p) => p.isHost);
+    final inferredHostId = _inferHostId();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -64,11 +62,7 @@ class _GroupParticipantsList extends StatelessWidget {
         for (final participant in participants)
           ParticipantTile(
             key: ValueKey('participant-${participant.id}'),
-            participant:
-                !hasExplicitHost &&
-                    hostName != null &&
-                    hostName.isNotEmpty &&
-                    participant.name.trim() == hostName
+            participant: participant.id == inferredHostId
                 ? GroupParticipantEntity(
                     id: participant.id,
                     name: participant.name,
@@ -80,6 +74,17 @@ class _GroupParticipantsList extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  String? _inferHostId() {
+    final hostName = nextEventHostName;
+    if (hostName == null || hostName.isEmpty) return null;
+    if (participants.any((p) => p.isHost)) return null;
+
+    final matches = participants
+        .where((p) => p.name.trim() == hostName)
+        .toList(growable: false);
+    return matches.length == 1 ? matches.single.id : null;
   }
 }
 
