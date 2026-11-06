@@ -248,15 +248,14 @@ void main() {
     );
 
     test(
-      'Given pending_meetings que não é lista, When parses, Then FormatException',
+      'Given pending_meetings que não é lista, When parses, Then lista vazia',
       () {
-        expect(
-          () => GroupModel.fromJson({
-            ...groupJson(),
-            'pending_meetings': const {'id': 'meeting-1'},
-          }),
-          throwsFormatException,
-        );
+        final group = GroupModel.fromJson({
+          ...groupJson(),
+          'pending_meetings': const {'id': 'meeting-1'},
+        });
+
+        expect(group.toDomain().pendingMeetings, isEmpty);
       },
     );
   });

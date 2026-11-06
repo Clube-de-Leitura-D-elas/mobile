@@ -59,14 +59,11 @@ class GroupModel extends GroupEntity {
   }
 
   static List<GroupMeeting> _parsePendingMeetings(dynamic json) {
-    if (json == null) return const [];
-    if (json is! List) {
-      throw const FormatException('Invalid pending meetings.');
-    }
+    if (json is! List) return const [];
     return json.map(_tryParsePendingMeeting).nonNulls.toList();
   }
 
-  // Um encontro antigo malformado não pode derrubar a lista de grupos.
+  // Dado malformado em pending_meetings não pode derrubar a lista de grupos.
   static GroupMeeting? _tryParsePendingMeeting(dynamic json) {
     try {
       return _parseNextMeeting(json);
