@@ -7,7 +7,9 @@ import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MockSupabaseClient extends Mock implements SupabaseClient {}
+
 class MockGoTrueClient extends Mock implements GoTrueClient {}
+
 class MockFunctionsClient extends Mock implements FunctionsClient {}
 
 void main() {
@@ -34,8 +36,9 @@ void main() {
     });
 
     test('authStateChanges delegates to client.auth.onAuthStateChange', () {
-      when(() => mockGoTrueClient.onAuthStateChange)
-          .thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockGoTrueClient.onAuthStateChange,
+      ).thenAnswer((_) => const Stream.empty());
       expect(supabaseService.authStateChanges, emitsDone);
     });
 
@@ -49,7 +52,9 @@ void main() {
     });
 
     test('signOut catches exception and returns Failure', () async {
-      when(() => mockGoTrueClient.signOut()).thenThrow(Exception('Signout error'));
+      when(
+        () => mockGoTrueClient.signOut(),
+      ).thenThrow(Exception('Signout error'));
 
       final result = await supabaseService.signOut();
 
@@ -229,12 +234,10 @@ void main() {
           'get-my-notifications',
           body: any(named: 'body'),
           queryParameters: {'page': '2', 'pageSize': '20'},
+          method: HttpMethod.post,
         ),
       ).thenAnswer(
-        (_) async => const FunctionResponse(
-          status: 200,
-          data: {'total': 0},
-        ),
+        (_) async => const FunctionResponse(status: 200, data: {'total': 0}),
       );
 
       final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
@@ -250,12 +253,11 @@ void main() {
         () => mockFunctionsClient.invoke(
           'get-profile',
           body: any(named: 'body'),
+          method: HttpMethod.post,
         ),
       ).thenAnswer(
-        (_) async => const FunctionResponse(
-          status: 200,
-          data: {'name': 'Test'},
-        ),
+        (_) async =>
+            const FunctionResponse(status: 200, data: {'name': 'Test'}),
       );
 
       final result = await supabaseService.invokeFunction<String>(
@@ -270,48 +272,59 @@ void main() {
       }
     });
 
-    test('invokeFunction handles status 400+ without error key in data', () async {
-      when(
-        () => mockFunctionsClient.invoke(
-          'test-func',
-          body: any(named: 'body'),
-        ),
-      ).thenAnswer(
-        (_) async => const FunctionResponse(
-          status: 404,
-          data: 'Not found',
-        ),
-      );
+    test(
+      'invokeFunction handles status 400+ without error key in data',
+      () async {
+        when(
+          () => mockFunctionsClient.invoke(
+            'test-func',
+            body: any(named: 'body'),
+            method: HttpMethod.post,
+          ),
+        ).thenAnswer(
+          (_) async => const FunctionResponse(status: 404, data: 'Not found'),
+        );
 
-      final result = await supabaseService.invokeFunction(
-        functionName: 'test-func',
-      );
+        final result = await supabaseService.invokeFunction(
+          functionName: 'test-func',
+        );
 
-      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
-      if (result case Failure(:final failure)) {
-        expect(failure.message, equals('Erro ao executar a função test-func'));
-      }
-    });
+        expect(
+          result,
+          isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>(),
+        );
+        if (result case Failure(:final failure)) {
+          expect(
+            failure.message,
+            equals('Erro ao executar a função test-func'),
+          );
+        }
+      },
+    );
 
-    test('invokeFunction handles FunctionException without error key in details', () async {
-      when(
-        () => mockFunctionsClient.invoke(
-          'test-func',
-          body: any(named: 'body'),
-        ),
-      ).thenThrow(
-        const FunctionException(
-          status: 500,
-          details: 'Plain string details',
-        ),
-      );
+    test(
+      'invokeFunction handles FunctionException without error key in details',
+      () async {
+        when(
+          () => mockFunctionsClient.invoke(
+            'test-func',
+            body: any(named: 'body'),
+            method: HttpMethod.post,
+          ),
+        ).thenThrow(
+          const FunctionException(status: 500, details: 'Plain string details'),
+        );
 
-      final result = await supabaseService.invokeFunction(
-        functionName: 'test-func',
-      );
+        final result = await supabaseService.invokeFunction(
+          functionName: 'test-func',
+        );
 
-      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
-    });
+        expect(
+          result,
+          isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>(),
+        );
+      },
+    );
 
     test('signUpWithPassword returns Success when user is returned', () async {
       const mockUser = User(
@@ -388,77 +401,94 @@ void main() {
       expect(result, isA<Failure<User, SupabaseFailure>>());
     });
 
-    test('invokeFunction parses error message from data map when status >= 400', () async {
-      when(
-        () => mockFunctionsClient.invoke(
-          'test-func',
-          body: any(named: 'body'),
-        ),
-      ).thenAnswer(
-        (_) async => const FunctionResponse(
-          status: 400,
-          data: {'error': 'Bad Request Error'},
-        ),
-      );
+    test(
+      'invokeFunction parses error message from data map when status >= 400',
+      () async {
+        when(
+          () => mockFunctionsClient.invoke(
+            'test-func',
+            body: any(named: 'body'),
+            method: HttpMethod.post,
+          ),
+        ).thenAnswer(
+          (_) async => const FunctionResponse(
+            status: 400,
+            data: {'error': 'Bad Request Error'},
+          ),
+        );
 
-      final result = await supabaseService.invokeFunction(
-        functionName: 'test-func',
-      );
+        final result = await supabaseService.invokeFunction(
+          functionName: 'test-func',
+        );
 
-      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
-      if (result case Failure(:final failure)) {
-        expect(failure.message, equals('Bad Request Error'));
-      }
-    });
+        expect(
+          result,
+          isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>(),
+        );
+        if (result case Failure(:final failure)) {
+          expect(failure.message, equals('Bad Request Error'));
+        }
+      },
+    );
 
     test('invokeFunction casts data as T when decoder is null', () async {
       when(
         () => mockFunctionsClient.invoke(
           'test-func',
           body: any(named: 'body'),
+          method: HttpMethod.post,
         ),
       ).thenAnswer(
-        (_) async => const FunctionResponse(
-          status: 200,
-          data: {'key': 'value'},
-        ),
+        (_) async =>
+            const FunctionResponse(status: 200, data: {'key': 'value'}),
       );
 
       final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
         functionName: 'test-func',
       );
 
-      expect(result, isA<Success<SupabaseResponse<Map<String, dynamic>>, SupabaseFailure>>());
+      expect(
+        result,
+        isA<Success<SupabaseResponse<Map<String, dynamic>>, SupabaseFailure>>(),
+      );
     });
 
-    test('invokeFunction parses error message from FunctionException details map', () async {
-      when(
-        () => mockFunctionsClient.invoke(
-          'test-func',
-          body: any(named: 'body'),
-        ),
-      ).thenThrow(
-        const FunctionException(
-          status: 500,
-          details: {'error': 'Internal Exception Error'},
-        ),
-      );
+    test(
+      'invokeFunction parses error message from FunctionException details map',
+      () async {
+        when(
+          () => mockFunctionsClient.invoke(
+            'test-func',
+            body: any(named: 'body'),
+            method: HttpMethod.post,
+          ),
+        ).thenThrow(
+          const FunctionException(
+            status: 500,
+            details: {'error': 'Internal Exception Error'},
+          ),
+        );
 
-      final result = await supabaseService.invokeFunction(
-        functionName: 'test-func',
-      );
+        final result = await supabaseService.invokeFunction(
+          functionName: 'test-func',
+        );
 
-      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
-      if (result case Failure(:final failure)) {
-        expect(failure.message, equals('Internal Exception Error'));
-      }
-    });
+        expect(
+          result,
+          isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>(),
+        );
+        if (result case Failure(:final failure)) {
+          expect(failure.message, equals('Internal Exception Error'));
+        }
+      },
+    );
 
     test('invokeFunction handles generic Exception', () async {
       when(
         () => mockFunctionsClient.invoke(
           'test-func',
           body: any(named: 'body'),
+          method: HttpMethod.post,
         ),
       ).thenThrow(Exception('Connection failure'));
 
@@ -466,7 +496,10 @@ void main() {
         functionName: 'test-func',
       );
 
-      expect(result, isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>());
+      expect(
+        result,
+        isA<Failure<SupabaseResponse<dynamic>, SupabaseFailure>>(),
+      );
     });
   });
 
@@ -485,7 +518,14 @@ void main() {
         code: '500',
         details: {'key': 'val'},
       );
-      expect(funcFail.props, equals(const ['msg', '500', {'key': 'val'}]));
+      expect(
+        funcFail.props,
+        equals(const [
+          'msg',
+          '500',
+          {'key': 'val'},
+        ]),
+      );
 
       const authFail = AuthSupabaseFailure(message: 'auth msg', code: '401');
       expect(authFail.props, equals(const ['auth msg', '401', null]));
@@ -494,7 +534,10 @@ void main() {
       expect(unkFail.props, equals(const ['unk msg', null, null]));
 
       const notFoundFail = NotFoundSupabaseFailure();
-      expect(notFoundFail.props, equals(const ['Registro não encontrado', null, null]));
+      expect(
+        notFoundFail.props,
+        equals(const ['Registro não encontrado', null, null]),
+      );
     });
   });
 }

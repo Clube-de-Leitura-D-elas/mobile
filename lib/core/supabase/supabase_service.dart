@@ -12,6 +12,7 @@ abstract class SupabaseService {
     Map<String, dynamic>? body,
     Map<String, String>? queryParameters,
     T Function(dynamic data)? decoder,
+    HttpMethod method = HttpMethod.post,
   });
 
   Future<Result<User, SupabaseFailure>> signInWithIdToken({

@@ -1872,6 +1872,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, =1{ontem} other{há {count} dias}}'**
   String notificationDateDays(int count);
+
+  /// Título da aba de busca de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Busca'**
+  String get bookSearchTitle;
+
+  /// Placeholder do campo de busca de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar livro'**
+  String get bookSearchHint;
+
+  /// Título da grade mostrada quando a busca está vazia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Populares esse mês'**
+  String get bookSearchPopularTitle;
+
+  /// Lista de resultados sem livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum livro encontrado'**
+  String get bookSearchEmpty;
+
+  /// Erro ao carregar a busca de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os livros. Tente novamente.'**
+  String get bookSearchLoadError;
+
+  /// Botão que repete a busca de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get bookSearchRetry;
+
+  /// Rótulo de acessibilidade do skeleton da busca.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando livros'**
+  String get bookSearchLoading;
+
+  /// Toast quando o chip de status não grava.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível atualizar o status de leitura.'**
+  String get bookSearchStatusError;
 }
 
 class _AppLocalizationsDelegate

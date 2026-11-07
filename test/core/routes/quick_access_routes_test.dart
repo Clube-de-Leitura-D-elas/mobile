@@ -4,9 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
+import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/books/domain/entities/book_page.dart';
+import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
+import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -16,6 +22,36 @@ class MockGoRouter extends Mock implements GoRouter {}
 
 class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
+
+class MockBookRepository extends Mock implements BookRepository {}
+
+void _registerBookSearch() {
+  final repository = MockBookRepository();
+  when(
+    () => repository.searchBooks(
+      query: any(named: 'query'),
+      page: any(named: 'page'),
+    ),
+  ).thenAnswer(
+    (_) async => const Success(
+      BookPage(items: [], page: 1, pageSize: 20, hasMore: false),
+    ),
+  );
+  serviceLocator.allowReassignment = true;
+  serviceLocator.registerFactory<BookRepository>(() => repository);
+  serviceLocator.registerFactory<BookSearchCubit>(
+    () => BookSearchCubit(bookRepository: serviceLocator<BookRepository>()),
+  );
+}
+
+void _unregisterBookSearch() {
+  if (serviceLocator.isRegistered<BookSearchCubit>()) {
+    serviceLocator.unregister<BookSearchCubit>();
+  }
+  if (serviceLocator.isRegistered<BookRepository>()) {
+    serviceLocator.unregister<BookRepository>();
+  }
+}
 
 void main() {
   group('QuickAccessRoutes', () {
@@ -82,8 +118,11 @@ void main() {
     );
 
     testWidgets(
-      'renders ProfilePage for the profile route and Placeholder for others',
+      'renders the book search on /search and ProfilePage on /profile',
       (tester) async {
+        _registerBookSearch();
+        addTearDown(_unregisterBookSearch);
+
         final router = GoRouter(
           initialLocation: '/search',
           routes: QuickAccessRoutes.routes,
@@ -106,14 +145,14 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
+        expect(find.byType(BookSearchPage), findsOneWidget);
         expect(find.byType(ProfilePage), findsNothing);
 
         router.go('/profile');
         await tester.pumpAndSettle();
 
         expect(find.byType(ProfilePage), findsOneWidget);
-        expect(find.byType(QuickAccessPlaceholderScreen), findsNothing);
+        expect(find.byType(BookSearchPage), findsNothing);
       },
     );
   });
