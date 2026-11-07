@@ -27,10 +27,11 @@ class SupabaseServiceImpl implements SupabaseService {
     HttpMethod method = HttpMethod.post,
   }) async {
     try {
-      if (kDebugMode)
+      if (kDebugMode) {
         debugPrint(
           '[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}, query: $queryParameters',
         );
+      }
       final res = await _client.functions.invoke(
         functionName,
         body: body,
@@ -38,10 +39,11 @@ class SupabaseServiceImpl implements SupabaseService {
         method: method,
       );
 
-      if (kDebugMode)
+      if (kDebugMode) {
         debugPrint(
           '[SupabaseService] Function "$functionName" status: ${res.status}, data: ${res.data}',
         );
+      }
 
       if (res.status >= 400) {
         final message = res.data is Map && res.data['error'] != null
@@ -67,10 +69,11 @@ class SupabaseServiceImpl implements SupabaseService {
         SupabaseResponse<T>(data: decodedData, statusCode: res.status),
       );
     } on FunctionException catch (e) {
-      if (kDebugMode)
+      if (kDebugMode) {
         debugPrint(
           '[SupabaseService] FunctionException in "$functionName": $e',
         );
+      }
       final message = e.details is Map && (e.details as Map)['error'] != null
           ? (e.details as Map)['error'].toString()
           : (e.details is String && (e.details as String).isNotEmpty
@@ -84,8 +87,9 @@ class SupabaseServiceImpl implements SupabaseService {
         ),
       );
     } catch (e) {
-      if (kDebugMode)
+      if (kDebugMode) {
         debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
+      }
       return Failure(
         FunctionSupabaseFailure(
           message: 'Erro inesperado ao chamar a função $functionName',
