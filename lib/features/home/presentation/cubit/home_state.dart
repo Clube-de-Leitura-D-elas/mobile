@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 
 enum HomeStatus { initial, loading, loaded, error }
 
@@ -38,14 +39,29 @@ class HomeState extends Equatable {
 
   bool isGroupExpanded(String groupId) => expandedGroupIds.contains(groupId);
 
-  /// Grupos em que a anfitriã ainda tem tarefas a concluir no próximo encontro.
-  List<GroupEntity> get pendingTasksGroups => groups.where((group) {
-    final meeting = group.nextMeeting;
-    return meeting != null &&
-        meeting.id != null &&
-        meeting.canManageTasks &&
-        meeting.tasksDone < meeting.tasksTotal;
-  }).toList();
+  /// Uma entrada por encontro em que a usuária ainda tem tarefas a concluir,
+  /// com o encontro pendente no lugar de `nextMeeting`.
+  List<GroupEntity> get pendingTasksGroups => [
+    for (final group in groups)
+      for (final meeting in _pendingMeetingsOf(group))
+        group.copyWith(nextMeeting: meeting),
+  ];
+
+  // Backends anteriores a `pending_meetings` só mandam as tarefas no
+  // `next_meeting`. Ids repetidos virariam cards com a mesma key.
+  static List<GroupMeeting> _pendingMeetingsOf(GroupEntity group) {
+    final seenIds = <String>{};
+    return [...group.pendingMeetings, ?group.nextMeeting]
+        .where(
+          (meeting) => _hasPendingTasks(meeting) && seenIds.add(meeting.id!),
+        )
+        .toList();
+  }
+
+  static bool _hasPendingTasks(GroupMeeting meeting) =>
+      meeting.id != null &&
+      meeting.canManageTasks &&
+      meeting.tasksDone < meeting.tasksTotal;
 
   bool get hasPendingTasks => pendingTasksGroups.isNotEmpty;
 

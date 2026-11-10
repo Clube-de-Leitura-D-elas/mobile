@@ -1812,6 +1812,96 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ainda sem avaliações'**
   String get bookDetailNoRatings;
+
+  /// Título da tela de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificações'**
+  String get notificationsTitle;
+
+  /// Valor de acessibilidade do sino com o total de não lidas.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 não lida} other{{count} não lidas}}'**
+  String notificationsUnreadCount(int count);
+
+  /// Texto do badge do sino quando há mais de 99 não lidas.
+  ///
+  /// In pt, this message translates to:
+  /// **'99+'**
+  String get notificationsBadgeOverflow;
+
+  /// Estado vazio da tela de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma notificação por aqui'**
+  String get notificationsEmpty;
+
+  /// Erro ao carregar a lista de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar suas notificações.'**
+  String get notificationsLoadError;
+
+  /// Erro ao carregar a próxima página de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar mais notificações.'**
+  String get notificationsLoadMoreError;
+
+  /// Botão de nova tentativa da tela de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get notificationsRetry;
+
+  /// Rótulo de acessibilidade do skeleton de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando notificações'**
+  String get notificationsLoading;
+
+  /// Rótulo de acessibilidade do indicador do scroll infinito.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando mais notificações'**
+  String get notificationsLoadingMore;
+
+  /// Rótulo de acessibilidade de uma notificação não lida.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não lida: {title}. {message}'**
+  String notificationTileUnreadSemantic(String title, String message);
+
+  /// Rótulo de acessibilidade de uma notificação lida.
+  ///
+  /// In pt, this message translates to:
+  /// **'{title}. {message}'**
+  String notificationTileReadSemantic(String title, String message);
+
+  /// Data relativa de uma notificação de menos de um minuto.
+  ///
+  /// In pt, this message translates to:
+  /// **'agora'**
+  String get notificationDateNow;
+
+  /// Data relativa de uma notificação em minutos.
+  ///
+  /// In pt, this message translates to:
+  /// **'há {count} min'**
+  String notificationDateMinutes(int count);
+
+  /// Data relativa de uma notificação em horas.
+  ///
+  /// In pt, this message translates to:
+  /// **'há {count} h'**
+  String notificationDateHours(int count);
+
+  /// Data relativa de uma notificação em dias.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{ontem} other{há {count} dias}}'**
+  String notificationDateDays(int count);
 }
 
 class _AppLocalizationsDelegate

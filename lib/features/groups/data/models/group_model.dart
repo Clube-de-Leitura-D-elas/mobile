@@ -11,6 +11,7 @@ class GroupModel extends GroupEntity {
     required super.cityState,
     super.photoUrl,
     super.nextMeeting,
+    super.pendingMeetings,
     super.hasPendingResponse,
   });
 
@@ -25,6 +26,7 @@ class GroupModel extends GroupEntity {
     final cityState = json['city_state'];
     final photoUrl = json['photo_url'];
     final nextMeeting = _parseNextMeeting(json['next_meeting']);
+    final pendingMeetings = _parsePendingMeetings(json['pending_meetings']);
     final hasPendingResponse = json['has_pending_response'];
 
     if (id is! String ||
@@ -43,6 +45,7 @@ class GroupModel extends GroupEntity {
       cityState: cityState,
       photoUrl: photoUrl as String?,
       nextMeeting: nextMeeting,
+      pendingMeetings: pendingMeetings,
       hasPendingResponse: hasPendingResponse as bool? ?? false,
     );
   }
@@ -53,6 +56,20 @@ class GroupModel extends GroupEntity {
 
     return int.tryParse(name) ??
         int.tryParse(RegExp(r'\d+$').firstMatch(name)?.group(0) ?? '');
+  }
+
+  static List<GroupMeeting> _parsePendingMeetings(dynamic json) {
+    if (json is! List) return const [];
+    return json.map(_tryParsePendingMeeting).nonNulls.toList();
+  }
+
+  // Dado malformado em pending_meetings não pode derrubar a lista de grupos.
+  static GroupMeeting? _tryParsePendingMeeting(dynamic json) {
+    try {
+      return _parseNextMeeting(json);
+    } on FormatException {
+      return null;
+    }
   }
 
   static GroupMeeting? _parseNextMeeting(dynamic json) {
@@ -111,6 +128,7 @@ class GroupModel extends GroupEntity {
       cityState: cityState,
       photoUrl: photoUrl,
       nextMeeting: nextMeeting,
+      pendingMeetings: pendingMeetings,
       hasPendingResponse: hasPendingResponse,
     );
   }

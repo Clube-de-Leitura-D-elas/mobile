@@ -220,5 +220,20 @@
   "starRatingSemanticLabel": "{rating} de {maxStars} estrelas",
   "starRatingInputStarLabel": "{starValue} de {maxStars} estrelas",
   "bookDetailWrittenBy": "Escrito por {author}",
-  "bookDetailNoRatings": "Ainda sem avaliações"
+  "bookDetailNoRatings": "Ainda sem avaliações",
+  "notificationsTitle": "Notificações",
+  "notificationsUnreadCount": "{count, plural, =1{1 não lida} other{{count} não lidas}}",
+  "notificationsBadgeOverflow": "99+",
+  "notificationsEmpty": "Nenhuma notificação por aqui",
+  "notificationsLoadError": "Não foi possível carregar suas notificações.",
+  "notificationsLoadMoreError": "Não foi possível carregar mais notificações.",
+  "notificationsRetry": "Tentar novamente",
+  "notificationsLoading": "Carregando notificações",
+  "notificationsLoadingMore": "Carregando mais notificações",
+  "notificationTileUnreadSemantic": "Não lida: {title}. {message}",
+  "notificationTileReadSemantic": "{title}. {message}",
+  "notificationDateNow": "agora",
+  "notificationDateMinutes": "há {count} min",
+  "notificationDateHours": "há {count} h",
+  "notificationDateDays": "{count, plural, =1{ontem} other{há {count} dias}}"
 }

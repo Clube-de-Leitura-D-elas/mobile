@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_screen.dart';
 import 'package:mobile/features/profile/presentation/widgets/logout_confirm_dialog.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
@@ -58,6 +59,34 @@ void main() {
       createdAt: DateTime(now.year, now.month - 3),
     );
   }
+
+  testWidgets('Repassa a foto do perfil ao cabeçalho', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(
+        profile: buildProfile().copyWith(
+          photoUrl: 'https://example.com/foto.jpg',
+        ),
+      ),
+    );
+
+    final avatar = tester.widget<AppParticipantAvatar>(
+      find.byType(AppParticipantAvatar),
+    );
+    expect(avatar.photoUrl, 'https://example.com/foto.jpg');
+  });
+
+  testWidgets('Avisa a sessão quando a foto muda', (tester) async {
+    when(() => mockCubit.updateProfilePhoto(any())).thenReturn(null);
+    await tester.pumpWidget(buildSubject(profile: buildProfile()));
+
+    tester
+        .widget<ProfileHeader>(find.byType(ProfileHeader))
+        .onPhotoChanged!('https://example.com/nova.jpg');
+
+    verify(
+      () => mockCubit.updateProfilePhoto('https://example.com/nova.jpg'),
+    ).called(1);
+  });
 
   testWidgets('Deve exibir o título como cabeçalho', (tester) async {
     await tester.pumpWidget(buildSubject());

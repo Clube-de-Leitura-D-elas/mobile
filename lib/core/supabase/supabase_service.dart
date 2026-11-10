@@ -10,6 +10,7 @@ abstract class SupabaseService {
   Future<Result<SupabaseResponse<T>, SupabaseFailure>> invokeFunction<T>({
     required String functionName,
     Map<String, dynamic>? body,
+    Map<String, String>? queryParameters,
     T Function(dynamic data)? decoder,
   });
 

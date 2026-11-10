@@ -120,7 +120,12 @@ class _GroupCardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppGroupCard(
-      key: ValueKey('group_card_${group.id}'),
+      // Em "Tarefas pendentes" o mesmo grupo aparece uma vez por encontro.
+      key: ValueKey(
+        tasksOnly
+            ? 'group_card_${group.id}_${group.nextMeeting?.id}'
+            : 'group_card_${group.id}',
+      ),
       groupId: group.id,
       groupName: context.l10n.groupDetailsNumberLabel(group.number),
       participantsCount: group.participantsCount,

@@ -10,6 +10,7 @@ class AppIconAsset extends Equatable {
 }
 
 abstract final class AppIcons {
+  static const bell = AppIconAsset._('assets/icons/si/bell.si');
   static const book = AppIconAsset._('assets/icons/si/book.si');
   static const calendar = AppIconAsset._('assets/icons/si/calendar.si');
   static const camera = AppIconAsset._('assets/icons/si/camera.si');
@@ -26,6 +27,7 @@ abstract final class AppIcons {
   static const tasks = AppIconAsset._('assets/icons/si/tasks.si');
 
   static const List<AppIconAsset> all = [
+    bell,
     book,
     calendar,
     camera,

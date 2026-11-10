@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/profile/presentation/widgets/logout_confirm_dialog.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
 
@@ -24,6 +26,8 @@ class ProfileScreen extends StatelessWidget {
         ProfileHeader(
           name: name.isEmpty ? l10n.defaultUserName : name,
           joinedAt: profile?.createdAt,
+          photoUrl: profile?.photoUrl,
+          onPhotoChanged: context.read<SessionCubit>().updateProfilePhoto,
         ),
       ],
     );

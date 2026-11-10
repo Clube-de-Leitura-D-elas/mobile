@@ -11,6 +11,7 @@ import 'package:mobile/features/home/presentation/cubit/home_state.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/home/presentation/widgets/home_groups_list.dart';
 import 'package:mobile/features/home/presentation/widgets/home_header.dart';
+import 'package:mobile/features/notifications/presentation/widgets/notification_bell.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserEntity? user;
@@ -65,6 +66,7 @@ class _HomeContent extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: HomeHeader(
+            titleAction: const NotificationBell(),
             onSearchChanged: cubit.updateSearch,
             onPendingTasksPressed: state.hasPendingTasks
                 ? () => _openPendingTasks(context)
