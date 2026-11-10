@@ -102,7 +102,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Digite o token fornecido após a aprovação para vincular sua conta.';
 
   @override
-  String get claimTokenFieldLabel => 'Claim Token';
+  String get claimTokenFieldLabel => 'Token de acesso';
 
   @override
   String get claimTokenFieldHint => 'Ex: 1A2B3C4D';
@@ -761,7 +761,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get raffleDrawAgainButton => 'Sortear novamente';
 
   @override
-  String get raffleErrorMessage => 'Não foi possível concluir o sorteio';
+  String get raffleErrorMessage =>
+      'Não foi possível concluir o sorteio. Tente novamente.';
 
   @override
   String get raffleNoMoreParticipantsToDraw => 'Sem mais pessoas para sortear';
@@ -1073,6 +1074,133 @@ class AppLocalizationsPt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get errorRetryButton => 'Tentar novamente';
+
+  @override
+  String get errorNoConnection =>
+      'Sem conexão com a internet. Verifique sua conexão e tente novamente.';
+
+  @override
+  String get errorSessionExpired =>
+      'Sua sessão expirou. Saia do app e entre de novo na sua conta.';
+
+  @override
+  String get authInvalidCredentialsError =>
+      'E-mail ou senha incorretos. Confira os dados e tente novamente.';
+
+  @override
+  String get authEmailAlreadyRegisteredError =>
+      'Este e-mail já tem uma conta. Volte e entre com ele, ou use outro e-mail.';
+
+  @override
+  String get authWeakPasswordError =>
+      'Essa senha não é segura. Escolha outra senha e tente novamente.';
+
+  @override
+  String get authTooManyAttemptsError =>
+      'Muitas tentativas seguidas. Aguarde alguns minutos e tente novamente.';
+
+  @override
+  String get authGoogleUnavailableError =>
+      'Não foi possível entrar com o Google. Tente novamente ou entre com e-mail e senha.';
+
+  @override
+  String get authLoginFailedError =>
+      'Não foi possível entrar. Tente novamente em alguns minutos.';
+
+  @override
+  String get authSignUpFailedError =>
+      'Não foi possível criar sua conta. Tente novamente em alguns minutos.';
+
+  @override
+  String get claimTokenFailedError =>
+      'Não foi possível validar o token agora. Tente novamente em alguns minutos.';
+
+  @override
+  String get sessionProfileLoadError => 'Não foi possível carregar sua conta.';
+
+  @override
+  String get onboardingProfileLoadError =>
+      'Não foi possível carregar seus dados.';
+
+  @override
+  String get onboardingProfileSaveError =>
+      'Não foi possível salvar seus dados. Tente novamente.';
+
+  @override
+  String get groupListLoadError => 'Não foi possível carregar seus grupos.';
+
+  @override
+  String get groupDetailsLoadError =>
+      'Não foi possível carregar os detalhes do grupo.';
+
+  @override
+  String get groupNotFoundError =>
+      'Este grupo não está mais disponível para você.';
+
+  @override
+  String get groupEventHistoryLoadError =>
+      'Não foi possível carregar o histórico de encontros.';
+
+  @override
+  String get groupNextEventLoadError =>
+      'Não foi possível carregar o próximo encontro.';
+
+  @override
+  String get meetingDetailsLoadError =>
+      'Não foi possível carregar os detalhes do encontro.';
+
+  @override
+  String get meetingNotFoundError => 'Este encontro não está mais disponível.';
+
+  @override
+  String get meetingAttendanceLoadError =>
+      'Não foi possível carregar a lista de presença.';
+
+  @override
+  String get meetingPresenceSaveError =>
+      'Não foi possível registrar a presença. Tente novamente.';
+
+  @override
+  String get meetingPresenceForbiddenError =>
+      'Você não tem permissão para registrar a presença deste encontro.';
+
+  @override
+  String get meetingPresenceAlreadyRegisteredError =>
+      'A presença deste encontro já foi registrada.';
+
+  @override
+  String get meetingRsvpSaveError =>
+      'Não foi possível salvar sua resposta. Tente novamente.';
+
+  @override
+  String get meetingUpdateError =>
+      'Não foi possível salvar o encontro. Tente novamente.';
+
+  @override
+  String get meetingNotEditableError =>
+      'Este encontro não pode mais ser editado.';
+
+  @override
+  String get meetingTasksLoadError => 'Não foi possível carregar suas tarefas.';
+
+  @override
+  String get meetingConclusionError =>
+      'Não foi possível encerrar o encontro. Tente novamente.';
+
+  @override
+  String get meetingPhotoUploadError =>
+      'Não foi possível enviar a foto. Tente novamente.';
+
+  @override
+  String get raffleAlreadyRecordedError =>
+      'O sorteio deste encontro já foi feito. Toque em Tentar novamente para ver o resultado.';
+
+  @override
+  String get raffleParticipantsChangedError =>
+      'A lista de participantes mudou. Toque em Tentar novamente para atualizar.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1173,7 +1301,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Digite o token fornecido após a aprovação para vincular sua conta.';
 
   @override
-  String get claimTokenFieldLabel => 'Claim Token';
+  String get claimTokenFieldLabel => 'Token de acesso';
 
   @override
   String get claimTokenFieldHint => 'Ex: 1A2B3C4D';
@@ -1788,7 +1916,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get raffleDrawAgainButton => 'Sortear novamente';
 
   @override
-  String get raffleErrorMessage => 'Não foi possível concluir o sorteio';
+  String get raffleErrorMessage =>
+      'Não foi possível concluir o sorteio. Tente novamente.';
 
   @override
   String get raffleNoMoreParticipantsToDraw => 'Sem mais pessoas para sortear';

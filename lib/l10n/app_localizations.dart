@@ -280,7 +280,7 @@ abstract class AppLocalizations {
   /// Rótulo do campo de entrada de token
   ///
   /// In pt, this message translates to:
-  /// **'Claim Token'**
+  /// **'Token de acesso'**
   String get claimTokenFieldLabel;
 
   /// Exemplo/Dica para preenchimento do token de acesso
@@ -1378,7 +1378,7 @@ abstract class AppLocalizations {
   /// Mensagem exibida quando alguma etapa do sorteio falha
   ///
   /// In pt, this message translates to:
-  /// **'Não foi possível concluir o sorteio'**
+  /// **'Não foi possível concluir o sorteio. Tente novamente.'**
   String get raffleErrorMessage;
 
   /// Aviso abaixo do botão de sortear novamente quando todas as participantes já foram sorteadas
@@ -1872,6 +1872,204 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, =1{ontem} other{há {count} dias}}'**
   String notificationDateDays(int count);
+
+  /// Botão para repetir uma ação ou carregamento que falhou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get errorRetryButton;
+
+  /// Erro quando o app não consegue falar com o servidor (sem rede ou rede instável).
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem conexão com a internet. Verifique sua conexão e tente novamente.'**
+  String get errorNoConnection;
+
+  /// Erro quando o servidor recusa a sessão da usuária (HTTP 401).
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua sessão expirou. Saia do app e entre de novo na sua conta.'**
+  String get errorSessionExpired;
+
+  /// Login com e-mail e senha recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail ou senha incorretos. Confira os dados e tente novamente.'**
+  String get authInvalidCredentialsError;
+
+  /// Cadastro com e-mail que já existe.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este e-mail já tem uma conta. Volte e entre com ele, ou use outro e-mail.'**
+  String get authEmailAlreadyRegisteredError;
+
+  /// Cadastro recusado porque a senha é fraca.
+  ///
+  /// In pt, this message translates to:
+  /// **'Essa senha não é segura. Escolha outra senha e tente novamente.'**
+  String get authWeakPasswordError;
+
+  /// Supabase Auth limitou as tentativas (rate limit).
+  ///
+  /// In pt, this message translates to:
+  /// **'Muitas tentativas seguidas. Aguarde alguns minutos e tente novamente.'**
+  String get authTooManyAttemptsError;
+
+  /// Falha no login com o Google (não inclui quando a usuária cancela).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível entrar com o Google. Tente novamente ou entre com e-mail e senha.'**
+  String get authGoogleUnavailableError;
+
+  /// Falha inesperada ao entrar na conta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível entrar. Tente novamente em alguns minutos.'**
+  String get authLoginFailedError;
+
+  /// Falha inesperada ao criar a conta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível criar sua conta. Tente novamente em alguns minutos.'**
+  String get authSignUpFailedError;
+
+  /// Falha inesperada ao validar o token de acesso (não é token inválido).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível validar o token agora. Tente novamente em alguns minutos.'**
+  String get claimTokenFailedError;
+
+  /// Tela de abertura quando o perfil da usuária não carrega. Vem antes do motivo e do botão de tentar novamente.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar sua conta.'**
+  String get sessionProfileLoadError;
+
+  /// Revisão do cadastro: os dados da usuária não carregaram.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar seus dados.'**
+  String get onboardingProfileLoadError;
+
+  /// Revisão do cadastro: falha ao salvar.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar seus dados. Tente novamente.'**
+  String get onboardingProfileSaveError;
+
+  /// Home: a lista de grupos não carregou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar seus grupos.'**
+  String get groupListLoadError;
+
+  /// Detalhes do grupo não carregaram.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os detalhes do grupo.'**
+  String get groupDetailsLoadError;
+
+  /// Grupo inexistente ou fora do alcance da usuária (HTTP 404).
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo não está mais disponível para você.'**
+  String get groupNotFoundError;
+
+  /// Histórico de encontros do grupo não carregou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o histórico de encontros.'**
+  String get groupEventHistoryLoadError;
+
+  /// Card do próximo encontro na tela do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o próximo encontro.'**
+  String get groupNextEventLoadError;
+
+  /// Detalhes do encontro não carregaram.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os detalhes do encontro.'**
+  String get meetingDetailsLoadError;
+
+  /// Encontro inexistente ou removido (HTTP 404).
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não está mais disponível.'**
+  String get meetingNotFoundError;
+
+  /// Lista de presença do encontro não carregou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar a lista de presença.'**
+  String get meetingAttendanceLoadError;
+
+  /// Falha ao salvar a lista de presença.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível registrar a presença. Tente novamente.'**
+  String get meetingPresenceSaveError;
+
+  /// Registro de presença recusado por permissão (HTTP 403).
+  ///
+  /// In pt, this message translates to:
+  /// **'Você não tem permissão para registrar a presença deste encontro.'**
+  String get meetingPresenceForbiddenError;
+
+  /// Registro de presença recusado porque já existe (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'A presença deste encontro já foi registrada.'**
+  String get meetingPresenceAlreadyRegisteredError;
+
+  /// Falha ao confirmar ou recusar presença em um encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar sua resposta. Tente novamente.'**
+  String get meetingRsvpSaveError;
+
+  /// Falha ao salvar a edição do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar o encontro. Tente novamente.'**
+  String get meetingUpdateError;
+
+  /// Edição recusada porque o encontro já passou ou foi encerrado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não pode mais ser editado.'**
+  String get meetingNotEditableError;
+
+  /// Tarefas do encontro não carregaram.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar suas tarefas.'**
+  String get meetingTasksLoadError;
+
+  /// Falha ao encerrar o encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível encerrar o encontro. Tente novamente.'**
+  String get meetingConclusionError;
+
+  /// Falha ao enviar uma foto do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível enviar a foto. Tente novamente.'**
+  String get meetingPhotoUploadError;
+
+  /// Sorteio recusado porque já existe resultado (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O sorteio deste encontro já foi feito. Toque em Tentar novamente para ver o resultado.'**
+  String get raffleAlreadyRecordedError;
+
+  /// Sorteio recusado porque alguma participante não é mais elegível (HTTP 422).
+  ///
+  /// In pt, this message translates to:
+  /// **'A lista de participantes mudou. Toque em Tentar novamente para atualizar.'**
+  String get raffleParticipantsChangedError;
 }
 
 class _AppLocalizationsDelegate
