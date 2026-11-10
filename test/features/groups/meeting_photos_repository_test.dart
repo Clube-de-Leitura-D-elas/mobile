@@ -112,6 +112,31 @@ void main() {
         expect(result, isA<Failure<MeetingPhotosEntity, GroupFailure>>());
       },
     );
+
+    test(
+      'encodes meetingId query parameter in getMeetingPhotos',
+      () async {
+        when(
+          () => mockSupabaseService.invokeFunction<MeetingPhotosModel>(
+            functionName: 'get-meeting-photos?meeting_id=meeting+1%26x%3D2',
+            decoder: any(named: 'decoder'),
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(
+            FunctionSupabaseFailure(message: 'Forbidden', code: '403'),
+          ),
+        );
+
+        await repository.getMeetingPhotos('meeting 1&x=2');
+
+        verify(
+          () => mockSupabaseService.invokeFunction<MeetingPhotosModel>(
+            functionName: 'get-meeting-photos?meeting_id=meeting+1%26x%3D2',
+            decoder: any(named: 'decoder'),
+          ),
+        ).called(1);
+      },
+    );
   });
 
   group('addMeetingPhoto', () {

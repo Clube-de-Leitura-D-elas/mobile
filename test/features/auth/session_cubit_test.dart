@@ -266,9 +266,9 @@ void main() {
     );
 
     blocTest<SessionCubit, SessionState>(
-      'emits [LoadingSession, GuestSession] and calls supabaseService.signOut() when logOut is called',
+      'emits [LoadingSession, GuestSession] and calls authRepository.logOut() when logOut is called',
       build: () {
-        when(() => mockSupabaseService.signOut())
+        when(() => mockAuthRepository.logOut())
             .thenAnswer((_) async => const Success(null));
         return sessionCubit;
       },
@@ -278,17 +278,17 @@ void main() {
         const GuestSession(),
       ],
       verify: (_) {
-        verify(() => mockSupabaseService.signOut()).called(1);
+        verify(() => mockAuthRepository.logOut()).called(1);
       },
     );
 
     test('reset calls logOut', () async {
-      when(() => mockSupabaseService.signOut())
+      when(() => mockAuthRepository.logOut())
           .thenAnswer((_) async => const Success(null));
 
       sessionCubit.reset();
 
-      verify(() => mockSupabaseService.signOut()).called(1);
+      verify(() => mockAuthRepository.logOut()).called(1);
     });
 
     blocTest<SessionCubit, SessionState>(

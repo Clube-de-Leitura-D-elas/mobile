@@ -58,7 +58,8 @@ class GroupRepositoryImpl implements GroupRepository {
     String groupId,
   ) async {
     final result = await supabaseService.invokeFunction<GroupDetailsModel>(
-      functionName: 'get-group-details?group_id=$groupId',
+      functionName:
+          'get-group-details?group_id=${Uri.encodeQueryComponent(groupId)}',
       decoder: GroupDetailsModel.fromJson,
     );
 
@@ -83,7 +84,8 @@ class GroupRepositoryImpl implements GroupRepository {
   ) async {
     final result = await supabaseService
         .invokeFunction<List<GroupEventHistoryModel>>(
-          functionName: 'get-group-event-history?group_id=$groupId',
+          functionName:
+              'get-group-event-history?group_id=${Uri.encodeQueryComponent(groupId)}',
           decoder: GroupEventHistoryModel.listFromJson,
         );
 
@@ -108,7 +110,8 @@ class GroupRepositoryImpl implements GroupRepository {
     String meetingId,
   ) async {
     final result = await supabaseService.invokeFunction<MeetingDetailsModel>(
-      functionName: 'get-meeting-details?meeting_id=$meetingId',
+      functionName:
+          'get-meeting-details?meeting_id=${Uri.encodeQueryComponent(meetingId)}',
       decoder: MeetingDetailsModel.fromJson,
     );
 
@@ -134,7 +137,8 @@ class GroupRepositoryImpl implements GroupRepository {
     String groupId,
   ) async {
     final result = await supabaseService.invokeFunction<NextEventModel?>(
-      functionName: 'get-group-next-event?group_id=$groupId',
+      functionName:
+          'get-group-next-event?group_id=${Uri.encodeQueryComponent(groupId)}',
       decoder: NextEventModel.fromEnvelope,
     );
 
@@ -181,7 +185,8 @@ class GroupRepositoryImpl implements GroupRepository {
     String meetingId,
   ) async {
     final result = await supabaseService.invokeFunction<MeetingPhotosModel>(
-      functionName: 'get-meeting-photos?meeting_id=$meetingId',
+      functionName:
+          'get-meeting-photos?meeting_id=${Uri.encodeQueryComponent(meetingId)}',
       decoder: MeetingPhotosModel.fromEnvelope,
     );
 

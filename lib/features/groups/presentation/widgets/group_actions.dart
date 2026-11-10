@@ -15,6 +15,14 @@ class GroupActions extends StatelessWidget {
   final Future<bool> Function(Uri url)? onOpenWhatsApp;
   final VoidCallback? onRecommendBook;
 
+  static const _allowedWhatsAppHosts = {
+    'chat.whatsapp.com',
+    'wa.me',
+    'api.whatsapp.com',
+    'www.whatsapp.com',
+    'whatsapp.com',
+  };
+
   bool get _hasWhatsAppUrl =>
       whatsappUrl != null && whatsappUrl!.trim().isNotEmpty;
 
@@ -22,7 +30,9 @@ class GroupActions extends StatelessWidget {
     if (!_hasWhatsAppUrl) return;
 
     final uri = Uri.tryParse(whatsappUrl!.trim());
-    if (uri == null || !uri.isScheme('https')) {
+    if (uri == null ||
+        !uri.isScheme('https') ||
+        !_allowedWhatsAppHosts.contains(uri.host.toLowerCase())) {
       _showErrorSnackBar(context);
       return;
     }

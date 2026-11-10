@@ -51,7 +51,7 @@ Future<void> mainAsync({
         url: environment.supabaseUrl,
         publishableKey: environment.supabaseAnonKey,
       );
-    } else {
+    } else if (kDebugMode) {
       debugPrint(
         'Supabase não configurado. Defina SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY no .env.',
       );
@@ -64,7 +64,9 @@ Future<void> mainAsync({
     DependenciesContainer();
     runApp(const MainApp());
   } catch (error, stackTrace) {
-    debugPrint('Erro durante a inicialização do app: $error\n$stackTrace');
+    if (kDebugMode) {
+      debugPrint('Erro durante a inicialização do app: $error\n$stackTrace');
+    }
     runApp(const StartupErrorApp());
   } finally {
     FlutterNativeSplash.remove();

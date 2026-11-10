@@ -262,6 +262,59 @@ void main() {
     );
   });
 
+  test('encodes groupId query parameter in getGroupDetails, getEventHistory, and getNextEvent', () async {
+    const rawGroupId = 'group 1&inject=true';
+    const encodedGroupId = 'group+1%26inject%3Dtrue';
+
+    when(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
+        functionName: 'get-group-details?group_id=$encodedGroupId',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
+    );
+    when(
+      () => mockSupabaseService.invokeFunction<List<GroupEventHistoryModel>>(
+        functionName: 'get-group-event-history?group_id=$encodedGroupId',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
+    );
+    when(
+      () => mockSupabaseService.invokeFunction<NextEventModel?>(
+        functionName: 'get-group-next-event?group_id=$encodedGroupId',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
+    );
+
+    await repository.getGroupDetails(rawGroupId);
+    await repository.getEventHistory(rawGroupId);
+    await repository.getNextEvent(rawGroupId);
+
+    verify(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
+        functionName: 'get-group-details?group_id=$encodedGroupId',
+        decoder: any(named: 'decoder'),
+      ),
+    ).called(1);
+    verify(
+      () => mockSupabaseService.invokeFunction<List<GroupEventHistoryModel>>(
+        functionName: 'get-group-event-history?group_id=$encodedGroupId',
+        decoder: any(named: 'decoder'),
+      ),
+    ).called(1);
+    verify(
+      () => mockSupabaseService.invokeFunction<NextEventModel?>(
+        functionName: 'get-group-next-event?group_id=$encodedGroupId',
+        decoder: any(named: 'decoder'),
+      ),
+    ).called(1);
+  });
+
   test('maps event history items from the Edge Function response', () async {
     const eventHistoryJson = {
       'items': [

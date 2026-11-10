@@ -288,6 +288,38 @@ void main() {
         );
       },
     );
+
+    testWidgets(
+      'given a non-https photo url, when downloading, then blocks launch and shows an error',
+      (tester) async {
+        var launched = false;
+        await tester.pumpWidget(
+          _app(
+            MeetingPhotoViewer(
+              photo: const MeetingPhotoEntity(
+                id: 'p1',
+                url: 'http://a/p1.jpg',
+              ),
+              index: 0,
+              total: 1,
+              onDownload: (_) async {
+                launched = true;
+                return true;
+              },
+            ),
+          ),
+        );
+
+        await tester.tap(find.byKey(const ValueKey('meeting-photo-download')));
+        await tester.pump();
+
+        expect(launched, isFalse);
+        expect(
+          find.text('Não foi possível abrir a foto para baixar.'),
+          findsOneWidget,
+        );
+      },
+    );
   });
 
   group('MeetingPromoTextEditor', () {

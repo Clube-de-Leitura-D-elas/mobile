@@ -24,7 +24,9 @@ class SessionCubit extends Cubit<SessionState> {
 
   void _checkCurrentSession() {
     final user = supabaseService.currentUser;
-    debugPrint('[SessionCubit] Initial currentUser check: ${user?.id}');
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Initial currentUser check: ${user?.id}');
+    }
     if (user == null) {
       emit(const GuestSession());
       return;
@@ -35,12 +37,16 @@ class SessionCubit extends Cubit<SessionState> {
 
   void _listenToAuthState() {
     _authStateSubscription = supabaseService.authStateChanges.listen((data) {
-      debugPrint(
-        '[SessionCubit] AuthState change event: ${data.event}, user: ${data.session?.user.id}',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          '[SessionCubit] AuthState change event: ${data.event}, user: ${data.session?.user.id}',
+        );
+      }
 
       if (data.event == AuthChangeEvent.signedOut) {
-        debugPrint('[SessionCubit] User signed out -> emitting GuestSession');
+        if (kDebugMode) {
+          debugPrint('[SessionCubit] User signed out -> emitting GuestSession');
+        }
         emit(const GuestSession());
         return;
       }
@@ -57,13 +63,17 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> authenticate() async {
-    debugPrint('[SessionCubit] Triggering Google Sign-In authentication');
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Triggering Google Sign-In authentication');
+    }
     emit(const LoadingSession());
 
     final result = await authRepository.signIn();
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Sign-In failed: $failure');
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] Sign-In failed: $failure');
+      }
       if (failure is! GoogleSignInCanceledFailure) {
         emit(
           SessionError(failure: failure, operation: SessionOperation.signIn),
@@ -75,9 +85,11 @@ class SessionCubit extends Cubit<SessionState> {
 
     final userEntity = result.unwrap();
     final currentUser = supabaseService.currentUser;
-    debugPrint(
-      '[SessionCubit] Google Sign-In success for user: ${currentUser?.id}',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Google Sign-In success for user: ${currentUser?.id}',
+      );
+    }
     if (currentUser == null) {
       emit(const GuestSession());
       return;
@@ -90,9 +102,9 @@ class SessionCubit extends Cubit<SessionState> {
     required String email,
     required String password,
   }) async {
-    debugPrint(
-      '[SessionCubit] Triggering Email+Password authentication for email: $email',
-    );
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Triggering Email+Password authentication');
+    }
     emit(const LoadingSession());
 
     final result = await authRepository.signInWithEmailAndPassword(
@@ -101,7 +113,9 @@ class SessionCubit extends Cubit<SessionState> {
     );
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Email Sign-In failed: $failure');
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] Email Sign-In failed: $failure');
+      }
       emit(SessionError(failure: failure, operation: SessionOperation.signIn));
       emit(const GuestSession());
       return;
@@ -109,9 +123,11 @@ class SessionCubit extends Cubit<SessionState> {
 
     final userEntity = result.unwrap();
     final currentUser = supabaseService.currentUser;
-    debugPrint(
-      '[SessionCubit] Email Sign-In success for user: ${currentUser?.id}',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Email Sign-In success for user: ${currentUser?.id}',
+      );
+    }
     if (currentUser == null) {
       emit(const GuestSession());
       return;
@@ -124,9 +140,9 @@ class SessionCubit extends Cubit<SessionState> {
     required String email,
     required String password,
   }) async {
-    debugPrint(
-      '[SessionCubit] Triggering Email+Password sign up for email: $email',
-    );
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Triggering Email+Password sign up');
+    }
     emit(const LoadingSession());
 
     final result = await authRepository.signUpWithEmailAndPassword(
@@ -135,16 +151,20 @@ class SessionCubit extends Cubit<SessionState> {
     );
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Email Sign-Up failed: $failure');
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] Email Sign-Up failed: $failure');
+      }
       emit(SessionError(failure: failure, operation: SessionOperation.signUp));
       emit(const GuestSession());
       return Failure(failure);
     }
 
     final currentUser = supabaseService.currentUser;
-    debugPrint(
-      '[SessionCubit] Email Sign-Up success for user: ${currentUser?.id}',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Email Sign-Up success for user: ${currentUser?.id}',
+      );
+    }
 
     // Reset session state to GuestSession so user returns to LoginScreen and completes email verification/login
     emit(const GuestSession());
@@ -152,13 +172,17 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> checkUserProfile(String userId, [UserEntity? userEntity]) async {
-    debugPrint('[SessionCubit] Checking user profile for userId: $userId');
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Checking user profile for userId: $userId');
+    }
     emit(const LoadingSession());
 
     final profileResult = await authRepository.getUserProfile(userId);
 
     if (profileResult case Failure(:final failure)) {
-      debugPrint('[SessionCubit] getUserProfile failure: $failure');
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] getUserProfile failure: $failure');
+      }
       emit(
         SessionProfileUnavailable(
           userId: userId,
@@ -171,9 +195,11 @@ class SessionCubit extends Cubit<SessionState> {
 
     final data = profileResult.unwrap();
     if (data == null) {
-      debugPrint(
-        '[SessionCubit] Profile is null -> emitting NeedsClaimSession for userId: $userId',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          '[SessionCubit] Profile is null -> emitting NeedsClaimSession for userId: $userId',
+        );
+      }
       emit(NeedsClaimSession(userId: userId, user: userEntity));
       return;
     }
@@ -191,9 +217,11 @@ class SessionCubit extends Cubit<SessionState> {
           cityZone: (id: '', name: '', acronym: ''),
         );
 
-    debugPrint(
-      '[SessionCubit] Profile found! Emitting AuthenticatedSession for ${user.name}',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Profile found! Emitting AuthenticatedSession for userId: $userId',
+      );
+    }
     emit(AuthenticatedSession(user: user, profile: data));
   }
 
@@ -227,9 +255,13 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> logOut() async {
-    debugPrint('[SessionCubit] Logging out user and clearing Supabase session');
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Logging out user and clearing Supabase/Google session',
+      );
+    }
     emit(const LoadingSession());
-    await supabaseService.signOut();
+    await authRepository.logOut();
     emit(const GuestSession());
   }
 
