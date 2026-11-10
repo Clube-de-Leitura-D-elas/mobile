@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -208,18 +209,25 @@ void main() {
             nextMeeting: GroupMeeting(
               hostName: 'Roberta',
               bookTitle: 'Pequeno príncipe',
-              date: '2026-08-29T19:00:00',
+              date: '2026-08-29T19:30:00Z',
               location: 'Z Café TECNOPUC',
             ),
           ),
         ),
       );
 
+      final localDate = DateTime.parse('2026-08-29T19:30:00Z').toLocal();
       expect(find.text('Próximo evento'), findsOneWidget);
       expect(find.text('Roberta'), findsNothing);
       expect(find.text('Pequeno príncipe'), findsOneWidget);
-      expect(find.text('29/08/2026'), findsOneWidget);
-      expect(find.text('19:00'), findsOneWidget);
+      expect(
+        find.text(DateFormat('dd/MM/yyyy', 'pt_BR').format(localDate)),
+        findsOneWidget,
+      );
+      expect(
+        find.text(DateFormat('HH:mm', 'pt_BR').format(localDate)),
+        findsOneWidget,
+      );
       expect(find.text('Z Café TECNOPUC'), findsOneWidget);
     });
 

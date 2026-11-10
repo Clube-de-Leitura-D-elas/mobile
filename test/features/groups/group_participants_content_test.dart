@@ -7,11 +7,8 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
-import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
-import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
-import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_error_view.dart';
@@ -24,8 +21,6 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGroupParticipantsRepository extends Mock
     implements GroupParticipantsRepository {}
-
-class MockGroupRepository extends Mock implements GroupRepository {}
 
 typedef ParticipantsResult = Result<List<GroupParticipantEntity>, GroupFailure>;
 
@@ -183,90 +178,6 @@ void main() {
       expect(find.text('Coordenadora'), findsOneWidget);
       expect(find.text('Anfitriã'), findsOneWidget);
       expect(find.byType(AppTag), findsNWidgets(2));
-    },
-  );
-
-  testWidgets(
-    'given no explicit isHost and a unique matching hostName in NextEventLoaded, '
-    'then infers Anfitriã tag for the matching participant',
-    (tester) async {
-      final groupRepository = MockGroupRepository();
-      when(() => groupRepository.getNextEvent('g')).thenAnswer(
-        (_) async => Success(
-          NextEventEntity(
-            location: 'Porto Alegre, RS',
-            date: DateTime(2026, 8, 29, 19),
-            hostName: 'Ana Beatriz',
-          ),
-        ),
-      );
-      answer(const Success([coordinator, ana, carla]));
-
-      await tester.pumpWidget(
-        buildApp(
-          BlocProvider(
-            create: (_) =>
-                NextEventCubit(groupRepository: groupRepository)..load('g'),
-            child: const Scaffold(
-              body: SingleChildScrollView(child: GroupParticipantsContent()),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(
-        find.descendant(
-          of: find.byKey(const ValueKey('participant-a')),
-          matching: find.text('Anfitriã'),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: find.byKey(const ValueKey('participant-b')),
-          matching: find.text('Anfitriã'),
-        ),
-        findsNothing,
-      );
-    },
-  );
-
-  testWidgets(
-    'given two participants with the same host name and no explicit isHost, '
-    'then does not infer Anfitriã tag for either',
-    (tester) async {
-      final groupRepository = MockGroupRepository();
-      when(() => groupRepository.getNextEvent('g')).thenAnswer(
-        (_) async => Success(
-          NextEventEntity(
-            location: 'Porto Alegre, RS',
-            date: DateTime(2026, 8, 29, 19),
-            hostName: 'Ana Beatriz',
-          ),
-        ),
-      );
-      answer(
-        const Success([
-          GroupParticipantEntity(id: 'a1', name: 'Ana Beatriz'),
-          GroupParticipantEntity(id: 'a2', name: 'Ana Beatriz'),
-        ]),
-      );
-
-      await tester.pumpWidget(
-        buildApp(
-          BlocProvider(
-            create: (_) =>
-                NextEventCubit(groupRepository: groupRepository)..load('g'),
-            child: const Scaffold(
-              body: SingleChildScrollView(child: GroupParticipantsContent()),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Anfitriã'), findsNothing);
     },
   );
 

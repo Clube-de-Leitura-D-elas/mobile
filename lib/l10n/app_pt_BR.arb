@@ -79,6 +79,7 @@
   "groupNextEventTitle": "Próximo evento",
   "groupNextEventEmpty": "Nenhum próximo evento agendado",
   "groupNextEventHost": "Anfitriã: {name}",
+  "groupNextEventTimeUndefined": "--:--",
   "groupNextEventHistoryLink": "Histórico de eventos",
   "groupNextEventMoreDetailsLink": "Exibir mais detalhes",
   "groupNextEventCurrentBookLabel": "O livro da vez é:",

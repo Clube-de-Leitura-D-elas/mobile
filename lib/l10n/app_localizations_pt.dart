@@ -1633,6 +1633,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupNextEventBookUndefined => 'Livro ainda não definido';
 
   @override
+  String get groupNextEventTimeUndefined => '--:--';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
