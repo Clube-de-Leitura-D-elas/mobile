@@ -651,6 +651,10 @@
   "@groupNextEventNoLocation": {
     "description": "Exibido no próximo evento do grupo quando nenhum local foi definido"
   },
+  "groupNextEventTimeUndefined": "--:--",
+  "@groupNextEventTimeUndefined": {
+    "description": "Exibido no card de grupo quando o horário do próximo evento não está definido"
+  },
   "groupParticipantsTitle": "Participantes",
   "@groupParticipantsTitle": {
     "description": "Título da seção de participantes nos detalhes do grupo"

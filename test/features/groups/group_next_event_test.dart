@@ -70,7 +70,6 @@ void main() {
           data: GroupNextEventData(
             location: 'Porto Alegre, RS',
             date: DateTime(2026, 8, 29, 19),
-            hostName: 'Roberta',
           ),
         ),
       ),
@@ -102,7 +101,6 @@ void main() {
           data: GroupNextEventData(
             location: '',
             date: DateTime(2026, 8, 29),
-            hostName: 'Roberta',
           ),
         ),
       ),
@@ -157,7 +155,6 @@ void main() {
           data: GroupNextEventData(
             location: longLocation,
             date: DateTime(2026, 8, 29, 19),
-            hostName: 'Roberta',
           ),
         ),
       ),
@@ -194,7 +191,6 @@ void main() {
             data: GroupNextEventData(
               location: 'Porto Alegre, RS',
               date: DateTime(2026, 8, 29),
-              hostName: 'Roberta',
             ),
             onMoreDetailsPressed: () => tapped = true,
           ),
@@ -224,7 +220,6 @@ void main() {
           data: GroupNextEventData(
             location: 'Porto Alegre, RS',
             date: DateTime(2026, 8, 29),
-            hostName: 'Roberta',
           ),
         ),
       ),
@@ -243,7 +238,6 @@ void main() {
         data: GroupNextEventData(
           location: 'Porto Alegre, RS',
           date: DateTime(2026, 8, 29),
-          hostName: 'Roberta',
           bookTitle: bookTitle,
           bookCover: bookCover,
         ),

@@ -13,14 +13,14 @@ class GroupCardMeetingDetailsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
+    final l10n = context.l10n;
     final parsedDate = DateTime.tryParse(meeting.date)?.toLocal();
     final formattedDate = parsedDate == null
         ? meeting.date
         : DateFormat('dd/MM/yyyy', 'pt_BR').format(parsedDate);
     final formattedTime = parsedDate == null
-        ? '--:--'
+        ? l10n.groupNextEventTimeUndefined
         : DateFormat('HH:mm', 'pt_BR').format(parsedDate);
-    final l10n = context.l10n;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

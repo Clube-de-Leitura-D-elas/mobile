@@ -18,7 +18,6 @@ void main() {
       data: GroupNextEventData(
         location: 'Porto Alegre, RS',
         date: DateTime(2026, 8, 29),
-        hostName: 'Roberta',
       ),
     ),
     participantsContent: const Text('Conteúdo dos participantes'),

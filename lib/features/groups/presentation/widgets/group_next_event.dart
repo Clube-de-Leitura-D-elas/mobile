@@ -14,14 +14,12 @@ class GroupNextEventData {
   const GroupNextEventData({
     required this.location,
     required this.date,
-    this.hostName = '',
     this.bookTitle,
     this.bookCover,
   });
 
   final String location;
   final DateTime date;
-  final String hostName;
 
   /// Null when the event has no book yet.
   final String? bookTitle;

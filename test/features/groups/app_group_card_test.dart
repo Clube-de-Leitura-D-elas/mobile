@@ -247,6 +247,31 @@ void main() {
       },
     );
 
+    testWidgets(
+      'Shows the localized time fallback when the meeting date has no parseable time',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '29/08/2026',
+                location: 'Z Café TECNOPUC',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('29/08/2026'), findsOneWidget);
+        expect(find.text('--:--'), findsOneWidget);
+      },
+    );
+
     testWidgets('Shows presence action buttons when the meeting has an id', (
       tester,
     ) async {

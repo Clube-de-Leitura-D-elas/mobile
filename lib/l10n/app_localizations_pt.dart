@@ -571,6 +571,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventNoLocation => 'Sem localização';
 
   @override
+  String get groupNextEventTimeUndefined => '--:--';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override

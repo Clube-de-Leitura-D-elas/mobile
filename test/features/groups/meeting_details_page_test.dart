@@ -51,7 +51,7 @@ void main() {
   final meeting = MeetingDetailsEntity(
     id: 'meeting-1',
     number: 12,
-    date: DateTime.utc(2026, 8, 22, 15),
+    date: DateTime.utc(2026, 8, 22, 15, 30),
     bookTitle: 'Dom Casmurro',
     hostName: 'Beatriz Souza',
     locationName: 'Café Literário',

@@ -1051,6 +1051,12 @@ abstract class AppLocalizations {
   /// **'Sem localização'**
   String get groupNextEventNoLocation;
 
+  /// Exibido no card de grupo quando o horário do próximo evento não está definido
+  ///
+  /// In pt, this message translates to:
+  /// **'--:--'**
+  String get groupNextEventTimeUndefined;
+
   /// Título da seção de participantes nos detalhes do grupo
   ///
   /// In pt, this message translates to:
