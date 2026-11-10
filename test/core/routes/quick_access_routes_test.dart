@@ -153,6 +153,12 @@ void main() {
 
         expect(find.byType(ProfilePage), findsOneWidget);
         expect(find.byType(BookSearchPage), findsNothing);
+
+        router.go('/calendar');
+        await tester.pumpAndSettle();
+
+        expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
+        expect(find.byType(BookSearchPage), findsNothing);
       },
     );
   });

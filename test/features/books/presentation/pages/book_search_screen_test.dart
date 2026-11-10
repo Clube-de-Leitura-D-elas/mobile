@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_state.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_screen.dart';
@@ -136,5 +137,70 @@ void main() {
     await tester.tap(find.text('Tentar novamente'));
     expect(retries, 1);
     expect(loadMoreCalls, 0);
+  });
+
+  testWidgets('shows the want-to-read and read chips', (tester) async {
+    await pumpScreen(
+      tester,
+      state: const BookSearchState(
+        mode: BookSearchMode.results,
+        query: 'harry',
+        page: 1,
+        books: [
+          book,
+          BookSummary(
+            id: 'book-2',
+            title: 'Querendo ler',
+            author: 'Autora',
+            genre: 'Romance',
+            coverUrl: null,
+            myStatus: BookReadingStatus.wantToRead,
+          ),
+          BookSummary(
+            id: 'book-3',
+            title: 'Livro lido',
+            author: 'Autora',
+            genre: 'Romance',
+            coverUrl: null,
+            myStatus: BookReadingStatus.read,
+          ),
+        ],
+      ),
+    );
+
+    expect(find.text('Quero ler'), findsOneWidget);
+    expect(find.text('Já lido'), findsOneWidget);
+  });
+
+  testWidgets('asks for the next page when the list reaches the end', (
+    tester,
+  ) async {
+    var loadMoreCalls = 0;
+    await pumpScreen(
+      tester,
+      state: BookSearchState(
+        mode: BookSearchMode.results,
+        query: 'harry',
+        page: 1,
+        hasMore: true,
+        books: [
+          for (var index = 0; index < 12; index++)
+            BookSummary(
+              id: 'book-$index',
+              title: 'Livro $index',
+              author: 'Autora',
+              genre: 'Romance',
+              coverUrl: null,
+              myStatus: null,
+            ),
+        ],
+      ),
+      onLoadMore: () => loadMoreCalls++,
+    );
+
+    await tester.drag(find.text('Livro 0'), const Offset(0, -800));
+    await tester.pump();
+
+    expect(loadMoreCalls, greaterThan(0));
   });
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -78,7 +79,10 @@ void main() {
         locale: const Locale('pt'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const BookSearchPage(),
+        home: BlocProvider(
+          create: (_) => serviceLocator<BookSearchCubit>()..load(),
+          child: const BookSearchPage(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

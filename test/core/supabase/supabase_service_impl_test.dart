@@ -228,6 +228,23 @@ void main() {
       expect(result, isA<Failure<User, SupabaseFailure>>());
     });
 
+    test('invokeFunction shortens a long body value in the debug log', () async {
+      when(
+        () => mockFunctionsClient.invoke(
+          'upload-photo',
+          body: any(named: 'body'),
+          method: HttpMethod.post,
+        ),
+      ).thenAnswer((_) async => const FunctionResponse(status: 200, data: {}));
+
+      final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
+        functionName: 'upload-photo',
+        body: {'photo': 'a' * 201, 'caption': 'ok'},
+      );
+
+      expect(result.unwrap().statusCode, 200);
+    });
+
     test('invokeFunction forwards the query parameters', () async {
       when(
         () => mockFunctionsClient.invoke(

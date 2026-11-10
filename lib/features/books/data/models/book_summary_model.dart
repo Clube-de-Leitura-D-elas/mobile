@@ -1,4 +1,4 @@
-import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/data/models/book_reading_status_model.dart';
 import 'package:mobile/features/books/domain/entities/book_summary.dart';
 
 class BookSummaryModel extends BookSummary {

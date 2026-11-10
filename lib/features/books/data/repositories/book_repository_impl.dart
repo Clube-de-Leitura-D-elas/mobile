@@ -2,6 +2,7 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/data/models/book_page_model.dart';
+import 'package:mobile/features/books/data/models/book_reading_status_model.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
