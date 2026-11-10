@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_tasks_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
@@ -158,13 +157,13 @@ class MeetingTasksContent extends StatelessWidget {
     final confirmed = await ConcludeMeetingDialog.show(context);
     if (confirmed != true || !context.mounted) return;
 
-    final present = await context.push<List<MeetingAttendanceEntity>>(
+    final concluded = await context.push<bool>(
       Uri(
         path: GroupRoutes.meetingPresence,
         queryParameters: {'meeting_id': meetingId},
       ).toString(),
     );
-    if (present != null && present.isNotEmpty && context.mounted) {
+    if (concluded == true && context.mounted) {
       await _openRaffle(context);
     } else if (context.mounted) {
       await context.read<MeetingTasksCubit>().refresh();
