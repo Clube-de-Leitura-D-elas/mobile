@@ -38,7 +38,9 @@ class BookRepositoryImpl implements BookRepository {
         return const Failure(BookSearchFailure());
       case Success(:final data):
         final pageData = data.data;
-        if (pageData == null) return const Failure(BookSearchFailure());
+        if (pageData == null) {
+          return const Failure(BookSearchFailure());
+        }
         return Success(pageData.toDomain());
     }
   }

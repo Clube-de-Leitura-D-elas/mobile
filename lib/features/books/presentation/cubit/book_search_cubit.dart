@@ -20,36 +20,55 @@ class BookSearchCubit extends Cubit<BookSearchState> {
   Future<void> search(String raw) {
     final trimmed = raw.trim();
     final popular = trimmed.length < minQueryLength;
+    final mode = popular ? BookSearchMode.popular : BookSearchMode.results;
+    final query = popular ? '' : trimmed;
+    if (mode == state.mode &&
+        query == state.query &&
+        !state.hasError &&
+        state.page > 0) {
+      return Future<void>.value();
+    }
     final request = ++_request;
     emit(
       BookSearchState(
-        mode: popular ? BookSearchMode.popular : BookSearchMode.results,
-        query: popular ? '' : trimmed,
+        mode: mode,
+        query: query,
         isLoading: true,
+        updatingStatusIds: state.updatingStatusIds,
       ),
     );
     return _fetch(request: request, page: 1, append: false);
   }
 
   Future<void> retry() {
-    if (state.books.isEmpty) return search(state.query);
+    if (state.books.isEmpty) {
+      return search(state.query);
+    }
     return loadMore();
   }
 
   Future<void> loadMore() async {
-    if (!state.hasMore || state.isLoading || state.isLoadingMore) return;
+    if (!state.hasMore || state.isLoading || state.isLoadingMore) {
+      return;
+    }
     final request = _request;
     emit(state.copyWith(isLoadingMore: true, hasLoadMoreError: false));
     await _fetch(request: request, page: state.page + 1, append: true);
   }
 
   Future<void> toggleStatus(String bookId) async {
-    if (state.updatingStatusIds.contains(bookId)) return;
+    if (state.updatingStatusIds.contains(bookId)) {
+      return;
+    }
     BookSummary? current;
     for (final book in state.books) {
-      if (book.id == bookId) current = book;
+      if (book.id == bookId) {
+        current = book;
+      }
     }
-    if (current == null) return;
+    if (current == null) {
+      return;
+    }
 
     emit(
       state.copyWith(
@@ -62,7 +81,9 @@ class BookSearchCubit extends Cubit<BookSearchState> {
       bookId: bookId,
       status: nextListReadingStatus(current.myStatus),
     );
-    if (isClosed) return;
+    if (isClosed) {
+      return;
+    }
 
     final stillUpdating = [
       for (final id in state.updatingStatusIds)
@@ -91,7 +112,9 @@ class BookSearchCubit extends Cubit<BookSearchState> {
   }
 
   void clearStatusError() {
-    if (!state.hasStatusError) return;
+    if (!state.hasStatusError) {
+      return;
+    }
     emit(state.copyWith(hasStatusError: false));
   }
 
@@ -102,7 +125,9 @@ class BookSearchCubit extends Cubit<BookSearchState> {
   }) async {
     final query = state.mode == BookSearchMode.results ? state.query : null;
     final result = await bookRepository.searchBooks(query: query, page: page);
-    if (isClosed || request != _request) return;
+    if (isClosed || request != _request) {
+      return;
+    }
 
     switch (result) {
       case Failure():

@@ -85,6 +85,17 @@ void main() {
     );
 
     expect(find.text('Nenhum livro encontrado'), findsOneWidget);
+    expect(find.text('Tentar novamente'), findsNothing);
+  });
+
+  testWidgets('shows the empty copy when popular books come back empty', (
+    tester,
+  ) async {
+    await pumpScreen(tester, state: const BookSearchState(page: 1));
+
+    expect(find.text('Nenhum livro encontrado'), findsOneWidget);
+    expect(find.text('Populares esse mês'), findsNothing);
+    expect(find.text('Tentar novamente'), findsNothing);
   });
 
   testWidgets('shows the loading label', (tester) async {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_response.dart';
@@ -229,6 +230,16 @@ void main() {
     });
 
     test('invokeFunction shortens a long body value in the debug log', () async {
+      final logs = <String>[];
+      final originalDebugPrint = debugPrint;
+      debugPrint = (String? message, {int? wrapWidth}) {
+        if (message != null) {
+          logs.add(message);
+        }
+      };
+      addTearDown(() => debugPrint = originalDebugPrint);
+
+      final longValue = 'a' * 201;
       when(
         () => mockFunctionsClient.invoke(
           'upload-photo',
@@ -239,10 +250,37 @@ void main() {
 
       final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
         functionName: 'upload-photo',
-        body: {'photo': 'a' * 201, 'caption': 'ok'},
+        body: {'photo': longValue, 'caption': 'ok'},
       );
 
       expect(result.unwrap().statusCode, 200);
+      expect(
+        logs.any(
+          (log) => log.contains('<201 chars>') && !log.contains(longValue),
+        ),
+        isTrue,
+      );
+    });
+
+    test('invokeFunction forwards a custom HTTP method', () async {
+      when(
+        () => mockFunctionsClient.invoke(
+          'search-books',
+          body: any(named: 'body'),
+          queryParameters: {'page': '1'},
+          method: HttpMethod.get,
+        ),
+      ).thenAnswer(
+        (_) async => const FunctionResponse(status: 200, data: {'ok': true}),
+      );
+
+      final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
+        functionName: 'search-books',
+        queryParameters: {'page': '1'},
+        method: HttpMethod.get,
+      );
+
+      expect(result.unwrap().data, {'ok': true});
     });
 
     test('invokeFunction forwards the query parameters', () async {

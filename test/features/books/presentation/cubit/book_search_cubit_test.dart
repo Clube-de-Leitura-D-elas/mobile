@@ -376,6 +376,129 @@ void main() {
   );
 
   blocTest<BookSearchCubit, BookSearchState>(
+    'given popular books, when the query stays too short, then keeps the list',
+    build: buildCubit,
+    seed: () => const BookSearchState(books: [book], page: 1),
+    act: (cubit) => cubit.search('a'),
+    expect: () => <BookSearchState>[],
+    verify: (_) {
+      verifyNever(
+        () => repository.searchBooks(
+          query: any(named: 'query'),
+          page: any(named: 'page'),
+        ),
+      );
+    },
+  );
+
+  blocTest<BookSearchCubit, BookSearchState>(
+    'given results, when the query only gains trailing space, then keeps the list',
+    build: buildCubit,
+    seed: () => const BookSearchState(
+      mode: BookSearchMode.results,
+      query: 'harry',
+      books: [book],
+      page: 1,
+    ),
+    act: (cubit) => cubit.search('harry '),
+    expect: () => <BookSearchState>[],
+    verify: (_) {
+      verifyNever(
+        () => repository.searchBooks(
+          query: any(named: 'query'),
+          page: any(named: 'page'),
+        ),
+      );
+    },
+  );
+
+  blocTest<BookSearchCubit, BookSearchState>(
+    'given the same query failed, when searching again, then loads it',
+    build: () {
+      when(
+        () => repository.searchBooks(query: 'harry', page: 1),
+      ).thenAnswer((_) async => Success(page()));
+      return buildCubit();
+    },
+    seed: () => const BookSearchState(
+      mode: BookSearchMode.results,
+      query: 'harry',
+      page: 1,
+      hasError: true,
+    ),
+    act: (cubit) => cubit.search('harry'),
+    expect: () => [
+      const BookSearchState(
+        mode: BookSearchMode.results,
+        query: 'harry',
+        isLoading: true,
+      ),
+      const BookSearchState(
+        mode: BookSearchMode.results,
+        query: 'harry',
+        books: [book],
+        page: 1,
+      ),
+    ],
+  );
+
+  blocTest<BookSearchCubit, BookSearchState>(
+    'given a write in flight, when the query changes, then the chip stays locked',
+    build: () {
+      final gate = Completer<Result<BookReadingStatus?, BookFailure>>();
+      when(
+        () => repository.setReadingStatus(
+          bookId: 'book-1',
+          status: BookReadingStatus.wantToRead,
+        ),
+      ).thenAnswer((_) => gate.future);
+      when(
+        () => repository.searchBooks(query: 'harry', page: 1),
+      ).thenAnswer((_) async => Success(page()));
+      addTearDown(() {
+        if (!gate.isCompleted) {
+          gate.complete(const Success(BookReadingStatus.wantToRead));
+        }
+      });
+      return buildCubit();
+    },
+    seed: () => const BookSearchState(books: [book], page: 1),
+    act: (cubit) async {
+      unawaited(cubit.toggleStatus('book-1'));
+      await cubit.search('harry');
+      await cubit.toggleStatus('book-1');
+    },
+    expect: () => [
+      const BookSearchState(
+        books: [book],
+        page: 1,
+        updatingStatusIds: ['book-1'],
+      ),
+      const BookSearchState(
+        mode: BookSearchMode.results,
+        query: 'harry',
+        isLoading: true,
+        updatingStatusIds: ['book-1'],
+      ),
+      const BookSearchState(
+        mode: BookSearchMode.results,
+        query: 'harry',
+        books: [book],
+        page: 1,
+        updatingStatusIds: ['book-1'],
+      ),
+    ],
+    verify: (_) {
+      verify(
+        () => repository.setReadingStatus(
+          bookId: 'book-1',
+          status: BookReadingStatus.wantToRead,
+        ),
+      ).called(1);
+    },
+  );
+
+  blocTest<BookSearchCubit, BookSearchState>(
     'given a slow popular load, when the query changes, then ignores the old page',
     build: () {
       when(() => repository.searchBooks(page: 1)).thenAnswer((_) async {

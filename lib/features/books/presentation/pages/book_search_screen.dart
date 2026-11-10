@@ -31,8 +31,6 @@ class BookSearchScreen extends StatelessWidget {
   final VoidCallback onLoadMore;
   final ValueChanged<String> onStatusTap;
 
-  static const _loadMoreExtent = 400.0;
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -57,13 +55,37 @@ class BookSearchScreen extends StatelessWidget {
               onChanged: onQueryChanged,
             ),
           ),
-          Expanded(child: _body(context)),
+          Expanded(
+            child: _BookSearchBody(
+              state: state,
+              onRetry: onRetry,
+              onLoadMore: onLoadMore,
+              onStatusTap: onStatusTap,
+            ),
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _body(BuildContext context) {
+class _BookSearchBody extends StatelessWidget {
+  const _BookSearchBody({
+    required this.state,
+    required this.onRetry,
+    required this.onLoadMore,
+    required this.onStatusTap,
+  });
+
+  final BookSearchState state;
+  final VoidCallback onRetry;
+  final VoidCallback onLoadMore;
+  final ValueChanged<String> onStatusTap;
+
+  static const _loadMoreExtent = 400.0;
+
+  @override
+  Widget build(BuildContext context) {
     final spacing = context.spacing;
     final colors = context.colors;
     final typography = context.typography;
@@ -74,8 +96,10 @@ class BookSearchScreen extends StatelessWidget {
         child: const BookSearchSkeleton(),
       );
     }
-    if (state.hasError) return _Message(onRetry: onRetry, isError: true);
-    if (state.isEmpty && state.mode == BookSearchMode.results) {
+    if (state.hasError) {
+      return _Message(onRetry: onRetry, isError: true);
+    }
+    if (state.isEmpty) {
       return const _Message();
     }
 
