@@ -39,6 +39,8 @@ class MeetingInfoCard extends StatelessWidget {
           SizedBox(height: spacing.s16),
           MeetingInfoRow(icon: AppIcons.calendar, label: _dateLabel(context)),
           SizedBox(height: spacing.s12),
+          MeetingInfoRow(icon: AppIcons.clock, label: _timeLabel(context)),
+          SizedBox(height: spacing.s12),
           MeetingInfoRow(
             icon: AppIcons.book,
             label: l10n.meetingDetailsBook(meeting.bookTitle),
@@ -85,6 +87,17 @@ class MeetingInfoCard extends StatelessWidget {
       Localizations.localeOf(context).toString(),
     ).format(date.toLocal());
     return context.l10n.meetingDetailsDate(formatted);
+  }
+
+  String _timeLabel(BuildContext context) {
+    final date = meeting.date;
+    if (date == null) return context.l10n.meetingDetailsTimeUndefined;
+
+    final formatted = DateFormat(
+      'HH:mm',
+      Localizations.localeOf(context).toString(),
+    ).format(date.toLocal());
+    return context.l10n.meetingDetailsTime(formatted);
   }
 
   String? _locationText() {

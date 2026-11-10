@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
@@ -50,7 +51,7 @@ void main() {
   final meeting = MeetingDetailsEntity(
     id: 'meeting-1',
     number: 12,
-    date: DateTime.utc(2026, 8, 22, 15),
+    date: DateTime.utc(2026, 8, 22, 15, 30),
     bookTitle: 'Dom Casmurro',
     hostName: 'Beatriz Souza',
     locationName: 'Café Literário',
@@ -78,8 +79,14 @@ void main() {
   testWidgets('renders title, data rows and description', (tester) async {
     await tester.pumpWidget(_wrap(MeetingDetailsLoaded(meeting)));
 
+    final expectedTime = DateFormat(
+      'HH:mm',
+      'pt_BR',
+    ).format(meeting.date!.toLocal());
+
     expect(find.text('Encontro 12'), findsOneWidget);
     expect(find.text('Data: 22/08/2026'), findsOneWidget);
+    expect(find.text('Horário: $expectedTime'), findsOneWidget);
     expect(find.text('Livro: Dom Casmurro'), findsOneWidget);
     expect(find.text('Anfitriã: Beatriz Souza'), findsOneWidget);
     expect(
@@ -95,6 +102,7 @@ void main() {
       tester.widgetList<AppIcon>(find.byType(AppIcon)).map((i) => i.icon),
       containsAllInOrder([
         AppIcons.calendar,
+        AppIcons.clock,
         AppIcons.book,
         AppIcons.user,
         AppIcons.location,
@@ -155,6 +163,7 @@ void main() {
 
     expect(find.text('Encontro'), findsOneWidget);
     expect(find.text('Data: a definir'), findsOneWidget);
+    expect(find.text('Horário: a definir'), findsOneWidget);
     expect(find.text('Local: a definir'), findsOneWidget);
   });
 

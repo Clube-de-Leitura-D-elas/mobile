@@ -571,6 +571,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupNextEventNoLocation => 'Sem localização';
 
   @override
+  String get groupNextEventTimeUndefined => '--:--';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -613,6 +616,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupParticipantsLoading => 'Carregando participantes';
+
+  @override
+  String get groupParticipantCoordinatorTag => 'Coordenadora';
+
+  @override
+  String get groupParticipantHostTag => 'Anfitriã';
 
   @override
   String get groupNextMeetingLabel => 'Próximo evento';
@@ -668,6 +677,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsTime(String time) {
+    return 'Horário: $time';
+  }
+
+  @override
+  String get meetingDetailsTimeUndefined => 'Horário: a definir';
 
   @override
   String meetingDetailsBook(String title) {
@@ -1616,6 +1633,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupNextEventBookUndefined => 'Livro ainda não definido';
 
   @override
+  String get groupNextEventTimeUndefined => '--:--';
+
+  @override
   String get groupParticipantsTitle => 'Participantes';
 
   @override
@@ -1660,6 +1680,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupParticipantsLoading => 'Carregando participantes';
 
   @override
+  String get groupParticipantCoordinatorTag => 'Coordenadora';
+
+  @override
+  String get groupParticipantHostTag => 'Anfitriã';
+
+  @override
   String get groupEventHistoryTitle => 'Histórico de eventos';
 
   @override
@@ -1695,6 +1721,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get meetingDetailsDateUndefined => 'Data: a definir';
+
+  @override
+  String meetingDetailsTime(String time) {
+    return 'Horário: $time';
+  }
+
+  @override
+  String get meetingDetailsTimeUndefined => 'Horário: a definir';
 
   @override
   String meetingDetailsBook(String title) {

@@ -69,8 +69,7 @@ void main() {
           status: GroupNextEventStatus.loaded,
           data: GroupNextEventData(
             location: 'Porto Alegre, RS',
-            date: DateTime(2026, 8, 29),
-            hostName: 'Roberta',
+            date: DateTime(2026, 8, 29, 19),
           ),
         ),
       ),
@@ -78,16 +77,17 @@ void main() {
 
     expect(find.text('Porto Alegre, RS'), findsOneWidget);
     expect(find.text('29/08/2026'), findsOneWidget);
-    expect(find.text('Anfitriã: Roberta'), findsOneWidget);
+    expect(find.text('19:00'), findsOneWidget);
+    expect(find.text('Anfitriã: Roberta'), findsNothing);
     expect(
       tester.widgetList<AppIcon>(find.byType(AppIcon)).map((icon) => icon.icon),
-      [AppIcons.user, AppIcons.calendar, AppIcons.location, AppIcons.book],
+      [AppIcons.calendar, AppIcons.clock, AppIcons.location, AppIcons.book],
     );
 
-    final host = tester.getRect(find.text('Anfitriã: Roberta'));
     final date = tester.getRect(find.text('29/08/2026'));
+    final time = tester.getRect(find.text('19:00'));
     final location = tester.getRect(find.text('Porto Alegre, RS'));
-    expect(date.left, greaterThan(host.right));
+    expect(time.left, greaterThan(date.right));
     expect(location.top, greaterThan(date.bottom));
   });
 
@@ -101,7 +101,6 @@ void main() {
           data: GroupNextEventData(
             location: '',
             date: DateTime(2026, 8, 29),
-            hostName: 'Roberta',
           ),
         ),
       ),
@@ -140,9 +139,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-    testWidgets('wraps a long location and truncates the host on a narrow layout', (
-    tester,
-  ) async {
+  testWidgets('wraps a long location on a narrow layout', (tester) async {
     tester.view.physicalSize = const Size(320, 800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -150,7 +147,6 @@ void main() {
 
     const longLocation =
         'Uma localização muito extensa para a largura disponível';
-    const longHost = 'Maria Eduarda Albuquerque Cavalcanti';
 
     await tester.pumpWidget(
       buildSubject(
@@ -158,8 +154,7 @@ void main() {
           status: GroupNextEventStatus.loaded,
           data: GroupNextEventData(
             location: longLocation,
-            date: DateTime(2026, 8, 29),
-            hostName: longHost,
+            date: DateTime(2026, 8, 29, 19),
           ),
         ),
       ),
@@ -168,14 +163,6 @@ void main() {
     expect(tester.takeException(), isNull);
 
     final fontSize = AppTypographyTokens.standard.bodySmall.fontSize!;
-
-    final host = tester.widget<Text>(find.text('Anfitriã: $longHost'));
-    expect(host.maxLines, 1);
-    expect(host.overflow, TextOverflow.ellipsis);
-    expect(
-      tester.getSize(find.text('Anfitriã: $longHost')).height,
-      lessThan(fontSize * 2),
-    );
 
     final location = tester.widget<Text>(find.text(longLocation));
     expect(location.maxLines, isNull);
@@ -204,7 +191,6 @@ void main() {
             data: GroupNextEventData(
               location: 'Porto Alegre, RS',
               date: DateTime(2026, 8, 29),
-              hostName: 'Roberta',
             ),
             onMoreDetailsPressed: () => tapped = true,
           ),
@@ -234,7 +220,6 @@ void main() {
           data: GroupNextEventData(
             location: 'Porto Alegre, RS',
             date: DateTime(2026, 8, 29),
-            hostName: 'Roberta',
           ),
         ),
       ),
@@ -253,7 +238,6 @@ void main() {
         data: GroupNextEventData(
           location: 'Porto Alegre, RS',
           date: DateTime(2026, 8, 29),
-          hostName: 'Roberta',
           bookTitle: bookTitle,
           bookCover: bookCover,
         ),

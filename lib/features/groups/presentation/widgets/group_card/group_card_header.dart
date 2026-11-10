@@ -9,6 +9,7 @@ class GroupCardHeader extends StatelessWidget {
   final String groupName;
   final int participantsCount;
   final String cityState;
+  final String? hostName;
 
   const GroupCardHeader({
     super.key,
@@ -16,6 +17,7 @@ class GroupCardHeader extends StatelessWidget {
     required this.groupName,
     required this.participantsCount,
     required this.cityState,
+    this.hostName,
   });
 
   @override
@@ -24,6 +26,7 @@ class GroupCardHeader extends StatelessWidget {
     final typography = context.typography;
     final spacing = context.spacing;
     final l10n = context.l10n;
+    final currentHostName = hostName?.trim() ?? '';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,10 +43,16 @@ class GroupCardHeader extends StatelessWidget {
                 style: typography.headingH2.copyWith(color: colors.textDefault),
               ),
               SizedBox(height: spacing.s4),
-              AppGroupInfoRow(
-                icon: AppIcons.group,
-                label: l10n.groupParticipantsCount(participantsCount),
-              ),
+              if (currentHostName.isNotEmpty)
+                AppGroupInfoRow(
+                  icon: AppIcons.user,
+                  label: l10n.groupNextEventHost(currentHostName),
+                )
+              else
+                AppGroupInfoRow(
+                  icon: AppIcons.group,
+                  label: l10n.groupParticipantsCount(participantsCount),
+                ),
               AppGroupInfoRow(icon: AppIcons.location, label: cityState),
             ],
           ),
