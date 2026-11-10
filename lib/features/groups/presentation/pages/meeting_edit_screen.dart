@@ -153,6 +153,7 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
               controller: _dateController,
               hintText: l10n.meetingEditDateHint,
               keyboardType: TextInputType.datetime,
+              inputFormatters: const [DateInputFormatter()],
               validator: (value) => _validateDateTime(
                 value,
                 _dateFormat,
@@ -166,6 +167,7 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
               controller: _timeController,
               hintText: l10n.meetingEditTimeHint,
               keyboardType: TextInputType.datetime,
+              inputFormatters: const [TimeInputFormatter()],
               validator: (value) => _validateDateTime(
                 value,
                 _timeFormat,

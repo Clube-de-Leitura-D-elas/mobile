@@ -150,6 +150,55 @@ void main() {
   );
 
   testWidgets(
+    'given date and time typed as digits only, when saving, then masks and saves them',
+    (tester) async {
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(meeting: meeting, onSaved: (result) => saved = result),
+      );
+
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '30102026');
+      await tester.enterText(fields.at(1), '1930');
+      await tester.pump();
+
+      expect(find.text('30/10/2026'), findsOneWidget);
+      expect(find.text('19:30'), findsOneWidget);
+
+      await tapSave(tester);
+
+      expect(saved?.date, DateTime(2026, 10, 30, 19, 30));
+    },
+  );
+
+  testWidgets(
+    'given a meeting with a date, when saving untouched, then keeps the date',
+    (tester) async {
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(
+          meeting: MeetingDetailsEntity(
+            id: meeting.id,
+            bookTitle: meeting.bookTitle,
+            hostName: meeting.hostName,
+            locationName: meeting.locationName,
+            locationAddress: meeting.locationAddress,
+            date: DateTime(2026, 3, 5, 9, 7),
+          ),
+          onSaved: (result) => saved = result,
+        ),
+      );
+
+      expect(find.text('05/03/2026'), findsOneWidget);
+      expect(find.text('09:07'), findsOneWidget);
+
+      await tapSave(tester);
+
+      expect(saved?.date, DateTime(2026, 3, 5, 9, 7));
+    },
+  );
+
+  testWidgets(
     'given a typed location without a suggestion, when saving, then asks to pick one',
     (tester) async {
       final repository = MockGroupRepository();
