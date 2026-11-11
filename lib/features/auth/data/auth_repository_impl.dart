@@ -35,7 +35,9 @@ class AuthRepositoryImpl implements AuthRepository {
       idToken = googleUser.authentication.idToken;
       accessToken = authorization.accessToken;
     } on GoogleSignInException catch (e) {
-      debugPrint('[AuthRepository] Google sign-in failed: ${e.code} ${e.description}');
+      debugPrint(
+        '[AuthRepository] Google sign-in failed: ${e.code} ${e.description}',
+      );
       return Failure(
         e.code == GoogleSignInExceptionCode.canceled
             ? const GoogleSignInCanceledFailure()
