@@ -1,12 +1,12 @@
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
-/// Texto para a usuária. [fallback] é a mensagem da ação que falhou
-/// ("Não foi possível entrar...") quando a causa não tem texto próprio.
 /// Falhas em que tentar de novo dá o mesmo resultado.
 bool userFailureIsRetryable(UserFailure failure) =>
     failure is! UserForbiddenFailure;
 
+/// Texto para a usuária. [fallback] é a mensagem da ação que falhou
+/// ("Não foi possível entrar...") quando a causa não tem texto próprio.
 String userFailureMessage(
   AppLocalizations l10n,
   UserFailure failure, {

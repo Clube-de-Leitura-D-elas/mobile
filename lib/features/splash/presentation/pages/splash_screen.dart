@@ -6,10 +6,9 @@ import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/user_failure_message.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
-/// Splash screen displaying app logo and loading indicator while checking session.
-///
-/// When the profile fails to load, shows the reason with "Tentar novamente"
-/// and "Sair".
+/// Tela de abertura: logo e indicador de carregamento enquanto a sessão é
+/// verificada. Se o perfil não carrega, mostra o motivo com "Tentar novamente"
+/// e "Sair".
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
