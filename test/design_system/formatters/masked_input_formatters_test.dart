@@ -297,11 +297,27 @@ void main() {
       expect(result.text, '(51) 99999-9999');
     });
 
-    test('typing +55 key by key drops the country code at the end', () {
-      final result = _type(formatter, '+5551999998888');
+    test('ignores a 12th typed digit with area code 55', () {
+      final full = _type(formatter, '55999999999');
+      final result = formatter.formatEditUpdate(full, _value('${full.text}1'));
 
+      expect(result.text, '(55) 99999-9999');
+    });
+
+    test('typing +55 key by key keeps it raw, then drops the country code', () {
+      expect(_type(formatter, '+').text, '+');
+      expect(_type(formatter, '+5551').text, '+5551');
+      expect(_type(formatter, '+555199999888').text, '(51) 9999-9888');
+
+      final result = _type(formatter, '+5551999998888');
       expect(result.text, '(51) 99999-8888');
       expect(result.selection.extentOffset, result.text.length);
+    });
+
+    test('typing digits without + never goes past 11', () {
+      final result = _type(formatter, '5551999998888');
+
+      expect(result.text, '(55) 51999-9988');
     });
 
     test('pasting +55 or a carrier zero over a full number replaces it', () {

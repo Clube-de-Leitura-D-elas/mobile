@@ -104,16 +104,19 @@ abstract class MaskedDigitsInputFormatter extends TextInputFormatter {
     }
 
     final raw = before + insertedDigits + after;
+    final isPureInsertion =
+        oldValue.selection.isCollapsed && edit.start == edit.oldEnd;
+    final fieldWasFull = _digitsOf(oldValue.text).length >= maxDigits;
+    if (!isBulk && isPureInsertion && fieldWasFull && raw.length > maxDigits) {
+      return oldValue;
+    }
+
     var digits = normalizeDigits(raw);
     final digitsBeforeCursor =
         before.length + insertedDigits.length - (raw.length - digits.length);
 
     if (digits.length > maxDigits) {
-      final isPureInsertion =
-          oldValue.selection.isCollapsed && edit.start == edit.oldEnd;
-      if (isPureInsertion && _digitsOf(oldValue.text).length >= maxDigits) {
-        return oldValue;
-      }
+      if (isPureInsertion && fieldWasFull) return oldValue;
       digits = digits.substring(0, maxDigits);
     }
 
@@ -297,8 +300,31 @@ class PhoneInputFormatter extends MaskedDigitsInputFormatter {
   @override
   bool isComplete(String digits) => digits.length == 10 || digits.length == 11;
 
+  // Com `+` no início o número leva DDI: fica cru até ter os 12 ou 13 dígitos
+  // e só então perde o 55 e ganha a máscara.
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (!newValue.text.startsWith('+')) {
+      return super.formatEditUpdate(oldValue, newValue);
+    }
+    final digits = MaskedDigitsInputFormatter._digitsOf(newValue.text);
+    if (digits.length > 13) return oldValue;
+    final local = normalizeDigits(digits);
+    if (local != digits && isComplete(local)) {
+      return _masked(local, local.length);
+    }
+    final text = '+$digits';
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+  }
+
   // 12 ou 13 dígitos começando com 55 são DDI. Com 11 ou menos, 55 é DDD
-  // (Santa Maria/RS) e fica.
+  // (Santa Maria/RS) e fica; por isso a digitação sem `+` não passa de 11.
   @override
   String normalizeDigits(String digits) {
     if (digits.startsWith('55') &&
