@@ -793,6 +793,12 @@ abstract class AppLocalizations {
   /// **'Data de nascimento'**
   String get onboardingBirthDateLabel;
 
+  /// Dica de formato da data de nascimento
+  ///
+  /// In pt, this message translates to:
+  /// **'DD/MM/AAAA'**
+  String get onboardingBirthDateHint;
+
   /// Rótulo cidade
   ///
   /// In pt, this message translates to:
@@ -1051,6 +1057,12 @@ abstract class AppLocalizations {
   /// **'Sem localização'**
   String get groupNextEventNoLocation;
 
+  /// Exibido no card de grupo quando o horário do próximo evento não está definido
+  ///
+  /// In pt, this message translates to:
+  /// **'--:--'**
+  String get groupNextEventTimeUndefined;
+
   /// Título da seção de participantes nos detalhes do grupo
   ///
   /// In pt, this message translates to:
@@ -1110,6 +1122,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Carregando participantes'**
   String get groupParticipantsLoading;
+
+  /// Tag exibida na lista de participantes para a coordenadora do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Coordenadora'**
+  String get groupParticipantCoordinatorTag;
+
+  /// Tag exibida na lista de participantes para a anfitriã do encontro atual
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã'**
+  String get groupParticipantHostTag;
 
   /// Rótulo da seção de próximo encontro no card de grupo
   ///
@@ -1206,6 +1230,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Data: a definir'**
   String get meetingDetailsDateUndefined;
+
+  /// Horário do encontro já formatado
+  ///
+  /// In pt, this message translates to:
+  /// **'Horário: {time}'**
+  String meetingDetailsTime(String time);
+
+  /// Exibido quando o encontro ainda não tem horário
+  ///
+  /// In pt, this message translates to:
+  /// **'Horário: a definir'**
+  String get meetingDetailsTimeUndefined;
 
   /// Livro lido no encontro
   ///

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -30,6 +31,7 @@ class AppTextField extends StatefulWidget {
     this.onSubmitted,
     this.obscureText = false,
     this.keyboardType,
+    this.inputFormatters,
     this.textInputAction,
     this.prefixIcon,
     this.suffixIcon,
@@ -50,6 +52,7 @@ class AppTextField extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final TextInputAction? textInputAction;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
@@ -183,6 +186,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 onSubmitted: widget.onSubmitted,
                 obscureText: _isObscured,
                 keyboardType: widget.keyboardType,
+                inputFormatters: widget.inputFormatters,
                 textInputAction: widget.textInputAction,
                 enabled: widget.enabled,
                 autofocus: widget.autofocus,

@@ -1,3 +1,4 @@
+export 'formatters/masked_input_formatters.dart';
 export 'icons/app_icons.dart';
 export 'theme/app_theme.dart';
 export 'tokens/color_tokens.dart';

@@ -103,7 +103,6 @@ class GroupDetailsPage extends StatelessWidget {
     return GroupNextEventData(
       location: event.location,
       date: event.date,
-      hostName: event.hostName,
       bookTitle: event.bookTitle,
       bookCover: coverUrl == null || coverUrl.isEmpty
           ? null

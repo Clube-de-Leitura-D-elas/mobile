@@ -158,8 +158,28 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Roberta'), findsOneWidget);
+    expect(find.text('Coordenadora'), findsOneWidget);
     expect(find.byType(ParticipantTile), findsOneWidget);
   });
+
+  testWidgets(
+    'given coordinator and host participants, then renders Coordenadora and Anfitriã tags',
+    (tester) async {
+      const host = GroupParticipantEntity(
+        id: 'h',
+        name: 'Talita Resende',
+        isHost: true,
+      );
+      answer(const Success([coordinator, host, ana]));
+
+      await tester.pumpWidget(buildSection());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Coordenadora'), findsOneWidget);
+      expect(find.text('Anfitriã'), findsOneWidget);
+      expect(find.byType(AppTag), findsNWidgets(2));
+    },
+  );
 
   testWidgets('given no participants, then shows the empty message', (
     tester,

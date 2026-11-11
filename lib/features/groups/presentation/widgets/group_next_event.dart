@@ -15,14 +15,12 @@ class GroupNextEventData {
   const GroupNextEventData({
     required this.location,
     required this.date,
-    required this.hostName,
     this.bookTitle,
     this.bookCover,
   });
 
   final String location;
   final DateTime date;
-  final String hostName;
 
   /// Null when the event has no book yet.
   final String? bookTitle;
@@ -89,7 +87,9 @@ class _EventDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
-    final date = DateFormat('dd/MM/yyyy', 'pt_BR').format(data.date.toLocal());
+    final localDate = data.date.toLocal();
+    final date = DateFormat('dd/MM/yyyy', 'pt_BR').format(localDate);
+    final time = DateFormat('HH:mm', 'pt_BR').format(localDate);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -97,14 +97,11 @@ class _EventDetails extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _EventMetadata(
-                icon: AppIcons.user,
-                label: context.l10n.groupNextEventHost(data.hostName),
-              ),
+              child: _EventMetadata(icon: AppIcons.calendar, label: date),
             ),
             SizedBox(width: spacing.s16),
             Expanded(
-              child: _EventMetadata(icon: AppIcons.calendar, label: date),
+              child: _EventMetadata(icon: AppIcons.clock, label: time),
             ),
           ],
         ),
