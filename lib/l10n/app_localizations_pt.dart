@@ -1109,9 +1109,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível carregar os livros. Tente novamente.';
 
   @override
-  String get bookSearchRetry => 'Tentar novamente';
-
-  @override
   String get bookSearchLoading => 'Carregando livros';
 
   @override
