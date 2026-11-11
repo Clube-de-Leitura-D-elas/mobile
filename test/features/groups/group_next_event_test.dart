@@ -147,6 +147,23 @@ void main() {
     expect(retries, 1);
   });
 
+  testWidgets('offers logout in the error state', (tester) async {
+    var logouts = 0;
+    await tester.pumpWidget(
+      buildSubject(
+        GroupNextEvent(
+          status: GroupNextEventStatus.error,
+          errorMessage: 'Sua sessão expirou.',
+          onLogout: () => logouts++,
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Sair'));
+    expect(logouts, 1);
+    expect(find.text('Tentar novamente'), findsNothing);
+  });
+
   testWidgets('renders loading state without throwing', (tester) async {
     await tester.pumpWidget(
       buildSubject(const GroupNextEvent(status: GroupNextEventStatus.loading)),

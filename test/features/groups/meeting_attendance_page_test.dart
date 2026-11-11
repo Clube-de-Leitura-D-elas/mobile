@@ -103,7 +103,7 @@ void main() {
         calls++;
 
         if (calls == 1) {
-          return const Failure(GroupDetailsFailure(message: 'Erro de teste'));
+          return const Failure(MeetingAttendanceFailure());
         }
 
         return const Success([participant]);

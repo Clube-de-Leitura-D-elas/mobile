@@ -42,8 +42,8 @@ class _PendingTasksContent extends StatelessWidget {
           isLoading:
               state.status == HomeStatus.initial ||
               state.status == HomeStatus.loading,
-          errorMessage: state.status == HomeStatus.error
-              ? state.errorMessage
+          error: state.status == HomeStatus.error
+              ? state.error
               : null,
           isExpanded: state.isGroupExpanded,
           onToggleExpanded: cubit.toggleCardExpansion,

@@ -44,20 +44,26 @@ void main() {
   testWidgets('retries a load failure', (tester) async {
     await pump(tester, const GroupNetworkFailure());
 
+    expect(
+      find.text(
+        'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
+      ),
+      findsOneWidget,
+    );
     await tester.tap(find.text('Tentar novamente'));
     expect(retries, 1);
     expect(find.text('Sair'), findsNothing);
   });
 
-  for (final failure in const <GroupFailure>[
-    GroupForbiddenFailure(),
-    GroupNotFoundFailure(),
-    MeetingNotFoundFailure(),
+  for (final (failure, text) in const <(GroupFailure, String)>[
+    (GroupForbiddenFailure(), 'Você não tem permissão para fazer isso.'),
+    (GroupNotFoundFailure(), 'Grupo não encontrado.'),
+    (MeetingNotFoundFailure(), 'Encontro não encontrado.'),
   ]) {
     testWidgets('hides retry for ${failure.runtimeType}', (tester) async {
       await pump(tester, failure);
 
-      expect(find.text(failure.message), findsOneWidget);
+      expect(find.text(text), findsOneWidget);
       expect(find.text('Tentar novamente'), findsNothing);
     });
   }

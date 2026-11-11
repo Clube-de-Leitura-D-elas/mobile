@@ -13,6 +13,7 @@ import 'package:mobile/features/notifications/presentation/routes/notification_r
 import 'package:mobile/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notifications_message_view.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notifications_skeleton.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -36,6 +37,10 @@ class NotificationsPage extends StatelessWidget {
                 _ => l10n.notificationsLoadError,
               },
               onRetry: cubit.load,
+              secondaryLabel: state.failure is NotificationSessionExpiredFailure
+                  ? l10n.logoutTooltip
+                  : null,
+              onSecondary: () => context.read<SessionCubit>().logOut(),
             ),
             NotificationsStatus.loaded when state.items.isEmpty =>
               NotificationsMessageView(message: l10n.notificationsEmpty),

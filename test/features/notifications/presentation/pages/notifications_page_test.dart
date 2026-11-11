@@ -1,3 +1,6 @@
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -24,6 +27,9 @@ import 'package:mocktail/mocktail.dart';
 class MockNotificationRepository extends Mock
     implements NotificationRepository {}
 
+class MockSessionCubit extends MockCubit<SessionState>
+    implements SessionCubit {}
+
 NotificationEntity _notification(
   String id, {
   bool isRead = false,
@@ -46,9 +52,13 @@ NotificationEntity _notification(
 
 void main() {
   late MockNotificationRepository repository;
+  late MockSessionCubit sessionCubit;
 
   setUp(() {
     repository = MockNotificationRepository();
+    sessionCubit = MockSessionCubit();
+    when(() => sessionCubit.state).thenReturn(const GuestSession());
+    when(() => sessionCubit.logOut()).thenAnswer((_) async {});
     when(
       () => repository.markAsRead(any()),
     ).thenAnswer((_) async => const Success(null));
@@ -72,8 +82,14 @@ void main() {
       routes: [
         GoRoute(
           path: NotificationRoutes.notifications,
-          builder: (_, _) => BlocProvider(
-            create: (_) => NotificationsCubit(repository: repository)..load(),
+          builder: (_, _) => MultiBlocProvider(
+            providers: [
+              BlocProvider<SessionCubit>.value(value: sessionCubit),
+              BlocProvider(
+                create: (_) =>
+                    NotificationsCubit(repository: repository)..load(),
+              ),
+            ],
             child: const NotificationsPage(),
           ),
         ),
@@ -154,6 +170,18 @@ void main() {
         expect(find.text('Tentar novamente'), findsOneWidget);
       });
     }
+
+    testWidgets('offers logout only when the session expired', (tester) async {
+      when(() => repository.getNotifications(page: 1)).thenAnswer(
+        (_) async => const Failure(NotificationSessionExpiredFailure()),
+      );
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sair'));
+
+      verify(() => sessionCubit.logOut()).called(1);
+    });
 
     testWidgets('shows the error and reloads on retry', (tester) async {
       when(

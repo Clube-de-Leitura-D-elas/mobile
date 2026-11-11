@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 
 abstract class MeetingAttendanceState extends Equatable {
   const MeetingAttendanceState();
@@ -23,12 +24,12 @@ class MeetingAttendanceLoaded extends MeetingAttendanceState {
 }
 
 class MeetingAttendanceError extends MeetingAttendanceState {
-  final String message;
+  final GroupFailure failure;
 
-  const MeetingAttendanceError(this.message);
+  const MeetingAttendanceError(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }
 
 class MeetingAttendanceCubit extends Cubit<MeetingAttendanceState> {
@@ -44,12 +45,8 @@ class MeetingAttendanceCubit extends Cubit<MeetingAttendanceState> {
     emit(MeetingAttendanceLoading());
     final result = await groupRepository.getMeetingAttendance(meetingId);
     switch (result) {
-      case Failure():
-        emit(
-          const MeetingAttendanceError(
-            'Não foi possível carregar a lista de presença.',
-          ),
-        );
+      case Failure(:final failure):
+        emit(MeetingAttendanceError(failure));
       case Success(:final data):
         emit(MeetingAttendanceLoaded(data));
     }

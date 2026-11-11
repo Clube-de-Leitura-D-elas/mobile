@@ -75,13 +75,13 @@ void main() {
       expect(states, [
         isA<MeetingAttendanceLoading>(),
         const MeetingAttendanceError(
-          'Não foi possível carregar a lista de presença.',
+          GroupDetailsFailure(message: 'Erro de teste'),
         ),
       ]);
       expect(
         cubit.state,
         const MeetingAttendanceError(
-          'Não foi possível carregar a lista de presença.',
+          GroupDetailsFailure(message: 'Erro de teste'),
         ),
       );
 
@@ -119,10 +119,10 @@ void main() {
       );
     });
 
-    test('estados Error iguais quando as mensagens são iguais', () {
+    test('estados Error iguais quando as falhas são iguais', () {
       expect(
-        const MeetingAttendanceError('Falha'),
-        const MeetingAttendanceError('Falha'),
+        const MeetingAttendanceError(MeetingAttendanceFailure()),
+        const MeetingAttendanceError(MeetingAttendanceFailure()),
       );
     });
   });

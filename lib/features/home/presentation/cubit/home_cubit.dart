@@ -19,7 +19,7 @@ class HomeCubit extends Cubit<HomeState> {
         emit(
           state.copyWith(
             status: HomeStatus.error,
-            errorMessage: failure.message,
+            error: failure,
           ),
         );
       case Success(:final data):

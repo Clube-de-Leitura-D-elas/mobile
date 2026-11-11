@@ -352,7 +352,7 @@ void main() {
         expect(cubit.state, isA<MeetingPresenceEditing>());
         final editing = cubit.state as MeetingPresenceEditing;
         expect(editing.isSubmitting, isFalse);
-        expect(editing.submitError, failure.message);
+        expect(editing.submitError, failure);
         expect(editing.marked, {'u-1', 'u-3'});
       });
     }

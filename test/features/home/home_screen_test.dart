@@ -302,6 +302,40 @@ void main() {
     expect(find.text('Tentar novamente'), findsOneWidget);
   });
 
+  testWidgets('hides retry when loading groups is forbidden', (tester) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Failure(GroupForbiddenFailure()));
+    final cubit = HomeCubit(groupRepository: repository);
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(buildSubject(cubit, MockSessionCubit()));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Você não tem permissão para fazer isso.'), findsOneWidget);
+    expect(find.text('Tentar novamente'), findsNothing);
+  });
+
+  testWidgets('offers logout when the session expired', (tester) async {
+    final repository = MockGroupRepository();
+    when(
+      () => repository.getMyGroups(),
+    ).thenAnswer((_) async => const Failure(GroupSessionExpiredFailure()));
+    final cubit = HomeCubit(groupRepository: repository);
+    final sessionCubit = MockSessionCubit();
+    when(() => sessionCubit.logOut()).thenAnswer((_) async {});
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(buildSubject(cubit, sessionCubit));
+    await cubit.loadGroups();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sair'));
+
+    verify(() => sessionCubit.logOut()).called(1);
+  });
+
   testWidgets('navigates to the selected tab from the home screen', (
     tester,
   ) async {

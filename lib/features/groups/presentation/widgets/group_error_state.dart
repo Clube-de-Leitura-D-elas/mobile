@@ -4,6 +4,7 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 
 /// Falhas em que tentar de novo dá o mesmo resultado.
 bool groupFailureIsRetryable(GroupFailure failure) =>
@@ -28,7 +29,7 @@ class GroupErrorState extends StatelessWidget {
     final sessionExpired = failure is GroupSessionExpiredFailure;
 
     return AppErrorState(
-      message: failure.message,
+      message: groupFailureMessage(context.l10n, failure),
       onRetry: groupFailureIsRetryable(failure) ? onRetry : null,
       secondaryLabel: sessionExpired ? context.l10n.logoutTooltip : null,
       onSecondary: sessionExpired

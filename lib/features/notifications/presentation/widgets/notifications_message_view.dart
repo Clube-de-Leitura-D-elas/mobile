@@ -7,16 +7,24 @@ class NotificationsMessageView extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
 
+  /// Segunda saída abaixo do retry, por exemplo "Sair" com a sessão expirada.
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
+
   const NotificationsMessageView({
     super.key,
     required this.message,
     this.onRetry,
+    this.secondaryLabel,
+    this.onSecondary,
   });
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
     final onRetry = this.onRetry;
+    final secondaryLabel = this.secondaryLabel;
+    final onSecondary = this.onSecondary;
 
     return Center(
       child: Padding(
@@ -40,6 +48,14 @@ class NotificationsMessageView extends StatelessWidget {
                 label: context.l10n.notificationsRetry,
                 size: AppButtonSize.lg,
                 onPressed: onRetry,
+              ),
+            ],
+            if (secondaryLabel != null && onSecondary != null) ...[
+              SizedBox(height: spacing.s12),
+              AppButton.ghost(
+                label: secondaryLabel,
+                size: AppButtonSize.lg,
+                onPressed: onSecondary,
               ),
             ],
           ],

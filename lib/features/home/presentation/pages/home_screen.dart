@@ -77,8 +77,8 @@ class _HomeContent extends StatelessWidget {
           groups: visibleGroups,
           emptyKind: state.emptyKindFor(visibleGroups),
           isLoading: state.status == HomeStatus.loading,
-          errorMessage: state.status == HomeStatus.error
-              ? state.errorMessage
+          error: state.status == HomeStatus.error
+              ? state.error
               : null,
           isExpanded: state.isGroupExpanded,
           onToggleExpanded: cubit.toggleCardExpansion,

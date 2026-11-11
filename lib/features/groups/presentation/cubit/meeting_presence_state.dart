@@ -35,12 +35,12 @@ class MeetingPresenceEditing extends MeetingPresenceState {
   final List<MeetingAttendanceEntity> attendees;
   final Set<String> marked;
   final bool isSubmitting;
-  final String? submitError;
+  final GroupFailure? submitError;
 
   MeetingPresenceEditing copyWith({
     Set<String>? marked,
     bool? isSubmitting,
-    String? submitError,
+    GroupFailure? submitError,
     bool clearSubmitError = false,
   }) => MeetingPresenceEditing(
     attendees: attendees,

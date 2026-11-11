@@ -35,6 +35,7 @@ class GroupNextEvent extends StatelessWidget {
     this.onMoreDetailsPressed,
     this.errorMessage,
     this.onRetry,
+    this.onLogout,
   }) : assert(
          status != GroupNextEventStatus.loaded || data != null,
          'Loaded state requires event data.',
@@ -53,6 +54,9 @@ class GroupNextEvent extends StatelessWidget {
   /// Mostra "Tentar novamente" no estado de erro.
   final VoidCallback? onRetry;
 
+  /// Mostra "Sair" no estado de erro (sessão expirada).
+  final VoidCallback? onLogout;
+
   @override
   Widget build(BuildContext context) {
     return switch (status) {
@@ -61,6 +65,7 @@ class GroupNextEvent extends StatelessWidget {
         icon: Icons.error_outline,
         message: errorMessage ?? context.l10n.genericError,
         onRetry: onRetry,
+        onLogout: onLogout,
       ),
       GroupNextEventStatus.empty => _MessageState(
         icon: Icons.event_busy_outlined,
@@ -322,11 +327,13 @@ class _MessageState extends StatelessWidget {
     required this.icon,
     required this.message,
     this.onRetry,
+    this.onLogout,
   });
 
   final IconData icon;
   final String message;
   final VoidCallback? onRetry;
+  final VoidCallback? onLogout;
 
   @override
   Widget build(BuildContext context) {
@@ -334,6 +341,7 @@ class _MessageState extends StatelessWidget {
     final spacing = context.spacing;
 
     final onRetry = this.onRetry;
+    final onLogout = this.onLogout;
     final row = Row(
       children: [
         Icon(icon, size: spacing.s16, color: colors.textMuted),
@@ -346,17 +354,29 @@ class _MessageState extends StatelessWidget {
         ),
       ],
     );
-    if (onRetry == null) return row;
+    if (onRetry == null && onLogout == null) return row;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         row,
         SizedBox(height: spacing.s8),
-        AppButton.ghost(
-          label: context.l10n.errorRetryButton,
-          size: AppButtonSize.sm,
-          onPressed: onRetry,
+        Wrap(
+          spacing: spacing.s8,
+          children: [
+            if (onRetry != null)
+              AppButton.ghost(
+                label: context.l10n.errorRetryButton,
+                size: AppButtonSize.sm,
+                onPressed: onRetry,
+              ),
+            if (onLogout != null)
+              AppButton.ghost(
+                label: context.l10n.logoutTooltip,
+                size: AppButtonSize.sm,
+                onPressed: onLogout,
+              ),
+          ],
         ),
       ],
     );

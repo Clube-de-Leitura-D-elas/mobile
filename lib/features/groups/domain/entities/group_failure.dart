@@ -9,25 +9,20 @@ sealed class GroupFailure extends Equatable {
   List<Object?> get props => [message];
 }
 
+/// Sem conexão. O texto vem do l10n, na apresentação.
 class GroupNetworkFailure extends GroupFailure {
-  const GroupNetworkFailure({
-    super.message =
-        'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
-  });
+  const GroupNetworkFailure() : super(message: '');
 }
 
+/// Sessão expirada (HTTP 401). O texto vem do l10n, na apresentação.
 class GroupSessionExpiredFailure extends GroupFailure {
-  const GroupSessionExpiredFailure({
-    super.message =
-        'Sua sessão expirou. Saia do app e entre de novo na sua conta.',
-  });
+  const GroupSessionExpiredFailure() : super(message: '');
 }
 
-/// Sem permissão para a ação (HTTP 403). Tentar de novo não adianta.
+/// Sem permissão (HTTP 403); tentar de novo não adianta. O texto vem do
+/// l10n, na apresentação.
 class GroupForbiddenFailure extends GroupFailure {
-  const GroupForbiddenFailure({
-    super.message = 'Você não tem permissão para fazer isso.',
-  });
+  const GroupForbiddenFailure() : super(message: '');
 }
 
 class GroupDetailsFailure extends GroupFailure {

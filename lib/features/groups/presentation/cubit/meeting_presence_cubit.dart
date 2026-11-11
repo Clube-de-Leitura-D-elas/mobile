@@ -89,7 +89,7 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
       case Failure(:final failure):
         // Mantém as marcações para nova tentativa.
         emit(
-          current.copyWith(isSubmitting: false, submitError: failure.message),
+          current.copyWith(isSubmitting: false, submitError: failure),
         );
     }
   }

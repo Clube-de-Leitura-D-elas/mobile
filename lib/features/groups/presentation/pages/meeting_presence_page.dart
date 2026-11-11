@@ -8,6 +8,7 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_presence_screen.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
+import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 
 class MeetingPresencePage extends StatelessWidget {
   const MeetingPresencePage({super.key});
@@ -32,7 +33,7 @@ class MeetingPresencePage extends StatelessWidget {
         }
 
         final error = (state as MeetingPresenceEditing).submitError!;
-        context.showErrorToast(error);
+        context.showErrorToast(groupFailureMessage(context.l10n, error));
       },
       child: BlocBuilder<MeetingPresenceCubit, MeetingPresenceState>(
         builder: (context, state) => switch (state) {

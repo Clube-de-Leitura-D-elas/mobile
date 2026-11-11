@@ -11,6 +11,10 @@ import 'package:mobile/features/groups/presentation/routes/group_route_paths.dar
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
+import 'package:mobile/features/groups/presentation/group_failure_message.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key, required this.groupId});
@@ -51,13 +55,21 @@ class GroupDetailsPage extends StatelessWidget {
                   status: _toWidgetStatus(nextEventState),
                   data: _toWidgetData(nextEventState),
                   errorMessage: nextEventState is NextEventError
-                      ? nextEventState.message
+                      ? groupFailureMessage(
+                          context.l10n,
+                          nextEventState.failure,
+                        )
                       : null,
                   onRetry:
                       nextEventState is NextEventError &&
                           !groupFailureIsRetryable(nextEventState.failure)
                       ? null
                       : context.read<NextEventCubit>().retry,
+                  onLogout:
+                      nextEventState is NextEventError &&
+                          nextEventState.failure is GroupSessionExpiredFailure
+                      ? () => context.read<SessionCubit>().logOut()
+                      : null,
                   onMoreDetailsPressed: meetingId == null
                       ? null
                       : () async {
