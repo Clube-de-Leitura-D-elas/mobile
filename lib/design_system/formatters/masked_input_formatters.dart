@@ -11,8 +11,10 @@ abstract class MaskedDigitsInputFormatter extends TextInputFormatter {
 
   String normalizeDigits(String digits) => digits;
 
+  bool isComplete(String digits) => digits.length == maxDigits;
+
   String format(String raw) {
-    final digits = normalizeDigits(_digitsOf(raw));
+    final digits = normalizeDigits(_groupedDigits(raw));
     return _applyMask(
       digits.length > maxDigits ? digits.substring(0, maxDigits) : digits,
     );
@@ -23,31 +25,37 @@ abstract class MaskedDigitsInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final oldDigits = _digitsOf(oldValue.text);
-    final rawDigits = _digitsOf(newValue.text);
+    final edit = _Edit.between(
+      oldValue.text,
+      newValue.text,
+      oldValue.selection,
+    );
+    return edit.inserted.isEmpty
+        ? _onDelete(oldValue, newValue, edit)
+        : _onInsert(oldValue, edit);
+  }
 
-    if (rawDigits.length > maxDigits && oldDigits.length >= maxDigits) {
-      return oldValue;
-    }
-
+  TextEditingValue _onDelete(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+    _Edit edit,
+  ) {
+    var digits = _digitsOf(newValue.text);
     final cursor = newValue.selection.isValid
         ? newValue.selection.extentOffset.clamp(0, newValue.text.length)
-        : newValue.text.length;
+        : edit.start;
     var digitsBeforeCursor = _digitsOf(
       newValue.text.substring(0, cursor),
     ).length;
 
-    var digits = normalizeDigits(rawDigits);
-    digitsBeforeCursor -= rawDigits.length - digits.length;
-    if (digits.length > maxDigits) digits = digits.substring(0, maxDigits);
-    digitsBeforeCursor = digitsBeforeCursor.clamp(0, digits.length);
-
-    final removedOnlySeparator =
-        digits == oldDigits && newValue.text.length < oldValue.text.length;
-    if (removedOnlySeparator) {
-      final isBackspace =
-          oldValue.selection.isCollapsed &&
-          cursor < oldValue.selection.extentOffset;
+    final removed = oldValue.text.substring(edit.start, edit.oldEnd);
+    if (removed.isNotEmpty && _digitsOf(removed).isEmpty) {
+      if (!oldValue.selection.isCollapsed) {
+        return oldValue.copyWith(
+          selection: TextSelection.collapsed(offset: oldValue.selection.start),
+        );
+      }
+      final isBackspace = cursor < oldValue.selection.extentOffset;
       if (isBackspace) {
         if (digitsBeforeCursor > 0 && digitsBeforeCursor < digits.length) {
           digits =
@@ -62,38 +70,84 @@ abstract class MaskedDigitsInputFormatter extends TextInputFormatter {
       }
     }
 
-    var showTrailingSeparator = false;
-    if (_appendedSeparator(oldValue, newValue, cursor)) {
-      digits = _padCurrentGroup(digits);
-      digitsBeforeCursor = digits.length;
-      showTrailingSeparator = _endsGroup(digits.length);
+    return _masked(digits, digitsBeforeCursor);
+  }
+
+  TextEditingValue _onInsert(TextEditingValue oldValue, _Edit edit) {
+    final inserted = edit.inserted;
+    final before = _digitsOf(oldValue.text.substring(0, edit.start));
+    final after = _digitsOf(oldValue.text.substring(edit.oldEnd));
+
+    if (padsShortGroups &&
+        inserted.length == 1 &&
+        !_isDigit(inserted.codeUnitAt(0)) &&
+        after.isEmpty) {
+      final digits = _padCurrentGroup(before);
+      if (_endsGroup(digits.length)) {
+        final formatted = _applyMask(digits, withTrailingSeparator: true);
+        return TextEditingValue(
+          text: formatted,
+          selection: TextSelection.collapsed(offset: formatted.length),
+        );
+      }
+      return _masked(digits, digits.length);
     }
 
-    final formatted = _applyMask(
-      digits,
-      withTrailingSeparator: showTrailingSeparator,
-    );
+    final isBulk = inserted.length > 1;
+    final insertedDigits = isBulk && before.isEmpty
+        ? _groupedDigits(inserted)
+        : _digitsOf(inserted);
+
+    if (isBulk) {
+      final alone = normalizeDigits(insertedDigits);
+      if (isComplete(alone)) return _masked(alone, alone.length);
+    }
+
+    final raw = before + insertedDigits + after;
+    var digits = normalizeDigits(raw);
+    final digitsBeforeCursor =
+        before.length + insertedDigits.length - (raw.length - digits.length);
+
+    if (digits.length > maxDigits) {
+      final isPureInsertion =
+          oldValue.selection.isCollapsed && edit.start == edit.oldEnd;
+      if (isPureInsertion && _digitsOf(oldValue.text).length >= maxDigits) {
+        return oldValue;
+      }
+      digits = digits.substring(0, maxDigits);
+    }
+
+    return _masked(digits, digitsBeforeCursor);
+  }
+
+  TextEditingValue _masked(String digits, int digitsBeforeCursor) {
+    final formatted = _applyMask(digits);
     return TextEditingValue(
       text: formatted,
       selection: TextSelection.collapsed(
-        offset: showTrailingSeparator
-            ? formatted.length
-            : _offsetAfterDigits(formatted, digitsBeforeCursor),
+        offset: _offsetAfterDigits(
+          formatted,
+          digitsBeforeCursor.clamp(0, digits.length),
+        ),
       ),
     );
   }
 
-  bool _appendedSeparator(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-    int cursor,
-  ) {
-    final text = newValue.text;
-    return padsShortGroups &&
-        text.length == oldValue.text.length + 1 &&
-        cursor == text.length &&
-        text.startsWith(oldValue.text) &&
-        !_isDigit(text.codeUnitAt(text.length - 1));
+  String _groupedDigits(String text) {
+    final pieces = text
+        .split(RegExp(r'\D+'))
+        .where((piece) => piece.isNotEmpty)
+        .toList();
+    if (!padsShortGroups || pieces.length < 2) return _digitsOf(text);
+
+    final groups = _groupSizes(maskFor(maxDigits));
+    final buffer = StringBuffer();
+    for (var i = 0; i < pieces.length; i++) {
+      final padded =
+          i < groups.length - 1 && groups[i] == 2 && pieces[i].length == 1;
+      buffer.write(padded ? '0${pieces[i]}' : pieces[i]);
+    }
+    return buffer.toString();
   }
 
   String _padCurrentGroup(String digits) {
@@ -155,6 +209,55 @@ abstract class MaskedDigitsInputFormatter extends TextInputFormatter {
   static bool _isDigit(int codeUnit) => codeUnit >= 0x30 && codeUnit <= 0x39;
 }
 
+class _Edit {
+  const _Edit(this.start, this.oldEnd, this.inserted);
+
+  factory _Edit.between(
+    String oldText,
+    String newText,
+    TextSelection oldSelection,
+  ) {
+    if (oldSelection.isValid && oldSelection.end <= oldText.length) {
+      final start = oldSelection.start;
+      final end = oldSelection.end;
+      final tail = oldText.substring(end);
+      if (newText.length >= start + tail.length &&
+          newText.startsWith(oldText.substring(0, start)) &&
+          newText.endsWith(tail)) {
+        return _Edit(
+          start,
+          end,
+          newText.substring(start, newText.length - tail.length),
+        );
+      }
+    }
+
+    final maxPrefix = oldText.length < newText.length
+        ? oldText.length
+        : newText.length;
+    var prefix = 0;
+    while (prefix < maxPrefix &&
+        oldText.codeUnitAt(prefix) == newText.codeUnitAt(prefix)) {
+      prefix++;
+    }
+    var suffix = 0;
+    while (suffix < maxPrefix - prefix &&
+        oldText.codeUnitAt(oldText.length - 1 - suffix) ==
+            newText.codeUnitAt(newText.length - 1 - suffix)) {
+      suffix++;
+    }
+    return _Edit(
+      prefix,
+      oldText.length - suffix,
+      newText.substring(prefix, newText.length - suffix),
+    );
+  }
+
+  final int start;
+  final int oldEnd;
+  final String inserted;
+}
+
 class DateInputFormatter extends MaskedDigitsInputFormatter {
   const DateInputFormatter();
 
@@ -191,8 +294,11 @@ class PhoneInputFormatter extends MaskedDigitsInputFormatter {
   String maskFor(int digitCount) =>
       digitCount > 10 ? '(##) #####-####' : '(##) ####-####';
 
-  // O 55 só sai com 12 ou 13 dígitos: 55 também é DDD (Santa Maria/RS), e um
-  // número com esse DDD tem no máximo 11.
+  @override
+  bool isComplete(String digits) => digits.length == 10 || digits.length == 11;
+
+  // 12 ou 13 dígitos começando com 55 são DDI. Com 11 ou menos, 55 é DDD
+  // (Santa Maria/RS) e fica.
   @override
   String normalizeDigits(String digits) {
     if (digits.startsWith('55') &&

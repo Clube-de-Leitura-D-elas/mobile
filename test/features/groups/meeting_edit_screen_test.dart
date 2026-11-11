@@ -133,6 +133,28 @@ void main() {
   });
 
   testWidgets(
+    'given an incomplete year or time, when saving, then shows the errors',
+    (tester) async {
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(meeting: meeting, onSaved: (result) => saved = result),
+      );
+
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '01/05/26');
+      await tester.enterText(fields.at(1), '9:3');
+      await tapSave(tester);
+
+      expect(
+        find.text('Informe uma data válida (DD/MM/AAAA).'),
+        findsOneWidget,
+      );
+      expect(find.text('Informe um horário válido (HH:MM).'), findsOneWidget);
+      expect(saved, isNull);
+    },
+  );
+
+  testWidgets(
     'given the location was not changed, when saving, then keeps the current place',
     (tester) async {
       MeetingEditResult? saved;

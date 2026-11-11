@@ -128,15 +128,41 @@ void main() {
       expect(result.selection.extentOffset, 2);
     });
 
-    test('deleting a selected separator removes the digit after it', () {
+    test('deleting a selected separator keeps the value', () {
       const start = TextEditingValue(
         text: '12/03/2026',
         selection: TextSelection(baseOffset: 2, extentOffset: 3),
       );
       final result = formatter.formatEditUpdate(start, _value('1203/2026', 2));
 
-      expect(result.text, '12/32/026');
+      expect(result.text, '12/03/2026');
       expect(result.selection.extentOffset, 2);
+    });
+
+    test('pasted or dictated dates pad single-digit groups', () {
+      const pasted = {
+        '1/5/2026': '01/05/2026',
+        '10/1/1960': '10/01/1960',
+        '1 de 5 de 1960': '01/05/1960',
+      };
+      pasted.forEach((input, text) {
+        final result = formatter.formatEditUpdate(
+          TextEditingValue.empty,
+          _value(input),
+        );
+        expect(result.text, text, reason: input);
+        expect(result.selection.extentOffset, text.length, reason: input);
+      });
+    });
+
+    test('pasting a full date over a selection replaces it', () {
+      const start = TextEditingValue(
+        text: '12/03/2026',
+        selection: TextSelection(baseOffset: 0, extentOffset: 10),
+      );
+      final result = formatter.formatEditUpdate(start, _value('1/5/1960'));
+
+      expect(result.text, '01/05/1960');
     });
 
     test('backspace deletes digits until the field is empty', () {
@@ -179,6 +205,7 @@ void main() {
 
     test('formats a prefilled raw value', () {
       expect(formatter.format('12032026'), '12/03/2026');
+      expect(formatter.format('1/5/1960'), '01/05/1960');
       expect(formatter.format(''), '');
     });
   });
@@ -197,6 +224,16 @@ void main() {
       expect(_type(formatter, '9:').text, '09:');
       expect(_type(formatter, '9:30').text, '09:30');
       expect(_type(formatter, '9h30').text, '09:30');
+    });
+
+    test('pasted or dictated times pad the hour', () {
+      for (final input in ['9:30', '9h30', '9 30']) {
+        final result = formatter.formatEditUpdate(
+          TextEditingValue.empty,
+          _value(input),
+        );
+        expect(result.text, '09:30', reason: input);
+      }
     });
 
     test('ignores digits beyond the limit', () {
@@ -253,11 +290,53 @@ void main() {
       expect(_backspace(formatter, mobile).text, '(51) 9999-9999');
     });
 
-    test('ignores a 12th typed digit, even with area code 55', () {
-      final full = _type(formatter, '55999999999');
+    test('ignores a 12th typed digit', () {
+      final full = _type(formatter, '51999999999');
       final result = formatter.formatEditUpdate(full, _value('${full.text}1'));
 
-      expect(result.text, '(55) 99999-9999');
+      expect(result.text, '(51) 99999-9999');
+    });
+
+    test('typing +55 key by key drops the country code at the end', () {
+      final result = _type(formatter, '+5551999998888');
+
+      expect(result.text, '(51) 99999-8888');
+      expect(result.selection.extentOffset, result.text.length);
+    });
+
+    test('pasting +55 or a carrier zero over a full number replaces it', () {
+      const full = TextEditingValue(
+        text: '(51) 99999-9999',
+        selection: TextSelection(baseOffset: 0, extentOffset: 15),
+      );
+      for (final input in ['+55 51 98888-7777', '051 98888-7777']) {
+        final result = formatter.formatEditUpdate(full, _value(input));
+        expect(result.text, '(51) 98888-7777', reason: input);
+      }
+    });
+
+    test('replacing a selection in a full number is not rejected', () {
+      const full = TextEditingValue(
+        text: '(51) 99999-9999',
+        selection: TextSelection(baseOffset: 5, extentOffset: 6),
+      );
+      final result = formatter.formatEditUpdate(
+        full,
+        _value('(51) 889999-9999', 7),
+      );
+
+      expect(result.text, '(51) 88999-9999');
+      expect(result.selection.extentOffset, 7);
+    });
+
+    test('pasting a full number after partial input uses only the paste', () {
+      final partial = _type(formatter, '519');
+      final result = formatter.formatEditUpdate(
+        partial,
+        _value('${partial.text}+55 51 99999-9999'),
+      );
+
+      expect(result.text, '(51) 99999-9999');
     });
 
     test('backspace deletes digits until the field is empty', () {

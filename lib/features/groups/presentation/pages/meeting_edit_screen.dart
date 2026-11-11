@@ -99,8 +99,11 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
   static final _timeFormat = DateFormat('HH:mm');
 
   DateTime? _parse(DateFormat format, String value) {
+    final text = value.trim();
+    // parseStrict aceita ano com menos de 4 dígitos (01/05/26 vira ano 26).
+    if (text.length != format.pattern!.length) return null;
     try {
-      return format.parseStrict(value.trim());
+      return format.parseStrict(text);
     } on FormatException {
       return null;
     }

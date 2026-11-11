@@ -33,7 +33,10 @@ void main() {
   testWidgets('shows prefilled phone and birth date masked', (tester) async {
     await tester.pumpWidget(
       _wrap(
-        const UserReviewProfile(phone: '51999999999', birthDate: '05/03/1990'),
+        const UserReviewProfile(
+          phone: '+55 51 99999-9999',
+          birthDate: '5/3/1990',
+        ),
         (_) {},
       ),
     );
