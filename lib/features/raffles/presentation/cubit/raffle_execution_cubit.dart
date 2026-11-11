@@ -89,7 +89,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
 
   void _onServerFailure(RaffleFailure failure) {
     // Sem isso o "Tentar novamente" sorteia de novo a lista recusada.
-    if (failure is RaffleParticipantsChangedFailure) _participants = null;
+    if (failure is RaffleStaleListFailure) _participants = null;
     emit(RaffleExecutionError(failure));
   }
 

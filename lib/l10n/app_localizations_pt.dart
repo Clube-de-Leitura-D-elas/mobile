@@ -1133,15 +1133,42 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get raffleAlreadyRecordedError =>
-      'O sorteio deste encontro já foi feito. Toque em Tentar novamente para ver o resultado.';
+      'O sorteio deste encontro já foi feito.';
 
   @override
   String get raffleParticipantsChangedError =>
-      'A lista de participantes mudou. Toque em Tentar novamente para atualizar.';
+      'A lista de participantes mudou.';
 
   @override
   String get appStartupError =>
       'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.';
+
+  @override
+  String get errorForbidden => 'Você não tem permissão para fazer isso.';
+
+  @override
+  String get raffleMeetingNotEndedError =>
+      'O sorteio só fica disponível depois que o encontro é encerrado.';
+
+  @override
+  String get raffleBookAlreadyDrawnError =>
+      'O livro sorteado já saiu em outro sorteio deste grupo.';
+
+  @override
+  String get raffleBookSuggestionUnavailableError =>
+      'A indicação de livro de uma participante não está mais disponível.';
+
+  @override
+  String get raffleRetryShowResultHint =>
+      'Toque em Tentar novamente para ver o resultado.';
+
+  @override
+  String get raffleRetryRefreshListHint =>
+      'Toque em Tentar novamente para atualizar a lista.';
+
+  @override
+  String get raffleListRefreshedHint =>
+      'Atualizamos a lista: confira as participantes e confirme de novo.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

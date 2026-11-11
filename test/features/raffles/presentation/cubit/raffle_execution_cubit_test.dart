@@ -14,7 +14,12 @@ import 'package:mocktail/mocktail.dart';
 class MockRaffleRepository extends Mock implements RaffleRepository {}
 
 class TestRaffleFailure extends RaffleFailure {
-  const TestRaffleFailure(super.message);
+  const TestRaffleFailure(this.message);
+
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
 }
 
 void main() {

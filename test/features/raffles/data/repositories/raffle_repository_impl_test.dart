@@ -258,12 +258,36 @@ void main() {
         ),
         const RaffleAlreadyRecordedFailure(),
       ),
-      'other 409': (
+      '403': (
+        remote(SupabaseFailureKind.forbidden, code: '403'),
+        const RaffleForbiddenFailure(),
+      ),
+      '409 meeting not ended': (
+        remote(
+          SupabaseFailureKind.conflict,
+          code: '409',
+          message: 'meeting record is only available after the meeting is ended',
+        ),
+        const RaffleMeetingNotEndedFailure(),
+      ),
+      '409 book already drawn': (
         remote(
           SupabaseFailureKind.conflict,
           code: '409',
           message: 'book already drawn in this group',
         ),
+        const RaffleBookAlreadyDrawnFailure(),
+      ),
+      '409 book suggestion unavailable': (
+        remote(
+          SupabaseFailureKind.conflict,
+          code: '409',
+          message: 'book suggestion is no longer available',
+        ),
+        const RaffleBookSuggestionUnavailableFailure(),
+      ),
+      'unknown 409': (
+        remote(SupabaseFailureKind.conflict, code: '409', message: 'other'),
         const RaffleServerFailure(),
       ),
       '422': (

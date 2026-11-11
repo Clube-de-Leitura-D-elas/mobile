@@ -44,7 +44,10 @@ class MockRafflePreparationCubit extends Cubit<RafflePreparationState>
   String? loadedMeetingId;
 
   @override
-  Future<void> loadEligibleParticipants(String meetingId) async {
+  Future<void> loadEligibleParticipants(
+    String meetingId, {
+    Set<String>? chosenIds,
+  }) async {
     loadedMeetingId = meetingId;
   }
 

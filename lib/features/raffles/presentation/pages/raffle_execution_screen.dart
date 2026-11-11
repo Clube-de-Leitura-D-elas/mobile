@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_error_view.dart';
-import 'package:mobile/features/raffles/presentation/raffle_failure_message.dart';
+import 'package:mobile/features/raffles/presentation/widgets/raffle_error_state.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_state.dart';
 import 'package:mobile/features/raffles/presentation/pages/raffle_result_screen.dart';
@@ -88,8 +87,8 @@ class RaffleExecutionScreen extends StatelessWidget {
             }
 
             if (state is RaffleExecutionError) {
-              return MeetingTasksErrorView(
-                message: raffleFailureMessage(context.l10n, state.failure),
+              return RaffleErrorState(
+                failure: state.failure,
                 onRetry: () => context.read<RaffleExecutionCubit>().retry(),
               );
             }

@@ -95,12 +95,28 @@ class RaffleRepositoryImpl implements RaffleRepository {
     return switch (failure.kind) {
       SupabaseFailureKind.network => const RaffleNetworkFailure(),
       SupabaseFailureKind.unauthorized => const RaffleSessionExpiredFailure(),
+      SupabaseFailureKind.forbidden => const RaffleForbiddenFailure(),
       SupabaseFailureKind.validation when failure.code == '422' =>
         const RaffleParticipantsChangedFailure(),
-      SupabaseFailureKind.conflict
-          when failure.message.contains('raffle already recorded') =>
-        const RaffleAlreadyRecordedFailure(),
+      SupabaseFailureKind.conflict => _conflictFailure(failure.message),
       _ => const RaffleServerFailure(),
     };
+  }
+
+  /// O backend usa 409 para vários casos; o texto em `error` diz qual.
+  static RaffleFailure _conflictFailure(String message) {
+    if (message.contains('raffle already recorded')) {
+      return const RaffleAlreadyRecordedFailure();
+    }
+    if (message.contains('only available after the meeting is ended')) {
+      return const RaffleMeetingNotEndedFailure();
+    }
+    if (message.contains('book already drawn')) {
+      return const RaffleBookAlreadyDrawnFailure();
+    }
+    if (message.contains('book suggestion is no longer available')) {
+      return const RaffleBookSuggestionUnavailableFailure();
+    }
+    return const RaffleServerFailure();
   }
 }

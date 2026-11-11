@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
@@ -10,15 +11,31 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
   RafflePreparationCubit({required this.repository})
     : super(const RafflePreparationInitial());
 
-  Future<void> loadEligibleParticipants(String meetingId) async {
+  /// [chosenIds] mantém a escolha da coordenadora ao recarregar: a lista
+  /// do servidor vem com todas marcadas.
+  Future<void> loadEligibleParticipants(
+    String meetingId, {
+    Set<String>? chosenIds,
+  }) async {
     emit(const RafflePreparationLoading());
 
     final result = await repository.getEligibleParticipants(meetingId);
     if (isClosed) return;
 
     result.match(
-      (participants) =>
-          emit(RafflePreparationLoaded(participants: participants)),
+      (participants) => emit(
+        RafflePreparationLoaded(
+          participants: chosenIds == null
+              ? participants
+              : [
+                  for (final p in participants)
+                    p.copyWith(
+                      isSelected:
+                          !p.isExcludedByRule && chosenIds.contains(p.id),
+                    ),
+                ],
+        ),
+      ),
       (failure) => emit(RafflePreparationError(failure)),
     );
   }
@@ -62,12 +79,19 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     );
     if (isClosed) return;
 
-    result.match(
-      (_) => emit(RafflePreparationSuccess(selectedParticipants: selected)),
-      (failure) {
+    switch (result) {
+      case Success():
+        emit(RafflePreparationSuccess(selectedParticipants: selected));
+      case Failure(:final failure):
         emit(RafflePreparationError(failure));
-        emit(currentState.copyWith(isSubmitting: false));
-      },
-    );
+        if (failure is RaffleStaleListFailure) {
+          await loadEligibleParticipants(
+            meetingId,
+            chosenIds: selectedIds.toSet(),
+          );
+        } else {
+          emit(currentState.copyWith(isSubmitting: false));
+        }
+    }
   }
 }

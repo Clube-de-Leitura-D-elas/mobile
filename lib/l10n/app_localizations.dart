@@ -1960,13 +1960,13 @@ abstract class AppLocalizations {
   /// Sorteio recusado porque já existe resultado (HTTP 409).
   ///
   /// In pt, this message translates to:
-  /// **'O sorteio deste encontro já foi feito. Toque em Tentar novamente para ver o resultado.'**
+  /// **'O sorteio deste encontro já foi feito.'**
   String get raffleAlreadyRecordedError;
 
   /// Sorteio recusado porque alguma participante não é mais elegível (HTTP 422).
   ///
   /// In pt, this message translates to:
-  /// **'A lista de participantes mudou. Toque em Tentar novamente para atualizar.'**
+  /// **'A lista de participantes mudou.'**
   String get raffleParticipantsChangedError;
 
   /// Tela mostrada quando a inicialização do app falha (configuração, Firebase ou Supabase).
@@ -1974,6 +1974,48 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.'**
   String get appStartupError;
+
+  /// Ação recusada por falta de permissão (HTTP 403). Sem "Tentar novamente", que falharia igual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você não tem permissão para fazer isso.'**
+  String get errorForbidden;
+
+  /// Sorteio recusado porque o encontro ainda não foi encerrado (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O sorteio só fica disponível depois que o encontro é encerrado.'**
+  String get raffleMeetingNotEndedError;
+
+  /// Sorteio recusado porque o livro da sorteada já foi sorteado no grupo (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O livro sorteado já saiu em outro sorteio deste grupo.'**
+  String get raffleBookAlreadyDrawnError;
+
+  /// Sorteio recusado porque a indicação de livro da sorteada não vale mais (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'A indicação de livro de uma participante não está mais disponível.'**
+  String get raffleBookSuggestionUnavailableError;
+
+  /// Instrução depois do motivo, só onde há o botão Tentar novamente.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque em Tentar novamente para ver o resultado.'**
+  String get raffleRetryShowResultHint;
+
+  /// Instrução depois do motivo, só onde há o botão Tentar novamente.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque em Tentar novamente para atualizar a lista.'**
+  String get raffleRetryRefreshListHint;
+
+  /// Depois do motivo, quando a preparação recarrega a lista sozinha.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizamos a lista: confira as participantes e confirme de novo.'**
+  String get raffleListRefreshedHint;
 }
 
 class _AppLocalizationsDelegate

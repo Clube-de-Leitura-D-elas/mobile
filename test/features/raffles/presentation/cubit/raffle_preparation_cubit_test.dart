@@ -13,7 +13,12 @@ import 'package:mocktail/mocktail.dart';
 class MockRaffleRepository extends Mock implements RaffleRepository {}
 
 class TestRaffleFailure extends RaffleFailure {
-  const TestRaffleFailure(super.message);
+  const TestRaffleFailure(this.message);
+
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
 }
 
 void main() {
@@ -225,6 +230,64 @@ void main() {
         RafflePreparationLoaded(
           participants: [tParticipant],
           isSubmitting: false,
+        ),
+      ],
+    );
+
+    blocTest<RafflePreparationCubit, RafflePreparationState>(
+      'on a 422 reloads the list keeping the chosen participants',
+      build: () {
+        when(
+          () => mockRepository.confirmRaffle(
+            meetingId: any(named: 'meetingId'),
+            selectedParticipantIds: any(named: 'selectedParticipantIds'),
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(RaffleParticipantsChangedFailure()),
+        );
+        when(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).thenAnswer(
+          (_) async => const Success([
+            tParticipant,
+            RaffleParticipant(id: 'p2', name: 'Bia', hasAttended: true),
+            RaffleParticipant(id: 'p3', name: 'Nova', hasAttended: true),
+          ]),
+        );
+        return RafflePreparationCubit(repository: mockRepository);
+      },
+      seed: () => const RafflePreparationLoaded(
+        participants: [
+          tParticipant,
+          RaffleParticipant(
+            id: 'p2',
+            name: 'Bia',
+            hasAttended: true,
+            isSelected: false,
+          ),
+        ],
+      ),
+      act: (cubit) => cubit.confirmRaffle(tMeetingId),
+      skip: 1,
+      expect: () => const [
+        RafflePreparationError(RaffleParticipantsChangedFailure()),
+        RafflePreparationLoading(),
+        RafflePreparationLoaded(
+          participants: [
+            tParticipant,
+            RaffleParticipant(
+              id: 'p2',
+              name: 'Bia',
+              hasAttended: true,
+              isSelected: false,
+            ),
+            RaffleParticipant(
+              id: 'p3',
+              name: 'Nova',
+              hasAttended: true,
+              isSelected: false,
+            ),
+          ],
         ),
       ],
     );
