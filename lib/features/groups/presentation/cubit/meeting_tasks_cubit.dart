@@ -30,8 +30,6 @@ class MeetingTasksError extends MeetingTasksState {
 
   final GroupFailure failure;
 
-  String get message => failure.message;
-
   @override
   List<Object?> get props => [failure];
 }
