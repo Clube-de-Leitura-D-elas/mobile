@@ -26,6 +26,13 @@ TextEditingValue _backspace(
   return formatter.formatEditUpdate(value, _value(text, cursor - 1));
 }
 
+TextEditingValue _delete(TextInputFormatter formatter, TextEditingValue value) {
+  final cursor = value.selection.extentOffset;
+  final text =
+      value.text.substring(0, cursor) + value.text.substring(cursor + 1);
+  return formatter.formatEditUpdate(value, _value(text, cursor));
+}
+
 void main() {
   group('DateInputFormatter', () {
     const formatter = DateInputFormatter();
@@ -89,6 +96,49 @@ void main() {
       expect(formatter.format('12/03/2026'), '12/03/2026');
     });
 
+    test('typing a separator after a single digit pads it with zero', () {
+      const expected = {
+        '1/': '01/',
+        '1/5': '01/5',
+        '1/5/': '01/05/',
+        '1/5/2026': '01/05/2026',
+        '1/5/1960': '01/05/1960',
+        '12/': '12/',
+        '12/3-': '12/03/',
+        '/': '',
+      };
+      expected.forEach((keys, text) {
+        final result = _type(formatter, keys);
+        expect(result.text, text, reason: keys);
+        expect(result.selection.extentOffset, text.length, reason: keys);
+      });
+    });
+
+    test('backspace on the trailing separator keeps the digits', () {
+      final result = _backspace(formatter, _type(formatter, '1/'));
+
+      expect(result.text, '01');
+      expect(result.selection.extentOffset, 2);
+    });
+
+    test('delete before a separator removes the digit after it', () {
+      final result = _delete(formatter, _value('12/03/2026', 2));
+
+      expect(result.text, '12/32/026');
+      expect(result.selection.extentOffset, 2);
+    });
+
+    test('deleting a selected separator removes the digit after it', () {
+      const start = TextEditingValue(
+        text: '12/03/2026',
+        selection: TextSelection(baseOffset: 2, extentOffset: 3),
+      );
+      final result = formatter.formatEditUpdate(start, _value('1203/2026', 2));
+
+      expect(result.text, '12/32/026');
+      expect(result.selection.extentOffset, 2);
+    });
+
     test('backspace deletes digits until the field is empty', () {
       var value = _type(formatter, '12032026');
       final seen = <String>[];
@@ -141,6 +191,12 @@ void main() {
       expect(_type(formatter, '19').text, '19');
       expect(_type(formatter, '193').text, '19:3');
       expect(_type(formatter, '1930').text, '19:30');
+    });
+
+    test('typing a separator after a single hour digit pads it', () {
+      expect(_type(formatter, '9:').text, '09:');
+      expect(_type(formatter, '9:30').text, '09:30');
+      expect(_type(formatter, '9h30').text, '09:30');
     });
 
     test('ignores digits beyond the limit', () {
@@ -233,6 +289,34 @@ void main() {
       expect(result.text, '(51) 99999-9999');
     });
 
+    test('does not pad phone groups when a separator is typed', () {
+      expect(_type(formatter, '5 ').text, '(5');
+    });
+
+    test('pasting drops the +55 country code and the carrier zero', () {
+      const pasted = {
+        '+55 51 99999-9999': '(51) 99999-9999',
+        '+55 51 3333-3333': '(51) 3333-3333',
+        '051 99999-9999': '(51) 99999-9999',
+        '051 3333-3333': '(51) 3333-3333',
+      };
+      pasted.forEach((input, text) {
+        final result = formatter.formatEditUpdate(
+          TextEditingValue.empty,
+          _value(input),
+        );
+        expect(result.text, text, reason: input);
+        expect(result.selection.extentOffset, text.length, reason: input);
+      });
+    });
+
+    test('delete before the hyphen removes the digit after it', () {
+      final result = _delete(formatter, _value('(51) 99999-8888', 10));
+
+      expect(result.text, '(51) 9999-9888');
+      expect(result.selection.extentOffset, 11);
+    });
+
     test('keeps already masked text unchanged', () {
       expect(formatter.format('(51) 99999-9999'), '(51) 99999-9999');
       expect(formatter.format('(51) 3333-3333'), '(51) 3333-3333');
@@ -243,6 +327,7 @@ void main() {
       expect(formatter.format('+55 51 99999-9999'), '(51) 99999-9999');
       expect(formatter.format('+55 51 3333-3333'), '(51) 3333-3333');
       expect(formatter.format('55999999999'), '(55) 99999-9999');
+      expect(formatter.format('051999999999'), '(51) 99999-9999');
     });
   });
 }

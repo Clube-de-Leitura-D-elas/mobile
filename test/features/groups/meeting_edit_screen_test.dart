@@ -172,7 +172,7 @@ void main() {
   );
 
   testWidgets(
-    'given a meeting with a date, when saving untouched, then keeps the date',
+    'regression: given a prefilled date and time, when saving untouched, then the masks keep them parseable',
     (tester) async {
       MeetingEditResult? saved;
       await tester.pumpWidget(

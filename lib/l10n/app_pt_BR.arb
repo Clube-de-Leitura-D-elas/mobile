@@ -164,6 +164,7 @@
   "onboardingEmailLabel": "E-mail",
   "onboardingPhoneLabel": "Celular",
   "onboardingBirthDateLabel": "Data de nascimento",
+  "onboardingBirthDateHint": "DD/MM/AAAA",
   "onboardingCityLabel": "Cidade",
   "onboardingCityHint": "Selecione uma cidade",
   "onboardingRegionLabel": "Região",

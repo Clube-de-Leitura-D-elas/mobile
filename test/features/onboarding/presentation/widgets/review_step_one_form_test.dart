@@ -42,7 +42,15 @@ void main() {
     expect(find.text('05/03/1990'), findsOneWidget);
   });
 
-  testWidgets('masks phone and birth date while typing', (tester) async {
+  testWidgets('shows the birth date format hint', (tester) async {
+    await tester.pumpWidget(_wrap(const UserReviewProfile(), (_) {}));
+
+    expect(find.text('DD/MM/AAAA'), findsOneWidget);
+  });
+
+  testWidgets('masks phone and birth date pasted as raw digits', (
+    tester,
+  ) async {
     UserReviewProfile? changed;
     await tester.pumpWidget(
       _wrap(const UserReviewProfile(), (profile) => changed = profile),

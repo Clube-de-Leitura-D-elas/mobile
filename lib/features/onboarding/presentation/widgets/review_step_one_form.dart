@@ -46,6 +46,7 @@ class ReviewStepOneForm extends StatelessWidget {
           const Gap16(),
           AppTextField(
             label: l10n.onboardingBirthDateLabel,
+            hintText: l10n.onboardingBirthDateHint,
             initialValue: const DateInputFormatter().format(profile.birthDate),
             keyboardType: TextInputType.datetime,
             inputFormatters: const [DateInputFormatter()],
