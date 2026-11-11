@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/user_failure_message.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
@@ -55,14 +56,34 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
               return;
             }
 
-            if (state is OnboardingReviewFormState && state.errorMessage != null) {
-              context.showAppToast(state.errorMessage!);
+            final submitFailure = state is OnboardingReviewFormState
+                ? state.submitFailure
+                : null;
+            if (submitFailure != null) {
+              context.showErrorToast(
+                userFailureMessage(
+                  l10n,
+                  submitFailure,
+                  fallback: l10n.onboardingProfileSaveError,
+                ),
+              );
             }
           },
           builder: (context, state) {
             if (state is OnboardingReviewLoadingProfile ||
                 state is OnboardingReviewInitial) {
               return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is OnboardingReviewLoadError) {
+              return AppErrorState(
+                message: userFailureMessage(
+                  l10n,
+                  state.failure,
+                  fallback: l10n.onboardingProfileLoadError,
+                ),
+                onRetry: context.read<OnboardingReviewCubit>().loadProfileData,
+              );
             }
 
             if (state is OnboardingReviewFormState) {
