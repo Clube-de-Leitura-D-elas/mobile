@@ -147,16 +147,30 @@ void main() {
       },
     );
 
-    test('retry reloads the same meeting', () async {
+    test('retry reloads the same meeting and emits each state', () async {
+      final ana = _attendee('u-1', 'Ana');
+      var calls = 0;
       when(() => repository.getMeetingAttendance(meetingId)).thenAnswer(
-        (_) async => const Failure<List<MeetingAttendanceEntity>, GroupFailure>(
-          GroupNetworkFailure(),
-        ),
+        (_) async => calls++ == 0
+            ? const Failure<List<MeetingAttendanceEntity>, GroupFailure>(
+                GroupNetworkFailure(),
+              )
+            : Success<List<MeetingAttendanceEntity>, GroupFailure>([ana]),
       );
+      final states = <MeetingPresenceState>[];
+      final subscription = cubit.stream.listen(states.add);
 
       await cubit.load(meetingId);
       await cubit.retry();
+      await Future<void>.delayed(Duration.zero);
+      await subscription.cancel();
 
+      expect(states, [
+        const MeetingPresenceLoading(),
+        const MeetingPresenceError(GroupNetworkFailure()),
+        const MeetingPresenceLoading(),
+        MeetingPresenceEditing(attendees: [ana], marked: const {'u-1'}),
+      ]);
       verify(() => repository.getMeetingAttendance(meetingId)).called(2);
     });
   });
