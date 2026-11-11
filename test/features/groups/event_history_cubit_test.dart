@@ -100,4 +100,27 @@ void main() {
 
     expect(states, [const EventHistoryLoading()]);
   });
+
+  blocTest<EventHistoryCubit, EventHistoryState>(
+    'retry reloads the same group after a failure',
+    build: () {
+      var calls = 0;
+      when(() => mockRepository.getEventHistory('group-1')).thenAnswer(
+        (_) async => calls++ == 0
+            ? const Failure(GroupNetworkFailure())
+            : const Success(<GroupMeeting>[]),
+      );
+      return EventHistoryCubit(groupRepository: mockRepository);
+    },
+    act: (cubit) async {
+      await cubit.load('group-1');
+      await cubit.retry();
+    },
+    expect: () => [
+      const EventHistoryLoading(),
+      const EventHistoryError(GroupNetworkFailure()),
+      const EventHistoryLoading(),
+      const EventHistoryEmpty(),
+    ],
+  );
 }

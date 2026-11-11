@@ -22,15 +22,22 @@ import 'package:mobile/features/groups/presentation/routes/group_route_paths.dar
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bloc_test/bloc_test.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
 class MockGroupParticipantsRepository extends Mock
     implements GroupParticipantsRepository {}
 
+class MockSessionCubit extends MockCubit<SessionState>
+    implements SessionCubit {}
+
 void main() {
   late MockGroupRepository mockRepository;
   late MockGroupParticipantsRepository mockParticipantsRepository;
+  late MockSessionCubit sessionCubit;
 
   const group = GroupDetailsEntity(
     name: '45',
@@ -43,6 +50,9 @@ void main() {
   setUp(() {
     mockRepository = MockGroupRepository();
     mockParticipantsRepository = MockGroupParticipantsRepository();
+    sessionCubit = MockSessionCubit();
+    when(() => sessionCubit.state).thenReturn(const GuestSession());
+    when(() => sessionCubit.logOut()).thenAnswer((_) async {});
     when(
       () => mockParticipantsRepository.getParticipants('group-1'),
     ).thenAnswer(
@@ -73,6 +83,7 @@ void main() {
     locale: const Locale('pt', 'BR'),
     home: MultiBlocProvider(
       providers: [
+        BlocProvider<SessionCubit>.value(value: sessionCubit),
         BlocProvider(
           create: (_) => GroupDetailsCubit(
             groupRepository: serviceLocator<GroupRepository>(),
@@ -127,12 +138,10 @@ void main() {
     expect(find.byType(GroupDetailsScreen), findsNothing);
   });
 
-  testWidgets('retries the group request from the error state', (
-    tester,
-  ) async {
-    when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
-      (_) async => const Failure(GroupNetworkFailure()),
-    );
+  testWidgets('retries the group request from the error state', (tester) async {
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Failure(GroupNetworkFailure()));
 
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
@@ -143,9 +152,9 @@ void main() {
   });
 
   testWidgets('hides retry when the group does not exist', (tester) async {
-    when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
-      (_) async => const Failure(GroupNotFoundFailure()),
-    );
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Failure(GroupNotFoundFailure()));
 
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
@@ -171,6 +180,68 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.text('Ana Beatriz'), findsOneWidget);
     expect(find.text('Histórico de eventos'), findsOneWidget);
+  });
+
+  void stubLoadedGroup() {
+    when(
+      () => mockRepository.getGroupDetails('group-1'),
+    ).thenAnswer((_) async => const Success(group));
+  }
+
+  testWidgets('shows the reason and retries the next event', (tester) async {
+    stubLoadedGroup();
+    var calls = 0;
+    when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+      (_) async => calls++ == 0
+          ? const Failure(GroupNetworkFailure())
+          : const Success(null),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
+      ),
+      findsOneWidget,
+    );
+    await tester.ensureVisible(find.text('Tentar novamente'));
+    await tester.tap(find.text('Tentar novamente'));
+    await tester.pumpAndSettle();
+
+    expect(calls, 2);
+    expect(find.text('Nenhum próximo evento agendado'), findsOneWidget);
+  });
+
+  testWidgets('offers logout when the session expired', (tester) async {
+    stubLoadedGroup();
+    when(
+      () => mockRepository.getNextEvent('group-1'),
+    ).thenAnswer((_) async => const Failure(GroupSessionExpiredFailure()));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Sair'));
+    await tester.tap(find.text('Sair'));
+
+    verify(() => sessionCubit.logOut()).called(1);
+  });
+
+  testWidgets('hides retry when the next event is forbidden', (tester) async {
+    stubLoadedGroup();
+    when(
+      () => mockRepository.getNextEvent('group-1'),
+    ).thenAnswer((_) async => const Failure(GroupForbiddenFailure()));
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Você não tem permissão para fazer isso.'),
+      findsOneWidget,
+    );
+    expect(find.text('Tentar novamente'), findsNothing);
   });
 
   testWidgets('uses the network cover image when the group has a URL', (

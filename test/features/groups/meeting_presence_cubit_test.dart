@@ -146,6 +146,19 @@ void main() {
         expect(cubit.state, const MeetingPresenceError(failure));
       },
     );
+
+    test('retry reloads the same meeting', () async {
+      when(() => repository.getMeetingAttendance(meetingId)).thenAnswer(
+        (_) async => const Failure<List<MeetingAttendanceEntity>, GroupFailure>(
+          GroupNetworkFailure(),
+        ),
+      );
+
+      await cubit.load(meetingId);
+      await cubit.retry();
+
+      verify(() => repository.getMeetingAttendance(meetingId)).called(2);
+    });
   });
 
   group('toggle', () {
