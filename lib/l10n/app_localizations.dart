@@ -1453,12 +1453,6 @@ abstract class AppLocalizations {
   /// **'Encontro inválido.'**
   String get meetingTasksInvalidMeeting;
 
-  /// Botão para recarregar as tarefas após erro
-  ///
-  /// In pt, this message translates to:
-  /// **'Tentar novamente'**
-  String get meetingTasksRetry;
-
   /// Sobretítulo do banner antes de o encontro ser publicado
   ///
   /// In pt, this message translates to:

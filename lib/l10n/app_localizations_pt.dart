@@ -807,9 +807,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingTasksInvalidMeeting => 'Encontro inválido.';
 
   @override
-  String get meetingTasksRetry => 'Tentar novamente';
-
-  @override
   String get meetingTasksDrawnLabel => 'VOCÊ FOI SORTEADA';
 
   @override

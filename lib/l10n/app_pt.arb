@@ -1087,10 +1087,6 @@
   "@meetingTasksInvalidMeeting": {
     "description": "Mensagem quando a tela de tarefas é aberta sem meeting_id"
   },
-  "meetingTasksRetry": "Tentar novamente",
-  "@meetingTasksRetry": {
-    "description": "Botão para recarregar as tarefas após erro"
-  },
   "meetingTasksDrawnLabel": "VOCÊ FOI SORTEADA",
   "@meetingTasksDrawnLabel": {
     "description": "Sobretítulo do banner antes de o encontro ser publicado"
