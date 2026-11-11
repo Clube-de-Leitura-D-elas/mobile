@@ -23,6 +23,13 @@ class GroupSessionExpiredFailure extends GroupFailure {
   });
 }
 
+/// Sem permissão para a ação (HTTP 403). Tentar de novo não adianta.
+class GroupForbiddenFailure extends GroupFailure {
+  const GroupForbiddenFailure({
+    super.message = 'Você não tem permissão para fazer isso.',
+  });
+}
+
 class GroupDetailsFailure extends GroupFailure {
   const GroupDetailsFailure({
     super.message =

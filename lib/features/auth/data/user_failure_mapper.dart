@@ -9,7 +9,8 @@ UserFailure userFailureFromAuth(SupabaseFailure failure) {
   final mapped = switch (errorCode) {
     'invalid_credentials' => const InvalidCredentialsFailure(),
     'email_not_confirmed' => const EmailNotConfirmedFailure(),
-    'user_already_exists' || 'email_exists' => const EmailAlreadyRegisteredFailure(),
+    'user_already_exists' ||
+    'email_exists' => const EmailAlreadyRegisteredFailure(),
     'weak_password' => const WeakPasswordFailure(),
     'over_request_rate_limit' ||
     'over_email_send_rate_limit' => const TooManyAttemptsFailure(),
@@ -44,6 +45,7 @@ UserFailure userFailureFromFunction(
   return switch (failure.kind) {
     SupabaseFailureKind.network => const UserNetworkFailure(),
     SupabaseFailureKind.unauthorized => const UserSessionExpiredFailure(),
+    SupabaseFailureKind.forbidden => const UserForbiddenFailure(),
     _ => fallback,
   };
 }

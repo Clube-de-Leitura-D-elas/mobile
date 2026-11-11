@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:mobile/core/tools/result.dart';
-import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
 
@@ -26,12 +25,7 @@ class GroupDetailsCubit extends Cubit<GroupDetailsState> {
       case Success(:final data):
         emit(GroupDetailsLoaded(data));
       case Failure(:final failure):
-        emit(
-          GroupDetailsError(
-            failure.message,
-            canRetry: failure is! GroupNotFoundFailure,
-          ),
-        );
+        emit(GroupDetailsError(failure));
     }
   }
 }

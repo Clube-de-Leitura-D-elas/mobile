@@ -22,7 +22,7 @@ class NextEventCubit extends Cubit<NextEventState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(NextEventError(failure.message));
+        emit(NextEventError(failure));
       case Success(:final data):
         if (data == null) {
           emit(const NextEventEmpty());

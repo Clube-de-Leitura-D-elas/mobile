@@ -3,6 +3,10 @@ import 'package:mobile/l10n/app_localizations.dart';
 
 /// Texto para a usuária. [fallback] é a mensagem da ação que falhou
 /// ("Não foi possível entrar...") quando a causa não tem texto próprio.
+/// Falhas em que tentar de novo dá o mesmo resultado.
+bool userFailureIsRetryable(UserFailure failure) =>
+    failure is! UserForbiddenFailure;
+
 String userFailureMessage(
   AppLocalizations l10n,
   UserFailure failure, {
@@ -10,6 +14,7 @@ String userFailureMessage(
 }) => switch (failure) {
   UserNetworkFailure() => l10n.errorNoConnection,
   UserSessionExpiredFailure() => l10n.errorSessionExpired,
+  UserForbiddenFailure() => l10n.errorForbidden,
   InvalidCredentialsFailure() => l10n.authInvalidCredentialsError,
   EmailNotConfirmedFailure() => l10n.confirmEmailBeforeLoginError,
   EmailAlreadyRegisteredFailure() => l10n.authEmailAlreadyRegisteredError,

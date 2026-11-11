@@ -77,7 +77,9 @@ void main() {
     act: (cubit) => cubit.load('group-1'),
     expect: () => [
       const EventHistoryLoading(),
-      const EventHistoryError('Falha ao carregar histórico'),
+      const EventHistoryError(
+        GroupEventHistoryFailure(message: 'Falha ao carregar histórico'),
+      ),
     ],
   );
 

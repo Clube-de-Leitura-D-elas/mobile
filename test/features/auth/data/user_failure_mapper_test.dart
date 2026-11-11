@@ -61,6 +61,19 @@ void main() {
   });
 
   group('userFailureFromFunction', () {
+    test('maps forbidden', () {
+      expect(
+        userFailureFromFunction(
+          const FunctionSupabaseFailure(
+            message: 'Forbidden',
+            code: '403',
+            kind: SupabaseFailureKind.forbidden,
+          ),
+        ),
+        const UserForbiddenFailure(),
+      );
+    });
+
     test('maps network and expired session', () {
       expect(
         userFailureFromFunction(

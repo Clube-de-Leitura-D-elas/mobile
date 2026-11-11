@@ -52,10 +52,7 @@ void main() {
     act: (cubit) => cubit.load('meeting-1'),
     expect: () => [
       const MeetingDetailsLoading(),
-      const MeetingDetailsError(
-        'Encontro não encontrado.',
-        canRetry: false,
-      ),
+      const MeetingDetailsError(MeetingNotFoundFailure()),
     ],
   );
 
@@ -76,7 +73,7 @@ void main() {
     },
     expect: () => [
       const MeetingDetailsLoading(),
-      MeetingDetailsError(const GroupNetworkFailure().message),
+      const MeetingDetailsError(GroupNetworkFailure()),
       const MeetingDetailsLoading(),
       const MeetingDetailsLoaded(meeting),
     ],

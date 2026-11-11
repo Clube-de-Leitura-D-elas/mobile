@@ -22,7 +22,7 @@ class EventHistoryCubit extends Cubit<EventHistoryState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(EventHistoryError(failure.message));
+        emit(EventHistoryError(failure));
       case Success(:final data):
         if (data.isEmpty) {
           emit(const EventHistoryEmpty());

@@ -252,6 +252,38 @@ void main() {
     },
   );
 
+  Future<void> pumpLoadError(WidgetTester tester, UserFailure failure) async {
+    final errorState = OnboardingReviewLoadError(failure);
+    when(() => mockReviewCubit.state).thenReturn(errorState);
+    whenListen(
+      mockReviewCubit,
+      const Stream<OnboardingReviewState>.empty(),
+      initialState: errorState,
+    );
+    await tester.pumpWidget(
+      buildSubject(child: const OnboardingReviewScreen()),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('hides retry when the load is forbidden', (tester) async {
+    await pumpLoadError(tester, const UserForbiddenFailure());
+
+    expect(
+      find.text('Você não tem permissão para fazer isso.'),
+      findsOneWidget,
+    );
+    expect(find.text('Tentar novamente'), findsNothing);
+  });
+
+  testWidgets('offers logout when the session expired', (tester) async {
+    when(() => mockSessionCubit.logOut()).thenAnswer((_) async {});
+    await pumpLoadError(tester, const UserSessionExpiredFailure());
+
+    await tester.tap(find.text('Sair'));
+    verify(() => mockSessionCubit.logOut()).called(1);
+  });
+
   testWidgets(
     'clicking Continuar on step 0 and 1 moves to next page, and Voltar moves to previous page',
     (tester) async {

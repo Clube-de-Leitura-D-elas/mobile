@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
-import 'package:mobile/design_system/widgets/app_error_state.dart';
 import 'package:mobile/design_system/widgets/app_toast.dart';
 import 'package:mobile/design_system/widgets/screen_header.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_presence_screen.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 
 class MeetingPresencePage extends StatelessWidget {
   const MeetingPresencePage({super.key});
@@ -42,12 +42,12 @@ class MeetingPresencePage extends StatelessWidget {
             ),
             body: const Center(child: CircularProgressIndicator()),
           ),
-          MeetingPresenceError(:final message) => Scaffold(
+          MeetingPresenceError(:final failure) => Scaffold(
             appBar: ScreenHeader.back(
               title: context.l10n.meetingPresenceHeader,
             ),
-            body: AppErrorState(
-              message: message,
+            body: GroupErrorState(
+              failure: failure,
               onRetry: context.read<MeetingPresenceCubit>().retry,
             ),
           ),

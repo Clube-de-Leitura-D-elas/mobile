@@ -33,7 +33,7 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
                 marked: {for (final a in sorted) a.id},
               ),
       );
-    }, (failure) => emit(MeetingPresenceError(failure.message)));
+    }, (failure) => emit(MeetingPresenceError(failure)));
   }
 
   static String _sortKey(String value) {

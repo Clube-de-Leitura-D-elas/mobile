@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 
 sealed class MeetingDetailsState extends Equatable {
@@ -22,13 +23,12 @@ class MeetingDetailsLoaded extends MeetingDetailsState {
 }
 
 class MeetingDetailsError extends MeetingDetailsState {
-  const MeetingDetailsError(this.message, {this.canRetry = true});
+  const MeetingDetailsError(this.failure);
 
-  final String message;
+  final GroupFailure failure;
 
-  /// Falso quando o encontro não existe: tentar de novo não adianta.
-  final bool canRetry;
+  String get message => failure.message;
 
   @override
-  List<Object?> get props => [message, canRetry];
+  List<Object?> get props => [failure];
 }

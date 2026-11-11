@@ -16,6 +16,11 @@ class UserSessionExpiredFailure extends UserFailure {
   const UserSessionExpiredFailure();
 }
 
+/// Sem permissão para a ação (HTTP 403). Tentar de novo não adianta.
+class UserForbiddenFailure extends UserFailure {
+  const UserForbiddenFailure();
+}
+
 class InvalidCredentialsFailure extends UserFailure {
   const InvalidCredentialsFailure();
 }

@@ -62,7 +62,9 @@ void main() {
     act: (cubit) => cubit.load('group-1'),
     expect: () => [
       const NextEventLoading(),
-      const NextEventError('Falha ao carregar próximo evento'),
+      const NextEventError(
+        GroupNextEventFailure(message: 'Falha ao carregar próximo evento'),
+      ),
     ],
   );
 

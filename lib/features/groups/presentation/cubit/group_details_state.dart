@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 
 sealed class GroupDetailsState extends Equatable {
@@ -22,13 +23,12 @@ class GroupDetailsLoaded extends GroupDetailsState {
 }
 
 class GroupDetailsError extends GroupDetailsState {
-  final String message;
+  const GroupDetailsError(this.failure);
 
-  /// Falso quando o grupo não existe: tentar de novo não adianta.
-  final bool canRetry;
+  final GroupFailure failure;
 
-  const GroupDetailsError(this.message, {this.canRetry = true});
+  String get message => failure.message;
 
   @override
-  List<Object?> get props => [message, canRetry];
+  List<Object?> get props => [failure];
 }

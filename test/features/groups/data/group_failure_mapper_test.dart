@@ -33,6 +33,20 @@ void main() {
     );
   });
 
+  test('maps a forbidden failure to GroupForbiddenFailure', () {
+    expect(
+      groupFailureFrom(
+        const FunctionSupabaseFailure(
+          message: 'raw',
+          code: '403',
+          kind: SupabaseFailureKind.forbidden,
+        ),
+        fallback,
+      ),
+      const GroupForbiddenFailure(),
+    );
+  });
+
   for (final kind in [
     SupabaseFailureKind.server,
     SupabaseFailureKind.notFound,

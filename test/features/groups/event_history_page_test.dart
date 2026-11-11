@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_state.dart';
@@ -75,7 +76,13 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      _wrap(const EventHistoryError('Não foi possível carregar eventos.')),
+      _wrap(
+        const EventHistoryError(
+          GroupEventHistoryFailure(
+            message: 'Não foi possível carregar eventos.',
+          ),
+        ),
+      ),
     );
 
     expect(find.text('Não foi possível carregar eventos.'), findsOneWidget);

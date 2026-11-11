@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:mobile/core/tools/result.dart';
-import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_state.dart';
 
@@ -23,12 +22,7 @@ class MeetingDetailsCubit extends Cubit<MeetingDetailsState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(
-          MeetingDetailsError(
-            failure.message,
-            canRetry: failure is! MeetingNotFoundFailure,
-          ),
-        );
+        emit(MeetingDetailsError(failure));
       case Success(:final data):
         emit(MeetingDetailsLoaded(data));
     }

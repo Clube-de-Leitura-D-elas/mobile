@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
@@ -27,20 +28,23 @@ void main() {
   });
 
   group('MeetingPresenceError', () {
-    test('props contém a mensagem', () {
-      expect(const MeetingPresenceError('falhou').props, ['falhou']);
+    test('props contém a falha', () {
+      expect(const MeetingPresenceError(MeetingAttendanceFailure()).props, [
+        const MeetingAttendanceFailure(),
+      ]);
     });
 
-    test('é igual quando a mensagem é a mesma', () {
+    test('é igual quando a falha é a mesma', () {
       expect(
-        const MeetingPresenceError('falhou'),
-        const MeetingPresenceError('falhou'),
+        const MeetingPresenceError(MeetingAttendanceFailure()),
+        const MeetingPresenceError(MeetingAttendanceFailure()),
       );
     });
 
-    test('é diferente quando a mensagem muda', () {
+    test('é diferente quando a falha muda', () {
       expect(
-        const MeetingPresenceError('a') == const MeetingPresenceError('b'),
+        const MeetingPresenceError(MeetingAttendanceFailure()) ==
+            const MeetingPresenceError(GroupNetworkFailure()),
         isFalse,
       );
     });
@@ -190,7 +194,8 @@ void main() {
 
   test('estados de tipos diferentes nunca são iguais', () {
     expect(
-      const MeetingPresenceLoading() == const MeetingPresenceError('x'),
+      const MeetingPresenceLoading() ==
+          const MeetingPresenceError(MeetingAttendanceFailure()),
       isFalse,
     );
     expect(

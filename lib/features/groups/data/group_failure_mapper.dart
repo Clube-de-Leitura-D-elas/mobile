@@ -9,6 +9,7 @@ GroupFailure groupFailureFrom(SupabaseFailure failure, GroupFailure fallback) {
   return switch (failure.kind) {
     SupabaseFailureKind.network => const GroupNetworkFailure(),
     SupabaseFailureKind.unauthorized => const GroupSessionExpiredFailure(),
+    SupabaseFailureKind.forbidden => const GroupForbiddenFailure(),
     _ => fallback,
   };
 }

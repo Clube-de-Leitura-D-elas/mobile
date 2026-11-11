@@ -5,6 +5,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 
 class MeetingEditRoutePage extends StatelessWidget {
   const MeetingEditRoutePage({super.key});
@@ -17,13 +18,11 @@ class MeetingEditRoutePage extends StatelessWidget {
           appBar: ScreenHeader.back(title: context.l10n.meetingEditTitle),
           body: const Center(child: CircularProgressIndicator()),
         ),
-        MeetingDetailsError(:final message, :final canRetry) => Scaffold(
+        MeetingDetailsError(:final failure) => Scaffold(
           appBar: ScreenHeader.back(title: context.l10n.meetingEditTitle),
-          body: AppErrorState(
-            message: message,
-            onRetry: canRetry
-                ? context.read<MeetingDetailsCubit>().retry
-                : null,
+          body: GroupErrorState(
+            failure: failure,
+            onRetry: context.read<MeetingDetailsCubit>().retry,
           ),
         ),
         MeetingDetailsLoaded(:final meeting) => MeetingEditPage(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/user_failure_message.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
@@ -76,13 +77,21 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
             }
 
             if (state is OnboardingReviewLoadError) {
+              final failure = state.failure;
+              final sessionExpired = failure is UserSessionExpiredFailure;
               return AppErrorState(
                 message: userFailureMessage(
                   l10n,
-                  state.failure,
+                  failure,
                   fallback: l10n.onboardingProfileLoadError,
                 ),
-                onRetry: context.read<OnboardingReviewCubit>().loadProfileData,
+                onRetry: userFailureIsRetryable(failure)
+                    ? context.read<OnboardingReviewCubit>().loadProfileData
+                    : null,
+                secondaryLabel: sessionExpired ? l10n.logoutTooltip : null,
+                onSecondary: sessionExpired
+                    ? () => context.read<SessionCubit>().logOut()
+                    : null,
               );
             }
 

@@ -784,7 +784,11 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => const Failure(
-          FunctionSupabaseFailure(message: 'Forbidden', code: '403'),
+          FunctionSupabaseFailure(
+            message: 'Forbidden',
+            code: '403',
+            kind: SupabaseFailureKind.forbidden,
+          ),
         ),
       );
 

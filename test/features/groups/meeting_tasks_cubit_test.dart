@@ -48,7 +48,7 @@ void main() {
     act: (cubit) => cubit.load(),
     expect: () => [
       const MeetingTasksLoading(),
-      MeetingTasksError(const MeetingTasksFailure().message),
+      const MeetingTasksError(MeetingTasksFailure()),
     ],
   );
 
@@ -58,7 +58,7 @@ void main() {
       () => repository.getMeetingTasks('meeting-1'),
     ).thenAnswer((_) async => const Success(_tasks)),
     build: build,
-    seed: () => const MeetingTasksError('erro'),
+    seed: () => const MeetingTasksError(MeetingTasksFailure()),
     act: (cubit) => cubit.refresh(),
     expect: () => [const MeetingTasksLoaded(_tasks)],
   );

@@ -221,7 +221,7 @@ class GroupRepositoryImpl implements GroupRepository {
 
     switch (result) {
       case Failure(:final failure):
-        return Failure(groupFailureFrom(failure, _uploadFailure(failure.code)));
+        return Failure(_uploadFailure(failure));
       case Success(:final data):
         final photo = data.data;
         if (photo == null) return const Failure(MeetingPhotoUploadFailure());
@@ -231,12 +231,13 @@ class GroupRepositoryImpl implements GroupRepository {
 
   static const _rejectedUploadCodes = {'400', '403', '404', '413', '422'};
 
-  GroupFailure _uploadFailure(String? code) {
+  GroupFailure _uploadFailure(SupabaseFailure failure) {
+    final code = failure.code;
     if (code == '409') return const MeetingPhotoLimitFailure();
     if (_rejectedUploadCodes.contains(code)) {
       return const MeetingPhotoRejectedFailure();
     }
-    return const MeetingPhotoUploadFailure();
+    return groupFailureFrom(failure, const MeetingPhotoUploadFailure());
   }
 
   @override
@@ -429,15 +430,14 @@ class GroupRepositoryImpl implements GroupRepository {
     );
 
     return switch (result) {
-      Failure(:final failure) => Failure(
-        groupFailureFrom(failure, _updateMeetingFailure(failure.code)),
-      ),
+      Failure(:final failure) => Failure(_updateMeetingFailure(failure)),
       Success() => const Success(null),
     };
   }
 
-  GroupFailure _updateMeetingFailure(String? code) => switch (code) {
-    '403' || '409' => const MeetingNotEditableFailure(),
-    _ => const MeetingUpdateFailure(),
-  };
+  GroupFailure _updateMeetingFailure(SupabaseFailure failure) =>
+      switch (failure.code) {
+        '403' || '409' => const MeetingNotEditableFailure(),
+        _ => groupFailureFrom(failure, const MeetingUpdateFailure()),
+      };
 }

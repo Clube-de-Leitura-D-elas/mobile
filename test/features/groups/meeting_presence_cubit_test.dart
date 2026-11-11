@@ -143,7 +143,7 @@ void main() {
 
         await cubit.load(meetingId);
 
-        expect(cubit.state, MeetingPresenceError(failure.message));
+        expect(cubit.state, const MeetingPresenceError(failure));
       },
     );
   });

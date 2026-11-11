@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
@@ -11,6 +10,7 @@ import 'package:mobile/features/groups/presentation/pages/group_details_screen.d
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key, required this.groupId});
@@ -25,13 +25,11 @@ class GroupDetailsPage extends StatelessWidget {
           GroupDetailsLoading() => const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           ),
-          GroupDetailsError(:final message, :final canRetry) => Scaffold(
+          GroupDetailsError(:final failure) => Scaffold(
             appBar: AppBar(),
-            body: AppErrorState(
-              message: message,
-              onRetry: canRetry
-                  ? context.read<GroupDetailsCubit>().retry
-                  : null,
+            body: GroupErrorState(
+              failure: failure,
+              onRetry: context.read<GroupDetailsCubit>().retry,
             ),
           ),
           GroupDetailsLoaded(:final group) => GroupDetailsScreen(
@@ -55,7 +53,11 @@ class GroupDetailsPage extends StatelessWidget {
                   errorMessage: nextEventState is NextEventError
                       ? nextEventState.message
                       : null,
-                  onRetry: context.read<NextEventCubit>().retry,
+                  onRetry:
+                      nextEventState is NextEventError &&
+                          !groupFailureIsRetryable(nextEventState.failure)
+                      ? null
+                      : context.read<NextEventCubit>().retry,
                   onMoreDetailsPressed: meetingId == null
                       ? null
                       : () async {

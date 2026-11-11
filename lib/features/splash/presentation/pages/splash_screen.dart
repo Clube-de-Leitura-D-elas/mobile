@@ -47,7 +47,9 @@ class SplashScreen extends StatelessWidget {
                     );
                     return AppErrorState(
                       message: l10n.sessionProfileLoadError(reason),
-                      onRetry: cubit.retryProfile,
+                      onRetry: userFailureIsRetryable(state.failure)
+                          ? cubit.retryProfile
+                          : null,
                       secondaryLabel: l10n.logoutTooltip,
                       onSecondary: cubit.logOut,
                     );

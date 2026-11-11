@@ -63,7 +63,9 @@ void main() {
       act: (cubit) => cubit.load('group-1'),
       expect: () => [
         const GroupDetailsLoading(),
-        const GroupDetailsError('Falha ao carregar grupo'),
+        const GroupDetailsError(
+          GroupDetailsFailure(message: 'Falha ao carregar grupo'),
+        ),
       ],
     );
 
