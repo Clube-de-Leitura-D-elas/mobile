@@ -24,6 +24,7 @@ class SupabaseServiceImpl implements SupabaseService {
     Map<String, dynamic>? body,
     Map<String, String>? queryParameters,
     T Function(dynamic data)? decoder,
+    HttpMethod method = HttpMethod.post,
   }) async {
     try {
       if (kDebugMode) {
@@ -35,6 +36,7 @@ class SupabaseServiceImpl implements SupabaseService {
         functionName,
         body: body,
         queryParameters: queryParameters,
+        method: method,
       );
 
       if (kDebugMode) {

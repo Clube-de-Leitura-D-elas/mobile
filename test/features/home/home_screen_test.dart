@@ -14,6 +14,10 @@ import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/books/domain/entities/book_page.dart';
+import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
+import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
@@ -25,7 +29,6 @@ import 'package:mobile/features/home/presentation/widgets/home_pending_tasks_ban
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notification_bell.dart';
-import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -33,6 +36,8 @@ class MockGroupRepository extends Mock implements GroupRepository {}
 
 class MockNotificationRepository extends Mock
     implements NotificationRepository {}
+
+class MockBookRepository extends Mock implements BookRepository {}
 
 class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
@@ -54,9 +59,31 @@ void main() {
   setUp(() {
     serviceLocator.allowReassignment = true;
     serviceLocator.registerFactory<GroupRepository>(MockGroupRepository.new);
+
+    final books = MockBookRepository();
+    when(
+      () => books.searchBooks(
+        query: any(named: 'query'),
+        page: any(named: 'page'),
+      ),
+    ).thenAnswer(
+      (_) async => const Success(
+        BookPage(items: [], page: 1, pageSize: 20, hasMore: false),
+      ),
+    );
+    serviceLocator.registerFactory<BookRepository>(() => books);
+    serviceLocator.registerFactory<BookSearchCubit>(
+      () => BookSearchCubit(bookRepository: serviceLocator<BookRepository>()),
+    );
   });
 
   tearDown(() {
+    if (serviceLocator.isRegistered<BookSearchCubit>()) {
+      serviceLocator.unregister<BookSearchCubit>();
+    }
+    if (serviceLocator.isRegistered<BookRepository>()) {
+      serviceLocator.unregister<BookRepository>();
+    }
     if (serviceLocator.isRegistered<GroupRepository>()) {
       serviceLocator.unregister<GroupRepository>();
     }
@@ -74,7 +101,10 @@ void main() {
       supportedLocales: AppLocalizations.supportedLocales,
       home: BlocProvider.value(
         value: sessionCubit,
-        child: BlocProvider.value(value: homeCubit, child: withBell(const HomeScreen())),
+        child: BlocProvider.value(
+          value: homeCubit,
+          child: withBell(const HomeScreen()),
+        ),
       ),
     );
   }
@@ -192,8 +222,10 @@ void main() {
         routes: [
           GoRoute(
             path: QuickAccessRoutes.home,
-            builder: (context, state) =>
-                BlocProvider.value(value: cubit, child: withBell(const HomeScreen())),
+            builder: (context, state) => BlocProvider.value(
+              value: cubit,
+              child: withBell(const HomeScreen()),
+            ),
           ),
           GoRoute(
             path: HomeRoutes.pendingTasks,
@@ -352,8 +384,10 @@ void main() {
       routes: [
         GoRoute(
           path: QuickAccessRoutes.home,
-          builder: (context, state) =>
-              BlocProvider.value(value: cubit, child: withBell(const HomeScreen())),
+          builder: (context, state) => BlocProvider.value(
+            value: cubit,
+            child: withBell(const HomeScreen()),
+          ),
         ),
         ...QuickAccessRoutes.routes,
       ],
@@ -381,12 +415,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(router.routeInformationProvider.value.uri.path, '/search');
-    expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
+    expect(find.byType(BookSearchPage), findsOneWidget);
   });
 
-  testWidgets('returns to the home tab from a placeholder screen', (
-    tester,
-  ) async {
+  testWidgets('returns to the home tab from the search screen', (tester) async {
     final repository = MockGroupRepository();
     when(
       () => repository.getMyGroups(),
@@ -400,8 +432,10 @@ void main() {
       routes: [
         GoRoute(
           path: QuickAccessRoutes.home,
-          builder: (context, state) =>
-              BlocProvider.value(value: cubit, child: withBell(const HomeScreen())),
+          builder: (context, state) => BlocProvider.value(
+            value: cubit,
+            child: withBell(const HomeScreen()),
+          ),
         ),
         ...QuickAccessRoutes.routes,
       ],
@@ -424,6 +458,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(router.routeInformationProvider.value.uri.path, '/search');
+    expect(find.byType(BookSearchPage), findsOneWidget);
 
     await tester.tap(find.bySemanticsLabel('Início'));
     await tester.pumpAndSettle();
@@ -556,9 +591,9 @@ void main() {
               value: cubit,
               child: withBell(
                 HomeScreen(
-                user: testUser,
-                profile: testProfile,
-                onNavigationItemSelected: (index) => selectedIndex = index,
+                  user: testUser,
+                  profile: testProfile,
+                  onNavigationItemSelected: (index) => selectedIndex = index,
                 ),
               ),
             ),

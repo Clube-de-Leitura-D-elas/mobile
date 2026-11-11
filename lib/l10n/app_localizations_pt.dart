@@ -1093,6 +1093,32 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get bookSearchTitle => 'Busca';
+
+  @override
+  String get bookSearchHint => 'Buscar livro';
+
+  @override
+  String get bookSearchPopularTitle => 'Populares esse mês';
+
+  @override
+  String get bookSearchEmpty => 'Nenhum livro encontrado';
+
+  @override
+  String get bookSearchLoadError =>
+      'Não foi possível carregar os livros. Tente novamente.';
+
+  @override
+  String get bookSearchRetry => 'Tentar novamente';
+
+  @override
+  String get bookSearchLoading => 'Carregando livros';
+
+  @override
+  String get bookSearchStatusError =>
+      'Não foi possível atualizar o status de leitura.';
+
+  @override
   String get errorRetryButton => 'Tentar novamente';
 
   @override

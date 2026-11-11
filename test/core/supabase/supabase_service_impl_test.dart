@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_response.dart';
@@ -228,12 +229,67 @@ void main() {
       expect(result, isA<Failure<User, SupabaseFailure>>());
     });
 
+    test('invokeFunction shortens a long body value in the debug log', () async {
+      final logs = <String>[];
+      final originalDebugPrint = debugPrint;
+      debugPrint = (String? message, {int? wrapWidth}) {
+        if (message != null) {
+          logs.add(message);
+        }
+      };
+      addTearDown(() => debugPrint = originalDebugPrint);
+
+      final longValue = 'a' * 201;
+      when(
+        () => mockFunctionsClient.invoke(
+          'upload-photo',
+          body: any(named: 'body'),
+          method: HttpMethod.post,
+        ),
+      ).thenAnswer((_) async => const FunctionResponse(status: 200, data: {}));
+
+      final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
+        functionName: 'upload-photo',
+        body: {'photo': longValue, 'caption': 'ok'},
+      );
+
+      expect(result.unwrap().statusCode, 200);
+      expect(
+        logs.any(
+          (log) => log.contains('<201 chars>') && !log.contains(longValue),
+        ),
+        isTrue,
+      );
+    });
+
+    test('invokeFunction forwards a custom HTTP method', () async {
+      when(
+        () => mockFunctionsClient.invoke(
+          'search-books',
+          body: any(named: 'body'),
+          queryParameters: {'page': '1'},
+          method: HttpMethod.get,
+        ),
+      ).thenAnswer(
+        (_) async => const FunctionResponse(status: 200, data: {'ok': true}),
+      );
+
+      final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
+        functionName: 'search-books',
+        queryParameters: {'page': '1'},
+        method: HttpMethod.get,
+      );
+
+      expect(result.unwrap().data, {'ok': true});
+    });
+
     test('invokeFunction forwards the query parameters', () async {
       when(
         () => mockFunctionsClient.invoke(
           'get-my-notifications',
           body: any(named: 'body'),
           queryParameters: {'page': '2', 'pageSize': '20'},
+          method: HttpMethod.post,
         ),
       ).thenAnswer(
         (_) async => const FunctionResponse(status: 200, data: {'total': 0}),
@@ -249,8 +305,11 @@ void main() {
 
     test('invokeFunction returns Success with decoded data', () async {
       when(
-        () =>
-            mockFunctionsClient.invoke('get-profile', body: any(named: 'body')),
+        () => mockFunctionsClient.invoke(
+          'get-profile',
+          body: any(named: 'body'),
+          method: HttpMethod.post,
+        ),
       ).thenAnswer(
         (_) async =>
             const FunctionResponse(status: 200, data: {'name': 'Test'}),
@@ -272,8 +331,11 @@ void main() {
       'invokeFunction handles status 400+ without error key in data',
       () async {
         when(
-          () =>
-              mockFunctionsClient.invoke('test-func', body: any(named: 'body')),
+          () => mockFunctionsClient.invoke(
+            'test-func',
+            body: any(named: 'body'),
+            method: HttpMethod.post,
+          ),
         ).thenAnswer(
           (_) async => const FunctionResponse(status: 404, data: 'Not found'),
         );
@@ -299,8 +361,11 @@ void main() {
       'invokeFunction handles FunctionException without error key in details',
       () async {
         when(
-          () =>
-              mockFunctionsClient.invoke('test-func', body: any(named: 'body')),
+          () => mockFunctionsClient.invoke(
+            'test-func',
+            body: any(named: 'body'),
+            method: HttpMethod.post,
+          ),
         ).thenThrow(
           const FunctionException(status: 500, details: 'Plain string details'),
         );
@@ -395,8 +460,11 @@ void main() {
       'invokeFunction parses error message from data map when status >= 400',
       () async {
         when(
-          () =>
-              mockFunctionsClient.invoke('test-func', body: any(named: 'body')),
+          () => mockFunctionsClient.invoke(
+            'test-func',
+            body: any(named: 'body'),
+            method: HttpMethod.post,
+          ),
         ).thenAnswer(
           (_) async => const FunctionResponse(
             status: 400,
@@ -420,7 +488,11 @@ void main() {
 
     test('invokeFunction casts data as T when decoder is null', () async {
       when(
-        () => mockFunctionsClient.invoke('test-func', body: any(named: 'body')),
+        () => mockFunctionsClient.invoke(
+          'test-func',
+          body: any(named: 'body'),
+          method: HttpMethod.post,
+        ),
       ).thenAnswer(
         (_) async =>
             const FunctionResponse(status: 200, data: {'key': 'value'}),
@@ -440,8 +512,11 @@ void main() {
       'invokeFunction parses error message from FunctionException details map',
       () async {
         when(
-          () =>
-              mockFunctionsClient.invoke('test-func', body: any(named: 'body')),
+          () => mockFunctionsClient.invoke(
+            'test-func',
+            body: any(named: 'body'),
+            method: HttpMethod.post,
+          ),
         ).thenThrow(
           const FunctionException(
             status: 500,
@@ -465,7 +540,11 @@ void main() {
 
     test('invokeFunction handles generic Exception', () async {
       when(
-        () => mockFunctionsClient.invoke('test-func', body: any(named: 'body')),
+        () => mockFunctionsClient.invoke(
+          'test-func',
+          body: any(named: 'body'),
+          method: HttpMethod.post,
+        ),
       ).thenThrow(Exception('Connection failure'));
 
       final result = await supabaseService.invokeFunction(

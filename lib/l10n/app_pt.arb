@@ -1469,6 +1469,38 @@
       }
     }
   },
+  "bookSearchTitle": "Busca",
+  "@bookSearchTitle": {
+    "description": "Título da aba de busca de livros."
+  },
+  "bookSearchHint": "Buscar livro",
+  "@bookSearchHint": {
+    "description": "Placeholder do campo de busca de livros."
+  },
+  "bookSearchPopularTitle": "Populares esse mês",
+  "@bookSearchPopularTitle": {
+    "description": "Título da grade mostrada quando a busca está vazia."
+  },
+  "bookSearchEmpty": "Nenhum livro encontrado",
+  "@bookSearchEmpty": {
+    "description": "Lista de resultados sem livros."
+  },
+  "bookSearchLoadError": "Não foi possível carregar os livros. Tente novamente.",
+  "@bookSearchLoadError": {
+    "description": "Erro ao carregar a busca de livros."
+  },
+  "bookSearchRetry": "Tentar novamente",
+  "@bookSearchRetry": {
+    "description": "Botão que repete a busca de livros."
+  },
+  "bookSearchLoading": "Carregando livros",
+  "@bookSearchLoading": {
+    "description": "Rótulo de acessibilidade do skeleton da busca."
+  },
+  "bookSearchStatusError": "Não foi possível atualizar o status de leitura.",
+  "@bookSearchStatusError": {
+    "description": "Toast quando o chip de status não grava."
+  },
   "errorRetryButton": "Tentar novamente",
   "@errorRetryButton": {
     "description": "Botão para repetir uma ação ou carregamento que falhou."
