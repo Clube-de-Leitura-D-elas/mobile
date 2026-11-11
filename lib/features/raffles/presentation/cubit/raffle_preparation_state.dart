@@ -21,9 +21,14 @@ class RafflePreparationLoaded extends RafflePreparationState {
   final List<RaffleParticipant> participants;
   final bool isSubmitting;
 
+  /// Por que a lista acabou de ser recarregada depois de o servidor recusar
+  /// a anterior. Só vale na emissão que traz a lista nova.
+  final RaffleFailure? refreshedBecause;
+
   const RafflePreparationLoaded({
     required this.participants,
     this.isSubmitting = false,
+    this.refreshedBecause,
   });
 
   RafflePreparationLoaded copyWith({
@@ -37,7 +42,7 @@ class RafflePreparationLoaded extends RafflePreparationState {
   }
 
   @override
-  List<Object?> get props => [participants, isSubmitting];
+  List<Object?> get props => [participants, isSubmitting, refreshedBecause];
 }
 
 class RafflePreparationSuccess extends RafflePreparationState {
