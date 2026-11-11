@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/participant_avatar_placeholder.dart';
 
 /// Circular participant photo with a placeholder when there is no photo or

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notification_relative_date.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 

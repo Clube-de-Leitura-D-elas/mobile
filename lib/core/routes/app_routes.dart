@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/routes/app_route_observer.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';

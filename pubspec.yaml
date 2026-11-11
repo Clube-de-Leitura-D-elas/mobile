@@ -9,6 +9,7 @@ environment:
 dependencies:
   bloc: ^9.2.1
   cached_network_image: ^3.4.1
+  cupertino_ui: ^1.1.6
   dio: ^5.11.0
   equatable: ^2.1.0
   firebase_core: ^4.14.0
@@ -27,6 +28,7 @@ dependencies:
   intl: ^0.20.2
   jovial_svg: 1.1.29
   marionette_flutter: ^0.6.0
+  material_ui: ^1.11.0
   shared_preferences: ^2.5.2
   shimmer: ^3.0.0
   sign_in_button: ^3.2.0

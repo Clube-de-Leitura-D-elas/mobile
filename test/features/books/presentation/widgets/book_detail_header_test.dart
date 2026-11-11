@@ -1,9 +1,9 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
@@ -23,7 +23,10 @@ Future<void> _pumpHeader(
     MaterialApp(
       theme: AppTheme.light,
       locale: const Locale('pt'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: Builder(
         builder: (context) => MediaQuery(
@@ -100,7 +103,10 @@ Future<GoRouter> _pumpRouter(
     MaterialApp.router(
       theme: AppTheme.light,
       locale: const Locale('pt'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router,
     ),

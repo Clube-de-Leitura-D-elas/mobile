@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 
 /// Linha de dado do encontro (ícone + texto). Diferente de `AppGroupInfoRow`,

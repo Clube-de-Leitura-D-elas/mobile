@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/widgets/group_select_tile.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_avatar.dart';
@@ -35,7 +35,10 @@ Future<void> _pumpTile(WidgetTester tester, GroupSelectTile tile) {
     MaterialApp(
       theme: AppTheme.light,
       locale: const Locale('pt'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(body: tile),
     ),
