@@ -132,6 +132,29 @@ void main() {
       expect(find.text('Tentar novamente'), findsNothing);
     });
 
+    final messagesByFailure = <NotificationFailure, String>{
+      const NotificationNetworkFailure():
+          'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
+      const NotificationSessionExpiredFailure():
+          'Sua sessão expirou. Saia do app e entre de novo na sua conta.',
+    };
+    for (final MapEntry(key: failure, value: message)
+        in messagesByFailure.entries) {
+      testWidgets('shows the message for ${failure.runtimeType}', (
+        tester,
+      ) async {
+        when(
+          () => repository.getNotifications(page: 1),
+        ).thenAnswer((_) async => Failure(failure));
+
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        expect(find.text(message), findsOneWidget);
+        expect(find.text('Tentar novamente'), findsOneWidget);
+      });
+    }
+
     testWidgets('shows the error and reloads on retry', (tester) async {
       when(
         () => repository.getNotifications(page: 1),

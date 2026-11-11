@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_entity.dart';
+import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 
 enum NotificationsStatus { loading, loaded, error }
@@ -12,6 +13,9 @@ class NotificationsState extends Equatable {
   final bool isLoadingMore;
   final bool loadMoreFailed;
 
+  /// Por que a primeira página não carregou, quando [status] é `error`.
+  final NotificationFailure? failure;
+
   const NotificationsState({
     this.status = NotificationsStatus.loading,
     this.items = const [],
@@ -19,6 +23,7 @@ class NotificationsState extends Equatable {
     this.page = 0,
     this.isLoadingMore = false,
     this.loadMoreFailed = false,
+    this.failure,
   });
 
   bool get hasMore => page * NotificationRepository.pageSize < total;
@@ -37,6 +42,7 @@ class NotificationsState extends Equatable {
       page: page ?? this.page,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       loadMoreFailed: loadMoreFailed ?? this.loadMoreFailed,
+      failure: failure,
     );
   }
 
@@ -48,5 +54,6 @@ class NotificationsState extends Equatable {
     page,
     isLoadingMore,
     loadMoreFailed,
+    failure,
   ];
 }

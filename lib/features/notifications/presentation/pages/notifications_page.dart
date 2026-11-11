@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_entity.dart';
+import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notifications_state.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_route_paths.dart';
@@ -29,7 +30,11 @@ class NotificationsPage extends StatelessWidget {
           return switch (state.status) {
             NotificationsStatus.loading => const NotificationsSkeleton(),
             NotificationsStatus.error => NotificationsMessageView(
-              message: l10n.notificationsLoadError,
+              message: switch (state.failure) {
+                NotificationNetworkFailure() => l10n.errorNoConnection,
+                NotificationSessionExpiredFailure() => l10n.errorSessionExpired,
+                _ => l10n.notificationsLoadError,
+              },
               onRetry: cubit.load,
             ),
             NotificationsStatus.loaded when state.items.isEmpty =>
