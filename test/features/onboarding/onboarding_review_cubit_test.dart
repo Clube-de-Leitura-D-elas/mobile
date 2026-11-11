@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
@@ -79,6 +80,44 @@ void main() {
           profile: UserReviewProfile(name: 'Maria'),
         ),
         const OnboardingReviewSuccess(),
+      ],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'emits OnboardingReviewLoadError instead of an empty form when loading fails',
+      build: () {
+        when(() => mockRepository.getUserProfile()).thenAnswer(
+          (_) async => const Failure(UserNetworkFailure()),
+        );
+        return OnboardingReviewCubit(onboardingRepository: mockRepository);
+      },
+      expect: () => [const OnboardingReviewLoadError(UserNetworkFailure())],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'keeps the form and exposes submitFailure when saving fails',
+      build: () {
+        when(() => mockRepository.updateUserProfile(any())).thenAnswer(
+          (_) async => const Failure(UnknownUserFailure()),
+        );
+        return OnboardingReviewCubit(onboardingRepository: mockRepository);
+      },
+      seed: () => const OnboardingReviewFormState(
+        currentStep: 2,
+        profile: UserReviewProfile(name: 'Maria'),
+      ),
+      act: (cubit) => cubit.submitReview(),
+      skip: 1,
+      expect: () => [
+        const OnboardingReviewFormState(
+          currentStep: 0,
+          profile: UserReviewProfile(name: 'Maria'),
+        ),
+        const OnboardingReviewFormState(
+          currentStep: 2,
+          profile: UserReviewProfile(name: 'Maria'),
+          submitFailure: UnknownUserFailure(),
+        ),
       ],
     );
   });

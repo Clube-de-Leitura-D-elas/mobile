@@ -558,6 +558,148 @@ void main() {
     });
   });
 
+  group('failure kind', () {
+    Future<SupabaseFailure> invokeFailing(Object error) async {
+      when(
+        () => mockFunctionsClient.invoke('test-func', body: any(named: 'body')),
+      ).thenThrow(error);
+
+      final result = await supabaseService.invokeFunction(
+        functionName: 'test-func',
+      );
+      return (result as Failure<SupabaseResponse<dynamic>, SupabaseFailure>)
+          .failure;
+    }
+
+    test(
+      'FunctionsFetchException (no response) is a network failure',
+      () async {
+        final failure = await invokeFailing(
+          const FunctionsFetchException(details: 'SocketException'),
+        );
+
+        expect(failure.kind, SupabaseFailureKind.network);
+      },
+    );
+
+    final statusKinds = {
+      400: SupabaseFailureKind.validation,
+      401: SupabaseFailureKind.unauthorized,
+      403: SupabaseFailureKind.forbidden,
+      404: SupabaseFailureKind.notFound,
+      409: SupabaseFailureKind.conflict,
+      422: SupabaseFailureKind.validation,
+      500: SupabaseFailureKind.server,
+      503: SupabaseFailureKind.server,
+    };
+    for (final MapEntry(key: status, value: kind) in statusKinds.entries) {
+      test(
+        'HTTP $status maps to $kind and keeps the raw text for logs',
+        () async {
+          final failure = await invokeFailing(
+            FunctionsHttpException(
+              status: status,
+              details: const {'error': 'meeting not found'},
+            ),
+          );
+
+          expect(failure.kind, kind);
+          expect(failure.code, '$status');
+          expect(failure.message, 'meeting not found');
+        },
+      );
+    }
+
+    test('an error that is not a FunctionException is unknown', () async {
+      final failure = await invokeFailing(const FormatException('bad json'));
+
+      expect(failure.kind, SupabaseFailureKind.unknown);
+    });
+
+    test('AuthRetryableFetchException is a network failure', () async {
+      when(
+        () => mockGoTrueClient.signInWithPassword(
+          email: 'a@b.com',
+          password: 'x',
+        ),
+      ).thenThrow(AuthRetryableFetchException());
+
+      final result = await supabaseService.signInWithPassword(
+        email: 'a@b.com',
+        password: 'x',
+      );
+
+      final failure = (result as Failure<User, SupabaseFailure>).failure;
+      expect(failure.kind, SupabaseFailureKind.network);
+    });
+
+    test(
+      'AuthRetryableFetchException with a 503 is a server failure',
+      () async {
+        when(
+          () => mockGoTrueClient.signInWithPassword(
+            email: 'a@b.com',
+            password: 'x',
+          ),
+        ).thenThrow(AuthRetryableFetchException(statusCode: '503'));
+
+        final result = await supabaseService.signInWithPassword(
+          email: 'a@b.com',
+          password: 'x',
+        );
+
+        final failure = (result as Failure<User, SupabaseFailure>).failure;
+        expect(failure.kind, SupabaseFailureKind.server);
+      },
+    );
+
+    test('AuthApiException keeps the Supabase Auth error code', () async {
+      when(
+        () => mockGoTrueClient.signInWithPassword(
+          email: 'a@b.com',
+          password: 'x',
+        ),
+      ).thenThrow(
+        const AuthApiException(
+          'Invalid login credentials',
+          statusCode: '400',
+          code: 'invalid_credentials',
+        ),
+      );
+
+      final result = await supabaseService.signInWithPassword(
+        email: 'a@b.com',
+        password: 'x',
+      );
+
+      final failure =
+          (result as Failure<User, SupabaseFailure>).failure
+              as AuthSupabaseFailure;
+      expect(failure.errorCode, 'invalid_credentials');
+      expect(failure.kind, SupabaseFailureKind.validation);
+    });
+  });
+
+  group('SupabaseFailureKind.fromStatusCode', () {
+    test('maps null to unknown and 0 to network', () {
+      expect(
+        SupabaseFailureKind.fromStatusCode(null),
+        SupabaseFailureKind.unknown,
+      );
+      expect(
+        SupabaseFailureKind.fromStatusCode(0),
+        SupabaseFailureKind.network,
+      );
+    });
+
+    test('maps unlisted 4xx to unknown', () {
+      expect(
+        SupabaseFailureKind.fromStatusCode(405),
+        SupabaseFailureKind.unknown,
+      );
+    });
+  });
+
   group('SupabaseResponse and SupabaseFailure models', () {
     test('SupabaseResponse props and getter', () {
       const resp = SupabaseResponse<String>(data: 'hello', statusCode: 200);
@@ -579,19 +721,41 @@ void main() {
           'msg',
           '500',
           {'key': 'val'},
+          SupabaseFailureKind.unknown,
         ]),
       );
 
-      const authFail = AuthSupabaseFailure(message: 'auth msg', code: '401');
-      expect(authFail.props, equals(const ['auth msg', '401', null]));
+      const authFail = AuthSupabaseFailure(
+        message: 'auth msg',
+        code: '401',
+        errorCode: 'bad_jwt',
+      );
+      expect(
+        authFail.props,
+        equals(const [
+          'auth msg',
+          '401',
+          null,
+          SupabaseFailureKind.unknown,
+          'bad_jwt',
+        ]),
+      );
 
       const unkFail = UnknownSupabaseFailure(message: 'unk msg');
-      expect(unkFail.props, equals(const ['unk msg', null, null]));
+      expect(
+        unkFail.props,
+        equals(const ['unk msg', null, null, SupabaseFailureKind.unknown]),
+      );
 
       const notFoundFail = NotFoundSupabaseFailure();
       expect(
         notFoundFail.props,
-        equals(const ['Registro não encontrado', null, null]),
+        equals(const [
+          'Registro não encontrado',
+          null,
+          null,
+          SupabaseFailureKind.notFound,
+        ]),
       );
     });
   });

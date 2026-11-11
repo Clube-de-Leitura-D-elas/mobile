@@ -9,7 +9,12 @@ class NextEventCubit extends Cubit<NextEventState> {
 
   final GroupRepository groupRepository;
 
+  String _groupId = '';
+
+  Future<void> retry() => load(_groupId);
+
   Future<void> load(String groupId) async {
+    _groupId = groupId;
     emit(const NextEventLoading());
 
     final result = await groupRepository.getNextEvent(groupId);
@@ -17,7 +22,7 @@ class NextEventCubit extends Cubit<NextEventState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(NextEventError(failure.message));
+        emit(NextEventError(failure));
       case Success(:final data):
         if (data == null) {
           emit(const NextEventEmpty());

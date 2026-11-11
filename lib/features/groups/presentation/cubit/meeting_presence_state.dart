@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 
 sealed class MeetingPresenceState extends Equatable {
@@ -13,11 +14,12 @@ class MeetingPresenceLoading extends MeetingPresenceState {
 }
 
 class MeetingPresenceError extends MeetingPresenceState {
-  const MeetingPresenceError(this.message);
-  final String message;
+  const MeetingPresenceError(this.failure);
+
+  final GroupFailure failure;
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }
 
 class MeetingPresenceEditing extends MeetingPresenceState {
@@ -31,12 +33,12 @@ class MeetingPresenceEditing extends MeetingPresenceState {
   final List<MeetingAttendanceEntity> attendees;
   final Set<String> marked;
   final bool isSubmitting;
-  final String? submitError;
+  final GroupFailure? submitError;
 
   MeetingPresenceEditing copyWith({
     Set<String>? marked,
     bool? isSubmitting,
-    String? submitError,
+    GroupFailure? submitError,
     bool clearSubmitError = false,
   }) => MeetingPresenceEditing(
     attendees: attendees,

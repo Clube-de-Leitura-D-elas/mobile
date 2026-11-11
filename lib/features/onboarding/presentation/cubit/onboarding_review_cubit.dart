@@ -16,11 +16,15 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
     emit(const OnboardingReviewLoadingProfile());
     final result = await onboardingRepository.getUserProfile();
 
+    if (isClosed) return;
+
     final UserReviewProfile profile;
-    if (result case Success(:final data)) {
-      profile = data;
-    } else {
-      profile = const UserReviewProfile();
+    switch (result) {
+      case Success(:final data):
+        profile = data;
+      case Failure(:final failure):
+        emit(OnboardingReviewLoadError(failure));
+        return;
     }
 
     emit(
@@ -72,7 +76,7 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
     final currentState = state;
     if (currentState is! OnboardingReviewFormState) return;
 
-    emit(currentState.copyWith(isSubmitting: true, errorMessage: null));
+    emit(currentState.copyWith(isSubmitting: true));
 
     final result = await onboardingRepository.updateUserProfile(
       currentState.profile,
@@ -82,7 +86,7 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
       emit(
         currentState.copyWith(
           isSubmitting: false,
-          errorMessage: failure.message,
+          submitFailure: failure,
         ),
       );
       return;

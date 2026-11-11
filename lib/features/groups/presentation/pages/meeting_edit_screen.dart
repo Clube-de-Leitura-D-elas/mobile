@@ -99,8 +99,11 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
   static final _timeFormat = DateFormat('HH:mm');
 
   DateTime? _parse(DateFormat format, String value) {
+    final text = value.trim();
+    // parseStrict aceita ano com menos de 4 dígitos (01/05/26 vira ano 26).
+    if (text.length != format.pattern!.length) return null;
     try {
-      return format.parseStrict(value.trim());
+      return format.parseStrict(text);
     } on FormatException {
       return null;
     }
@@ -153,6 +156,7 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
               controller: _dateController,
               hintText: l10n.meetingEditDateHint,
               keyboardType: TextInputType.datetime,
+              inputFormatters: const [DateInputFormatter()],
               validator: (value) => _validateDateTime(
                 value,
                 _dateFormat,
@@ -166,6 +170,7 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
               controller: _timeController,
               hintText: l10n.meetingEditTimeHint,
               keyboardType: TextInputType.datetime,
+              inputFormatters: const [TimeInputFormatter()],
               validator: (value) => _validateDateTime(
                 value,
                 _timeFormat,

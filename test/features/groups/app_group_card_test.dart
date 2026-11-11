@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -146,7 +147,7 @@ void main() {
     );
 
     testWidgets(
-      'Given tasksOnly, When rendering, Then shows only Minhas tarefas',
+      'Given tasksOnly, When rendering, Then shows host name instead of participants count and only Minhas tarefas',
       (tester) async {
         await tester.pumpWidget(
           _wrap(
@@ -169,6 +170,8 @@ void main() {
         );
 
         expect(find.text('Próximo evento'), findsNothing);
+        expect(find.text('Anfitriã: Roberta'), findsOneWidget);
+        expect(find.text('5 participantes'), findsNothing);
         expect(find.text('Minhas tarefas'), findsOneWidget);
       },
     );
@@ -206,17 +209,25 @@ void main() {
             nextMeeting: GroupMeeting(
               hostName: 'Roberta',
               bookTitle: 'Pequeno príncipe',
-              date: '2026-08-29T19:00:00Z',
+              date: '2026-08-29T19:30:00Z',
               location: 'Z Café TECNOPUC',
             ),
           ),
         ),
       );
 
+      final localDate = DateTime.parse('2026-08-29T19:30:00Z').toLocal();
       expect(find.text('Próximo evento'), findsOneWidget);
-      expect(find.text('Roberta'), findsOneWidget);
+      expect(find.text('Roberta'), findsNothing);
       expect(find.text('Pequeno príncipe'), findsOneWidget);
-      expect(find.text('29/08/2026'), findsOneWidget);
+      expect(
+        find.text(DateFormat('dd/MM/yyyy', 'pt_BR').format(localDate)),
+        findsOneWidget,
+      );
+      expect(
+        find.text(DateFormat('HH:mm', 'pt_BR').format(localDate)),
+        findsOneWidget,
+      );
       expect(find.text('Z Café TECNOPUC'), findsOneWidget);
     });
 
@@ -241,6 +252,31 @@ void main() {
         );
 
         expect(find.text('Sem localização'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Shows the localized time fallback when the meeting date has no parseable time',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            const AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 32,
+              cityState: 'Porto Alegre, RS',
+              nextMeeting: GroupMeeting(
+                hostName: 'Roberta',
+                bookTitle: 'Pequeno príncipe',
+                date: '29/08/2026',
+                location: 'Z Café TECNOPUC',
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('29/08/2026'), findsOneWidget);
+        expect(find.text('--:--'), findsOneWidget);
       },
     );
 

@@ -9,6 +9,6 @@ AppIconAsset notificationIconFor(NotificationType type) => switch (type) {
   NotificationType.meetingReminder => AppIcons.clock,
   NotificationType.meetingSchedulePending => AppIcons.calendar,
   NotificationType.meetingUpdated => AppIcons.calendar,
-  NotificationType.drawResult => AppIcons.host,
+  NotificationType.drawResult => AppIcons.book,
   NotificationType.unknown => AppIcons.bell,
 };

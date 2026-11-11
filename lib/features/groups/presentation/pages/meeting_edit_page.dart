@@ -6,6 +6,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_details_entity.da
 import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_edit_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_screen.dart';
+import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 
 class MeetingEditPage extends StatelessWidget {
   const MeetingEditPage({super.key, required this.meeting});
@@ -19,8 +20,8 @@ class MeetingEditPage extends StatelessWidget {
         switch (state) {
           case MeetingEditSuccess():
             Navigator.of(context).pop(true);
-          case MeetingEditError(:final message):
-            context.showErrorToast(message);
+          case MeetingEditError(:final failure):
+            context.showErrorToast(groupFailureMessage(context.l10n, failure));
           case MeetingEditIdle() || MeetingEditSubmitting():
             break;
         }

@@ -122,6 +122,53 @@ void main() {
     ).called(1);
   });
 
+  test('getMyGroups maps a network failure', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<List<GroupModel>>(
+        functionName: 'get-my-groups',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(
+        FunctionSupabaseFailure(
+          message: 'Failed to fetch',
+          kind: SupabaseFailureKind.network,
+        ),
+      ),
+    );
+
+    final result = await repository.getMyGroups();
+
+    expect(
+      result,
+      const Failure<List<GroupEntity>, GroupFailure>(GroupNetworkFailure()),
+    );
+  });
+
+  test('maps a network failure to GroupNetworkFailure', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
+        functionName: 'get-group-details?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(
+        FunctionSupabaseFailure(
+          message: 'Failed to fetch',
+          code: '0',
+          kind: SupabaseFailureKind.network,
+        ),
+      ),
+    );
+
+    final result = await repository.getGroupDetails('group-1');
+
+    expect(
+      result,
+      const Failure<GroupDetailsEntity, GroupFailure>(GroupNetworkFailure()),
+    );
+  });
+
   test('maps an Edge Function failure to a group failure', () async {
     const failure = FunctionSupabaseFailure(message: 'Falha do servidor');
     when(
@@ -760,7 +807,11 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => const Failure(
-          FunctionSupabaseFailure(message: 'Forbidden', code: '403'),
+          FunctionSupabaseFailure(
+            message: 'Forbidden',
+            code: '403',
+            kind: SupabaseFailureKind.forbidden,
+          ),
         ),
       );
 

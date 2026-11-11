@@ -54,6 +54,7 @@ class SupabaseServiceImpl implements SupabaseService {
             message: message,
             code: res.status.toString(),
             details: res.data,
+            kind: SupabaseFailureKind.fromStatusCode(res.status),
           ),
         );
       }
@@ -84,6 +85,9 @@ class SupabaseServiceImpl implements SupabaseService {
           message: message,
           code: e.status.toString(),
           details: e.details,
+          kind: e is FunctionsFetchException
+              ? SupabaseFailureKind.network
+              : SupabaseFailureKind.fromStatusCode(e.status),
         ),
       );
     } catch (e) {
@@ -108,6 +112,20 @@ class SupabaseServiceImpl implements SupabaseService {
             ? '<${value.length} chars>'
             : value,
       ),
+    );
+  }
+
+  static AuthSupabaseFailure _authFailure(AuthException e) {
+    final status = int.tryParse(e.statusCode ?? '');
+    // AuthRetryableFetchException também cobre 5xx; só sem status é rede.
+    final isNetwork = e is AuthRetryableFetchException && status == null;
+    return AuthSupabaseFailure(
+      message: e.message,
+      code: e.statusCode,
+      errorCode: e.code,
+      kind: isNetwork
+          ? SupabaseFailureKind.network
+          : SupabaseFailureKind.fromStatusCode(status),
     );
   }
 
@@ -137,9 +155,7 @@ class SupabaseServiceImpl implements SupabaseService {
       debugPrint(
         '[SupabaseService] AuthException during sign in: ${e.message}',
       );
-      return Failure(
-        AuthSupabaseFailure(message: e.message, code: e.statusCode),
-      );
+      return Failure(_authFailure(e));
     } catch (e) {
       debugPrint('[SupabaseService] Unexpected error during sign in: $e');
       return Failure(
@@ -176,9 +192,7 @@ class SupabaseServiceImpl implements SupabaseService {
       debugPrint(
         '[SupabaseService] AuthException during password sign in: ${e.message}',
       );
-      return Failure(
-        AuthSupabaseFailure(message: e.message, code: e.statusCode),
-      );
+      return Failure(_authFailure(e));
     } catch (e) {
       debugPrint(
         '[SupabaseService] Unexpected error during password sign in: $e',
@@ -217,9 +231,7 @@ class SupabaseServiceImpl implements SupabaseService {
       debugPrint(
         '[SupabaseService] AuthException during sign up: ${e.message}',
       );
-      return Failure(
-        AuthSupabaseFailure(message: e.message, code: e.statusCode),
-      );
+      return Failure(_authFailure(e));
     } catch (e) {
       debugPrint('[SupabaseService] Unexpected error during sign up: $e');
       return Failure(

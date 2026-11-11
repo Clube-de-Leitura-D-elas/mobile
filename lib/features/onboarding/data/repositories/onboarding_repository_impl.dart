@@ -1,5 +1,6 @@
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/auth/data/user_failure_mapper.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
@@ -45,7 +46,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     );
 
     if (response case Failure(:final failure)) {
-      return Failure(UserFailure(message: failure.message));
+      return Failure(userFailureFromFunction(failure));
     }
 
     return Success(response.unwrap().data ?? const UserReviewProfile());
@@ -84,7 +85,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     );
 
     if (response case Failure(:final failure)) {
-      return Failure(UserFailure(message: failure.message));
+      return Failure(userFailureFromFunction(failure));
     }
 
     return const Success(null);

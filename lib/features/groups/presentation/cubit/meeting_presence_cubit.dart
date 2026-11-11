@@ -13,6 +13,8 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
   final GroupRepository _repository;
   String _meetingId = '';
 
+  Future<void> retry() => load(_meetingId);
+
   Future<void> load(String meetingId) async {
     _meetingId = meetingId;
     emit(const MeetingPresenceLoading());
@@ -31,7 +33,7 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
                 marked: {for (final a in sorted) a.id},
               ),
       );
-    }, (failure) => emit(MeetingPresenceError(failure.message)));
+    }, (failure) => emit(MeetingPresenceError(failure)));
   }
 
   static String _sortKey(String value) {
@@ -86,9 +88,7 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
         );
       case Failure(:final failure):
         // Mantém as marcações para nova tentativa.
-        emit(
-          current.copyWith(isSubmitting: false, submitError: failure.message),
-        );
+        emit(current.copyWith(isSubmitting: false, submitError: failure));
     }
   }
 }

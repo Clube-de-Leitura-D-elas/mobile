@@ -1,5 +1,6 @@
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/groups/data/group_failure_mapper.dart';
 import 'package:mobile/features/groups/data/models/group_participant_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
@@ -24,8 +25,10 @@ class GroupParticipantsRepositoryImpl implements GroupParticipantsRepository {
         );
 
     switch (result) {
-      case Failure():
-        return const Failure(GroupParticipantsFailure());
+      case Failure(:final failure):
+        return Failure(
+          groupFailureFrom(failure, const GroupParticipantsFailure()),
+        );
       case Success(:final data):
         final participants = data.data;
         if (participants == null) {

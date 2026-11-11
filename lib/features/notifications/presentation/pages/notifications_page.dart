@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_entity.dart';
+import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notifications_state.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_route_paths.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notifications_message_view.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notifications_skeleton.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -29,8 +31,16 @@ class NotificationsPage extends StatelessWidget {
           return switch (state.status) {
             NotificationsStatus.loading => const NotificationsSkeleton(),
             NotificationsStatus.error => NotificationsMessageView(
-              message: l10n.notificationsLoadError,
+              message: switch (state.failure) {
+                NotificationNetworkFailure() => l10n.errorNoConnection,
+                NotificationSessionExpiredFailure() => l10n.errorSessionExpired,
+                _ => l10n.notificationsLoadError,
+              },
               onRetry: cubit.load,
+              secondaryLabel: state.failure is NotificationSessionExpiredFailure
+                  ? l10n.logoutTooltip
+                  : null,
+              onSecondary: () => context.read<SessionCubit>().logOut(),
             ),
             NotificationsStatus.loaded when state.items.isEmpty =>
               NotificationsMessageView(message: l10n.notificationsEmpty),

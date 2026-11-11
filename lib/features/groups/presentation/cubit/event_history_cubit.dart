@@ -9,7 +9,12 @@ class EventHistoryCubit extends Cubit<EventHistoryState> {
 
   final GroupRepository groupRepository;
 
+  String _groupId = '';
+
+  Future<void> retry() => load(_groupId);
+
   Future<void> load(String groupId) async {
+    _groupId = groupId;
     emit(const EventHistoryLoading());
 
     final result = await groupRepository.getEventHistory(groupId);
@@ -17,7 +22,7 @@ class EventHistoryCubit extends Cubit<EventHistoryState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(EventHistoryError(failure.message));
+        emit(EventHistoryError(failure));
       case Success(:final data):
         if (data.isEmpty) {
           emit(const EventHistoryEmpty());

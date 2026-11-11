@@ -62,7 +62,9 @@ void main() {
     act: (cubit) => cubit.load('group-1'),
     expect: () => [
       const NextEventLoading(),
-      const NextEventError('Falha ao carregar próximo evento'),
+      const NextEventError(
+        GroupNextEventFailure(message: 'Falha ao carregar próximo evento'),
+      ),
     ],
   );
 
@@ -84,4 +86,27 @@ void main() {
 
     expect(states, [const NextEventLoading()]);
   });
+
+  blocTest<NextEventCubit, NextEventState>(
+    'retry reloads the same group after a failure',
+    build: () {
+      var calls = 0;
+      when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+        (_) async => calls++ == 0
+            ? const Failure(GroupNetworkFailure())
+            : const Success(null),
+      );
+      return NextEventCubit(groupRepository: mockRepository);
+    },
+    act: (cubit) async {
+      await cubit.load('group-1');
+      await cubit.retry();
+    },
+    expect: () => [
+      const NextEventLoading(),
+      const NextEventError(GroupNetworkFailure()),
+      const NextEventLoading(),
+      const NextEventEmpty(),
+    ],
+  );
 }

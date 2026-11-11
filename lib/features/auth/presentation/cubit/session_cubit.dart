@@ -63,8 +63,12 @@ class SessionCubit extends Cubit<SessionState> {
     final result = await authRepository.signIn();
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Sign-In failed: ${failure.message}');
-      emit(SessionError(message: failure.message));
+      debugPrint('[SessionCubit] Sign-In failed: $failure');
+      if (failure is! GoogleSignInCanceledFailure) {
+        emit(
+          SessionError(failure: failure, operation: SessionOperation.signIn),
+        );
+      }
       emit(const GuestSession());
       return;
     }
@@ -97,8 +101,8 @@ class SessionCubit extends Cubit<SessionState> {
     );
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Email Sign-In failed: ${failure.message}');
-      emit(SessionError(message: failure.message));
+      debugPrint('[SessionCubit] Email Sign-In failed: $failure');
+      emit(SessionError(failure: failure, operation: SessionOperation.signIn));
       emit(const GuestSession());
       return;
     }
@@ -131,8 +135,8 @@ class SessionCubit extends Cubit<SessionState> {
     );
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Email Sign-Up failed: ${failure.message}');
-      emit(SessionError(message: failure.message));
+      debugPrint('[SessionCubit] Email Sign-Up failed: $failure');
+      emit(SessionError(failure: failure, operation: SessionOperation.signUp));
       emit(const GuestSession());
       return Failure(failure);
     }
@@ -154,8 +158,14 @@ class SessionCubit extends Cubit<SessionState> {
     final profileResult = await authRepository.getUserProfile(userId);
 
     if (profileResult case Failure(:final failure)) {
-      debugPrint('[SessionCubit] getUserProfile failure: ${failure.message}');
-      emit(NeedsClaimSession(userId: userId, user: userEntity));
+      debugPrint('[SessionCubit] getUserProfile failure: $failure');
+      emit(
+        SessionProfileUnavailable(
+          userId: userId,
+          user: userEntity,
+          failure: failure,
+        ),
+      );
       return;
     }
 
@@ -185,6 +195,12 @@ class SessionCubit extends Cubit<SessionState> {
       '[SessionCubit] Profile found! Emitting AuthenticatedSession for ${user.name}',
     );
     emit(AuthenticatedSession(user: user, profile: data));
+  }
+
+  Future<void> retryProfile() async {
+    final session = state;
+    if (session is! SessionProfileUnavailable) return;
+    await checkUserProfile(session.userId, session.user);
   }
 
   Future<void> refreshProfile() async {

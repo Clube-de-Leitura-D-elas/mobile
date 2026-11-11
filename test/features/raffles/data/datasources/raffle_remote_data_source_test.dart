@@ -10,9 +10,21 @@ import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
 
-class TestSupabaseFailure extends SupabaseFailure {
-  const TestSupabaseFailure(String message) : super(message: message);
-}
+// 422 é como o backend recusa participantes que deixaram de ser elegíveis:
+// o repository só distingue esse caso se `kind` e `code` chegarem intactos.
+const _staleListFailure = FunctionSupabaseFailure(
+  message: 'some participants are not eligible for this raffle',
+  code: '422',
+  kind: SupabaseFailureKind.validation,
+);
+
+Matcher _throwsRemoteException(SupabaseFailure failure) => throwsA(
+  isA<RaffleRemoteException>().having(
+    (e) => e.failure,
+    'failure',
+    same(failure),
+  ),
+);
 
 void main() {
   late RaffleRemoteDataSourceImpl dataSource;
@@ -86,7 +98,7 @@ void main() {
     );
 
     test(
-      'deve lançar Exception quando o invokeFunction retornar uma falha',
+      'deve lançar RaffleRemoteException com a falha original quando o invokeFunction falhar',
       () async {
         when(
           () =>
@@ -95,22 +107,20 @@ void main() {
                 body: any(named: 'body'),
                 decoder: any(named: 'decoder'),
               ),
-        ).thenAnswer(
-          (_) async => const Failure(
-            TestSupabaseFailure('Erro ao carregar participantes'),
-          ),
-        );
+        ).thenAnswer((_) async => const Failure(_staleListFailure));
 
-        expect(
-          () async => await dataSource.getEligibleParticipants(tMeetingId),
-          throwsA(
-            isA<Exception>().having(
-              (e) => e.toString(),
-              'message',
-              contains('Erro ao carregar participantes'),
-            ),
-          ),
+        await expectLater(
+          dataSource.getEligibleParticipants(tMeetingId),
+          _throwsRemoteException(_staleListFailure),
         );
+        verify(
+          () =>
+              mockSupabaseService.invokeFunction<List<RaffleParticipantModel>>(
+                functionName: 'get-eligible-raffle-participants',
+                body: {'meeting_id': tMeetingId},
+                decoder: any(named: 'decoder'),
+              ),
+        ).called(1);
       },
     );
   });
@@ -149,31 +159,28 @@ void main() {
     );
 
     test(
-      'deve lançar Exception quando o confirmRaffle retornar uma falha',
+      'deve lançar RaffleRemoteException com a falha original quando o confirmRaffle falhar',
       () async {
         when(
           () => mockSupabaseService.invokeFunction<void>(
             functionName: any(named: 'functionName'),
             body: any(named: 'body'),
           ),
-        ).thenAnswer(
-          (_) async =>
-              const Failure(TestSupabaseFailure('Erro ao confirmar sorteio')),
-        );
+        ).thenAnswer((_) async => const Failure(_staleListFailure));
 
-        expect(
-          () async => await dataSource.confirmRaffle(
-            tMeetingId,
-            tSelectedParticipantIds,
-          ),
-          throwsA(
-            isA<Exception>().having(
-              (e) => e.toString(),
-              'message',
-              contains('Erro ao confirmar sorteio'),
-            ),
-          ),
+        await expectLater(
+          dataSource.confirmRaffle(tMeetingId, tSelectedParticipantIds),
+          _throwsRemoteException(_staleListFailure),
         );
+        verify(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: 'confirm-meeting-raffle',
+            body: {
+              'meeting_id': tMeetingId,
+              'eligible_participant_ids': tSelectedParticipantIds,
+            },
+          ),
+        ).called(1);
       },
     );
   });
@@ -227,27 +234,31 @@ void main() {
       expect(result, isNull);
     });
 
-    test('deve propagar erro quando a chamada falhar', () async {
+    test('deve propagar a falha original quando a chamada falhar', () async {
+      const failure = FunctionSupabaseFailure(
+        message: 'Unable to load raffle data',
+        code: '500',
+        kind: SupabaseFailureKind.server,
+      );
       when(
         () => mockSupabaseService.invokeFunction<Map<String, dynamic>?>(
           functionName: any(named: 'functionName'),
           body: any(named: 'body'),
           decoder: any(named: 'decoder'),
         ),
-      ).thenAnswer(
-        (_) async => const Failure(TestSupabaseFailure('Not found')),
-      );
+      ).thenAnswer((_) async => const Failure(failure));
 
-      expect(
-        () => dataSource.getRaffleResult(tMeetingId),
-        throwsA(
-          isA<Exception>().having(
-            (error) => error.toString(),
-            'message',
-            contains('Not found'),
-          ),
-        ),
+      await expectLater(
+        dataSource.getRaffleResult(tMeetingId),
+        _throwsRemoteException(failure),
       );
+      verify(
+        () => mockSupabaseService.invokeFunction<Map<String, dynamic>?>(
+          functionName: 'get-meeting-raffle-result',
+          body: {'meeting_id': tMeetingId},
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
     });
   });
 
@@ -282,24 +293,32 @@ void main() {
       expect(result.bookTitle, '1984');
     });
 
-    test('deve lançar Exception em caso de falha', () async {
+    test('deve lançar RaffleRemoteException com a falha original', () async {
       when(
         () => mockSupabaseService.invokeFunction<RaffleResultModel>(
           functionName: any(named: 'functionName'),
           body: any(named: 'body'),
           decoder: any(named: 'decoder'),
         ),
-      ).thenAnswer(
-        (_) async => const Failure(TestSupabaseFailure('Falha ao sortear')),
-      );
+      ).thenAnswer((_) async => const Failure(_staleListFailure));
 
-      expect(
-        () => dataSource.drawRaffle(
+      await expectLater(
+        dataSource.drawRaffle(
           meetingId: tMeetingId,
           eligibleParticipantIds: ['w1'],
         ),
-        throwsA(isA<Exception>()),
+        _throwsRemoteException(_staleListFailure),
       );
+      verify(
+        () => mockSupabaseService.invokeFunction<RaffleResultModel>(
+          functionName: 'draw-meeting-raffle',
+          body: {
+            'meeting_id': tMeetingId,
+            'eligible_participant_ids': ['w1'],
+          },
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
     });
   });
 
@@ -324,20 +343,29 @@ void main() {
       await expectLater(dataSource.saveRaffleResult(tModel), completes);
     });
 
-    test('deve lançar Exception em caso de erro', () async {
+    test('deve lançar RaffleRemoteException com a falha original', () async {
+      const failure = FunctionSupabaseFailure(
+        message: 'raffle already recorded for this meeting',
+        code: '409',
+        kind: SupabaseFailureKind.conflict,
+      );
       when(
         () => mockSupabaseService.invokeFunction<void>(
           functionName: any(named: 'functionName'),
           body: any(named: 'body'),
         ),
-      ).thenAnswer(
-        (_) async => const Failure(TestSupabaseFailure('Erro ao salvar')),
-      );
+      ).thenAnswer((_) async => const Failure(failure));
 
-      expect(
-        () => dataSource.saveRaffleResult(tModel),
-        throwsA(isA<Exception>()),
+      await expectLater(
+        dataSource.saveRaffleResult(tModel),
+        _throwsRemoteException(failure),
       );
+      verify(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'confirm-meeting-raffle-winner',
+          body: tModel.toJson(),
+        ),
+      ).called(1);
     });
   });
 }

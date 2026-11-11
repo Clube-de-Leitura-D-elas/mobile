@@ -29,7 +29,7 @@ class MeetingInvitationCubit extends Cubit<MeetingInvitationState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(MeetingInvitationError(previous, failure.message, status));
+        emit(MeetingInvitationError(previous, failure, status));
       case Success():
         emit(MeetingInvitationIdle(status));
     }

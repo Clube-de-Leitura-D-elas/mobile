@@ -90,6 +90,8 @@ class EditProfilePhotoDialog extends StatelessWidget {
 
   String _noticeMessage(AppLocalizations l10n, EditProfilePhotoNotice notice) {
     return switch (notice) {
+      EditProfilePhotoNetworkNotice() => l10n.errorNoConnection,
+      EditProfilePhotoSessionExpiredNotice() => l10n.errorSessionExpired,
       EditProfilePhotoUploadFailedNotice() => l10n.editProfilePhotoUploadFailed,
       EditProfilePhotoRejectedNotice() => l10n.editProfilePhotoRejected,
       EditProfilePhotoTooLargeNotice() => l10n.editProfilePhotoTooLarge,

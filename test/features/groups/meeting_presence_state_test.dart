@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
@@ -27,20 +28,23 @@ void main() {
   });
 
   group('MeetingPresenceError', () {
-    test('props contém a mensagem', () {
-      expect(const MeetingPresenceError('falhou').props, ['falhou']);
+    test('props contém a falha', () {
+      expect(const MeetingPresenceError(MeetingAttendanceFailure()).props, [
+        const MeetingAttendanceFailure(),
+      ]);
     });
 
-    test('é igual quando a mensagem é a mesma', () {
+    test('é igual quando a falha é a mesma', () {
       expect(
-        const MeetingPresenceError('falhou'),
-        const MeetingPresenceError('falhou'),
+        const MeetingPresenceError(MeetingAttendanceFailure()),
+        const MeetingPresenceError(MeetingAttendanceFailure()),
       );
     });
 
-    test('é diferente quando a mensagem muda', () {
+    test('é diferente quando a falha muda', () {
       expect(
-        const MeetingPresenceError('a') == const MeetingPresenceError('b'),
+        const MeetingPresenceError(MeetingAttendanceFailure()) ==
+            const MeetingPresenceError(GroupNetworkFailure()),
         isFalse,
       );
     });
@@ -61,14 +65,14 @@ void main() {
         attendees: [ana],
         marked: const {'u-1'},
         isSubmitting: true,
-        submitError: 'erro',
+        submitError: const MeetingPresenceFailure(),
       );
 
       expect(state.props, [
         [ana],
         {'u-1'},
         true,
-        'erro',
+        const MeetingPresenceFailure(),
       ]);
     });
 
@@ -92,7 +96,11 @@ void main() {
         isFalse,
       );
       expect(
-        base == MeetingPresenceEditing(attendees: [ana], submitError: 'x'),
+        base ==
+            MeetingPresenceEditing(
+              attendees: [ana],
+              submitError: const MeetingPresenceFailure(),
+            ),
         isFalse,
       );
     });
@@ -103,7 +111,7 @@ void main() {
           attendees: [ana],
           marked: const {'u-1'},
           isSubmitting: true,
-          submitError: 'erro',
+          submitError: const MeetingPresenceFailure(),
         );
 
         expect(state.copyWith(), state);
@@ -112,14 +120,14 @@ void main() {
       test('substitui marked mantendo o resto', () {
         final state = MeetingPresenceEditing(
           attendees: [ana, bruno],
-          submitError: 'erro',
+          submitError: const MeetingPresenceFailure(),
         );
 
         final copy = state.copyWith(marked: const {'u-2'});
 
         expect(copy.marked, {'u-2'});
         expect(copy.attendees, [ana, bruno]);
-        expect(copy.submitError, 'erro');
+        expect(copy.submitError, const MeetingPresenceFailure());
         expect(copy.isSubmitting, isFalse);
       });
 
@@ -134,25 +142,29 @@ void main() {
       test('define um novo submitError', () {
         final copy = MeetingPresenceEditing(
           attendees: [ana],
-        ).copyWith(submitError: 'novo erro');
+        ).copyWith(submitError: const GroupNetworkFailure());
 
-        expect(copy.submitError, 'novo erro');
+        expect(copy.submitError, const GroupNetworkFailure());
       });
 
       test('clearSubmitError remove o erro existente', () {
         final copy = MeetingPresenceEditing(
           attendees: [ana],
-          submitError: 'erro',
+          submitError: const MeetingPresenceFailure(),
         ).copyWith(clearSubmitError: true);
 
         expect(copy.submitError, isNull);
       });
 
       test('clearSubmitError tem prioridade sobre um novo submitError', () {
-        final copy = MeetingPresenceEditing(
-          attendees: [ana],
-          submitError: 'velho',
-        ).copyWith(submitError: 'novo', clearSubmitError: true);
+        final copy =
+            MeetingPresenceEditing(
+              attendees: [ana],
+              submitError: const MeetingPresenceFailure(),
+            ).copyWith(
+              submitError: const GroupNetworkFailure(),
+              clearSubmitError: true,
+            );
 
         expect(copy.submitError, isNull);
       });
@@ -190,7 +202,8 @@ void main() {
 
   test('estados de tipos diferentes nunca são iguais', () {
     expect(
-      const MeetingPresenceLoading() == const MeetingPresenceError('x'),
+      const MeetingPresenceLoading() ==
+          const MeetingPresenceError(MeetingAttendanceFailure()),
       isFalse,
     );
     expect(

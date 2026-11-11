@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 
 sealed class EventHistoryState extends Equatable {
@@ -27,10 +28,10 @@ class EventHistoryLoaded extends EventHistoryState {
 }
 
 class EventHistoryError extends EventHistoryState {
-  const EventHistoryError(this.message);
+  const EventHistoryError(this.failure);
 
-  final String message;
+  final GroupFailure failure;
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

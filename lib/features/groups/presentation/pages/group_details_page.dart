@@ -10,6 +10,11 @@ import 'package:mobile/features/groups/presentation/pages/group_details_screen.d
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
+import 'package:mobile/features/groups/presentation/group_failure_message.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key, required this.groupId});
@@ -24,9 +29,12 @@ class GroupDetailsPage extends StatelessWidget {
           GroupDetailsLoading() => const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           ),
-          GroupDetailsError(:final message) => Scaffold(
+          GroupDetailsError(:final failure) => Scaffold(
             appBar: AppBar(),
-            body: Center(child: Text(message)),
+            body: GroupErrorState(
+              failure: failure,
+              onRetry: context.read<GroupDetailsCubit>().retry,
+            ),
           ),
           GroupDetailsLoaded(:final group) => GroupDetailsScreen(
             name: 'Grupo ${group.name}',
@@ -46,6 +54,22 @@ class GroupDetailsPage extends StatelessWidget {
                 return GroupNextEvent(
                   status: _toWidgetStatus(nextEventState),
                   data: _toWidgetData(nextEventState),
+                  errorMessage: nextEventState is NextEventError
+                      ? groupFailureMessage(
+                          context.l10n,
+                          nextEventState.failure,
+                        )
+                      : null,
+                  onRetry:
+                      nextEventState is NextEventError &&
+                          !groupFailureIsRetryable(nextEventState.failure)
+                      ? null
+                      : context.read<NextEventCubit>().retry,
+                  onLogout:
+                      nextEventState is NextEventError &&
+                          nextEventState.failure is GroupSessionExpiredFailure
+                      ? () => context.read<SessionCubit>().logOut()
+                      : null,
                   onMoreDetailsPressed: meetingId == null
                       ? null
                       : () async {
@@ -91,7 +115,6 @@ class GroupDetailsPage extends StatelessWidget {
     return GroupNextEventData(
       location: event.location,
       date: event.date,
-      hostName: event.hostName,
       bookTitle: event.bookTitle,
       bookCover: coverUrl == null || coverUrl.isEmpty
           ? null

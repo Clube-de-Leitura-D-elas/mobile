@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 
 enum HomeStatus { initial, loading, loaded, error }
 
@@ -11,14 +12,14 @@ class HomeState extends Equatable {
   final List<GroupEntity> groups;
   final Set<String> expandedGroupIds;
   final String searchQuery;
-  final String? errorMessage;
+  final GroupFailure? error;
 
   const HomeState({
     this.status = HomeStatus.initial,
     this.groups = const [],
     this.expandedGroupIds = const {},
     this.searchQuery = '',
-    this.errorMessage,
+    this.error,
   });
 
   HomeState copyWith({
@@ -26,14 +27,14 @@ class HomeState extends Equatable {
     List<GroupEntity>? groups,
     Set<String>? expandedGroupIds,
     String? searchQuery,
-    String? errorMessage,
+    GroupFailure? error,
   }) {
     return HomeState(
       status: status ?? this.status,
       groups: groups ?? this.groups,
       expandedGroupIds: expandedGroupIds ?? this.expandedGroupIds,
       searchQuery: searchQuery ?? this.searchQuery,
-      errorMessage: errorMessage ?? this.errorMessage,
+      error: error ?? this.error,
     );
   }
 
@@ -85,6 +86,6 @@ class HomeState extends Equatable {
     groups,
     expandedGroupIds,
     searchQuery,
-    errorMessage,
+    error,
   ];
 }
