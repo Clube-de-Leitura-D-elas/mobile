@@ -12,6 +12,9 @@ import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
+import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
@@ -160,6 +163,17 @@ class DependenciesContainer {
       () => ProfileRepositoryImpl(
         supabaseService: serviceLocator<SupabaseService>(),
       ),
+    );
+
+    // --- Books Feature ---
+    serviceLocator.registerLazySingleton<BookRepository>(
+      () => BookRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<BookDetailsCubit>(
+      () => BookDetailsCubit(repository: serviceLocator<BookRepository>()),
     );
 
     // --- Notifications Feature ---

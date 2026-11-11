@@ -1445,5 +1445,94 @@
         "type": "int"
       }
     }
+  },
+  "bookDetailScreenTitle": "Detalhes do livro",
+  "@bookDetailScreenTitle": {
+    "description": "Título do cabeçalho da tela de detalhes do livro enquanto carrega ou em erro."
+  },
+  "bookDetailRateButton": "Avaliar",
+  "@bookDetailRateButton": {
+    "description": "Botão que abre o modal de avaliação do livro."
+  },
+  "bookDetailEditReviewButton": "Editar avaliação",
+  "@bookDetailEditReviewButton": {
+    "description": "Botão que abre o modal para editar a avaliação já feita."
+  },
+  "bookDetailRecommendButton": "Indicar",
+  "@bookDetailRecommendButton": {
+    "description": "Botão para indicar o livro a um grupo."
+  },
+  "bookDetailSynopsisTitle": "Sinopse",
+  "@bookDetailSynopsisTitle": {
+    "description": "Título da seção de sinopse no detalhe do livro."
+  },
+  "bookDetailReviewsTitle": "Comentários",
+  "@bookDetailReviewsTitle": {
+    "description": "Título da seção de avaliações das leitoras no detalhe do livro."
+  },
+  "bookDetailNoReviews": "Ainda não há comentários",
+  "@bookDetailNoReviews": {
+    "description": "Texto quando nenhuma outra leitora avaliou o livro."
+  },
+  "bookDetailLoading": "Carregando livro",
+  "@bookDetailLoading": {
+    "description": "Rótulo de acessibilidade do carregamento do detalhe do livro."
+  },
+  "bookDetailLoadError": "Não foi possível carregar o livro.",
+  "@bookDetailLoadError": {
+    "description": "Erro ao carregar o detalhe do livro."
+  },
+  "bookDetailNotFound": "Livro não encontrado.",
+  "@bookDetailNotFound": {
+    "description": "Mensagem quando o livro não existe."
+  },
+  "bookDetailRetry": "Tentar novamente",
+  "@bookDetailRetry": {
+    "description": "Botão de nova tentativa do detalhe do livro."
+  },
+  "bookDetailLoadingMoreReviews": "Carregando mais comentários",
+  "@bookDetailLoadingMoreReviews": {
+    "description": "Rótulo de acessibilidade do carregamento da próxima página de comentários."
+  },
+  "bookDetailLoadMoreReviewsError": "Não foi possível carregar mais comentários.",
+  "@bookDetailLoadMoreReviewsError": {
+    "description": "Erro ao carregar a próxima página de comentários."
+  },
+  "bookDetailReadingStatusError": "Não foi possível atualizar o status de leitura.",
+  "@bookDetailReadingStatusError": {
+    "description": "Toast de erro ao marcar ou desmarcar o livro como lido."
+  },
+  "bookReviewDialogTitle": "Avaliar livro",
+  "@bookReviewDialogTitle": {
+    "description": "Título do modal de avaliação do livro."
+  },
+  "bookReviewDialogEditTitle": "Editar avaliação",
+  "@bookReviewDialogEditTitle": {
+    "description": "Título do modal ao editar uma avaliação existente."
+  },
+  "bookReviewRatingLabel": "Sua nota",
+  "@bookReviewRatingLabel": {
+    "description": "Rótulo das estrelas no modal de avaliação."
+  },
+  "bookReviewCommentaryLabel": "Comentário (opcional)",
+  "@bookReviewCommentaryLabel": {
+    "description": "Rótulo do campo de comentário no modal de avaliação."
+  },
+  "bookReviewCommentaryTooLong": "O comentário pode ter até {max} caracteres.",
+  "@bookReviewCommentaryTooLong": {
+    "description": "Erro do campo de comentário acima do limite.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "bookReviewSaveButton": "Salvar",
+  "@bookReviewSaveButton": {
+    "description": "Botão que salva a avaliação do livro."
+  },
+  "bookReviewSaveError": "Não foi possível salvar sua avaliação.",
+  "@bookReviewSaveError": {
+    "description": "Toast de erro ao salvar a avaliação do livro."
   }
 }

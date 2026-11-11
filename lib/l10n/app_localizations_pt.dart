@@ -1073,6 +1073,73 @@ class AppLocalizationsPt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get bookDetailScreenTitle => 'Detalhes do livro';
+
+  @override
+  String get bookDetailRateButton => 'Avaliar';
+
+  @override
+  String get bookDetailEditReviewButton => 'Editar avaliação';
+
+  @override
+  String get bookDetailRecommendButton => 'Indicar';
+
+  @override
+  String get bookDetailSynopsisTitle => 'Sinopse';
+
+  @override
+  String get bookDetailReviewsTitle => 'Comentários';
+
+  @override
+  String get bookDetailNoReviews => 'Ainda não há comentários';
+
+  @override
+  String get bookDetailLoading => 'Carregando livro';
+
+  @override
+  String get bookDetailLoadError => 'Não foi possível carregar o livro.';
+
+  @override
+  String get bookDetailNotFound => 'Livro não encontrado.';
+
+  @override
+  String get bookDetailRetry => 'Tentar novamente';
+
+  @override
+  String get bookDetailLoadingMoreReviews => 'Carregando mais comentários';
+
+  @override
+  String get bookDetailLoadMoreReviewsError =>
+      'Não foi possível carregar mais comentários.';
+
+  @override
+  String get bookDetailReadingStatusError =>
+      'Não foi possível atualizar o status de leitura.';
+
+  @override
+  String get bookReviewDialogTitle => 'Avaliar livro';
+
+  @override
+  String get bookReviewDialogEditTitle => 'Editar avaliação';
+
+  @override
+  String get bookReviewRatingLabel => 'Sua nota';
+
+  @override
+  String get bookReviewCommentaryLabel => 'Comentário (opcional)';
+
+  @override
+  String bookReviewCommentaryTooLong(int max) {
+    return 'O comentário pode ter até $max caracteres.';
+  }
+
+  @override
+  String get bookReviewSaveButton => 'Salvar';
+
+  @override
+  String get bookReviewSaveError => 'Não foi possível salvar sua avaliação.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1895,4 +1962,71 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
     );
     return '$_temp0';
   }
+
+  @override
+  String get bookDetailScreenTitle => 'Detalhes do livro';
+
+  @override
+  String get bookDetailRateButton => 'Avaliar';
+
+  @override
+  String get bookDetailEditReviewButton => 'Editar avaliação';
+
+  @override
+  String get bookDetailRecommendButton => 'Indicar';
+
+  @override
+  String get bookDetailSynopsisTitle => 'Sinopse';
+
+  @override
+  String get bookDetailReviewsTitle => 'Comentários';
+
+  @override
+  String get bookDetailNoReviews => 'Ainda não há comentários';
+
+  @override
+  String get bookDetailLoading => 'Carregando livro';
+
+  @override
+  String get bookDetailLoadError => 'Não foi possível carregar o livro.';
+
+  @override
+  String get bookDetailNotFound => 'Livro não encontrado.';
+
+  @override
+  String get bookDetailRetry => 'Tentar novamente';
+
+  @override
+  String get bookDetailLoadingMoreReviews => 'Carregando mais comentários';
+
+  @override
+  String get bookDetailLoadMoreReviewsError =>
+      'Não foi possível carregar mais comentários.';
+
+  @override
+  String get bookDetailReadingStatusError =>
+      'Não foi possível atualizar o status de leitura.';
+
+  @override
+  String get bookReviewDialogTitle => 'Avaliar livro';
+
+  @override
+  String get bookReviewDialogEditTitle => 'Editar avaliação';
+
+  @override
+  String get bookReviewRatingLabel => 'Sua nota';
+
+  @override
+  String get bookReviewCommentaryLabel => 'Comentário (opcional)';
+
+  @override
+  String bookReviewCommentaryTooLong(int max) {
+    return 'O comentário pode ter até $max caracteres.';
+  }
+
+  @override
+  String get bookReviewSaveButton => 'Salvar';
+
+  @override
+  String get bookReviewSaveError => 'Não foi possível salvar sua avaliação.';
 }

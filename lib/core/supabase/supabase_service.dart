@@ -11,6 +11,7 @@ abstract class SupabaseService {
     required String functionName,
     Map<String, dynamic>? body,
     Map<String, String>? queryParameters,
+    HttpMethod method = HttpMethod.post,
     T Function(dynamic data)? decoder,
   });
 

@@ -1872,6 +1872,132 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, =1{ontem} other{há {count} dias}}'**
   String notificationDateDays(int count);
+
+  /// Título do cabeçalho da tela de detalhes do livro enquanto carrega ou em erro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do livro'**
+  String get bookDetailScreenTitle;
+
+  /// Botão que abre o modal de avaliação do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliar'**
+  String get bookDetailRateButton;
+
+  /// Botão que abre o modal para editar a avaliação já feita.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar avaliação'**
+  String get bookDetailEditReviewButton;
+
+  /// Botão para indicar o livro a um grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar'**
+  String get bookDetailRecommendButton;
+
+  /// Título da seção de sinopse no detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sinopse'**
+  String get bookDetailSynopsisTitle;
+
+  /// Título da seção de avaliações das leitoras no detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comentários'**
+  String get bookDetailReviewsTitle;
+
+  /// Texto quando nenhuma outra leitora avaliou o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há comentários'**
+  String get bookDetailNoReviews;
+
+  /// Rótulo de acessibilidade do carregamento do detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando livro'**
+  String get bookDetailLoading;
+
+  /// Erro ao carregar o detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o livro.'**
+  String get bookDetailLoadError;
+
+  /// Mensagem quando o livro não existe.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro não encontrado.'**
+  String get bookDetailNotFound;
+
+  /// Botão de nova tentativa do detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get bookDetailRetry;
+
+  /// Rótulo de acessibilidade do carregamento da próxima página de comentários.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando mais comentários'**
+  String get bookDetailLoadingMoreReviews;
+
+  /// Erro ao carregar a próxima página de comentários.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar mais comentários.'**
+  String get bookDetailLoadMoreReviewsError;
+
+  /// Toast de erro ao marcar ou desmarcar o livro como lido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível atualizar o status de leitura.'**
+  String get bookDetailReadingStatusError;
+
+  /// Título do modal de avaliação do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliar livro'**
+  String get bookReviewDialogTitle;
+
+  /// Título do modal ao editar uma avaliação existente.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar avaliação'**
+  String get bookReviewDialogEditTitle;
+
+  /// Rótulo das estrelas no modal de avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua nota'**
+  String get bookReviewRatingLabel;
+
+  /// Rótulo do campo de comentário no modal de avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comentário (opcional)'**
+  String get bookReviewCommentaryLabel;
+
+  /// Erro do campo de comentário acima do limite.
+  ///
+  /// In pt, this message translates to:
+  /// **'O comentário pode ter até {max} caracteres.'**
+  String bookReviewCommentaryTooLong(int max);
+
+  /// Botão que salva a avaliação do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar'**
+  String get bookReviewSaveButton;
+
+  /// Toast de erro ao salvar a avaliação do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar sua avaliação.'**
+  String get bookReviewSaveError;
 }
 
 class _AppLocalizationsDelegate

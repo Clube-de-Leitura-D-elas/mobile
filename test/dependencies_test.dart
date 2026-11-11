@@ -13,6 +13,9 @@ import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
+import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
@@ -94,6 +97,8 @@ void main() {
       expect(serviceLocator<MeetingEditCubit>(), isA<MeetingEditCubit>());
       expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
       expect(serviceLocator<ClaimTokenCubit>(), isA<ClaimTokenCubit>());
+      expect(serviceLocator<BookRepository>(), isA<BookRepositoryImpl>());
+      expect(serviceLocator<BookDetailsCubit>(), isA<BookDetailsCubit>());
       expect(
         serviceLocator<NotificationRepository>(),
         isA<NotificationRepositoryImpl>(),

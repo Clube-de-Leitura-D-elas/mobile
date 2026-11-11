@@ -245,6 +245,27 @@ void main() {
       expect(result.unwrap().data, {'total': 0});
     });
 
+    test('invokeFunction forwards the HTTP method', () async {
+      when(
+        () => mockFunctionsClient.invoke(
+          'get-book-details',
+          body: any(named: 'body'),
+          queryParameters: {'bookId': 'b1'},
+          method: HttpMethod.get,
+        ),
+      ).thenAnswer(
+        (_) async => const FunctionResponse(status: 200, data: {'id': 'b1'}),
+      );
+
+      final result = await supabaseService.invokeFunction<Map<String, dynamic>>(
+        functionName: 'get-book-details',
+        queryParameters: {'bookId': 'b1'},
+        method: HttpMethod.get,
+      );
+
+      expect(result.unwrap().data, {'id': 'b1'});
+    });
+
     test('invokeFunction returns Success with decoded data', () async {
       when(
         () => mockFunctionsClient.invoke(
