@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_state.dart';
@@ -69,7 +70,7 @@ void main() {
 
   testWidgets('shows the error message with a back header', (tester) async {
     await tester.pumpWidget(
-      _wrap(const MeetingDetailsError('Encontro não encontrado.')),
+      _wrap(const MeetingDetailsError(MeetingNotFoundFailure())),
     );
 
     expect(find.text('Encontro não encontrado.'), findsOneWidget);

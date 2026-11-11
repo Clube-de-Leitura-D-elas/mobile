@@ -48,16 +48,12 @@ void main() {
   });
 
   group('UserFailure', () {
-    test('UserFailure props and equality', () {
-      const failure = UserFailure(message: 'Error message');
-      expect(failure.message, 'Error message');
-      expect(failure.props, equals(const ['Error message']));
-    });
-
-    test('MissingGoogleIdTokenFailure inherits UserFailure', () {
-      const failure = MissingGoogleIdTokenFailure(message: 'Token missing');
-      expect(failure, isA<UserFailure>());
-      expect(failure.message, 'Token missing');
+    test('failures of the same type are equal', () {
+      expect(const UserNetworkFailure(), equals(const UserNetworkFailure()));
+      expect(
+        const UserNetworkFailure(),
+        isNot(equals(const UnknownUserFailure())),
+      );
     });
   });
 }

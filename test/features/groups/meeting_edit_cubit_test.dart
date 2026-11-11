@@ -70,7 +70,7 @@ void main() {
     act: submit,
     expect: () => const [
       MeetingEditSubmitting(),
-      MeetingEditError('Este encontro não pode mais ser editado.'),
+      MeetingEditError(MeetingNotEditableFailure()),
     ],
   );
 

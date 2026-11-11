@@ -8,6 +8,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/pages/register_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -210,11 +211,14 @@ void main() {
       expect(loginPressedCalled, isTrue);
     });
 
-    testWidgets('displays error SnackBar on SessionError state', (tester) async {
+    testWidgets('displays email already registered message on sign-up error', (tester) async {
       whenListen(
         mockSessionCubit,
         Stream.fromIterable([
-          const SessionError(message: 'email not confirmed'),
+          const SessionError(
+            failure: EmailAlreadyRegisteredFailure(),
+            operation: SessionOperation.signUp,
+          ),
         ]),
         initialState: const GuestSession(),
       );
@@ -222,22 +226,37 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pump();
 
-      expect(find.text('Por favor, confirme seu e-mail antes de logar.'), findsOneWidget);
+      expect(
+        find.text(
+          'Este e-mail já tem uma conta. Volte e entre com ele, ou use outro e-mail.',
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('displays generic error SnackBar on SessionError state', (
+    testWidgets('displays the sign-up fallback for an unknown failure', (
       tester,
     ) async {
       whenListen(
         mockSessionCubit,
         Stream.fromIterable([
-          const SessionError(message: 'Erro ao cadastrar usuário'),
+          const SessionError(
+            failure: UnknownUserFailure(),
+            operation: SessionOperation.signUp,
+          ),
         ]),
         initialState: const GuestSession(),
       );
 
       await tester.pumpWidget(buildSubject());
       await tester.pump();
+
+      expect(
+        find.text(
+          'Não foi possível criar sua conta. Tente novamente em alguns minutos.',
+        ),
+        findsOneWidget,
+      );
     });
   });
 }

@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/groups/presentation/widgets/meeting_tasks/meeting_tasks_error_view.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
+import 'package:mobile/features/raffles/presentation/raffle_failure_message.dart';
+import 'package:mobile/features/raffles/presentation/widgets/raffle_error_state.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
@@ -36,7 +37,18 @@ class RafflePreparationScreen extends StatelessWidget {
               previous is RafflePreparationLoaded,
           listener: (context, state) {
             if (state is RafflePreparationError) {
-              context.showAppToast(context.l10n.raffleErrorMessage);
+              context.showAppToast(
+                raffleFailureMessage(context.l10n, state.failure),
+              );
+            } else if (state is RafflePreparationLoaded &&
+                state.refreshedBecause != null) {
+              final reason = raffleFailureMessage(
+                context.l10n,
+                state.refreshedBecause!,
+              );
+              context.showAppToast(
+                '$reason ${context.l10n.raffleListRefreshedHint}',
+              );
             } else if (state is RafflePreparationSuccess) {
               _openDraw(context, state.selectedParticipants);
             }
@@ -96,11 +108,9 @@ class RafflePreparationScreen extends StatelessWidget {
             }
 
             if (state is RafflePreparationError) {
-              return MeetingTasksErrorView(
-                message: context.l10n.raffleErrorMessage,
-                onRetry: () => context
-                    .read<RafflePreparationCubit>()
-                    .loadEligibleParticipants(meetingId),
+              return RaffleErrorState(
+                failure: state.failure,
+                onRetry: context.read<RafflePreparationCubit>().retry,
               );
             }
 

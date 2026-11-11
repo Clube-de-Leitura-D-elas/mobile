@@ -124,7 +124,7 @@
     "@claimTokenInputDescription": {
       "description": "Descrição detalhada sobre a digitação do token de acesso"
     },
-    "claimTokenFieldLabel": "Claim Token",
+    "claimTokenFieldLabel": "Token de acesso",
     "@claimTokenFieldLabel": {
       "description": "Rótulo do campo de entrada de token"
     },
@@ -1054,7 +1054,7 @@
   "@raffleDrawAgainButton": {
     "description": "Texto do botão secundário para sortear novamente"
   },
-  "raffleErrorMessage": "Não foi possível concluir o sorteio",
+  "raffleErrorMessage": "Não foi possível concluir o sorteio. Tente novamente.",
   "@raffleErrorMessage": {
     "description": "Mensagem exibida quando alguma etapa do sorteio falha"
   },
@@ -1086,10 +1086,6 @@
   "meetingTasksInvalidMeeting": "Encontro inválido.",
   "@meetingTasksInvalidMeeting": {
     "description": "Mensagem quando a tela de tarefas é aberta sem meeting_id"
-  },
-  "meetingTasksRetry": "Tentar novamente",
-  "@meetingTasksRetry": {
-    "description": "Botão para recarregar as tarefas após erro"
   },
   "meetingTasksDrawnLabel": "VOCÊ FOI SORTEADA",
   "@meetingTasksDrawnLabel": {
@@ -1472,5 +1468,106 @@
         "type": "int"
       }
     }
+  },
+  "errorRetryButton": "Tentar novamente",
+  "@errorRetryButton": {
+    "description": "Botão para repetir uma ação ou carregamento que falhou."
+  },
+  "errorNoConnection": "Sem conexão com a internet. Verifique sua conexão e tente novamente.",
+  "@errorNoConnection": {
+    "description": "Erro quando o app não consegue falar com o servidor (sem rede ou rede instável)."
+  },
+  "errorSessionExpired": "Sua sessão expirou. Saia do app e entre de novo na sua conta.",
+  "@errorSessionExpired": {
+    "description": "Erro quando o servidor recusa a sessão da usuária (HTTP 401)."
+  },
+  "authInvalidCredentialsError": "E-mail ou senha incorretos. Confira os dados e tente novamente.",
+  "@authInvalidCredentialsError": {
+    "description": "Login com e-mail e senha recusado."
+  },
+  "authEmailAlreadyRegisteredError": "Este e-mail já tem uma conta. Volte e entre com ele, ou use outro e-mail.",
+  "@authEmailAlreadyRegisteredError": {
+    "description": "Cadastro com e-mail que já existe."
+  },
+  "authWeakPasswordError": "Essa senha não é segura. Escolha outra senha e tente novamente.",
+  "@authWeakPasswordError": {
+    "description": "Cadastro recusado porque a senha é fraca."
+  },
+  "authTooManyAttemptsError": "Muitas tentativas seguidas. Aguarde alguns minutos e tente novamente.",
+  "@authTooManyAttemptsError": {
+    "description": "Supabase Auth limitou as tentativas (rate limit)."
+  },
+  "authGoogleUnavailableError": "Não foi possível entrar com o Google. Tente novamente ou entre com e-mail e senha.",
+  "@authGoogleUnavailableError": {
+    "description": "Falha no login com o Google (não inclui quando a usuária cancela)."
+  },
+  "authLoginFailedError": "Não foi possível entrar. Tente novamente em alguns minutos.",
+  "@authLoginFailedError": {
+    "description": "Falha inesperada ao entrar na conta."
+  },
+  "authSignUpFailedError": "Não foi possível criar sua conta. Tente novamente em alguns minutos.",
+  "@authSignUpFailedError": {
+    "description": "Falha inesperada ao criar a conta."
+  },
+  "claimTokenFailedError": "Não foi possível validar o token agora. Tente novamente em alguns minutos.",
+  "@claimTokenFailedError": {
+    "description": "Falha inesperada ao validar o token de acesso (não é token inválido)."
+  },
+  "sessionProfileLoadError": "Não foi possível carregar sua conta. {reason}",
+  "@sessionProfileLoadError": {
+    "description": "Tela de abertura quando o perfil da usuária não carrega. {reason} é o motivo com a orientação (sem internet, sessão expirada...).",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingProfileLoadError": "Não foi possível carregar seus dados.",
+  "@onboardingProfileLoadError": {
+    "description": "Revisão do cadastro: os dados da usuária não carregaram."
+  },
+  "onboardingProfileSaveError": "Não foi possível salvar seus dados. Tente novamente.",
+  "@onboardingProfileSaveError": {
+    "description": "Revisão do cadastro: falha ao salvar."
+  },
+  "raffleAlreadyRecordedError": "O sorteio deste encontro já foi feito.",
+  "@raffleAlreadyRecordedError": {
+    "description": "Sorteio recusado porque já existe resultado (HTTP 409)."
+  },
+  "raffleParticipantsChangedError": "A lista de participantes mudou.",
+  "@raffleParticipantsChangedError": {
+    "description": "Sorteio recusado porque alguma participante não é mais elegível (HTTP 422)."
+  },
+  "appStartupError": "Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.",
+  "@appStartupError": {
+    "description": "Tela mostrada quando a inicialização do app falha (configuração, Firebase ou Supabase)."
+  },
+  "errorForbidden": "Você não tem permissão para fazer isso.",
+  "@errorForbidden": {
+    "description": "Ação recusada por falta de permissão (HTTP 403). Sem \"Tentar novamente\", que falharia igual."
+  },
+  "raffleMeetingNotEndedError": "O sorteio só fica disponível depois que o encontro é encerrado.",
+  "@raffleMeetingNotEndedError": {
+    "description": "Sorteio recusado porque o encontro ainda não foi encerrado (HTTP 409)."
+  },
+  "raffleBookAlreadyDrawnError": "O livro sorteado já saiu em outro sorteio deste grupo.",
+  "@raffleBookAlreadyDrawnError": {
+    "description": "Sorteio recusado porque o livro da sorteada já foi sorteado no grupo (HTTP 409)."
+  },
+  "raffleBookSuggestionUnavailableError": "A indicação de livro de uma participante não está mais disponível.",
+  "@raffleBookSuggestionUnavailableError": {
+    "description": "Sorteio recusado porque a indicação de livro da sorteada não vale mais (HTTP 409)."
+  },
+  "raffleRetryShowResultHint": "Toque em Tentar novamente para ver o resultado.",
+  "@raffleRetryShowResultHint": {
+    "description": "Instrução depois do motivo, só onde há o botão Tentar novamente."
+  },
+  "raffleRetryRefreshListHint": "Toque em Tentar novamente para atualizar a lista.",
+  "@raffleRetryRefreshListHint": {
+    "description": "Instrução depois do motivo, só onde há o botão Tentar novamente."
+  },
+  "raffleListRefreshedHint": "Atualizamos a lista: confira as participantes e confirme de novo.",
+  "@raffleListRefreshedHint": {
+    "description": "Depois do motivo, quando a preparação recarrega a lista sozinha."
   }
 }

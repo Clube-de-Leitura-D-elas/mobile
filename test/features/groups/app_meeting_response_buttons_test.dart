@@ -8,6 +8,7 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_sta
 import 'package:mobile/features/groups/presentation/widgets/app_meeting_response_buttons.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 
 class MockMeetingInvitationCubit extends MockCubit<MeetingInvitationState>
     implements MeetingInvitationCubit {}
@@ -150,7 +151,7 @@ void main() {
     when(() => mockCubit.state).thenReturn(
       const MeetingInvitationError(
         MeetingInvitationStatus.pending,
-        failureMessage,
+        GroupMeetingInvitationResponseFailure(message: failureMessage),
         MeetingInvitationStatus.confirmed,
       ),
     );

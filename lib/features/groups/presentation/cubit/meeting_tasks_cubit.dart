@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
 sealed class MeetingTasksState extends Equatable {
@@ -25,12 +26,12 @@ class MeetingTasksLoaded extends MeetingTasksState {
 }
 
 class MeetingTasksError extends MeetingTasksState {
-  const MeetingTasksError(this.message);
+  const MeetingTasksError(this.failure);
 
-  final String message;
+  final GroupFailure failure;
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }
 
 class MeetingTasksCubit extends Cubit<MeetingTasksState> {
@@ -55,7 +56,7 @@ class MeetingTasksCubit extends Cubit<MeetingTasksState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(MeetingTasksError(failure.message));
+        emit(MeetingTasksError(failure));
       case Success(:final data):
         emit(MeetingTasksLoaded(data));
     }

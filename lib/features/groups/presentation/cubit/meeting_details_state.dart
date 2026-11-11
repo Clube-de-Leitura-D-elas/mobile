@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 
 sealed class MeetingDetailsState extends Equatable {
@@ -22,10 +23,10 @@ class MeetingDetailsLoaded extends MeetingDetailsState {
 }
 
 class MeetingDetailsError extends MeetingDetailsState {
-  const MeetingDetailsError(this.message);
+  const MeetingDetailsError(this.failure);
 
-  final String message;
+  final GroupFailure failure;
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

@@ -16,12 +16,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(
-          state.copyWith(
-            status: HomeStatus.error,
-            errorMessage: failure.message,
-          ),
-        );
+        emit(state.copyWith(status: HomeStatus.error, error: failure));
       case Success(:final data):
         final expandedGroupIds = data
             .where((group) => group.nextMeeting != null)

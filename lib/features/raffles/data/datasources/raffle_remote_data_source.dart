@@ -1,3 +1,4 @@
+import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/raffles/data/models/raffle_participant_model.dart';
@@ -17,6 +18,17 @@ abstract class RaffleRemoteDataSource {
     required List<String> eligibleParticipantIds,
   });
   Future<void> saveRaffleResult(RaffleResultModel result);
+}
+
+/// Falha de uma Edge Function do sorteio, com o tipo e o status preservados
+/// para o repository escolher o texto.
+class RaffleRemoteException implements Exception {
+  final SupabaseFailure failure;
+
+  const RaffleRemoteException(this.failure);
+
+  @override
+  String toString() => 'RaffleRemoteException: ${failure.message}';
 }
 
 class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
@@ -46,7 +58,7 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
 
     return result.match(
       (response) => response.data!,
-      (failure) => throw Exception(failure.message),
+      (failure) => throw RaffleRemoteException(failure),
     );
   }
 
@@ -63,7 +75,10 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
       },
     );
 
-    result.match((_) => null, (failure) => throw Exception(failure.message));
+    result.match(
+      (_) => null,
+      (failure) => throw RaffleRemoteException(failure),
+    );
   }
 
   @override
@@ -85,7 +100,7 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
       final data = response.data;
       if (data == null) return null;
       return RaffleResultModel.fromJson(data);
-    }, (failure) => throw Exception(failure.message));
+    }, (failure) => throw RaffleRemoteException(failure));
   }
 
   @override
@@ -105,7 +120,7 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
 
     return result.match(
       (response) => response.data!,
-      (failure) => throw Exception(failure.message),
+      (failure) => throw RaffleRemoteException(failure),
     );
   }
 
@@ -116,6 +131,6 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
       body: result.toJson(),
     );
 
-    res.match((_) => null, (failure) => throw Exception(failure.message));
+    res.match((_) => null, (failure) => throw RaffleRemoteException(failure));
   }
 }

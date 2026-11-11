@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
@@ -180,7 +181,7 @@ void main() {
   );
 
   testWidgets(
-    'shows error toast when OnboardingReviewFormState has errorMessage',
+    'shows the save error toast when OnboardingReviewFormState has submitFailure',
     (tester) async {
       when(() => mockReviewCubit.state).thenReturn(
         const OnboardingReviewFormState(
@@ -208,15 +209,80 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: testProfile,
-          errorMessage: 'Erro ao salvar',
+          submitFailure: UnknownUserFailure(),
         ),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Erro ao salvar'), findsOneWidget);
+      expect(
+        find.text('Não foi possível salvar seus dados. Tente novamente.'),
+        findsOneWidget,
+      );
       await streamController.close();
     },
   );
+
+  testWidgets(
+    'shows the load error with retry instead of an empty form',
+    (tester) async {
+      const errorState = OnboardingReviewLoadError(UserNetworkFailure());
+      when(() => mockReviewCubit.state).thenReturn(errorState);
+      when(() => mockReviewCubit.loadProfileData()).thenAnswer((_) async {});
+      whenListen(
+        mockReviewCubit,
+        const Stream<OnboardingReviewState>.empty(),
+        initialState: errorState,
+      );
+
+      await tester.pumpWidget(
+        buildSubject(child: const OnboardingReviewScreen()),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(PageView), findsNothing);
+
+      await tester.tap(find.text('Tentar novamente'));
+      verify(() => mockReviewCubit.loadProfileData()).called(1);
+    },
+  );
+
+  Future<void> pumpLoadError(WidgetTester tester, UserFailure failure) async {
+    final errorState = OnboardingReviewLoadError(failure);
+    when(() => mockReviewCubit.state).thenReturn(errorState);
+    whenListen(
+      mockReviewCubit,
+      const Stream<OnboardingReviewState>.empty(),
+      initialState: errorState,
+    );
+    await tester.pumpWidget(
+      buildSubject(child: const OnboardingReviewScreen()),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('hides retry when the load is forbidden', (tester) async {
+    await pumpLoadError(tester, const UserForbiddenFailure());
+
+    expect(
+      find.text('Você não tem permissão para fazer isso.'),
+      findsOneWidget,
+    );
+    expect(find.text('Tentar novamente'), findsNothing);
+  });
+
+  testWidgets('offers logout when the session expired', (tester) async {
+    when(() => mockSessionCubit.logOut()).thenAnswer((_) async {});
+    await pumpLoadError(tester, const UserSessionExpiredFailure());
+
+    await tester.tap(find.text('Sair'));
+    verify(() => mockSessionCubit.logOut()).called(1);
+  });
 
   testWidgets(
     'clicking Continuar on step 0 and 1 moves to next page, and Voltar moves to previous page',

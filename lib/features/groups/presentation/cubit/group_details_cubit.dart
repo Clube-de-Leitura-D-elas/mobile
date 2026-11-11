@@ -9,7 +9,12 @@ class GroupDetailsCubit extends Cubit<GroupDetailsState> {
   GroupDetailsCubit({required this.groupRepository})
     : super(const GroupDetailsLoading());
 
+  String _groupId = '';
+
+  Future<void> retry() => load(_groupId);
+
   Future<void> load(String groupId) async {
+    _groupId = groupId;
     emit(const GroupDetailsLoading());
 
     final result = await groupRepository.getGroupDetails(groupId);
@@ -20,7 +25,7 @@ class GroupDetailsCubit extends Cubit<GroupDetailsState> {
       case Success(:final data):
         emit(GroupDetailsLoaded(data));
       case Failure(:final failure):
-        emit(GroupDetailsError(failure.message));
+        emit(GroupDetailsError(failure));
     }
   }
 }

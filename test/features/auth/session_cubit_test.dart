@@ -80,15 +80,32 @@ void main() {
       'emits [LoadingSession, SessionError, GuestSession] when authRepository.signIn fails',
       build: () {
         when(() => mockAuthRepository.signIn())
-            .thenAnswer((_) async => const Failure(UserFailure(message: 'Sign in failed')));
+            .thenAnswer(
+              (_) async => const Failure(GoogleSignInUnavailableFailure()),
+            );
         return sessionCubit;
       },
       act: (cubit) => cubit.authenticate(),
       expect: () => [
         const LoadingSession(),
-        const SessionError(message: 'Sign in failed'),
+        const SessionError(
+          failure: GoogleSignInUnavailableFailure(),
+          operation: SessionOperation.signIn,
+        ),
         const GuestSession(),
       ],
+    );
+
+    blocTest<SessionCubit, SessionState>(
+      'goes back to GuestSession without SessionError when Google sign-in is canceled',
+      build: () {
+        when(() => mockAuthRepository.signIn()).thenAnswer(
+          (_) async => const Failure(GoogleSignInCanceledFailure()),
+        );
+        return sessionCubit;
+      },
+      act: (cubit) => cubit.authenticate(),
+      expect: () => [const LoadingSession(), const GuestSession()],
     );
 
     blocTest<SessionCubit, SessionState>(
@@ -132,7 +149,7 @@ void main() {
             password: 'password123',
           ),
         ).thenAnswer(
-          (_) async => const Failure(UserFailure(message: 'Invalid credentials')),
+          (_) async => const Failure(InvalidCredentialsFailure()),
         );
         return sessionCubit;
       },
@@ -142,7 +159,10 @@ void main() {
       ),
       expect: () => [
         const LoadingSession(),
-        const SessionError(message: 'Invalid credentials'),
+        const SessionError(
+          failure: InvalidCredentialsFailure(),
+          operation: SessionOperation.signIn,
+        ),
         const GuestSession(),
       ],
     );
@@ -170,17 +190,48 @@ void main() {
     );
 
     blocTest<SessionCubit, SessionState>(
-      'emits [LoadingSession, NeedsClaimSession] when getUserProfile fails',
+      'emits SessionProfileUnavailable (not NeedsClaimSession) when getUserProfile fails',
       build: () {
         when(() => mockAuthRepository.getUserProfile('user-123'))
-            .thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
+            .thenAnswer((_) async => const Failure(UserNetworkFailure()));
         return sessionCubit;
       },
       act: (cubit) => cubit.checkUserProfile('user-123'),
       expect: () => [
         const LoadingSession(),
-        const NeedsClaimSession(userId: 'user-123'),
+        const SessionProfileUnavailable(
+          userId: 'user-123',
+          failure: UserNetworkFailure(),
+        ),
       ],
+    );
+
+    blocTest<SessionCubit, SessionState>(
+      'retryProfile loads the profile again after SessionProfileUnavailable',
+      build: () {
+        when(() => mockAuthRepository.getUserProfile('user-123'))
+            .thenAnswer((_) async => const Success(testProfile));
+        return sessionCubit;
+      },
+      seed: () => const SessionProfileUnavailable(
+        userId: 'user-123',
+        user: testUserEntity,
+        failure: UserNetworkFailure(),
+      ),
+      act: (cubit) => cubit.retryProfile(),
+      expect: () => [
+        const LoadingSession(),
+        const AuthenticatedSession(user: testUserEntity, profile: testProfile),
+      ],
+    );
+
+    blocTest<SessionCubit, SessionState>(
+      'retryProfile does nothing outside SessionProfileUnavailable',
+      build: () => sessionCubit,
+      act: (cubit) => cubit.retryProfile(),
+      expect: () => <SessionState>[],
+      verify: (_) =>
+          verifyNever(() => mockAuthRepository.getUserProfile(any())),
     );
 
     blocTest<SessionCubit, SessionState>(
@@ -273,7 +324,7 @@ void main() {
             password: 'password123',
           ),
         ).thenAnswer(
-          (_) async => const Failure(UserFailure(message: 'Sign up failed')),
+          (_) async => const Failure(EmailAlreadyRegisteredFailure()),
         );
         return sessionCubit;
       },
@@ -283,7 +334,10 @@ void main() {
       ),
       expect: () => [
         const LoadingSession(),
-        const SessionError(message: 'Sign up failed'),
+        const SessionError(
+          failure: EmailAlreadyRegisteredFailure(),
+          operation: SessionOperation.signUp,
+        ),
         const GuestSession(),
       ],
     );

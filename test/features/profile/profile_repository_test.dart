@@ -66,6 +66,33 @@ void main() {
       expect(body['encoded'], base64Encode(bytes));
     });
 
+    final byKind = <SupabaseFailureKind, ProfileFailure>{
+      SupabaseFailureKind.network: const ProfileNetworkFailure(),
+      SupabaseFailureKind.unauthorized: const ProfileSessionExpiredFailure(),
+    };
+    for (final MapEntry(key: kind, value: expected) in byKind.entries) {
+      test('maps $kind to ${expected.runtimeType}', () async {
+        when(
+          () => mockSupabaseService.invokeFunction<String>(
+            functionName: 'set-profile-photo',
+            body: any(named: 'body'),
+            decoder: any(named: 'decoder'),
+          ),
+        ).thenAnswer(
+          (_) async => Failure(
+            FunctionSupabaseFailure(message: 'raw', code: '0', kind: kind),
+          ),
+        );
+
+        final result = await repository.setProfilePhoto(
+          bytes: bytes,
+          contentType: 'image/jpeg',
+        );
+
+        expect(result, Failure<String, ProfileFailure>(expected));
+      });
+    }
+
     test('maps 413 to ProfilePhotoTooLargeFailure', () async {
       when(
         () => mockSupabaseService.invokeFunction<String>(
@@ -99,9 +126,8 @@ void main() {
             decoder: any(named: 'decoder'),
           ),
         ).thenAnswer(
-          (_) async => Failure(
-            FunctionSupabaseFailure(message: 'no', code: code),
-          ),
+          (_) async =>
+              Failure(FunctionSupabaseFailure(message: 'no', code: code)),
         );
 
         final result = await repository.setProfilePhoto(

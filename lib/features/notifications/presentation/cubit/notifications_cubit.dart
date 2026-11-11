@@ -17,8 +17,13 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     if (isClosed) return;
 
     switch (result) {
-      case Failure():
-        emit(const NotificationsState(status: NotificationsStatus.error));
+      case Failure(:final failure):
+        emit(
+          NotificationsState(
+            status: NotificationsStatus.error,
+            failure: failure,
+          ),
+        );
       case Success(:final data):
         emit(
           NotificationsState(

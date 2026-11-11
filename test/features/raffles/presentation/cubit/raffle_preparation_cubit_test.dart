@@ -13,7 +13,12 @@ import 'package:mocktail/mocktail.dart';
 class MockRaffleRepository extends Mock implements RaffleRepository {}
 
 class TestRaffleFailure extends RaffleFailure {
-  const TestRaffleFailure(super.message);
+  const TestRaffleFailure(this.message);
+
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
 }
 
 void main() {
@@ -221,11 +226,117 @@ void main() {
           participants: [tParticipant],
           isSubmitting: true,
         ),
-        RafflePreparationError('Erro ao confirmar'),
+        RafflePreparationError(TestRaffleFailure('Erro ao confirmar')),
         RafflePreparationLoaded(
           participants: [tParticipant],
           isSubmitting: false,
         ),
+      ],
+    );
+
+    const chosen = [
+      tParticipant,
+      RaffleParticipant(
+        id: 'p2',
+        name: 'Bia',
+        hasAttended: true,
+        isSelected: false,
+      ),
+    ];
+    // A lista do servidor vem com todas marcadas.
+    const refetched = [
+      tParticipant,
+      RaffleParticipant(id: 'p2', name: 'Bia', hasAttended: true),
+      RaffleParticipant(id: 'p3', name: 'Nova', hasAttended: true),
+    ];
+    const keptChoice = [
+      tParticipant,
+      RaffleParticipant(
+        id: 'p2',
+        name: 'Bia',
+        hasAttended: true,
+        isSelected: false,
+      ),
+      RaffleParticipant(
+        id: 'p3',
+        name: 'Nova',
+        hasAttended: true,
+        isSelected: false,
+      ),
+    ];
+
+    void stubConfirm(RaffleFailure failure) {
+      when(
+        () => mockRepository.confirmRaffle(
+          meetingId: any(named: 'meetingId'),
+          selectedParticipantIds: any(named: 'selectedParticipantIds'),
+        ),
+      ).thenAnswer((_) async => Failure(failure));
+    }
+
+    blocTest<RafflePreparationCubit, RafflePreparationState>(
+      'on a 422 reloads the list keeping the chosen participants',
+      build: () {
+        stubConfirm(const RaffleParticipantsChangedFailure());
+        when(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).thenAnswer((_) async => const Success(refetched));
+        return RafflePreparationCubit(repository: mockRepository);
+      },
+      seed: () => const RafflePreparationLoaded(participants: chosen),
+      act: (cubit) => cubit.confirmRaffle(tMeetingId),
+      skip: 1,
+      expect: () => const [
+        RafflePreparationLoading(),
+        RafflePreparationLoaded(
+          participants: keptChoice,
+          refreshedBecause: RaffleParticipantsChangedFailure(),
+        ),
+      ],
+    );
+
+    blocTest<RafflePreparationCubit, RafflePreparationState>(
+      'retry after a failed reload keeps the chosen participants',
+      build: () {
+        stubConfirm(const RaffleParticipantsChangedFailure());
+        var calls = 0;
+        when(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).thenAnswer(
+          (_) async => calls++ == 0
+              ? const Failure(RaffleNetworkFailure())
+              : const Success(refetched),
+        );
+        return RafflePreparationCubit(repository: mockRepository);
+      },
+      seed: () => const RafflePreparationLoaded(participants: chosen),
+      act: (cubit) async {
+        await cubit.confirmRaffle(tMeetingId);
+        await cubit.retry();
+      },
+      skip: 1,
+      expect: () => const [
+        RafflePreparationLoading(),
+        RafflePreparationError(RaffleNetworkFailure()),
+        RafflePreparationLoading(),
+        RafflePreparationLoaded(
+          participants: keptChoice,
+          refreshedBecause: RaffleParticipantsChangedFailure(),
+        ),
+      ],
+    );
+
+    blocTest<RafflePreparationCubit, RafflePreparationState>(
+      'opens the draw when the raffle was already recorded',
+      build: () {
+        stubConfirm(const RaffleAlreadyRecordedFailure());
+        return RafflePreparationCubit(repository: mockRepository);
+      },
+      seed: () => const RafflePreparationLoaded(participants: [tParticipant]),
+      act: (cubit) => cubit.confirmRaffle(tMeetingId),
+      skip: 1,
+      expect: () => const [
+        RafflePreparationSuccess(selectedParticipants: [tParticipant]),
       ],
     );
 

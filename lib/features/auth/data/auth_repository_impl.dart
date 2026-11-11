@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/auth/data/models/user_model.dart';
 import 'package:mobile/features/auth/data/models/user_profile_model.dart';
+import 'package:mobile/features/auth/data/user_failure_mapper.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
@@ -22,27 +25,42 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<UserEntity, UserFailure>> signIn() async {
     final scopes = ['email', 'profile'];
 
-    final googleUser = await googleSignInClient.authenticate();
-    final authorization =
-        await googleUser.authorizationClient.authorizationForScopes(scopes) ??
-        await googleUser.authorizationClient.authorizeScopes(scopes);
-
-    final idToken = googleUser.authentication.idToken;
+    final String? idToken;
+    final String accessToken;
+    try {
+      final googleUser = await googleSignInClient.authenticate();
+      final authorization =
+          await googleUser.authorizationClient.authorizationForScopes(scopes) ??
+          await googleUser.authorizationClient.authorizeScopes(scopes);
+      idToken = googleUser.authentication.idToken;
+      accessToken = authorization.accessToken;
+    } on GoogleSignInException catch (e) {
+      debugPrint(
+        '[AuthRepository] Google sign-in failed: ${e.code} ${e.description}',
+      );
+      return Failure(
+        e.code == GoogleSignInExceptionCode.canceled
+            ? const GoogleSignInCanceledFailure()
+            : const GoogleSignInUnavailableFailure(),
+      );
+    } catch (e) {
+      debugPrint('[AuthRepository] Google sign-in failed: $e');
+      return const Failure(GoogleSignInUnavailableFailure());
+    }
 
     if (idToken == null) {
-      return const Failure(
-        MissingGoogleIdTokenFailure(message: 'idToken is null'),
-      );
+      debugPrint('[AuthRepository] Google sign-in returned no idToken');
+      return const Failure(GoogleSignInUnavailableFailure());
     }
 
     final response = await supabaseService.signInWithIdToken(
       provider: OAuthProvider.google,
       idToken: idToken,
-      accessToken: authorization.accessToken,
+      accessToken: accessToken,
     );
 
     if (response case Failure(:final failure)) {
-      return Failure(UserFailure(message: failure.message));
+      return Failure(userFailureFromAuth(failure));
     }
 
     final supabaseUser = response.unwrap();
@@ -62,7 +80,7 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     if (response case Failure(:final failure)) {
-      return Failure(UserFailure(message: failure.message));
+      return Failure(userFailureFromAuth(failure));
     }
 
     final supabaseUser = response.unwrap();
@@ -82,7 +100,7 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     if (response case Failure(:final failure)) {
-      return Failure(UserFailure(message: failure.message));
+      return Failure(userFailureFromAuth(failure));
     }
 
     final supabaseUser = response.unwrap();
@@ -109,7 +127,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return switch (result) {
       Success(:final data) => Success(data.data),
-      Failure(:final failure) => Failure(UserFailure(message: failure.message)),
+      Failure(:final failure) => Failure(userFailureFromFunction(failure)),
     };
   }
 
@@ -122,7 +140,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return switch (result) {
       Success() => const Success(null),
-      Failure(:final failure) => Failure(UserFailure(message: failure.message)),
+      // A function só responde 400 para token inválido ou já usado.
+      Failure(:final failure)
+          when failure.kind == SupabaseFailureKind.validation =>
+        const Failure(ClaimTokenInvalidFailure()),
+      Failure(:final failure) => Failure(userFailureFromFunction(failure)),
     };
   }
 }

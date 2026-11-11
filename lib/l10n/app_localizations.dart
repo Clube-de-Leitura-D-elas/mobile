@@ -280,7 +280,7 @@ abstract class AppLocalizations {
   /// Rótulo do campo de entrada de token
   ///
   /// In pt, this message translates to:
-  /// **'Claim Token'**
+  /// **'Token de acesso'**
   String get claimTokenFieldLabel;
 
   /// Exemplo/Dica para preenchimento do token de acesso
@@ -1414,7 +1414,7 @@ abstract class AppLocalizations {
   /// Mensagem exibida quando alguma etapa do sorteio falha
   ///
   /// In pt, this message translates to:
-  /// **'Não foi possível concluir o sorteio'**
+  /// **'Não foi possível concluir o sorteio. Tente novamente.'**
   String get raffleErrorMessage;
 
   /// Aviso abaixo do botão de sortear novamente quando todas as participantes já foram sorteadas
@@ -1452,12 +1452,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Encontro inválido.'**
   String get meetingTasksInvalidMeeting;
-
-  /// Botão para recarregar as tarefas após erro
-  ///
-  /// In pt, this message translates to:
-  /// **'Tentar novamente'**
-  String get meetingTasksRetry;
 
   /// Sobretítulo do banner antes de o encontro ser publicado
   ///
@@ -1908,6 +1902,150 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, =1{ontem} other{há {count} dias}}'**
   String notificationDateDays(int count);
+
+  /// Botão para repetir uma ação ou carregamento que falhou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get errorRetryButton;
+
+  /// Erro quando o app não consegue falar com o servidor (sem rede ou rede instável).
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem conexão com a internet. Verifique sua conexão e tente novamente.'**
+  String get errorNoConnection;
+
+  /// Erro quando o servidor recusa a sessão da usuária (HTTP 401).
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua sessão expirou. Saia do app e entre de novo na sua conta.'**
+  String get errorSessionExpired;
+
+  /// Login com e-mail e senha recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail ou senha incorretos. Confira os dados e tente novamente.'**
+  String get authInvalidCredentialsError;
+
+  /// Cadastro com e-mail que já existe.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este e-mail já tem uma conta. Volte e entre com ele, ou use outro e-mail.'**
+  String get authEmailAlreadyRegisteredError;
+
+  /// Cadastro recusado porque a senha é fraca.
+  ///
+  /// In pt, this message translates to:
+  /// **'Essa senha não é segura. Escolha outra senha e tente novamente.'**
+  String get authWeakPasswordError;
+
+  /// Supabase Auth limitou as tentativas (rate limit).
+  ///
+  /// In pt, this message translates to:
+  /// **'Muitas tentativas seguidas. Aguarde alguns minutos e tente novamente.'**
+  String get authTooManyAttemptsError;
+
+  /// Falha no login com o Google (não inclui quando a usuária cancela).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível entrar com o Google. Tente novamente ou entre com e-mail e senha.'**
+  String get authGoogleUnavailableError;
+
+  /// Falha inesperada ao entrar na conta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível entrar. Tente novamente em alguns minutos.'**
+  String get authLoginFailedError;
+
+  /// Falha inesperada ao criar a conta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível criar sua conta. Tente novamente em alguns minutos.'**
+  String get authSignUpFailedError;
+
+  /// Falha inesperada ao validar o token de acesso (não é token inválido).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível validar o token agora. Tente novamente em alguns minutos.'**
+  String get claimTokenFailedError;
+
+  /// Tela de abertura quando o perfil da usuária não carrega. {reason} é o motivo com a orientação (sem internet, sessão expirada...).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar sua conta. {reason}'**
+  String sessionProfileLoadError(String reason);
+
+  /// Revisão do cadastro: os dados da usuária não carregaram.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar seus dados.'**
+  String get onboardingProfileLoadError;
+
+  /// Revisão do cadastro: falha ao salvar.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar seus dados. Tente novamente.'**
+  String get onboardingProfileSaveError;
+
+  /// Sorteio recusado porque já existe resultado (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O sorteio deste encontro já foi feito.'**
+  String get raffleAlreadyRecordedError;
+
+  /// Sorteio recusado porque alguma participante não é mais elegível (HTTP 422).
+  ///
+  /// In pt, this message translates to:
+  /// **'A lista de participantes mudou.'**
+  String get raffleParticipantsChangedError;
+
+  /// Tela mostrada quando a inicialização do app falha (configuração, Firebase ou Supabase).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.'**
+  String get appStartupError;
+
+  /// Ação recusada por falta de permissão (HTTP 403). Sem "Tentar novamente", que falharia igual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você não tem permissão para fazer isso.'**
+  String get errorForbidden;
+
+  /// Sorteio recusado porque o encontro ainda não foi encerrado (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O sorteio só fica disponível depois que o encontro é encerrado.'**
+  String get raffleMeetingNotEndedError;
+
+  /// Sorteio recusado porque o livro da sorteada já foi sorteado no grupo (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O livro sorteado já saiu em outro sorteio deste grupo.'**
+  String get raffleBookAlreadyDrawnError;
+
+  /// Sorteio recusado porque a indicação de livro da sorteada não vale mais (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'A indicação de livro de uma participante não está mais disponível.'**
+  String get raffleBookSuggestionUnavailableError;
+
+  /// Instrução depois do motivo, só onde há o botão Tentar novamente.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque em Tentar novamente para ver o resultado.'**
+  String get raffleRetryShowResultHint;
+
+  /// Instrução depois do motivo, só onde há o botão Tentar novamente.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque em Tentar novamente para atualizar a lista.'**
+  String get raffleRetryRefreshListHint;
+
+  /// Depois do motivo, quando a preparação recarrega a lista sozinha.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizamos a lista: confira as participantes e confirme de novo.'**
+  String get raffleListRefreshedHint;
 }
 
 class _AppLocalizationsDelegate

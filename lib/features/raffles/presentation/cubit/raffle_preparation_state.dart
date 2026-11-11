@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 
 abstract class RafflePreparationState extends Equatable {
@@ -20,9 +21,14 @@ class RafflePreparationLoaded extends RafflePreparationState {
   final List<RaffleParticipant> participants;
   final bool isSubmitting;
 
+  /// Por que a lista acabou de ser recarregada depois de o servidor recusar
+  /// a anterior. Só vale na emissão que traz a lista nova.
+  final RaffleFailure? refreshedBecause;
+
   const RafflePreparationLoaded({
     required this.participants,
     this.isSubmitting = false,
+    this.refreshedBecause,
   });
 
   RafflePreparationLoaded copyWith({
@@ -36,7 +42,7 @@ class RafflePreparationLoaded extends RafflePreparationState {
   }
 
   @override
-  List<Object?> get props => [participants, isSubmitting];
+  List<Object?> get props => [participants, isSubmitting, refreshedBecause];
 }
 
 class RafflePreparationSuccess extends RafflePreparationState {
@@ -49,10 +55,10 @@ class RafflePreparationSuccess extends RafflePreparationState {
 }
 
 class RafflePreparationError extends RafflePreparationState {
-  final String message;
+  final RaffleFailure failure;
 
-  const RafflePreparationError(this.message);
+  const RafflePreparationError(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

@@ -5,6 +5,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_screen.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 
 class MeetingDetailsPage extends StatelessWidget {
   const MeetingDetailsPage({super.key});
@@ -17,19 +18,11 @@ class MeetingDetailsPage extends StatelessWidget {
           appBar: ScreenHeader.back(title: context.l10n.meetingDetailsHeader),
           body: const Center(child: CircularProgressIndicator()),
         ),
-        MeetingDetailsError(:final message) => Scaffold(
+        MeetingDetailsError(:final failure) => Scaffold(
           appBar: ScreenHeader.back(title: context.l10n.meetingDetailsHeader),
-          body: Center(
-            child: Padding(
-              padding: EdgeInsets.all(context.spacing.s24),
-              child: Text(
-                message,
-                style: context.typography.bodyDefault.copyWith(
-                  color: context.colors.textMuted,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+          body: GroupErrorState(
+            failure: failure,
+            onRetry: context.read<MeetingDetailsCubit>().retry,
           ),
         ),
         MeetingDetailsLoaded(:final meeting) => MeetingDetailsScreen(

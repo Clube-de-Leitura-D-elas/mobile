@@ -88,6 +88,9 @@ class EditProfilePhotoCubit extends Cubit<EditProfilePhotoState> {
 
   EditProfilePhotoNotice _uploadNotice(ProfileFailure failure) =>
       switch (failure) {
+        ProfileNetworkFailure() => const EditProfilePhotoNetworkNotice(),
+        ProfileSessionExpiredFailure() =>
+          const EditProfilePhotoSessionExpiredNotice(),
         ProfilePhotoTooLargeFailure() => const EditProfilePhotoTooLargeNotice(),
         ProfilePhotoRejectedFailure() => const EditProfilePhotoRejectedNotice(),
         ProfilePhotoUploadFailure() =>

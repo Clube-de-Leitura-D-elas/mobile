@@ -6,6 +6,7 @@ import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.da
 import 'package:mobile/features/groups/presentation/cubit/event_history_state.dart';
 import 'package:mobile/features/groups/presentation/pages/event_history_screen.dart';
 import 'package:mobile/features/groups/presentation/widgets/event_history_message_view.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 
 class EventHistoryPage extends StatelessWidget {
   const EventHistoryPage({super.key});
@@ -25,8 +26,9 @@ class EventHistoryPage extends StatelessWidget {
           EventHistoryLoaded(:final meetings) => EventHistoryScreen(
             meetings: meetings,
           ),
-          EventHistoryError(:final message) => EventHistoryMessageView(
-            message: message,
+          EventHistoryError(:final failure) => GroupErrorState(
+            failure: failure,
+            onRetry: context.read<EventHistoryCubit>().retry,
           ),
         },
       ),

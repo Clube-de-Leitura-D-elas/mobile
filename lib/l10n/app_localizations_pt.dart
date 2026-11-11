@@ -102,7 +102,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Digite o token fornecido após a aprovação para vincular sua conta.';
 
   @override
-  String get claimTokenFieldLabel => 'Claim Token';
+  String get claimTokenFieldLabel => 'Token de acesso';
 
   @override
   String get claimTokenFieldHint => 'Ex: 1A2B3C4D';
@@ -781,7 +781,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get raffleDrawAgainButton => 'Sortear novamente';
 
   @override
-  String get raffleErrorMessage => 'Não foi possível concluir o sorteio';
+  String get raffleErrorMessage =>
+      'Não foi possível concluir o sorteio. Tente novamente.';
 
   @override
   String get raffleNoMoreParticipantsToDraw => 'Sem mais pessoas para sortear';
@@ -804,9 +805,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get meetingTasksInvalidMeeting => 'Encontro inválido.';
-
-  @override
-  String get meetingTasksRetry => 'Tentar novamente';
 
   @override
   String get meetingTasksDrawnLabel => 'VOCÊ FOI SORTEADA';
@@ -1093,6 +1091,101 @@ class AppLocalizationsPt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get errorRetryButton => 'Tentar novamente';
+
+  @override
+  String get errorNoConnection =>
+      'Sem conexão com a internet. Verifique sua conexão e tente novamente.';
+
+  @override
+  String get errorSessionExpired =>
+      'Sua sessão expirou. Saia do app e entre de novo na sua conta.';
+
+  @override
+  String get authInvalidCredentialsError =>
+      'E-mail ou senha incorretos. Confira os dados e tente novamente.';
+
+  @override
+  String get authEmailAlreadyRegisteredError =>
+      'Este e-mail já tem uma conta. Volte e entre com ele, ou use outro e-mail.';
+
+  @override
+  String get authWeakPasswordError =>
+      'Essa senha não é segura. Escolha outra senha e tente novamente.';
+
+  @override
+  String get authTooManyAttemptsError =>
+      'Muitas tentativas seguidas. Aguarde alguns minutos e tente novamente.';
+
+  @override
+  String get authGoogleUnavailableError =>
+      'Não foi possível entrar com o Google. Tente novamente ou entre com e-mail e senha.';
+
+  @override
+  String get authLoginFailedError =>
+      'Não foi possível entrar. Tente novamente em alguns minutos.';
+
+  @override
+  String get authSignUpFailedError =>
+      'Não foi possível criar sua conta. Tente novamente em alguns minutos.';
+
+  @override
+  String get claimTokenFailedError =>
+      'Não foi possível validar o token agora. Tente novamente em alguns minutos.';
+
+  @override
+  String sessionProfileLoadError(String reason) {
+    return 'Não foi possível carregar sua conta. $reason';
+  }
+
+  @override
+  String get onboardingProfileLoadError =>
+      'Não foi possível carregar seus dados.';
+
+  @override
+  String get onboardingProfileSaveError =>
+      'Não foi possível salvar seus dados. Tente novamente.';
+
+  @override
+  String get raffleAlreadyRecordedError =>
+      'O sorteio deste encontro já foi feito.';
+
+  @override
+  String get raffleParticipantsChangedError =>
+      'A lista de participantes mudou.';
+
+  @override
+  String get appStartupError =>
+      'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.';
+
+  @override
+  String get errorForbidden => 'Você não tem permissão para fazer isso.';
+
+  @override
+  String get raffleMeetingNotEndedError =>
+      'O sorteio só fica disponível depois que o encontro é encerrado.';
+
+  @override
+  String get raffleBookAlreadyDrawnError =>
+      'O livro sorteado já saiu em outro sorteio deste grupo.';
+
+  @override
+  String get raffleBookSuggestionUnavailableError =>
+      'A indicação de livro de uma participante não está mais disponível.';
+
+  @override
+  String get raffleRetryShowResultHint =>
+      'Toque em Tentar novamente para ver o resultado.';
+
+  @override
+  String get raffleRetryRefreshListHint =>
+      'Toque em Tentar novamente para atualizar a lista.';
+
+  @override
+  String get raffleListRefreshedHint =>
+      'Atualizamos a lista: confira as participantes e confirme de novo.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1193,7 +1286,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Digite o token fornecido após a aprovação para vincular sua conta.';
 
   @override
-  String get claimTokenFieldLabel => 'Claim Token';
+  String get claimTokenFieldLabel => 'Token de acesso';
 
   @override
   String get claimTokenFieldHint => 'Ex: 1A2B3C4D';
@@ -1828,7 +1921,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get raffleDrawAgainButton => 'Sortear novamente';
 
   @override
-  String get raffleErrorMessage => 'Não foi possível concluir o sorteio';
+  String get raffleErrorMessage =>
+      'Não foi possível concluir o sorteio. Tente novamente.';
 
   @override
   String get raffleNoMoreParticipantsToDraw => 'Sem mais pessoas para sortear';

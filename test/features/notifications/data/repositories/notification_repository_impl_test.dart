@@ -88,6 +88,48 @@ void main() {
       );
     });
 
+    test('maps a network failure to NotificationNetworkFailure', () async {
+      stubList(
+        const Failure(
+          FunctionSupabaseFailure(
+            message: 'Failed to fetch',
+            code: '0',
+            kind: SupabaseFailureKind.network,
+          ),
+        ),
+      );
+
+      final result = await repository.getNotifications(page: 1);
+
+      expect(
+        result,
+        const Failure<NotificationsPageEntity, NotificationFailure>(
+          NotificationNetworkFailure(),
+        ),
+      );
+    });
+
+    test('maps a 401 to NotificationSessionExpiredFailure', () async {
+      stubList(
+        const Failure(
+          FunctionSupabaseFailure(
+            message: 'Unauthorized',
+            code: '401',
+            kind: SupabaseFailureKind.unauthorized,
+          ),
+        ),
+      );
+
+      final result = await repository.getNotifications(page: 1);
+
+      expect(
+        result,
+        const Failure<NotificationsPageEntity, NotificationFailure>(
+          NotificationSessionExpiredFailure(),
+        ),
+      );
+    });
+
     test('treats an empty response as NotificationsLoadFailure', () async {
       stubList(const Success(SupabaseResponse()));
 

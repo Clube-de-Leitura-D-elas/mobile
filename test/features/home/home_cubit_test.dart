@@ -70,8 +70,7 @@ void main() {
         const HomeState(status: HomeStatus.loading),
         const HomeState(
           status: HomeStatus.error,
-          errorMessage:
-              'Não foi possível carregar seus grupos. Tente novamente.',
+          error: GroupListFailure(),
         ),
       ],
     );

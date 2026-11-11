@@ -7,6 +7,14 @@ sealed class ProfileFailure extends Equatable {
   List<Object?> get props => [];
 }
 
+class ProfileNetworkFailure extends ProfileFailure {
+  const ProfileNetworkFailure();
+}
+
+class ProfileSessionExpiredFailure extends ProfileFailure {
+  const ProfileSessionExpiredFailure();
+}
+
 class ProfilePhotoUploadFailure extends ProfileFailure {
   const ProfilePhotoUploadFailure();
 }

@@ -14,7 +14,12 @@ import 'package:mocktail/mocktail.dart';
 class MockRaffleRepository extends Mock implements RaffleRepository {}
 
 class TestRaffleFailure extends RaffleFailure {
-  const TestRaffleFailure(super.message);
+  const TestRaffleFailure(this.message);
+
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
 }
 
 void main() {
@@ -85,7 +90,7 @@ void main() {
       },
       expect: () => const [
         RaffleExecutionLoading(),
-        RaffleExecutionError('Erro de rede'),
+        RaffleExecutionError(TestRaffleFailure('Erro de rede')),
         RaffleExecutionLoading(),
         RaffleExecutionReady(
           meetingId: tMeetingId,
@@ -152,7 +157,7 @@ void main() {
       act: (cubit) => cubit.load(tMeetingId, meetingTitle: tMeetingTitle),
       expect: () => const [
         RaffleExecutionLoading(),
-        RaffleExecutionError('Erro de conexão'),
+        RaffleExecutionError(TestRaffleFailure('Erro de conexão')),
       ],
     );
 
@@ -372,6 +377,124 @@ void main() {
         isA<RaffleExecutionError>(),
       ],
     );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'retry after a 422 refetches the list but keeps only the chosen '
+      'participants',
+      build: () {
+        when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
+          (_) async => const Success<RaffleResult?, RaffleFailure>(null),
+        );
+        when(
+          () => mockRepository.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(RaffleParticipantsChangedFailure()),
+        );
+        // A lista do servidor vem com todas marcadas.
+        when(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).thenAnswer(
+          (_) async => Success([
+            tParticipant,
+            tParticipant2.copyWith(isSelected: true),
+            const RaffleParticipant(
+              id: 'p3',
+              name: 'Nova',
+              hasAttended: true,
+              isSelected: true,
+            ),
+          ]),
+        );
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      act: (cubit) async {
+        await cubit.load(
+          tMeetingId,
+          meetingTitle: tMeetingTitle,
+          participants: [
+            tParticipant,
+            tParticipant2.copyWith(isSelected: false),
+          ],
+        );
+        await cubit.draw();
+        await cubit.retry();
+        await cubit.draw();
+      },
+      verify: (cubit) {
+        verify(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).called(1);
+        final sent = verify(
+          () => mockRepository.drawRaffle(
+            meetingId: tMeetingId,
+            eligibleParticipantIds: captureAny(named: 'eligibleParticipantIds'),
+          ),
+        ).captured;
+        expect(sent, [
+          ['p1'],
+          ['p1'],
+        ]);
+      },
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'a 422 when saving the winner refetches on retry and draws only the '
+      'chosen participants',
+      build: () {
+        when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
+          (_) async => const Success<RaffleResult?, RaffleFailure>(null),
+        );
+        when(
+          () => mockRepository.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        ).thenAnswer((_) async => const Success(tResult));
+        when(() => mockRepository.saveRaffleResult(tResult)).thenAnswer(
+          (_) async => const Failure(RaffleParticipantsChangedFailure()),
+        );
+        // A lista do servidor vem com todas marcadas.
+        when(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).thenAnswer(
+          (_) async =>
+              Success([tParticipant, tParticipant2.copyWith(isSelected: true)]),
+        );
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      act: (cubit) async {
+        await cubit.load(
+          tMeetingId,
+          meetingTitle: tMeetingTitle,
+          participants: [
+            tParticipant,
+            tParticipant2.copyWith(isSelected: false),
+          ],
+        );
+        await cubit.draw();
+        await cubit.confirmResult();
+        await cubit.retry();
+        await cubit.draw();
+      },
+      verify: (cubit) {
+        verify(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).called(1);
+        final sent = verify(
+          () => mockRepository.drawRaffle(
+            meetingId: tMeetingId,
+            eligibleParticipantIds: captureAny(named: 'eligibleParticipantIds'),
+          ),
+        ).captured;
+        expect(sent, [
+          ['p1'],
+          ['p1'],
+        ]);
+      },
+    );
   });
 
   group('copyWith', () {
@@ -454,8 +577,155 @@ void main() {
           isPersisted: false,
           isSubmitting: true,
         ),
-        RaffleExecutionError('Erro ao salvar'),
+        RaffleExecutionError(TestRaffleFailure('Erro ao salvar')),
       ],
+    );
+
+    const unsaved = RaffleExecutionResultLoaded(
+      meetingId: tMeetingId,
+      meetingTitle: tMeetingTitle,
+      result: tResult,
+      isPersisted: false,
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'retry after a failed save saves the same winner instead of drawing again',
+      build: () {
+        var saves = 0;
+        when(() => mockRepository.saveRaffleResult(tResult)).thenAnswer(
+          (_) async => saves++ == 0
+              ? const Failure(RaffleNetworkFailure())
+              : const Success(null),
+        );
+        when(
+          () => mockRepository.getRaffleResult(tMeetingId),
+        ).thenAnswer((_) async => const Success(null));
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      seed: () => unsaved,
+      act: (cubit) async {
+        await cubit.confirmResult();
+        await cubit.retry();
+      },
+      expect: () => [
+        unsaved.copyWith(isSubmitting: true),
+        const RaffleExecutionError(RaffleNetworkFailure()),
+        const RaffleExecutionLoading(),
+        unsaved,
+        unsaved.copyWith(isSubmitting: true),
+        const RaffleExecutionSuccess(tResult),
+      ],
+      verify: (_) {
+        verify(() => mockRepository.saveRaffleResult(tResult)).called(2);
+        verifyNever(
+          () => mockRepository.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        );
+      },
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'retry after a failed save shows the result when it was recorded anyway',
+      build: () {
+        when(
+          () => mockRepository.saveRaffleResult(tResult),
+        ).thenAnswer((_) async => const Failure(RaffleServerFailure()));
+        when(
+          () => mockRepository.getRaffleResult(tMeetingId),
+        ).thenAnswer((_) async => const Success(tResult));
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      seed: () => unsaved,
+      act: (cubit) async {
+        await cubit.confirmResult();
+        await cubit.retry();
+      },
+      expect: () => [
+        unsaved.copyWith(isSubmitting: true),
+        const RaffleExecutionError(RaffleServerFailure()),
+        const RaffleExecutionLoading(),
+        const RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult,
+          isPersisted: true,
+        ),
+      ],
+      verify: (_) =>
+          verify(() => mockRepository.saveRaffleResult(tResult)).called(1),
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'retry after a failed save keeps the unsaved winner when checking fails',
+      build: () {
+        when(
+          () => mockRepository.saveRaffleResult(tResult),
+        ).thenAnswer((_) async => const Failure(RaffleNetworkFailure()));
+        when(
+          () => mockRepository.getRaffleResult(tMeetingId),
+        ).thenAnswer((_) async => const Failure(RaffleNetworkFailure()));
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      seed: () => unsaved,
+      act: (cubit) async {
+        await cubit.confirmResult();
+        await cubit.retry();
+        await cubit.retry();
+      },
+      skip: 2,
+      expect: () => [
+        const RaffleExecutionLoading(),
+        const RaffleExecutionError(RaffleNetworkFailure()),
+        const RaffleExecutionLoading(),
+        const RaffleExecutionError(RaffleNetworkFailure()),
+      ],
+      verify: (_) =>
+          verify(() => mockRepository.getRaffleResult(tMeetingId)).called(2),
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'retry after "already recorded" reloads and shows the recorded result',
+      build: () {
+        var lookups = 0;
+        when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
+          (_) async =>
+              lookups++ == 0 ? const Success(null) : const Success(tResult2),
+        );
+        when(
+          () => mockRepository.drawRaffle(
+            meetingId: tMeetingId,
+            eligibleParticipantIds: ['p1'],
+          ),
+        ).thenAnswer((_) async => const Success(tResult));
+        when(() => mockRepository.saveRaffleResult(tResult)).thenAnswer(
+          (_) async => const Failure(RaffleAlreadyRecordedFailure()),
+        );
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      act: (cubit) async {
+        await cubit.load(
+          tMeetingId,
+          meetingTitle: tMeetingTitle,
+          participants: const [tParticipant],
+        );
+        await cubit.draw();
+        await cubit.confirmResult();
+        await cubit.retry();
+      },
+      skip: 6,
+      expect: () => [
+        const RaffleExecutionLoading(),
+        const RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult2,
+          isPersisted: true,
+        ),
+      ],
+      verify: (_) =>
+          verify(() => mockRepository.saveRaffleResult(tResult)).called(1),
     );
   });
 }

@@ -8,6 +8,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/auth/presentation/user_failure_message.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key, this.onLoginPressed});
@@ -93,12 +94,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: BlocConsumer<SessionCubit, SessionState>(
           listener: (context, state) {
-            if (state is SessionError) {
-              if (state.message.toLowerCase().contains('email not confirmed')) {
-                context.showAppToast(l10n.confirmEmailBeforeLoginError);
-              } else {
-                context.showAppToast(state.message);
-              }
+            if (state is SessionError &&
+                state.operation == SessionOperation.signUp) {
+              context.showErrorToast(
+                userFailureMessage(
+                  l10n,
+                  state.failure,
+                  fallback: l10n.authSignUpFailedError,
+                ),
+              );
             }
           },
 

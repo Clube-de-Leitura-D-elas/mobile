@@ -30,9 +30,7 @@ void main() {
 
   setUp(() {
     mockAuthRepository = MockAuthRepository();
-    claimTokenCubit = ClaimTokenCubit(
-      authRepository: mockAuthRepository,
-    );
+    claimTokenCubit = ClaimTokenCubit(authRepository: mockAuthRepository);
   });
 
   tearDown(() {
@@ -45,38 +43,74 @@ void main() {
     });
 
     blocTest<ClaimTokenCubit, ClaimTokenState>(
-      'emits ClaimTokenFailure when token is empty',
+      'emits ClaimTokenEmpty when token is empty',
       build: () => claimTokenCubit,
       act: (cubit) => cubit.submitToken(claimToken: '', userId: 'user-1'),
+      expect: () => [const ClaimTokenEmpty()],
+    );
+
+    blocTest<ClaimTokenCubit, ClaimTokenState>(
+      'emits ClaimTokenEmpty again when the empty token is submitted twice',
+      build: () => claimTokenCubit,
+      act: (cubit) async {
+        await cubit.submitToken(claimToken: '', userId: 'user-1');
+        await cubit.submitToken(claimToken: '  ', userId: 'user-1');
+      },
       expect: () => [
-        const ClaimTokenFailure('Por favor, informe o token de acesso.'),
+        const ClaimTokenEmpty(),
+        const ClaimTokenInitial(),
+        const ClaimTokenEmpty(),
       ],
     );
 
     blocTest<ClaimTokenCubit, ClaimTokenState>(
       'emits [ClaimTokenLoading, ClaimTokenFailure] when claim profile fails',
       build: () {
-        when(() => mockAuthRepository.claimProfile('INVALID_TOKEN'))
-            .thenAnswer((_) async => const Failure(UserFailure(message: 'Token inválido')));
+        when(
+          () => mockAuthRepository.claimProfile('INVALID_TOKEN'),
+        ).thenAnswer((_) async => const Failure(ClaimTokenInvalidFailure()));
         return claimTokenCubit;
       },
-      act: (cubit) => cubit.submitToken(claimToken: 'INVALID_TOKEN', userId: 'user-1'),
+      act: (cubit) =>
+          cubit.submitToken(claimToken: 'INVALID_TOKEN', userId: 'user-1'),
       expect: () => [
         const ClaimTokenLoading(),
-        const ClaimTokenFailure('Token inválido'),
+        const ClaimTokenFailure(ClaimTokenInvalidFailure()),
+      ],
+    );
+
+    blocTest<ClaimTokenCubit, ClaimTokenState>(
+      'still succeeds without a profile when the re-fetch fails',
+      build: () {
+        when(
+          () => mockAuthRepository.claimProfile('VALID_TOKEN'),
+        ).thenAnswer((_) async => const Success(null));
+        when(
+          () => mockAuthRepository.getUserProfile('user-1'),
+        ).thenAnswer((_) async => const Failure(UserNetworkFailure()));
+        return claimTokenCubit;
+      },
+      act: (cubit) =>
+          cubit.submitToken(claimToken: 'VALID_TOKEN', userId: 'user-1'),
+      expect: () => [
+        const ClaimTokenLoading(),
+        const ClaimTokenSuccess(profile: null),
       ],
     );
 
     blocTest<ClaimTokenCubit, ClaimTokenState>(
       'emits [ClaimTokenLoading, ClaimTokenSuccess] when claim profile succeeds',
       build: () {
-        when(() => mockAuthRepository.claimProfile('VALID_TOKEN'))
-            .thenAnswer((_) async => const Success(null));
-        when(() => mockAuthRepository.getUserProfile('user-1'))
-            .thenAnswer((_) async => const Success(testProfile));
+        when(
+          () => mockAuthRepository.claimProfile('VALID_TOKEN'),
+        ).thenAnswer((_) async => const Success(null));
+        when(
+          () => mockAuthRepository.getUserProfile('user-1'),
+        ).thenAnswer((_) async => const Success(testProfile));
         return claimTokenCubit;
       },
-      act: (cubit) => cubit.submitToken(claimToken: 'VALID_TOKEN', userId: 'user-1'),
+      act: (cubit) =>
+          cubit.submitToken(claimToken: 'VALID_TOKEN', userId: 'user-1'),
       expect: () => [
         const ClaimTokenLoading(),
         const ClaimTokenSuccess(profile: testProfile),

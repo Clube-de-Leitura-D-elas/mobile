@@ -4,6 +4,7 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/auth/presentation/user_failure_message.dart';
 import 'package:mobile/features/auth/presentation/widgets/google_sign_in_button.dart';
 
 /// Login screen matching Figma spec (node-id: 771-1625) for Clube de Leitura D'Elas.
@@ -65,12 +66,15 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: BlocConsumer<SessionCubit, SessionState>(
           listener: (context, state) {
-            if (state is SessionError) {
-              if (state.message.toLowerCase().contains('email not confirmed')) {
-                context.showAppToast(l10n.confirmEmailBeforeLoginError);
-              } else {
-                context.showAppToast(state.message);
-              }
+            if (state is SessionError &&
+                state.operation == SessionOperation.signIn) {
+              context.showErrorToast(
+                userFailureMessage(
+                  l10n,
+                  state.failure,
+                  fallback: l10n.authLoginFailedError,
+                ),
+              );
             }
           },
 

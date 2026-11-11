@@ -7,6 +7,14 @@ sealed class NotificationFailure extends Equatable {
   List<Object?> get props => [];
 }
 
+class NotificationNetworkFailure extends NotificationFailure {
+  const NotificationNetworkFailure();
+}
+
+class NotificationSessionExpiredFailure extends NotificationFailure {
+  const NotificationSessionExpiredFailure();
+}
+
 class NotificationsLoadFailure extends NotificationFailure {
   const NotificationsLoadFailure();
 }
