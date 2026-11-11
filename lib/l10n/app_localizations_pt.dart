@@ -1138,6 +1138,10 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get raffleParticipantsChangedError =>
       'A lista de participantes mudou. Toque em Tentar novamente para atualizar.';
+
+  @override
+  String get appStartupError =>
+      'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

@@ -1968,6 +1968,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'A lista de participantes mudou. Toque em Tentar novamente para atualizar.'**
   String get raffleParticipantsChangedError;
+
+  /// Tela mostrada quando a inicialização do app falha (configuração, Firebase ou Supabase).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.'**
+  String get appStartupError;
 }
 
 class _AppLocalizationsDelegate

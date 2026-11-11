@@ -1514,5 +1514,9 @@
   "raffleParticipantsChangedError": "A lista de participantes mudou. Toque em Tentar novamente para atualizar.",
   "@raffleParticipantsChangedError": {
     "description": "Sorteio recusado porque alguma participante não é mais elegível (HTTP 422)."
+  },
+  "appStartupError": "Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.",
+  "@appStartupError": {
+    "description": "Tela mostrada quando a inicialização do app falha (configuração, Firebase ou Supabase)."
   }
 }

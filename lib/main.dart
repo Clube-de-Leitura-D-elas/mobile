@@ -49,23 +49,30 @@ Future<void> mainAsync() async {
     runApp(const MainApp());
   } catch (error, stackTrace) {
     debugPrint('Erro durante a inicialização do app: $error\n$stackTrace');
-    runApp(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Text(
-                'Erro ao inicializar o aplicativo:\n$error',
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
+    runApp(const StartupErrorApp());
+  } finally {
+    FlutterNativeSplash.remove();
+  }
+}
+
+/// Tela de quando o app não consegue iniciar. Não oferece "Tentar novamente":
+/// Supabase e o service locator não aceitam ser inicializados duas vezes.
+class StartupErrorApp extends StatelessWidget {
+  const StartupErrorApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: AppTheme.light,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('pt', 'BR'),
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: AppErrorState(message: context.l10n.appStartupError),
         ),
       ),
     );
-  } finally {
-    FlutterNativeSplash.remove();
   }
 }
 
