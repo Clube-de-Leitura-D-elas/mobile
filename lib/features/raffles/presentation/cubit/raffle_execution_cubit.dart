@@ -16,6 +16,10 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
   String? _meetingTitle;
   List<RaffleParticipant>? _participants;
 
+  /// Quem a coordenadora escolheu na preparação. A lista rebuscada após um
+  /// 422 vem com todas marcadas e não pode trazer de volta quem foi tirado.
+  Set<String>? _chosenIds;
+
   Future<void> retry() => load(
     _meetingId,
     meetingTitle: _meetingTitle,
@@ -30,6 +34,12 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     _meetingId = meetingId;
     _meetingTitle = meetingTitle;
     _participants = participants;
+    if (participants != null) {
+      _chosenIds = {
+        for (final p in participants)
+          if (p.isSelected) p.id,
+      };
+    }
     emit(const RaffleExecutionLoading());
 
     final existingResult = await repository.getRaffleResult(meetingId);
@@ -63,9 +73,24 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     if (isClosed) return;
 
     participantsResult.match(
-      (fetched) => _emitEligible(meetingId, meetingTitle ?? '', fetched),
+      (fetched) =>
+          _emitEligible(meetingId, meetingTitle ?? '', _keepChosen(fetched)),
       (failure) => emit(RaffleExecutionError(failure)),
     );
+  }
+
+  List<RaffleParticipant> _keepChosen(List<RaffleParticipant> fetched) {
+    final chosenIds = _chosenIds;
+    if (chosenIds == null) return fetched;
+    return [
+      for (final p in fetched) p.copyWith(isSelected: chosenIds.contains(p.id)),
+    ];
+  }
+
+  void _onServerFailure(RaffleFailure failure) {
+    // Sem isso o "Tentar novamente" sorteia de novo a lista recusada.
+    if (failure is RaffleParticipantsChangedFailure) _participants = null;
+    emit(RaffleExecutionError(failure));
   }
 
   void _emitEligible(
@@ -145,11 +170,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
           isPersisted: false,
         ),
       ),
-      (failure) {
-        // Sem isso o "Tentar novamente" sorteia de novo a lista recusada.
-        if (failure is RaffleParticipantsChangedFailure) _participants = null;
-        emit(RaffleExecutionError(failure));
-      },
+      _onServerFailure,
     );
   }
 
@@ -164,7 +185,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
 
     saveResult.match(
       (_) => emit(RaffleExecutionSuccess(currentState.result)),
-      (failure) => emit(RaffleExecutionError(failure)),
+      _onServerFailure,
     );
   }
 }

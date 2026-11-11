@@ -374,7 +374,8 @@ void main() {
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
-      'retry refetches participants after the server rejects the list',
+      'retry after a 422 refetches the list but keeps only the chosen '
+      'participants',
       build: () {
         when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
           (_) async => const Success<RaffleResult?, RaffleFailure>(null),
@@ -387,9 +388,65 @@ void main() {
         ).thenAnswer(
           (_) async => const Failure(RaffleParticipantsChangedFailure()),
         );
+        // A lista do servidor vem com todas marcadas.
         when(
           () => mockRepository.getEligibleParticipants(tMeetingId),
-        ).thenAnswer((_) async => const Success([tParticipant2]));
+        ).thenAnswer(
+          (_) async => Success([
+            tParticipant,
+            tParticipant2.copyWith(isSelected: true),
+            const RaffleParticipant(
+              id: 'p3',
+              name: 'Nova',
+              hasAttended: true,
+              isSelected: true,
+            ),
+          ]),
+        );
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      act: (cubit) async {
+        await cubit.load(
+          tMeetingId,
+          meetingTitle: tMeetingTitle,
+          participants: [
+            tParticipant,
+            tParticipant2.copyWith(isSelected: false),
+          ],
+        );
+        await cubit.draw();
+        await cubit.retry();
+        await cubit.draw();
+      },
+      verify: (cubit) {
+        verify(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).called(1);
+        final sent = verify(
+          () => mockRepository.drawRaffle(
+            meetingId: tMeetingId,
+            eligibleParticipantIds: captureAny(named: 'eligibleParticipantIds'),
+          ),
+        ).captured;
+        expect(sent, [
+          ['p1'],
+          ['p1'],
+        ]);
+      },
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'a 422 when saving the winner also refetches on retry',
+      build: () {
+        when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
+          (_) async => const Success<RaffleResult?, RaffleFailure>(null),
+        );
+        when(() => mockRepository.saveRaffleResult(tResult)).thenAnswer(
+          (_) async => const Failure(RaffleParticipantsChangedFailure()),
+        );
+        when(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).thenAnswer((_) async => const Success([tParticipant]));
         return RaffleExecutionCubit(repository: mockRepository);
       },
       act: (cubit) async {
@@ -398,7 +455,15 @@ void main() {
           meetingTitle: tMeetingTitle,
           participants: const [tParticipant],
         );
-        await cubit.draw();
+        cubit.emit(
+          const RaffleExecutionResultLoaded(
+            meetingId: tMeetingId,
+            meetingTitle: tMeetingTitle,
+            result: tResult,
+            isPersisted: false,
+          ),
+        );
+        await cubit.confirmResult();
         await cubit.retry();
       },
       verify: (cubit) {
