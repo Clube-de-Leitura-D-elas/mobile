@@ -19,7 +19,7 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     result.match(
       (participants) =>
           emit(RafflePreparationLoaded(participants: participants)),
-      (failure) => emit(RafflePreparationError(failure.message)),
+      (failure) => emit(RafflePreparationError(failure)),
     );
   }
 
@@ -65,7 +65,7 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     result.match(
       (_) => emit(RafflePreparationSuccess(selectedParticipants: selected)),
       (failure) {
-        emit(RafflePreparationError(failure.message));
+        emit(RafflePreparationError(failure));
         emit(currentState.copyWith(isSubmitting: false));
       },
     );

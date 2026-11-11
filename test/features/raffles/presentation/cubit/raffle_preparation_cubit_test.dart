@@ -221,7 +221,7 @@ void main() {
           participants: [tParticipant],
           isSubmitting: true,
         ),
-        RafflePreparationError('Erro ao confirmar'),
+        RafflePreparationError(TestRaffleFailure('Erro ao confirmar')),
         RafflePreparationLoaded(
           participants: [tParticipant],
           isSubmitting: false,

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_result.dart';
 
@@ -122,10 +123,10 @@ class RaffleExecutionSuccess extends RaffleExecutionState {
 }
 
 class RaffleExecutionError extends RaffleExecutionState {
-  final String message;
+  final RaffleFailure failure;
 
-  const RaffleExecutionError(this.message);
+  const RaffleExecutionError(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/models/raffle_participant_model.dart';
@@ -229,5 +230,72 @@ void main() {
 
       expect(result, isA<Failure<void, RaffleFailure>>());
     });
+  });
+
+  group('failure mapping', () {
+    RaffleRemoteException remote(
+      SupabaseFailureKind kind, {
+      String? code,
+      String message = 'raw',
+    }) => RaffleRemoteException(
+      FunctionSupabaseFailure(message: message, code: code, kind: kind),
+    );
+
+    final cases = <String, (Object, RaffleFailure)>{
+      'network': (
+        remote(SupabaseFailureKind.network, code: '0'),
+        const RaffleNetworkFailure(),
+      ),
+      '401': (
+        remote(SupabaseFailureKind.unauthorized, code: '401'),
+        const RaffleSessionExpiredFailure(),
+      ),
+      '409 already recorded': (
+        remote(
+          SupabaseFailureKind.conflict,
+          code: '409',
+          message: 'raffle already recorded for this meeting',
+        ),
+        const RaffleAlreadyRecordedFailure(),
+      ),
+      'other 409': (
+        remote(
+          SupabaseFailureKind.conflict,
+          code: '409',
+          message: 'book already drawn in this group',
+        ),
+        const RaffleServerFailure(),
+      ),
+      '422': (
+        remote(SupabaseFailureKind.validation, code: '422'),
+        const RaffleParticipantsChangedFailure(),
+      ),
+      '500': (
+        remote(SupabaseFailureKind.server, code: '500'),
+        const RaffleServerFailure(),
+      ),
+      'unexpected exception': (
+        Exception('boom'),
+        const RaffleServerFailure(),
+      ),
+    };
+
+    for (final MapEntry(key: name, value: (error, expected)) in cases.entries) {
+      test('maps $name', () async {
+        when(
+          () => mockDataSource.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        ).thenThrow(error);
+
+        final result = await repository.drawRaffle(
+          meetingId: 'meeting-1',
+          eligibleParticipantIds: const ['user-1'],
+        );
+
+        expect(result, Failure<RaffleResult, RaffleFailure>(expected));
+      });
+    }
   });
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/models/raffle_result_model.dart';
@@ -19,9 +21,7 @@ class RaffleRepositoryImpl implements RaffleRepository {
       final entities = models.map((model) => model.toDomain()).toList();
       return Success(entities);
     } catch (e) {
-      return Failure(
-        RaffleServerFailure(e.toString().replaceAll('Exception: ', '')),
-      );
+      return Failure(_failureFrom(e));
     }
   }
 
@@ -34,9 +34,7 @@ class RaffleRepositoryImpl implements RaffleRepository {
       await remoteDataSource.confirmRaffle(meetingId, selectedParticipantIds);
       return const Success(null);
     } catch (e) {
-      return Failure(
-        RaffleServerFailure(e.toString().replaceAll('Exception: ', '')),
-      );
+      return Failure(_failureFrom(e));
     }
   }
 
@@ -48,9 +46,7 @@ class RaffleRepositoryImpl implements RaffleRepository {
       final model = await remoteDataSource.getRaffleResult(meetingId);
       return Success(model?.toDomain());
     } catch (e) {
-      return Failure(
-        RaffleServerFailure(e.toString().replaceAll('Exception: ', '')),
-      );
+      return Failure(_failureFrom(e));
     }
   }
 
@@ -66,9 +62,7 @@ class RaffleRepositoryImpl implements RaffleRepository {
       );
       return Success(model.toDomain());
     } catch (e) {
-      return Failure(
-        RaffleServerFailure(e.toString().replaceAll('Exception: ', '')),
-      );
+      return Failure(_failureFrom(e));
     }
   }
 
@@ -90,9 +84,23 @@ class RaffleRepositoryImpl implements RaffleRepository {
       await remoteDataSource.saveRaffleResult(model);
       return const Success(null);
     } catch (e) {
-      return Failure(
-        RaffleServerFailure(e.toString().replaceAll('Exception: ', '')),
-      );
+      return Failure(_failureFrom(e));
     }
+  }
+
+  RaffleFailure _failureFrom(Object error) {
+    debugPrint('[RaffleFailure] $error');
+    if (error is! RaffleRemoteException) return const RaffleServerFailure();
+    final failure = error.failure;
+    return switch (failure.kind) {
+      SupabaseFailureKind.network => const RaffleNetworkFailure(),
+      SupabaseFailureKind.unauthorized => const RaffleSessionExpiredFailure(),
+      SupabaseFailureKind.validation when failure.code == '422' =>
+        const RaffleParticipantsChangedFailure(),
+      SupabaseFailureKind.conflict
+          when failure.message.contains('raffle already recorded') =>
+        const RaffleAlreadyRecordedFailure(),
+      _ => const RaffleServerFailure(),
+    };
   }
 }

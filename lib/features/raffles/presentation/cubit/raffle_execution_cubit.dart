@@ -36,7 +36,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     if (isClosed) return;
 
     final existing = existingResult.match((res) => res, (failure) {
-      emit(RaffleExecutionError(failure.message));
+      emit(RaffleExecutionError(failure));
       return null;
     });
     if (existingResult is Failure<RaffleResult?, RaffleFailure>) return;
@@ -64,7 +64,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
 
     participantsResult.match(
       (fetched) => _emitEligible(meetingId, meetingTitle ?? '', fetched),
-      (failure) => emit(RaffleExecutionError(failure.message)),
+      (failure) => emit(RaffleExecutionError(failure)),
     );
   }
 
@@ -145,7 +145,11 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
           isPersisted: false,
         ),
       ),
-      (failure) => emit(RaffleExecutionError(failure.message)),
+      (failure) {
+        // Sem isso o "Tentar novamente" sorteia de novo a lista recusada.
+        if (failure is RaffleParticipantsChangedFailure) _participants = null;
+        emit(RaffleExecutionError(failure));
+      },
     );
   }
 
@@ -160,7 +164,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
 
     saveResult.match(
       (_) => emit(RaffleExecutionSuccess(currentState.result)),
-      (failure) => emit(RaffleExecutionError(failure.message)),
+      (failure) => emit(RaffleExecutionError(failure)),
     );
   }
 }

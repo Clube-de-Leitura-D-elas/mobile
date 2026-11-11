@@ -85,7 +85,7 @@ void main() {
       },
       expect: () => const [
         RaffleExecutionLoading(),
-        RaffleExecutionError('Erro de rede'),
+        RaffleExecutionError(TestRaffleFailure('Erro de rede')),
         RaffleExecutionLoading(),
         RaffleExecutionReady(
           meetingId: tMeetingId,
@@ -152,7 +152,7 @@ void main() {
       act: (cubit) => cubit.load(tMeetingId, meetingTitle: tMeetingTitle),
       expect: () => const [
         RaffleExecutionLoading(),
-        RaffleExecutionError('Erro de conexão'),
+        RaffleExecutionError(TestRaffleFailure('Erro de conexão')),
       ],
     );
 
@@ -372,6 +372,41 @@ void main() {
         isA<RaffleExecutionError>(),
       ],
     );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'retry refetches participants after the server rejects the list',
+      build: () {
+        when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
+          (_) async => const Success<RaffleResult?, RaffleFailure>(null),
+        );
+        when(
+          () => mockRepository.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        ).thenAnswer(
+          (_) async => const Failure(RaffleParticipantsChangedFailure()),
+        );
+        when(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).thenAnswer((_) async => const Success([tParticipant2]));
+        return RaffleExecutionCubit(repository: mockRepository);
+      },
+      act: (cubit) async {
+        await cubit.load(
+          tMeetingId,
+          meetingTitle: tMeetingTitle,
+          participants: const [tParticipant],
+        );
+        await cubit.draw();
+        await cubit.retry();
+      },
+      verify: (cubit) {
+        verify(
+          () => mockRepository.getEligibleParticipants(tMeetingId),
+        ).called(1);
+      },
+    );
   });
 
   group('copyWith', () {
@@ -454,7 +489,7 @@ void main() {
           isPersisted: false,
           isSubmitting: true,
         ),
-        RaffleExecutionError('Erro ao salvar'),
+        RaffleExecutionError(TestRaffleFailure('Erro ao salvar')),
       ],
     );
   });

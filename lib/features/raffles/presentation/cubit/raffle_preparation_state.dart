@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 
 abstract class RafflePreparationState extends Equatable {
@@ -49,10 +50,10 @@ class RafflePreparationSuccess extends RafflePreparationState {
 }
 
 class RafflePreparationError extends RafflePreparationState {
-  final String message;
+  final RaffleFailure failure;
 
-  const RafflePreparationError(this.message);
+  const RafflePreparationError(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }
