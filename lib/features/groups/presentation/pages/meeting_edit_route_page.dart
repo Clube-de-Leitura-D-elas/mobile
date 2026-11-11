@@ -17,9 +17,14 @@ class MeetingEditRoutePage extends StatelessWidget {
           appBar: ScreenHeader.back(title: context.l10n.meetingEditTitle),
           body: const Center(child: CircularProgressIndicator()),
         ),
-        MeetingDetailsError(:final message) => Scaffold(
+        MeetingDetailsError(:final message, :final canRetry) => Scaffold(
           appBar: ScreenHeader.back(title: context.l10n.meetingEditTitle),
-          body: Center(child: Text(message)),
+          body: AppErrorState(
+            message: message,
+            onRetry: canRetry
+                ? context.read<MeetingDetailsCubit>().retry
+                : null,
+          ),
         ),
         MeetingDetailsLoaded(:final meeting) => MeetingEditPage(
           meeting: meeting,

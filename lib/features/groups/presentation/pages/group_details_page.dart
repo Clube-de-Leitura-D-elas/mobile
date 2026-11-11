@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
@@ -24,9 +25,14 @@ class GroupDetailsPage extends StatelessWidget {
           GroupDetailsLoading() => const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           ),
-          GroupDetailsError(:final message) => Scaffold(
+          GroupDetailsError(:final message, :final canRetry) => Scaffold(
             appBar: AppBar(),
-            body: Center(child: Text(message)),
+            body: AppErrorState(
+              message: message,
+              onRetry: canRetry
+                  ? context.read<GroupDetailsCubit>().retry
+                  : null,
+            ),
           ),
           GroupDetailsLoaded(:final group) => GroupDetailsScreen(
             name: 'Grupo ${group.name}',

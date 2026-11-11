@@ -24,8 +24,11 @@ class GroupDetailsLoaded extends GroupDetailsState {
 class GroupDetailsError extends GroupDetailsState {
   final String message;
 
-  const GroupDetailsError(this.message);
+  /// Falso quando o grupo não existe: tentar de novo não adianta.
+  final bool canRetry;
+
+  const GroupDetailsError(this.message, {this.canRetry = true});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, canRetry];
 }

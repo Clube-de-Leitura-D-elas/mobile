@@ -13,6 +13,8 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
   final GroupRepository _repository;
   String _meetingId = '';
 
+  Future<void> retry() => load(_meetingId);
+
   Future<void> load(String meetingId) async {
     _meetingId = meetingId;
     emit(const MeetingPresenceLoading());

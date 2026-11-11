@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
-import 'package:mobile/design_system/tokens/color_tokens.dart';
-import 'package:mobile/design_system/tokens/spacing_tokens.dart';
-import 'package:mobile/design_system/tokens/typography_tokens.dart';
+import 'package:mobile/design_system/widgets/app_error_state.dart';
 import 'package:mobile/design_system/widgets/app_toast.dart';
 import 'package:mobile/design_system/widgets/screen_header.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
@@ -48,17 +46,9 @@ class MeetingPresencePage extends StatelessWidget {
             appBar: ScreenHeader.back(
               title: context.l10n.meetingPresenceHeader,
             ),
-            body: Center(
-              child: Padding(
-                padding: EdgeInsets.all(context.spacing.s24),
-                child: Text(
-                  message,
-                  style: context.typography.bodyDefault.copyWith(
-                    color: context.colors.textMuted,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            body: AppErrorState(
+              message: message,
+              onRetry: context.read<MeetingPresenceCubit>().retry,
             ),
           ),
           MeetingPresenceEditing() => MeetingPresenceScreen(

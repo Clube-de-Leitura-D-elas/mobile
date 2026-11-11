@@ -127,6 +127,33 @@ void main() {
     expect(find.byType(GroupDetailsScreen), findsNothing);
   });
 
+  testWidgets('retries the group request from the error state', (
+    tester,
+  ) async {
+    when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
+      (_) async => const Failure(GroupNetworkFailure()),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Tentar novamente'));
+    await tester.pumpAndSettle();
+
+    verify(() => mockRepository.getGroupDetails('group-1')).called(2);
+  });
+
+  testWidgets('hides retry when the group does not exist', (tester) async {
+    when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
+      (_) async => const Failure(GroupNotFoundFailure()),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Grupo não encontrado.'), findsOneWidget);
+    expect(find.text('Tentar novamente'), findsNothing);
+  });
+
   testWidgets('renders group details in the loaded state', (tester) async {
     when(
       () => mockRepository.getGroupDetails('group-1'),

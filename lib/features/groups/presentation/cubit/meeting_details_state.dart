@@ -22,10 +22,13 @@ class MeetingDetailsLoaded extends MeetingDetailsState {
 }
 
 class MeetingDetailsError extends MeetingDetailsState {
-  const MeetingDetailsError(this.message);
+  const MeetingDetailsError(this.message, {this.canRetry = true});
 
   final String message;
 
+  /// Falso quando o encontro não existe: tentar de novo não adianta.
+  final bool canRetry;
+
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, canRetry];
 }

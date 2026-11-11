@@ -25,8 +25,9 @@ class EventHistoryPage extends StatelessWidget {
           EventHistoryLoaded(:final meetings) => EventHistoryScreen(
             meetings: meetings,
           ),
-          EventHistoryError(:final message) => EventHistoryMessageView(
+          EventHistoryError(:final message) => AppErrorState(
             message: message,
+            onRetry: context.read<EventHistoryCubit>().retry,
           ),
         },
       ),
