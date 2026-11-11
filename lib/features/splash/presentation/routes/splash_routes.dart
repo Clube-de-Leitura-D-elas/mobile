@@ -27,6 +27,11 @@ abstract class SplashRoutes {
   ) {
     final isSplash = state.matchedLocation == splash;
 
+    // O erro de carregar o perfil (com "Tentar novamente") fica na splash.
+    if (sessionState is SessionProfileUnavailable) {
+      return isSplash ? null : splash;
+    }
+
     if (isSplash) {
       if (sessionState is AuthenticatedSession) {
         return '/home';

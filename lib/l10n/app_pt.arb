@@ -1490,9 +1490,14 @@
   "@claimTokenFailedError": {
     "description": "Falha inesperada ao validar o token de acesso (não é token inválido)."
   },
-  "sessionProfileLoadError": "Não foi possível carregar sua conta.",
+  "sessionProfileLoadError": "Não foi possível carregar sua conta. {reason}",
   "@sessionProfileLoadError": {
-    "description": "Tela de abertura quando o perfil da usuária não carrega. Vem antes do motivo e do botão de tentar novamente."
+    "description": "Tela de abertura quando o perfil da usuária não carrega. {reason} é o motivo com a orientação (sem internet, sessão expirada...).",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
   },
   "onboardingProfileLoadError": "Não foi possível carregar seus dados.",
   "@onboardingProfileLoadError": {

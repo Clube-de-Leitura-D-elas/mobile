@@ -1119,7 +1119,9 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível validar o token agora. Tente novamente em alguns minutos.';
 
   @override
-  String get sessionProfileLoadError => 'Não foi possível carregar sua conta.';
+  String sessionProfileLoadError(String reason) {
+    return 'Não foi possível carregar sua conta. $reason';
+  }
 
   @override
   String get onboardingProfileLoadError =>

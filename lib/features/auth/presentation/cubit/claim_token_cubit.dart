@@ -20,7 +20,7 @@ class ClaimTokenCubit extends Cubit<ClaimTokenState> {
 
     if (cleanToken.isEmpty) {
       debugPrint('[ClaimTokenCubit] Empty token submitted');
-      emit(const ClaimTokenFailure('Por favor, informe o token de acesso.'));
+      emit(const ClaimTokenEmpty());
       return;
     }
 
@@ -29,8 +29,8 @@ class ClaimTokenCubit extends Cubit<ClaimTokenState> {
     final claimResult = await authRepository.claimProfile(cleanToken);
 
     if (claimResult case Failure(:final failure)) {
-      debugPrint('[ClaimTokenCubit] claimProfile failed: ${failure.message}');
-      emit(ClaimTokenFailure(failure.message));
+      debugPrint('[ClaimTokenCubit] claimProfile failed: $failure');
+      emit(ClaimTokenFailure(failure));
       return;
     }
 
@@ -38,7 +38,7 @@ class ClaimTokenCubit extends Cubit<ClaimTokenState> {
     final profileResult = await authRepository.getUserProfile(userId);
 
     if (profileResult case Failure(:final failure)) {
-      debugPrint('[ClaimTokenCubit] Profile re-fetch failed: ${failure.message}');
+      debugPrint('[ClaimTokenCubit] Profile re-fetch failed: $failure');
       emit(const ClaimTokenSuccess(profile: null));
       return;
     }

@@ -6,6 +6,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_state.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/user_failure_message.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 
 class ClaimTokenScreen extends StatefulWidget {
@@ -50,16 +51,19 @@ class _ClaimTokenScreenState extends State<ClaimTokenScreen> {
       ),
       body: BlocListener<ClaimTokenCubit, ClaimTokenState>(
         listener: (context, state) {
-          if (state is ClaimTokenFailure) {
-            final msg = state.message;
-            final userMsg = (msg.contains('Token inválido') ||
-                    msg.contains('já utilizado') ||
-                    msg.contains('FunctionsHttpException') ||
-                    msg.contains('claimTokenInvalidError'))
-                ? l10n.claimTokenInvalidError
-                : (msg.startsWith('Erro') ? l10n.genericError : msg);
+          if (state is ClaimTokenEmpty) {
+            context.showErrorToast(l10n.claimTokenRequiredError);
+            return;
+          }
 
-            context.showAppToast(userMsg);
+          if (state is ClaimTokenFailure) {
+            context.showErrorToast(
+              userFailureMessage(
+                l10n,
+                state.failure,
+                fallback: l10n.claimTokenFailedError,
+              ),
+            );
             return;
           }
 

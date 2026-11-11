@@ -1939,11 +1939,11 @@ abstract class AppLocalizations {
   /// **'Não foi possível validar o token agora. Tente novamente em alguns minutos.'**
   String get claimTokenFailedError;
 
-  /// Tela de abertura quando o perfil da usuária não carrega. Vem antes do motivo e do botão de tentar novamente.
+  /// Tela de abertura quando o perfil da usuária não carrega. {reason} é o motivo com a orientação (sem internet, sessão expirada...).
   ///
   /// In pt, this message translates to:
-  /// **'Não foi possível carregar sua conta.'**
-  String get sessionProfileLoadError;
+  /// **'Não foi possível carregar sua conta. {reason}'**
+  String sessionProfileLoadError(String reason);
 
   /// Revisão do cadastro: os dados da usuária não carregaram.
   ///

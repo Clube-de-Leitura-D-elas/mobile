@@ -45,25 +45,23 @@ void main() {
     });
 
     blocTest<ClaimTokenCubit, ClaimTokenState>(
-      'emits ClaimTokenFailure when token is empty',
+      'emits ClaimTokenEmpty when token is empty',
       build: () => claimTokenCubit,
       act: (cubit) => cubit.submitToken(claimToken: '', userId: 'user-1'),
-      expect: () => [
-        const ClaimTokenFailure('Por favor, informe o token de acesso.'),
-      ],
+      expect: () => [const ClaimTokenEmpty()],
     );
 
     blocTest<ClaimTokenCubit, ClaimTokenState>(
       'emits [ClaimTokenLoading, ClaimTokenFailure] when claim profile fails',
       build: () {
         when(() => mockAuthRepository.claimProfile('INVALID_TOKEN'))
-            .thenAnswer((_) async => const Failure(UserFailure(message: 'Token inválido')));
+            .thenAnswer((_) async => const Failure(ClaimTokenInvalidFailure()));
         return claimTokenCubit;
       },
       act: (cubit) => cubit.submitToken(claimToken: 'INVALID_TOKEN', userId: 'user-1'),
       expect: () => [
         const ClaimTokenLoading(),
-        const ClaimTokenFailure('Token inválido'),
+        const ClaimTokenFailure(ClaimTokenInvalidFailure()),
       ],
     );
 

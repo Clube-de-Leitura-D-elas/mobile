@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/auth/presentation/user_failure_message.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 /// Splash screen displaying app logo and loading indicator while checking session.
+///
+/// When the profile fails to load, shows the reason with "Tentar novamente"
+/// and "Sair".
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -14,27 +21,48 @@ class SplashScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: colors.bgDefault,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Semantics(
-              image: true,
-              label: logoLabel,
-              child: Image.asset(
-                'assets/images/logo.png',
-                width: 160.0,
-                fit: BoxFit.contain,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Semantics(
+                image: true,
+                label: logoLabel,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 160.0,
+                  fit: BoxFit.contain,
+                ),
               ),
-            ),
-            const Gap24(),
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(colors.actionPrimary),
-            ),
-          ],
+              const Gap24(),
+              BlocBuilder<SessionCubit, SessionState>(
+                builder: (context, state) {
+                  if (state is SessionProfileUnavailable && l10n != null) {
+                    final cubit = context.read<SessionCubit>();
+                    final reason = userFailureMessage(
+                      l10n,
+                      state.failure,
+                      fallback: l10n.genericError,
+                    );
+                    return AppErrorState(
+                      message: l10n.sessionProfileLoadError(reason),
+                      onRetry: cubit.retryProfile,
+                      secondaryLabel: l10n.logoutTooltip,
+                      onSecondary: cubit.logOut,
+                    );
+                  }
+                  return CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      colors.actionPrimary,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-

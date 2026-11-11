@@ -29,6 +29,8 @@ void main() {
   late MockGoogleSignInClientAuthorization mockAuthorization;
   late AuthRepositoryImpl repository;
 
+  setUpAll(() => registerFallbackValue(OAuthProvider.google));
+
   final testSupabaseUser = User(
     id: 'user-123',
     appMetadata: const {},
@@ -89,7 +91,7 @@ void main() {
       expect(result.unwrap().mail, 'test@example.com');
     });
 
-    test('signIn returns MissingGoogleIdTokenFailure when idToken is null', () async {
+    test('signIn returns GoogleSignInUnavailableFailure when idToken is null', () async {
       when(() => mockGoogleSignIn.authenticate()).thenAnswer((_) async => mockGoogleAccount);
       when(() => mockGoogleAccount.authorizationClient).thenReturn(mockAuthClient);
       when(() => mockGoogleAccount.authentication).thenReturn(mockAuthentication);
@@ -100,11 +102,11 @@ void main() {
 
       expect(result, isA<Failure<UserEntity, UserFailure>>());
       if (result case Failure(:final failure)) {
-        expect(failure, isA<MissingGoogleIdTokenFailure>());
+        expect(failure, isA<GoogleSignInUnavailableFailure>());
       }
     });
 
-    test('signIn returns UserFailure when Supabase signInWithIdToken fails', () async {
+    test('signIn maps a Supabase network failure to UserNetworkFailure', () async {
       when(() => mockGoogleSignIn.authenticate()).thenAnswer((_) async => mockGoogleAccount);
       when(() => mockGoogleAccount.authorizationClient).thenReturn(mockAuthClient);
       when(() => mockGoogleAccount.authentication).thenReturn(mockAuthentication);
@@ -118,14 +120,53 @@ void main() {
           idToken: 'id_token_123',
           accessToken: 'access_token_123',
         ),
-      ).thenAnswer((_) async => const Failure(AuthSupabaseFailure(message: 'OAuth Error')));
+      ).thenAnswer(
+        (_) async => const Failure(
+          AuthSupabaseFailure(
+            message: 'AuthRetryableFetchException',
+            kind: SupabaseFailureKind.network,
+          ),
+        ),
+      );
 
       final result = await repository.signIn();
 
-      expect(result, isA<Failure<UserEntity, UserFailure>>());
-      if (result case Failure(:final failure)) {
-        expect(failure.message, 'OAuth Error');
-      }
+      expect(result, const Failure<UserEntity, UserFailure>(UserNetworkFailure()));
+    });
+
+    test('signIn returns GoogleSignInCanceledFailure when the picker is closed', () async {
+      when(() => mockGoogleSignIn.authenticate()).thenThrow(
+        const GoogleSignInException(code: GoogleSignInExceptionCode.canceled),
+      );
+
+      final result = await repository.signIn();
+
+      expect(
+        result,
+        const Failure<UserEntity, UserFailure>(GoogleSignInCanceledFailure()),
+      );
+      verifyNever(
+        () => mockSupabaseService.signInWithIdToken(
+          provider: any(named: 'provider'),
+          idToken: any(named: 'idToken'),
+          accessToken: any(named: 'accessToken'),
+        ),
+      );
+    });
+
+    test('signIn returns GoogleSignInUnavailableFailure on other Google errors', () async {
+      when(() => mockGoogleSignIn.authenticate()).thenThrow(
+        const GoogleSignInException(
+          code: GoogleSignInExceptionCode.clientConfigurationError,
+        ),
+      );
+
+      final result = await repository.signIn();
+
+      expect(
+        result,
+        const Failure<UserEntity, UserFailure>(GoogleSignInUnavailableFailure()),
+      );
     });
 
     test('signInWithEmailAndPassword returns Success on valid credentials', () async {
@@ -265,10 +306,10 @@ void main() {
 
       final result = await repository.getUserProfile('user-123');
 
-      expect(result, isA<Failure<UserProfileEntity?, UserFailure>>());
-      if (result case Failure(:final failure)) {
-        expect(failure.message, 'Server error');
-      }
+      expect(
+        result,
+        const Failure<UserProfileEntity?, UserFailure>(UnknownUserFailure()),
+      );
     });
 
     test('claimProfile calls claim-user-profile edge function', () async {
@@ -296,13 +337,44 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => const Failure(
-          FunctionSupabaseFailure(message: 'Invalid claim token'),
+          FunctionSupabaseFailure(
+            message: 'Token inválido ou já utilizado',
+            code: '400',
+            kind: SupabaseFailureKind.validation,
+          ),
         ),
       );
 
       final result = await repository.claimProfile('TOKEN123');
 
-      expect(result, isA<Failure<void, UserFailure>>());
+      expect(
+        result,
+        const Failure<void, UserFailure>(ClaimTokenInvalidFailure()),
+      );
+    });
+
+    test('claimProfile maps an expired session (401)', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<dynamic>(
+          functionName: 'claim-user-profile',
+          body: const {'claim_token': 'TOKEN123'},
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(
+            message: 'Unauthorized',
+            code: '401',
+            kind: SupabaseFailureKind.unauthorized,
+          ),
+        ),
+      );
+
+      final result = await repository.claimProfile('TOKEN123');
+
+      expect(
+        result,
+        const Failure<void, UserFailure>(UserSessionExpiredFailure()),
+      );
     });
   });
 }

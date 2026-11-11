@@ -116,11 +116,11 @@ void main() {
       verify(() => mockSessionCubit.logOut()).called(1);
     });
 
-    testWidgets('shows invalid token toast when ClaimTokenFailure occurs with Token inválido', (
+    testWidgets('shows invalid token toast when the token is rejected', (
       tester,
     ) async {
       when(() => mockAuthRepository.claimProfile(any()))
-          .thenAnswer((_) async => const Failure(UserFailure(message: 'Token inválido')));
+          .thenAnswer((_) async => const Failure(ClaimTokenInvalidFailure()));
 
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -137,11 +137,11 @@ void main() {
       expect(find.text('Token de acesso inválido ou já utilizado. Por favor, verifique o código.'), findsOneWidget);
     });
 
-    testWidgets('shows generic error toast when ClaimTokenFailure occurs with Erro prefix', (
+    testWidgets('shows a retry hint when the claim fails for an unknown reason', (
       tester,
     ) async {
       when(() => mockAuthRepository.claimProfile(any()))
-          .thenAnswer((_) async => const Failure(UserFailure(message: 'Erro interno')));
+          .thenAnswer((_) async => const Failure(UnknownUserFailure()));
 
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -155,14 +155,19 @@ void main() {
       await tester.tap(confirmButton);
       await tester.pumpAndSettle();
 
-      expect(find.text('Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.'), findsOneWidget);
+      expect(
+        find.text(
+          'Não foi possível validar o token agora. Tente novamente em alguns minutos.',
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('shows raw message toast when ClaimTokenFailure occurs with custom message', (
+    testWidgets('shows the no connection message when offline', (
       tester,
     ) async {
       when(() => mockAuthRepository.claimProfile(any()))
-          .thenAnswer((_) async => const Failure(UserFailure(message: 'Mensagem customizada')));
+          .thenAnswer((_) async => const Failure(UserNetworkFailure()));
 
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -176,7 +181,27 @@ void main() {
       await tester.tap(confirmButton);
       await tester.pumpAndSettle();
 
-      expect(find.text('Mensagem customizada'), findsOneWidget);
+      expect(
+        find.text(
+          'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('asks for the token when confirming with an empty field', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final confirmButton = find.widgetWithText(AppButton, 'Confirmar');
+      await tester.ensureVisible(confirmButton);
+      await tester.tap(confirmButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Por favor, informe o token de acesso.'), findsOneWidget);
+      verifyNever(() => mockAuthRepository.claimProfile(any()));
     });
   });
 }

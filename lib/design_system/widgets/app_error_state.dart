@@ -32,7 +32,7 @@ class AppErrorState extends StatelessWidget {
     final secondaryLabel = this.secondaryLabel;
 
     return Center(
-      child: SingleChildScrollView(
+      child: Padding(
         padding: EdgeInsets.all(spacing.s24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
