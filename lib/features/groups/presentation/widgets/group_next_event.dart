@@ -5,6 +5,7 @@ import 'package:mobile/design_system/icons/app_icons.dart';
 import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/tokens/spacing_tokens.dart';
 import 'package:mobile/design_system/tokens/typography_tokens.dart';
+import 'package:mobile/design_system/widgets/app_button.dart';
 import 'package:mobile/design_system/widgets/app_card.dart';
 import 'package:mobile/design_system/widgets/app_icon.dart';
 
@@ -34,6 +35,8 @@ class GroupNextEvent extends StatelessWidget {
     this.status = GroupNextEventStatus.empty,
     this.data,
     this.onMoreDetailsPressed,
+    this.errorMessage,
+    this.onRetry,
   }) : assert(
          status != GroupNextEventStatus.loaded || data != null,
          'Loaded state requires event data.',
@@ -46,13 +49,20 @@ class GroupNextEvent extends StatelessWidget {
   /// When null, the link is not rendered.
   final VoidCallback? onMoreDetailsPressed;
 
+  /// Texto do erro; sem ele, mostra o erro genérico.
+  final String? errorMessage;
+
+  /// Mostra "Tentar novamente" no estado de erro.
+  final VoidCallback? onRetry;
+
   @override
   Widget build(BuildContext context) {
     return switch (status) {
       GroupNextEventStatus.loading => const _LoadingState(),
       GroupNextEventStatus.error => _MessageState(
         icon: Icons.error_outline,
-        message: context.l10n.genericError,
+        message: errorMessage ?? context.l10n.genericError,
+        onRetry: onRetry,
       ),
       GroupNextEventStatus.empty => _MessageState(
         icon: Icons.event_busy_outlined,
@@ -311,17 +321,23 @@ class _BookCoverLoading extends StatelessWidget {
 }
 
 class _MessageState extends StatelessWidget {
-  const _MessageState({required this.icon, required this.message});
+  const _MessageState({
+    required this.icon,
+    required this.message,
+    this.onRetry,
+  });
 
   final IconData icon;
   final String message;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final spacing = context.spacing;
 
-    return Row(
+    final onRetry = this.onRetry;
+    final row = Row(
       children: [
         Icon(icon, size: spacing.s16, color: colors.textMuted),
         SizedBox(width: spacing.s8),
@@ -330,6 +346,20 @@ class _MessageState extends StatelessWidget {
             message,
             style: context.text.bodySmall.copyWith(color: colors.textMuted),
           ),
+        ),
+      ],
+    );
+    if (onRetry == null) return row;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        row,
+        SizedBox(height: spacing.s8),
+        AppButton.ghost(
+          label: context.l10n.errorRetryButton,
+          size: AppButtonSize.sm,
+          onPressed: onRetry,
         ),
       ],
     );

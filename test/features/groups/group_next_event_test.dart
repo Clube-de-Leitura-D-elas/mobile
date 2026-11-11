@@ -131,6 +131,23 @@ void main() {
     );
   });
 
+  testWidgets('shows the failure message and retries', (tester) async {
+    var retries = 0;
+    await tester.pumpWidget(
+      buildSubject(
+        GroupNextEvent(
+          status: GroupNextEventStatus.error,
+          errorMessage: 'Sem conexão com a internet.',
+          onRetry: () => retries++,
+        ),
+      ),
+    );
+
+    expect(find.text('Sem conexão com a internet.'), findsOneWidget);
+    await tester.tap(find.text('Tentar novamente'));
+    expect(retries, 1);
+  });
+
   testWidgets('renders loading state without throwing', (tester) async {
     await tester.pumpWidget(
       buildSubject(const GroupNextEvent(status: GroupNextEventStatus.loading)),

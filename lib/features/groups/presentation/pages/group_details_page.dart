@@ -52,6 +52,10 @@ class GroupDetailsPage extends StatelessWidget {
                 return GroupNextEvent(
                   status: _toWidgetStatus(nextEventState),
                   data: _toWidgetData(nextEventState),
+                  errorMessage: nextEventState is NextEventError
+                      ? nextEventState.message
+                      : null,
+                  onRetry: context.read<NextEventCubit>().retry,
                   onMoreDetailsPressed: meetingId == null
                       ? null
                       : () async {
