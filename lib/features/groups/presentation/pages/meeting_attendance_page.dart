@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
@@ -53,7 +54,7 @@ class MeetingAttendancePage extends StatelessWidget {
                       SizedBox(height: context.spacing.s16),
                       AppButton.secondary(
                         size: AppButtonSize.sm,
-                        label: 'Tentar novamente',
+                        label: context.l10n.errorRetryButton,
                         onPressed: () => context
                             .read<MeetingAttendanceCubit>()
                             .fetchAttendance(),
