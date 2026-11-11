@@ -81,13 +81,35 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// Confirma como a coordenadora: "Continuar" e "Confirmar" no diálogo.
+  Future<void> confirmThroughScreen(WidgetTester tester) async {
+    final continueButton = find.widgetWithText(AppButton, 'Continuar');
+    await tester.ensureVisible(continueButton);
+    await tester.tap(continueButton);
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.widgetWithText(AppButton, 'Confirmar'),
+      ),
+    );
+  }
+
+  void verifyConfirmedWithAna() => verify(
+    () => repository.confirmRaffle(
+      meetingId: meetingId,
+      selectedParticipantIds: ['p1'],
+    ),
+  ).called(1);
+
   testWidgets('shows the reason in a toast when confirming fails', (
     tester,
   ) async {
     stubConfirm(const RaffleNetworkFailure());
     await pumpScreen(tester);
 
-    await cubit.confirmRaffle(meetingId);
+    await confirmThroughScreen(tester);
+    await tester.pump();
     await tester.pump();
 
     expect(
@@ -96,6 +118,7 @@ void main() {
       ),
       findsOneWidget,
     );
+    verifyConfirmedWithAna();
     await tester.pumpAndSettle(const Duration(seconds: 4));
   });
 
@@ -103,7 +126,8 @@ void main() {
     stubConfirm(const RaffleParticipantsChangedFailure());
     await pumpScreen(tester);
 
-    await cubit.confirmRaffle(meetingId);
+    await confirmThroughScreen(tester);
+    await tester.pump();
     await tester.pump();
 
     expect(
@@ -113,6 +137,7 @@ void main() {
       ),
       findsOneWidget,
     );
+    verifyConfirmedWithAna();
     await tester.pumpAndSettle(const Duration(seconds: 4));
   });
 
@@ -122,9 +147,10 @@ void main() {
     stubConfirm(const RaffleAlreadyRecordedFailure());
     await pumpScreen(tester);
 
-    await cubit.confirmRaffle(meetingId);
+    await confirmThroughScreen(tester);
     await tester.pumpAndSettle();
 
     expect(find.text('tela do sorteio'), findsOneWidget);
+    verifyConfirmedWithAna();
   });
 }
