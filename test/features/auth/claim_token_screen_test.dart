@@ -16,6 +16,7 @@ import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
+
 class MockSessionCubit extends Mock implements SessionCubit {}
 
 void main() {
@@ -27,12 +28,16 @@ void main() {
     mockSessionCubit = MockSessionCubit();
     when(() => mockSessionCubit.stream).thenAnswer((_) => const Stream.empty());
     when(() => mockSessionCubit.state).thenReturn(const GuestSession());
-    when(() => mockSessionCubit.checkUserProfile(any())).thenAnswer((_) async {});
+    when(
+      () => mockSessionCubit.checkUserProfile(any()),
+    ).thenAnswer((_) async {});
 
-    when(() => mockAuthRepository.claimProfile(any()))
-        .thenAnswer((_) async => const Success(null));
-    when(() => mockAuthRepository.getUserProfile(any()))
-        .thenAnswer((_) async => const Success(UserProfileEntity(
+    when(
+      () => mockAuthRepository.claimProfile(any()),
+    ).thenAnswer((_) async => const Success(null));
+    when(() => mockAuthRepository.getUserProfile(any())).thenAnswer(
+      (_) async => const Success(
+        UserProfileEntity(
           id: '1',
           name: 'Test User',
           email: 'test@example.com',
@@ -44,12 +49,12 @@ void main() {
           jobPosition: 'Dev',
           userId: 'user-123',
           isActive: true,
-        )));
+        ),
+      ),
+    );
 
     serviceLocator.allowReassignment = true;
-    serviceLocator.registerFactory<AuthRepository>(
-      () => mockAuthRepository,
-    );
+    serviceLocator.registerFactory<AuthRepository>(() => mockAuthRepository);
   });
 
   Widget buildSubject() {
@@ -102,7 +107,9 @@ void main() {
       expect(find.byType(ClaimTokenScreen), findsOneWidget);
     });
 
-    testWidgets('pressing Sair triggers logOut on SessionCubit', (tester) async {
+    testWidgets('pressing Sair triggers logOut on SessionCubit', (
+      tester,
+    ) async {
       when(() => mockSessionCubit.logOut()).thenAnswer((_) async {});
 
       await tester.pumpWidget(buildSubject());
@@ -119,8 +126,9 @@ void main() {
     testWidgets('shows invalid token toast when the token is rejected', (
       tester,
     ) async {
-      when(() => mockAuthRepository.claimProfile(any()))
-          .thenAnswer((_) async => const Failure(ClaimTokenInvalidFailure()));
+      when(
+        () => mockAuthRepository.claimProfile(any()),
+      ).thenAnswer((_) async => const Failure(ClaimTokenInvalidFailure()));
 
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -134,14 +142,20 @@ void main() {
       await tester.tap(confirmButton);
       await tester.pumpAndSettle();
 
-      expect(find.text('Token de acesso inválido ou já utilizado. Por favor, verifique o código.'), findsOneWidget);
+      expect(
+        find.text(
+          'Token de acesso inválido ou já utilizado. Por favor, verifique o código.',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows a retry hint when the claim fails for an unknown reason', (
       tester,
     ) async {
-      when(() => mockAuthRepository.claimProfile(any()))
-          .thenAnswer((_) async => const Failure(UnknownUserFailure()));
+      when(
+        () => mockAuthRepository.claimProfile(any()),
+      ).thenAnswer((_) async => const Failure(UnknownUserFailure()));
 
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -163,11 +177,10 @@ void main() {
       );
     });
 
-    testWidgets('shows the no connection message when offline', (
-      tester,
-    ) async {
-      when(() => mockAuthRepository.claimProfile(any()))
-          .thenAnswer((_) async => const Failure(UserNetworkFailure()));
+    testWidgets('shows the no connection message when offline', (tester) async {
+      when(
+        () => mockAuthRepository.claimProfile(any()),
+      ).thenAnswer((_) async => const Failure(UserNetworkFailure()));
 
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -200,8 +213,44 @@ void main() {
       await tester.tap(confirmButton);
       await tester.pumpAndSettle();
 
-      expect(find.text('Por favor, informe o token de acesso.'), findsOneWidget);
+      expect(
+        find.text('Por favor, informe o token de acesso.'),
+        findsOneWidget,
+      );
       verifyNever(() => mockAuthRepository.claimProfile(any()));
     });
+
+    testWidgets(
+      'asks for the token again on a second tap with the field empty',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        final confirmButton = find.widgetWithText(AppButton, 'Confirmar');
+        await tester.ensureVisible(confirmButton);
+        await tester.tap(confirmButton);
+        await tester.pumpAndSettle();
+        expect(
+          find.text('Por favor, informe o token de acesso.'),
+          findsOneWidget,
+        );
+
+        // O toast não some sozinho nos testes de widget.
+        AppToast.dismiss();
+        await tester.pump();
+        expect(
+          find.text('Por favor, informe o token de acesso.'),
+          findsNothing,
+        );
+
+        await tester.tap(confirmButton);
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Por favor, informe o token de acesso.'),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }
