@@ -75,7 +75,7 @@ abstract class MaskedDigitsInputFormatter extends TextInputFormatter {
 
   TextEditingValue _onInsert(TextEditingValue oldValue, _Edit edit) {
     final inserted = edit.inserted;
-    final before = _digitsOf(oldValue.text.substring(0, edit.start));
+    var before = _digitsOf(oldValue.text.substring(0, edit.start));
     final after = _digitsOf(oldValue.text.substring(edit.oldEnd));
 
     if (padsShortGroups &&
@@ -94,13 +94,19 @@ abstract class MaskedDigitsInputFormatter extends TextInputFormatter {
     }
 
     final isBulk = inserted.length > 1;
-    final insertedDigits = isBulk && before.isEmpty
+    var insertedDigits = isBulk && before.isEmpty
         ? _groupedDigits(inserted)
         : _digitsOf(inserted);
 
     if (isBulk) {
       final alone = normalizeDigits(insertedDigits);
       if (isComplete(alone)) return _masked(alone, alone.length);
+      if (padsShortGroups && before.isNotEmpty && after.isEmpty) {
+        insertedDigits = _groupedDigits(
+          oldValue.text.substring(0, edit.start) + inserted,
+        );
+        before = '';
+      }
     }
 
     final raw = before + insertedDigits + after;
@@ -144,6 +150,10 @@ abstract class MaskedDigitsInputFormatter extends TextInputFormatter {
     if (!padsShortGroups || pieces.length < 2) return _digitsOf(text);
 
     final groups = _groupSizes(maskFor(maxDigits));
+    final yearFirst =
+        pieces.first.length == groups.last && groups.last > groups.first;
+    if (yearFirst) pieces.setAll(0, pieces.reversed.toList());
+
     final buffer = StringBuffer();
     for (var i = 0; i < pieces.length; i++) {
       final padded =
@@ -307,19 +317,34 @@ class PhoneInputFormatter extends MaskedDigitsInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    if (!newValue.text.startsWith('+')) {
-      return super.formatEditUpdate(oldValue, newValue);
+    final newText = newValue.text;
+    final digits = MaskedDigitsInputFormatter._digitsOf(newText);
+    if (!newText.startsWith('+')) {
+      final removedLeadingPlus =
+          oldValue.text.startsWith('+') &&
+          newText == oldValue.text.substring(1);
+      return removedLeadingPlus
+          ? _masked(digits, 0)
+          : super.formatEditUpdate(oldValue, newValue);
     }
-    final digits = MaskedDigitsInputFormatter._digitsOf(newValue.text);
     if (digits.length > 13) return oldValue;
     final local = normalizeDigits(digits);
     if (local != digits && isComplete(local)) {
       return _masked(local, local.length);
     }
+
+    final cursor = newValue.selection.isValid
+        ? newValue.selection.extentOffset.clamp(0, newText.length)
+        : newText.length;
+    final digitsBeforeCursor = MaskedDigitsInputFormatter._digitsOf(
+      newText.substring(0, cursor),
+    ).length;
     final text = '+$digits';
     return TextEditingValue(
       text: text,
-      selection: TextSelection.collapsed(offset: text.length),
+      selection: TextSelection.collapsed(
+        offset: cursor == 0 ? 0 : 1 + digitsBeforeCursor,
+      ),
     );
   }
 

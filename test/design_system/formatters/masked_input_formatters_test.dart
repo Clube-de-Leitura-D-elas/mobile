@@ -155,6 +155,28 @@ void main() {
       });
     });
 
+    test('pasting the rest of a date after typing part of it', () {
+      final partial = _type(formatter, '1/');
+      final result = formatter.formatEditUpdate(
+        partial,
+        _value('${partial.text}5/2026'),
+      );
+
+      expect(result.text, '01/05/2026');
+      expect(result.selection.extentOffset, 10);
+    });
+
+    test('pasted ISO dates are read as year-month-day', () {
+      for (final input in ['2026-05-01', '2026-5-1']) {
+        final result = formatter.formatEditUpdate(
+          TextEditingValue.empty,
+          _value(input),
+        );
+        expect(result.text, '01/05/2026', reason: input);
+      }
+      expect(formatter.format('2026-05-01'), '01/05/2026');
+    });
+
     test('pasting a full date over a selection replaces it', () {
       const start = TextEditingValue(
         text: '12/03/2026',
@@ -312,6 +334,27 @@ void main() {
       final result = _type(formatter, '+5551999998888');
       expect(result.text, '(51) 99999-8888');
       expect(result.selection.extentOffset, result.text.length);
+    });
+
+    test('delete in front of the leading + keeps every digit', () {
+      final result = _delete(formatter, _value('+5551', 0));
+
+      expect(result.text, '(55) 51');
+      expect(result.selection.extentOffset, 0);
+    });
+
+    test('editing in the middle of a + number keeps the cursor there', () {
+      final result = formatter.formatEditUpdate(
+        _value('+5551', 3),
+        _value('+55751', 4),
+      );
+
+      expect(result.text, '+55751');
+      expect(result.selection.extentOffset, 4);
+
+      final deleted = _backspace(formatter, _value('+55751', 4));
+      expect(deleted.text, '+5551');
+      expect(deleted.selection.extentOffset, 3);
     });
 
     test('typing digits without + never goes past 11', () {
