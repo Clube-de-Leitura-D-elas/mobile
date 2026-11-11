@@ -114,15 +114,16 @@ class SupabaseServiceImpl implements SupabaseService {
   }
 
   static AuthSupabaseFailure _authFailure(AuthException e) {
+    final status = int.tryParse(e.statusCode ?? '');
+    // AuthRetryableFetchException também cobre 5xx; só sem status é rede.
+    final isNetwork = e is AuthRetryableFetchException && status == null;
     return AuthSupabaseFailure(
       message: e.message,
       code: e.statusCode,
       errorCode: e.code,
-      kind: e is AuthRetryableFetchException
+      kind: isNetwork
           ? SupabaseFailureKind.network
-          : SupabaseFailureKind.fromStatusCode(
-              int.tryParse(e.statusCode ?? ''),
-            ),
+          : SupabaseFailureKind.fromStatusCode(status),
     );
   }
 

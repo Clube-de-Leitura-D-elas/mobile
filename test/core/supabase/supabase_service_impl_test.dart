@@ -554,6 +554,26 @@ void main() {
       expect(failure.kind, SupabaseFailureKind.network);
     });
 
+    test(
+      'AuthRetryableFetchException with a 503 is a server failure',
+      () async {
+        when(
+          () => mockGoTrueClient.signInWithPassword(
+            email: 'a@b.com',
+            password: 'x',
+          ),
+        ).thenThrow(AuthRetryableFetchException(statusCode: '503'));
+
+        final result = await supabaseService.signInWithPassword(
+          email: 'a@b.com',
+          password: 'x',
+        );
+
+        final failure = (result as Failure<User, SupabaseFailure>).failure;
+        expect(failure.kind, SupabaseFailureKind.server);
+      },
+    );
+
     test('AuthApiException keeps the Supabase Auth error code', () async {
       when(
         () => mockGoTrueClient.signInWithPassword(
