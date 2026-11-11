@@ -97,6 +97,7 @@ void main() {
       when(() => mockGoogleAccount.authentication).thenReturn(mockAuthentication);
       when(() => mockAuthClient.authorizationForScopes(any())).thenAnswer((_) async => mockAuthorization);
       when(() => mockAuthentication.idToken).thenReturn(null);
+      when(() => mockAuthorization.accessToken).thenReturn('access_token_123');
 
       final result = await repository.signIn();
 
@@ -104,6 +105,13 @@ void main() {
       if (result case Failure(:final failure)) {
         expect(failure, isA<GoogleSignInUnavailableFailure>());
       }
+      verifyNever(
+        () => mockSupabaseService.signInWithIdToken(
+          provider: any(named: 'provider'),
+          idToken: any(named: 'idToken'),
+          accessToken: any(named: 'accessToken'),
+        ),
+      );
     });
 
     test('signIn maps a Supabase network failure to UserNetworkFailure', () async {

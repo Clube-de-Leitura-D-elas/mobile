@@ -122,6 +122,29 @@ void main() {
     ).called(1);
   });
 
+  test('getMyGroups maps a network failure', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<List<GroupModel>>(
+        functionName: 'get-my-groups',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(
+        FunctionSupabaseFailure(
+          message: 'Failed to fetch',
+          kind: SupabaseFailureKind.network,
+        ),
+      ),
+    );
+
+    final result = await repository.getMyGroups();
+
+    expect(
+      result,
+      const Failure<List<GroupEntity>, GroupFailure>(GroupNetworkFailure()),
+    );
+  });
+
   test('maps a network failure to GroupNetworkFailure', () async {
     when(
       () => mockSupabaseService.invokeFunction<GroupDetailsModel>(

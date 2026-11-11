@@ -66,6 +66,23 @@ void main() {
     );
 
     blocTest<ClaimTokenCubit, ClaimTokenState>(
+      'still succeeds without a profile when the re-fetch fails',
+      build: () {
+        when(() => mockAuthRepository.claimProfile('VALID_TOKEN'))
+            .thenAnswer((_) async => const Success(null));
+        when(() => mockAuthRepository.getUserProfile('user-1'))
+            .thenAnswer((_) async => const Failure(UserNetworkFailure()));
+        return claimTokenCubit;
+      },
+      act: (cubit) =>
+          cubit.submitToken(claimToken: 'VALID_TOKEN', userId: 'user-1'),
+      expect: () => [
+        const ClaimTokenLoading(),
+        const ClaimTokenSuccess(profile: null),
+      ],
+    );
+
+    blocTest<ClaimTokenCubit, ClaimTokenState>(
       'emits [ClaimTokenLoading, ClaimTokenSuccess] when claim profile succeeds',
       build: () {
         when(() => mockAuthRepository.claimProfile('VALID_TOKEN'))
