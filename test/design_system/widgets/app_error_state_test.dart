@@ -23,6 +23,34 @@ void main() {
       expect(find.byType(AppButton), findsNothing);
     });
 
+    testWidgets('scrolls instead of overflowing with large text', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(320, 480);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(
+            size: Size(320, 480),
+            textScaler: TextScaler.linear(2),
+          ),
+          child: _wrap(
+            AppErrorState(
+              message: 'Não foi possível carregar sua conta. ' * 4,
+              onRetry: () {},
+              secondaryLabel: 'Sair',
+              onSecondary: () {},
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
+    });
+
     testWidgets('retry button calls onRetry', (tester) async {
       var retries = 0;
       await tester.pumpWidget(

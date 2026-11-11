@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../core/extensions/build_context_l10n.dart';
-import '../tokens/color_tokens.dart';
-import '../tokens/spacing_tokens.dart';
-import '../tokens/typography_tokens.dart';
-import 'app_button.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/design_system/tokens/color_tokens.dart';
+import 'package:mobile/design_system/tokens/spacing_tokens.dart';
+import 'package:mobile/design_system/tokens/typography_tokens.dart';
+import 'package:mobile/design_system/widgets/app_button.dart';
 
 /// Estado de erro de uma tela ou seção: a mensagem e o botão
 /// "Tentar novamente" (quando há [onRetry]).
@@ -32,7 +32,7 @@ class AppErrorState extends StatelessWidget {
     final secondaryLabel = this.secondaryLabel;
 
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: EdgeInsets.all(spacing.s24),
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -89,4 +89,40 @@ void main() {
     await tester.tap(find.text(l10n.logoutTooltip));
     verify(() => sessionCubit.logOut()).called(1);
   });
+
+  testWidgets('the profile error scrolls instead of overflowing with large '
+      'text', (tester) async {
+    tester.view.physicalSize = const Size(320, 480);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    when(() => sessionCubit.state).thenReturn(
+      const SessionProfileUnavailable(
+        userId: 'user-1',
+        failure: UserNetworkFailure(),
+      ),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        locale: const Locale('pt', 'BR'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: const TextScaler.linear(2)),
+          child: child!,
+        ),
+        home: BlocProvider<SessionCubit>.value(
+          value: sessionCubit,
+          child: const SplashScreen(),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Sair'), findsOneWidget);
+  });
 }

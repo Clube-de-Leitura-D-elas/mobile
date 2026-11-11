@@ -22,46 +22,54 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.bgDefault,
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Semantics(
-                image: true,
-                label: logoLabel,
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  width: 160.0,
-                  fit: BoxFit.contain,
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Semantics(
+                      image: true,
+                      label: logoLabel,
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: 160.0,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const Gap24(),
+                    BlocBuilder<SessionCubit, SessionState>(
+                      builder: (context, state) {
+                        if (state is SessionProfileUnavailable &&
+                            l10n != null) {
+                          final cubit = context.read<SessionCubit>();
+                          final reason = userFailureMessage(
+                            l10n,
+                            state.failure,
+                            fallback: l10n.genericError,
+                          );
+                          return AppErrorState(
+                            message: l10n.sessionProfileLoadError(reason),
+                            onRetry: userFailureIsRetryable(state.failure)
+                                ? cubit.retryProfile
+                                : null,
+                            secondaryLabel: l10n.logoutTooltip,
+                            onSecondary: cubit.logOut,
+                          );
+                        }
+                        return CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            colors.actionPrimary,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-              const Gap24(),
-              BlocBuilder<SessionCubit, SessionState>(
-                builder: (context, state) {
-                  if (state is SessionProfileUnavailable && l10n != null) {
-                    final cubit = context.read<SessionCubit>();
-                    final reason = userFailureMessage(
-                      l10n,
-                      state.failure,
-                      fallback: l10n.genericError,
-                    );
-                    return AppErrorState(
-                      message: l10n.sessionProfileLoadError(reason),
-                      onRetry: userFailureIsRetryable(state.failure)
-                          ? cubit.retryProfile
-                          : null,
-                      secondaryLabel: l10n.logoutTooltip,
-                      onSecondary: cubit.logOut,
-                    );
-                  }
-                  return CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      colors.actionPrimary,
-                    ),
-                  );
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),
