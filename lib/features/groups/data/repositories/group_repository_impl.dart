@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/groups/data/group_failure_mapper.dart';
 import 'package:mobile/features/groups/data/models/group_details_model.dart';
 import 'package:mobile/features/groups/data/models/group_event_history_model.dart';
 import 'package:mobile/features/groups/data/models/group_model.dart';
@@ -41,8 +42,8 @@ class GroupRepositoryImpl implements GroupRepository {
     );
 
     switch (result) {
-      case Failure():
-        return const Failure(GroupListFailure());
+      case Failure(:final failure):
+        return Failure(groupFailureFrom(failure, const GroupListFailure()));
       case Success(:final data):
         final groups = data.data;
         if (groups == null) {
@@ -66,7 +67,7 @@ class GroupRepositoryImpl implements GroupRepository {
         if (failure is NotFoundSupabaseFailure || failure.code == '404') {
           return const Failure(GroupNotFoundFailure());
         }
-        return const Failure(GroupDetailsFailure());
+        return Failure(groupFailureFrom(failure, const GroupDetailsFailure()));
       case Success(:final data):
         final group = data.data;
         if (group == null) {
@@ -87,8 +88,10 @@ class GroupRepositoryImpl implements GroupRepository {
         );
 
     switch (result) {
-      case Failure():
-        return const Failure(GroupEventHistoryFailure());
+      case Failure(:final failure):
+        return Failure(
+          groupFailureFrom(failure, const GroupEventHistoryFailure()),
+        );
       case Success(:final data):
         final meetings = data.data;
         if (meetings == null) {
@@ -114,7 +117,9 @@ class GroupRepositoryImpl implements GroupRepository {
         if (failure is NotFoundSupabaseFailure || failure.code == '404') {
           return const Failure(MeetingNotFoundFailure());
         }
-        return const Failure(MeetingDetailsFailure());
+        return Failure(
+          groupFailureFrom(failure, const MeetingDetailsFailure()),
+        );
       case Success(:final data):
         final meeting = data.data;
         if (meeting == null) {
@@ -134,8 +139,10 @@ class GroupRepositoryImpl implements GroupRepository {
     );
 
     switch (result) {
-      case Failure():
-        return const Failure(GroupNextEventFailure());
+      case Failure(:final failure):
+        return Failure(
+          groupFailureFrom(failure, const GroupNextEventFailure()),
+        );
       case Success(:final data):
         return Success(data.data?.toDomain());
     }
@@ -159,7 +166,12 @@ class GroupRepositoryImpl implements GroupRepository {
     );
 
     return switch (result) {
-      Failure() => const Failure(GroupMeetingInvitationResponseFailure()),
+      Failure(:final failure) => Failure(
+        groupFailureFrom(
+          failure,
+          const GroupMeetingInvitationResponseFailure(),
+        ),
+      ),
       Success() => const Success(null),
     };
   }
@@ -174,8 +186,8 @@ class GroupRepositoryImpl implements GroupRepository {
     );
 
     switch (result) {
-      case Failure():
-        return const Failure(MeetingPhotosFailure());
+      case Failure(:final failure):
+        return Failure(groupFailureFrom(failure, const MeetingPhotosFailure()));
       case Success(:final data):
         final photos = data.data;
         if (photos == null) return const Failure(MeetingPhotosFailure());
@@ -209,7 +221,7 @@ class GroupRepositoryImpl implements GroupRepository {
 
     switch (result) {
       case Failure(:final failure):
-        return Failure(_uploadFailure(failure.code));
+        return Failure(groupFailureFrom(failure, _uploadFailure(failure.code)));
       case Success(:final data):
         final photo = data.data;
         if (photo == null) return const Failure(MeetingPhotoUploadFailure());
@@ -238,8 +250,10 @@ class GroupRepositoryImpl implements GroupRepository {
         );
 
     switch (result) {
-      case Failure():
-        return const Failure(MeetingAttendanceFailure());
+      case Failure(:final failure):
+        return Failure(
+          groupFailureFrom(failure, const MeetingAttendanceFailure()),
+        );
       case Success(:final data):
         final items = data.data;
         if (items == null) {
@@ -269,7 +283,9 @@ class GroupRepositoryImpl implements GroupRepository {
       Failure(:final failure) when failure.code == '409' => const Failure(
         MeetingPresenceAlreadyRegisteredFailure(),
       ),
-      Failure() => const Failure(MeetingPresenceFailure()),
+      Failure(:final failure) => Failure(
+        groupFailureFrom(failure, const MeetingPresenceFailure()),
+      ),
       Success() => const Success(null),
     };
   }
@@ -284,7 +300,9 @@ class GroupRepositoryImpl implements GroupRepository {
       decoder: MeetingTasksModel.fromJson,
     );
     return switch (result) {
-      Failure() => const Failure(MeetingTasksFailure()),
+      Failure(:final failure) => Failure(
+        groupFailureFrom(failure, const MeetingTasksFailure()),
+      ),
       Success(:final data) when data.data != null => Success(
         data.data!.toDomain(),
       ),
@@ -299,7 +317,9 @@ class GroupRepositoryImpl implements GroupRepository {
       body: {'meeting_id': meetingId},
     );
     return switch (result) {
-      Failure() => const Failure(MeetingConclusionFailure()),
+      Failure(:final failure) => Failure(
+        groupFailureFrom(failure, const MeetingConclusionFailure()),
+      ),
       Success() => const Success(null),
     };
   }
@@ -322,7 +342,9 @@ class GroupRepositoryImpl implements GroupRepository {
           when failure.code == '404' &&
               failure.message == _photoNotFoundMessage =>
         const Success(null),
-      Failure() => const Failure(MeetingPhotoDeleteFailure()),
+      Failure(:final failure) => Failure(
+        groupFailureFrom(failure, const MeetingPhotoDeleteFailure()),
+      ),
       Success() => const Success(null),
     };
   }
@@ -338,7 +360,9 @@ class GroupRepositoryImpl implements GroupRepository {
       decoder: _promoTextFromEnvelope,
     );
     return switch (result) {
-      Failure() => const Failure(MeetingPromoTextUpdateFailure()),
+      Failure(:final failure) => Failure(
+        groupFailureFrom(failure, const MeetingPromoTextUpdateFailure()),
+      ),
       Success(:final data) => Success(data.data),
     };
   }
@@ -376,8 +400,8 @@ class GroupRepositoryImpl implements GroupRepository {
         );
 
     switch (result) {
-      case Failure():
-        return const Failure(PlaceSearchFailure());
+      case Failure(:final failure):
+        return Failure(groupFailureFrom(failure, const PlaceSearchFailure()));
       case Success(:final data):
         final places = data.data;
         if (places == null) return const Failure(PlaceSearchFailure());
@@ -405,7 +429,9 @@ class GroupRepositoryImpl implements GroupRepository {
     );
 
     return switch (result) {
-      Failure(:final failure) => Failure(_updateMeetingFailure(failure.code)),
+      Failure(:final failure) => Failure(
+        groupFailureFrom(failure, _updateMeetingFailure(failure.code)),
+      ),
       Success() => const Success(null),
     };
   }

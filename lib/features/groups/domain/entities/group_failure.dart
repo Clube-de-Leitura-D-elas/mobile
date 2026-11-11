@@ -9,6 +9,20 @@ sealed class GroupFailure extends Equatable {
   List<Object?> get props => [message];
 }
 
+class GroupNetworkFailure extends GroupFailure {
+  const GroupNetworkFailure({
+    super.message =
+        'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
+  });
+}
+
+class GroupSessionExpiredFailure extends GroupFailure {
+  const GroupSessionExpiredFailure({
+    super.message =
+        'Sua sessão expirou. Saia do app e entre de novo na sua conta.',
+  });
+}
+
 class GroupDetailsFailure extends GroupFailure {
   const GroupDetailsFailure({
     super.message =

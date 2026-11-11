@@ -122,6 +122,30 @@ void main() {
     ).called(1);
   });
 
+  test('maps a network failure to GroupNetworkFailure', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
+        functionName: 'get-group-details?group_id=group-1',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(
+        FunctionSupabaseFailure(
+          message: 'Failed to fetch',
+          code: '0',
+          kind: SupabaseFailureKind.network,
+        ),
+      ),
+    );
+
+    final result = await repository.getGroupDetails('group-1');
+
+    expect(
+      result,
+      const Failure<GroupDetailsEntity, GroupFailure>(GroupNetworkFailure()),
+    );
+  });
+
   test('maps an Edge Function failure to a group failure', () async {
     const failure = FunctionSupabaseFailure(message: 'Falha do servidor');
     when(
