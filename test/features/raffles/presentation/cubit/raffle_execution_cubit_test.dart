@@ -441,40 +441,58 @@ void main() {
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
-      'a 422 when saving the winner also refetches on retry',
+      'a 422 when saving the winner refetches on retry and draws only the '
+      'chosen participants',
       build: () {
         when(() => mockRepository.getRaffleResult(tMeetingId)).thenAnswer(
           (_) async => const Success<RaffleResult?, RaffleFailure>(null),
         );
+        when(
+          () => mockRepository.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        ).thenAnswer((_) async => const Success(tResult));
         when(() => mockRepository.saveRaffleResult(tResult)).thenAnswer(
           (_) async => const Failure(RaffleParticipantsChangedFailure()),
         );
+        // A lista do servidor vem com todas marcadas.
         when(
           () => mockRepository.getEligibleParticipants(tMeetingId),
-        ).thenAnswer((_) async => const Success([tParticipant]));
+        ).thenAnswer(
+          (_) async =>
+              Success([tParticipant, tParticipant2.copyWith(isSelected: true)]),
+        );
         return RaffleExecutionCubit(repository: mockRepository);
       },
       act: (cubit) async {
         await cubit.load(
           tMeetingId,
           meetingTitle: tMeetingTitle,
-          participants: const [tParticipant],
+          participants: [
+            tParticipant,
+            tParticipant2.copyWith(isSelected: false),
+          ],
         );
-        cubit.emit(
-          const RaffleExecutionResultLoaded(
-            meetingId: tMeetingId,
-            meetingTitle: tMeetingTitle,
-            result: tResult,
-            isPersisted: false,
-          ),
-        );
+        await cubit.draw();
         await cubit.confirmResult();
         await cubit.retry();
+        await cubit.draw();
       },
       verify: (cubit) {
         verify(
           () => mockRepository.getEligibleParticipants(tMeetingId),
         ).called(1);
+        final sent = verify(
+          () => mockRepository.drawRaffle(
+            meetingId: tMeetingId,
+            eligibleParticipantIds: captureAny(named: 'eligibleParticipantIds'),
+          ),
+        ).captured;
+        expect(sent, [
+          ['p1'],
+          ['p1'],
+        ]);
       },
     );
   });
