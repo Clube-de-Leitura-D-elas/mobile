@@ -496,6 +496,8 @@
     "@onboardingPhoneLabel": { "description": "Rótulo celular" },
     "onboardingBirthDateLabel": "Data de nascimento",
     "@onboardingBirthDateLabel": { "description": "Rótulo data de nascimento" },
+    "onboardingBirthDateHint": "DD/MM/AAAA",
+    "@onboardingBirthDateHint": { "description": "Dica de formato da data de nascimento" },
     "onboardingCityLabel": "Cidade",
     "@onboardingCityLabel": { "description": "Rótulo cidade" },
     "onboardingCityHint": "Selecione uma cidade",

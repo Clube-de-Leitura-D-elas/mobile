@@ -793,6 +793,12 @@ abstract class AppLocalizations {
   /// **'Data de nascimento'**
   String get onboardingBirthDateLabel;
 
+  /// Dica de formato da data de nascimento
+  ///
+  /// In pt, this message translates to:
+  /// **'DD/MM/AAAA'**
+  String get onboardingBirthDateHint;
+
   /// Rótulo cidade
   ///
   /// In pt, this message translates to:

@@ -69,5 +69,22 @@ void main() {
       expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
       expect(find.byTooltip('Ocultar senha'), findsOneWidget);
     });
+
+    testWidgets('applies the given input formatters', (tester) async {
+      final controller = TextEditingController();
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(
+        buildTestableWidget(
+          AppTextField(
+            controller: controller,
+            inputFormatters: const [DateInputFormatter()],
+          ),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextField), '12032026');
+
+      expect(controller.text, '12/03/2026');
+    });
   });
 }

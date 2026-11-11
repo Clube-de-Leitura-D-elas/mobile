@@ -430,6 +430,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingBirthDateLabel => 'Data de nascimento';
 
   @override
+  String get onboardingBirthDateHint => 'DD/MM/AAAA';
+
+  @override
   String get onboardingCityLabel => 'Cidade';
 
   @override
@@ -1516,6 +1519,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingBirthDateLabel => 'Data de nascimento';
+
+  @override
+  String get onboardingBirthDateHint => 'DD/MM/AAAA';
 
   @override
   String get onboardingCityLabel => 'Cidade';
