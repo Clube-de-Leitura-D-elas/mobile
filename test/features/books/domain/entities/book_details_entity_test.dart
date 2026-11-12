@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 
 void main() {
   final review = BookReviewEntity(
@@ -21,7 +21,7 @@ void main() {
     coverUrl: 'https://example.com/capa.jpg',
     ratingAverage: 4,
     ratingsCount: 2,
-    myStatus: ReadingStatus.read,
+    myStatus: BookReadingStatus.read,
     reviews: [review],
     hasMoreReviews: true,
   );
@@ -30,7 +30,7 @@ void main() {
     final cleared = details.withReadingStatus(null);
 
     expect(cleared.myStatus, isNull);
-    expect(cleared.withReadingStatus(ReadingStatus.read), details);
+    expect(cleared.withReadingStatus(BookReadingStatus.read), details);
   });
 
   test('withReview applies the saved review, average and status', () {
@@ -46,14 +46,14 @@ void main() {
             review: saved,
             ratingAverage: 3.5,
             ratingsCount: 3,
-            myStatus: ReadingStatus.read,
+            myStatus: BookReadingStatus.read,
           ),
         );
 
     expect(updated.myReview, saved);
     expect(updated.ratingAverage, 3.5);
     expect(updated.ratingsCount, 3);
-    expect(updated.myStatus, ReadingStatus.read);
+    expect(updated.myStatus, BookReadingStatus.read);
     expect(updated.reviews, [review]);
     expect(updated.hasMoreReviews, isTrue);
     expect(updated.title, details.title);

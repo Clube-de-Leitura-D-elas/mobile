@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 
 sealed class NextEventState extends Equatable {
@@ -27,10 +28,10 @@ class NextEventLoaded extends NextEventState {
 }
 
 class NextEventError extends NextEventState {
-  const NextEventError(this.message);
+  const NextEventError(this.failure);
 
-  final String message;
+  final GroupFailure failure;
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

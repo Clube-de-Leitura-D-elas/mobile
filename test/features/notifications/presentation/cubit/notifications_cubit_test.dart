@@ -94,7 +94,10 @@ void main() {
       act: (cubit) => cubit.load(),
       expect: () => [
         const NotificationsState(),
-        const NotificationsState(status: NotificationsStatus.error),
+        const NotificationsState(
+          status: NotificationsStatus.error,
+          failure: NotificationsLoadFailure(),
+        ),
       ],
     );
 

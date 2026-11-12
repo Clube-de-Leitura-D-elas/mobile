@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/profile/data/models/set_profile_photo_model.dart';
@@ -36,7 +37,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
     switch (result) {
       case Failure(:final failure):
-        return Failure(_mapFailure(failure.code));
+        return Failure(_mapFailure(failure));
       case Success(:final data):
         final photoUrl = data.data;
         if (photoUrl == null || photoUrl.isEmpty) {
@@ -46,7 +47,14 @@ class ProfileRepositoryImpl implements ProfileRepository {
     }
   }
 
-  ProfileFailure _mapFailure(String? code) {
+  ProfileFailure _mapFailure(SupabaseFailure failure) {
+    if (failure.kind == SupabaseFailureKind.network) {
+      return const ProfileNetworkFailure();
+    }
+    if (failure.kind == SupabaseFailureKind.unauthorized) {
+      return const ProfileSessionExpiredFailure();
+    }
+    final code = failure.code;
     if (code == '413') return const ProfilePhotoTooLargeFailure();
     if (_rejectedCodes.contains(code)) {
       return const ProfilePhotoRejectedFailure();

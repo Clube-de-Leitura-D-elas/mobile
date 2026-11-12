@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 
 sealed class ClaimTokenState extends Equatable {
@@ -25,11 +26,16 @@ class ClaimTokenSuccess extends ClaimTokenState {
   List<Object?> get props => [profile];
 }
 
-class ClaimTokenFailure extends ClaimTokenState {
-  final String message;
+/// O botão foi tocado com o campo vazio.
+class ClaimTokenEmpty extends ClaimTokenState {
+  const ClaimTokenEmpty();
+}
 
-  const ClaimTokenFailure(this.message);
+class ClaimTokenFailure extends ClaimTokenState {
+  final UserFailure failure;
+
+  const ClaimTokenFailure(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

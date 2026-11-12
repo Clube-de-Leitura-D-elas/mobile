@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
-import 'package:mobile/features/books/presentation/widgets/book_details_message.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
 
@@ -16,10 +15,10 @@ class BookDetailsContent extends StatelessWidget {
 
   final BookDetailsState state;
 
-  static ReadingStatusChipState chipStateFor(ReadingStatus? status) {
+  static ReadingStatusChipState chipStateFor(BookReadingStatus? status) {
     return switch (status) {
-      ReadingStatus.read => ReadingStatusChipState.read,
-      ReadingStatus.wantToRead => ReadingStatusChipState.wantToRead,
+      BookReadingStatus.read => ReadingStatusChipState.read,
+      BookReadingStatus.wantToRead => ReadingStatusChipState.wantToRead,
       null => ReadingStatusChipState.markAsRead,
     };
   }
@@ -90,10 +89,7 @@ class BookDetailsContent extends StatelessWidget {
                 );
               }
               if (state.loadMoreReviewsFailed) {
-                return BookDetailsMessage(
-                  message: context.l10n.bookDetailLoadMoreReviewsError,
-                  onRetry: cubit.loadMoreReviews,
-                );
+                return _LoadMoreReviewsError(onRetry: cubit.loadMoreReviews);
               }
               return _LoadMoreReviewsTrigger(
                 key: ValueKey(state.reviewsPage),
@@ -185,6 +181,36 @@ class _SectionTitle extends StatelessWidget {
 }
 
 /// Fim da lista: o sliver só constrói este item quando ele se aproxima da tela.
+class _LoadMoreReviewsError extends StatelessWidget {
+  const _LoadMoreReviewsError({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Semantics(
+          liveRegion: true,
+          child: Text(
+            context.l10n.bookDetailLoadMoreReviewsError,
+            style: context.typography.bodyDefault.copyWith(
+              color: context.colors.textMuted,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        SizedBox(height: context.spacing.s16),
+        AppButton.secondary(
+          label: context.l10n.errorRetryButton,
+          size: AppButtonSize.lg,
+          onPressed: onRetry,
+        ),
+      ],
+    );
+  }
+}
+
 class _LoadMoreReviewsTrigger extends StatefulWidget {
   const _LoadMoreReviewsTrigger({super.key, required this.onVisible});
 

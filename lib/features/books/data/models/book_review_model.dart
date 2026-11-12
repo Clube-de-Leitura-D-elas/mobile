@@ -1,4 +1,4 @@
-import 'package:mobile/features/books/data/models/reading_status_model.dart';
+import 'package:mobile/features/books/data/models/book_reading_status_model.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 
 abstract final class BookReviewModel {
@@ -28,7 +28,7 @@ abstract final class BookReviewModel {
       review: myReviewFromJson(json),
       ratingAverage: (json['rating_average'] as num?)?.toDouble(),
       ratingsCount: (json['ratings_count'] as num?)?.toInt() ?? 0,
-      myStatus: ReadingStatusModel.fromJson(json['my_status']),
+      myStatus: bookReadingStatusFromWire(json['my_status']),
     );
   }
 }

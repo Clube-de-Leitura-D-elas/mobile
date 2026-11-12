@@ -9,7 +9,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
@@ -30,7 +30,7 @@ BookReviewEntity _review(String id) => BookReviewEntity(
 );
 
 BookDetailsEntity _details({
-  ReadingStatus? status,
+  BookReadingStatus? status,
   MyBookReviewEntity? myReview,
   String? synopsis = 'Um garoto descobre que é bruxo.',
   List<BookReviewEntity>? reviews,
@@ -53,7 +53,7 @@ BookDetailsEntity _details({
 void main() {
   late MockBookRepository repository;
 
-  setUpAll(() => registerFallbackValue(ReadingStatus.read));
+  setUpAll(() => registerFallbackValue(BookReadingStatus.read));
 
   setUp(() {
     repository = MockBookRepository();
@@ -147,7 +147,7 @@ void main() {
     ) async {
       stubDetails(
         _details(
-          status: ReadingStatus.read,
+          status: BookReadingStatus.read,
           myReview: MyBookReviewEntity(
             rating: 4,
             evaluatedAt: DateTime.utc(2026, 11, 1),
@@ -236,9 +236,9 @@ void main() {
       when(
         () => repository.setReadingStatus(
           bookId: 'b1',
-          status: ReadingStatus.read,
+          status: BookReadingStatus.read,
         ),
-      ).thenAnswer((_) async => const Success(ReadingStatus.read));
+      ).thenAnswer((_) async => const Success(BookReadingStatus.read));
 
       await pumpPage(tester);
       await tester.tap(find.text('Marcar como lido'));
@@ -252,9 +252,9 @@ void main() {
       when(
         () => repository.setReadingStatus(
           bookId: 'b1',
-          status: ReadingStatus.read,
+          status: BookReadingStatus.read,
         ),
-      ).thenAnswer((_) async => const Failure(ReadingStatusUpdateFailure()));
+      ).thenAnswer((_) async => const Failure(BookStatusFailure()));
 
       await pumpPage(tester);
       await tester.tap(find.text('Marcar como lido'));
@@ -283,7 +283,7 @@ void main() {
             ),
             ratingAverage: 4.5,
             ratingsCount: 11,
-            myStatus: ReadingStatus.read,
+            myStatus: BookReadingStatus.read,
           ),
         ),
       );

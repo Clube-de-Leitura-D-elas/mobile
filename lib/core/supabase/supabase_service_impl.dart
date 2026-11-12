@@ -23,11 +23,15 @@ class SupabaseServiceImpl implements SupabaseService {
     required String functionName,
     Map<String, dynamic>? body,
     Map<String, String>? queryParameters,
-    HttpMethod method = HttpMethod.post,
     T Function(dynamic data)? decoder,
+    HttpMethod method = HttpMethod.post,
   }) async {
     try {
-      if (kDebugMode) debugPrint('[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}, query: $queryParameters');
+      if (kDebugMode) {
+        debugPrint(
+          '[SupabaseService] Invoking function "$functionName" with body: ${_loggableBody(body)}, query: $queryParameters',
+        );
+      }
       final res = await _client.functions.invoke(
         functionName,
         body: body,
@@ -35,7 +39,11 @@ class SupabaseServiceImpl implements SupabaseService {
         method: method,
       );
 
-      if (kDebugMode) debugPrint('[SupabaseService] Function "$functionName" status: ${res.status}, data: ${res.data}');
+      if (kDebugMode) {
+        debugPrint(
+          '[SupabaseService] Function "$functionName" status: ${res.status}, data: ${res.data}',
+        );
+      }
 
       if (res.status >= 400) {
         final message = res.data is Map && res.data['error'] != null
@@ -46,6 +54,7 @@ class SupabaseServiceImpl implements SupabaseService {
             message: message,
             code: res.status.toString(),
             details: res.data,
+            kind: SupabaseFailureKind.fromStatusCode(res.status),
           ),
         );
       }
@@ -58,27 +67,33 @@ class SupabaseServiceImpl implements SupabaseService {
       }
 
       return Success(
-        SupabaseResponse<T>(
-          data: decodedData,
-          statusCode: res.status,
-        ),
+        SupabaseResponse<T>(data: decodedData, statusCode: res.status),
       );
     } on FunctionException catch (e) {
-      if (kDebugMode) debugPrint('[SupabaseService] FunctionException in "$functionName": $e');
+      if (kDebugMode) {
+        debugPrint(
+          '[SupabaseService] FunctionException in "$functionName": $e',
+        );
+      }
       final message = e.details is Map && (e.details as Map)['error'] != null
           ? (e.details as Map)['error'].toString()
           : (e.details is String && (e.details as String).isNotEmpty
-              ? e.details as String
-              : 'Erro ao executar a função $functionName');
+                ? e.details as String
+                : 'Erro ao executar a função $functionName');
       return Failure(
         FunctionSupabaseFailure(
           message: message,
           code: e.status.toString(),
           details: e.details,
+          kind: e is FunctionsFetchException
+              ? SupabaseFailureKind.network
+              : SupabaseFailureKind.fromStatusCode(e.status),
         ),
       );
     } catch (e) {
-      if (kDebugMode) debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
+      if (kDebugMode) {
+        debugPrint('[SupabaseService] Unknown error in "$functionName": $e');
+      }
       return Failure(
         FunctionSupabaseFailure(
           message: 'Erro inesperado ao chamar a função $functionName',
@@ -97,6 +112,20 @@ class SupabaseServiceImpl implements SupabaseService {
             ? '<${value.length} chars>'
             : value,
       ),
+    );
+  }
+
+  static AuthSupabaseFailure _authFailure(AuthException e) {
+    final status = int.tryParse(e.statusCode ?? '');
+    // AuthRetryableFetchException também cobre 5xx; só sem status é rede.
+    final isNetwork = e is AuthRetryableFetchException && status == null;
+    return AuthSupabaseFailure(
+      message: e.message,
+      code: e.statusCode,
+      errorCode: e.code,
+      kind: isNetwork
+          ? SupabaseFailureKind.network
+          : SupabaseFailureKind.fromStatusCode(status),
     );
   }
 
@@ -123,13 +152,10 @@ class SupabaseServiceImpl implements SupabaseService {
 
       return Success(user);
     } on AuthException catch (e) {
-      debugPrint('[SupabaseService] AuthException during sign in: ${e.message}');
-      return Failure(
-        AuthSupabaseFailure(
-          message: e.message,
-          code: e.statusCode,
-        ),
+      debugPrint(
+        '[SupabaseService] AuthException during sign in: ${e.message}',
       );
+      return Failure(_authFailure(e));
     } catch (e) {
       debugPrint('[SupabaseService] Unexpected error during sign in: $e');
       return Failure(
@@ -146,7 +172,9 @@ class SupabaseServiceImpl implements SupabaseService {
     required String password,
   }) async {
     try {
-      debugPrint('[SupabaseService] Signing in with password for email: $email');
+      debugPrint(
+        '[SupabaseService] Signing in with password for email: $email',
+      );
       final response = await _client.auth.signInWithPassword(
         email: email,
         password: password,
@@ -161,15 +189,14 @@ class SupabaseServiceImpl implements SupabaseService {
 
       return Success(user);
     } on AuthException catch (e) {
-      debugPrint('[SupabaseService] AuthException during password sign in: ${e.message}');
-      return Failure(
-        AuthSupabaseFailure(
-          message: e.message,
-          code: e.statusCode,
-        ),
+      debugPrint(
+        '[SupabaseService] AuthException during password sign in: ${e.message}',
       );
+      return Failure(_authFailure(e));
     } catch (e) {
-      debugPrint('[SupabaseService] Unexpected error during password sign in: $e');
+      debugPrint(
+        '[SupabaseService] Unexpected error during password sign in: $e',
+      );
       return Failure(
         UnknownSupabaseFailure(
           message: 'Erro inesperado ao realizar login com e-mail: $e',
@@ -184,7 +211,9 @@ class SupabaseServiceImpl implements SupabaseService {
     required String password,
   }) async {
     try {
-      debugPrint('[SupabaseService] Signing up with password for email: $email');
+      debugPrint(
+        '[SupabaseService] Signing up with password for email: $email',
+      );
       final response = await _client.auth.signUp(
         email: email,
         password: password,
@@ -199,13 +228,10 @@ class SupabaseServiceImpl implements SupabaseService {
 
       return Success(user);
     } on AuthException catch (e) {
-      debugPrint('[SupabaseService] AuthException during sign up: ${e.message}');
-      return Failure(
-        AuthSupabaseFailure(
-          message: e.message,
-          code: e.statusCode,
-        ),
+      debugPrint(
+        '[SupabaseService] AuthException during sign up: ${e.message}',
       );
+      return Failure(_authFailure(e));
     } catch (e) {
       debugPrint('[SupabaseService] Unexpected error during sign up: $e');
       return Failure(

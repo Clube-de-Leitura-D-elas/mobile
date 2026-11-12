@@ -4,7 +4,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
@@ -20,7 +20,7 @@ BookReviewEntity _review(String id) => BookReviewEntity(
 );
 
 BookDetailsEntity _details({
-  ReadingStatus? status,
+  BookReadingStatus? status,
   List<BookReviewEntity>? reviews,
   bool hasMore = false,
 }) => BookDetailsEntity(
@@ -39,7 +39,7 @@ BookDetailsEntity _details({
 void main() {
   late MockBookRepository repository;
 
-  setUpAll(() => registerFallbackValue(ReadingStatus.read));
+  setUpAll(() => registerFallbackValue(BookReadingStatus.read));
 
   setUp(() {
     repository = MockBookRepository();
@@ -165,8 +165,8 @@ void main() {
 
   group('toggleReadingStatus', () {
     void stubStatus(
-      ReadingStatus? sent,
-      Result<ReadingStatus?, BookFailure> answer,
+      BookReadingStatus? sent,
+      Result<BookReadingStatus?, BookFailure> answer,
     ) {
       when(
         () => repository.setReadingStatus(bookId: 'b1', status: sent),
@@ -175,8 +175,10 @@ void main() {
 
     blocTest<BookDetailsCubit, BookDetailsState>(
       'marks an unshelved book as read',
-      setUp: () =>
-          stubStatus(ReadingStatus.read, const Success(ReadingStatus.read)),
+      setUp: () => stubStatus(
+        BookReadingStatus.read,
+        const Success(BookReadingStatus.read),
+      ),
       seed: () => loaded(_details()),
       build: build,
       act: (cubit) => cubit.toggleReadingStatus(),
@@ -184,25 +186,27 @@ void main() {
         loaded(_details()).copyWith(isUpdatingStatus: true),
         loaded(
           _details(),
-        ).copyWith(details: _details(status: ReadingStatus.read)),
+        ).copyWith(details: _details(status: BookReadingStatus.read)),
       ],
     );
 
     blocTest<BookDetailsCubit, BookDetailsState>(
       'marks a want-to-read book as read',
-      setUp: () =>
-          stubStatus(ReadingStatus.read, const Success(ReadingStatus.read)),
-      seed: () => loaded(_details(status: ReadingStatus.wantToRead)),
+      setUp: () => stubStatus(
+        BookReadingStatus.read,
+        const Success(BookReadingStatus.read),
+      ),
+      seed: () => loaded(_details(status: BookReadingStatus.wantToRead)),
       build: build,
       act: (cubit) => cubit.toggleReadingStatus(),
       verify: (cubit) =>
-          expect(cubit.state.details?.myStatus, ReadingStatus.read),
+          expect(cubit.state.details?.myStatus, BookReadingStatus.read),
     );
 
     blocTest<BookDetailsCubit, BookDetailsState>(
       'takes a read book off the shelf',
       setUp: () => stubStatus(null, const Success(null)),
-      seed: () => loaded(_details(status: ReadingStatus.read)),
+      seed: () => loaded(_details(status: BookReadingStatus.read)),
       build: build,
       act: (cubit) => cubit.toggleReadingStatus(),
       verify: (cubit) {
@@ -214,8 +218,8 @@ void main() {
     blocTest<BookDetailsCubit, BookDetailsState>(
       'keeps the status and raises a notice on failure',
       setUp: () => stubStatus(
-        ReadingStatus.read,
-        const Failure(ReadingStatusUpdateFailure()),
+        BookReadingStatus.read,
+        const Failure(BookStatusFailure()),
       ),
       seed: () => loaded(_details()),
       build: build,
@@ -252,7 +256,7 @@ void main() {
       ),
       ratingAverage: 4.5,
       ratingsCount: 3,
-      myStatus: ReadingStatus.read,
+      myStatus: BookReadingStatus.read,
     );
 
     test('applies the saved review and marks the book as read', () async {
@@ -270,7 +274,7 @@ void main() {
 
       expect(ok, isTrue);
       expect(cubit.state.details, _details().withReview(saved));
-      expect(cubit.state.details?.myStatus, ReadingStatus.read);
+      expect(cubit.state.details?.myStatus, BookReadingStatus.read);
     });
 
     test('reports a failure and keeps the book unchanged', () async {

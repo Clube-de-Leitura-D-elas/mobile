@@ -18,7 +18,6 @@ void main() {
       data: GroupNextEventData(
         location: 'Porto Alegre, RS',
         date: DateTime(2026, 8, 29),
-        hostName: 'Roberta',
       ),
     ),
     participantsContent: const Text('Conteúdo dos participantes'),
@@ -49,7 +48,8 @@ void main() {
     expect(find.byTooltip('Voltar'), findsOneWidget);
     expect(find.byType(SingleChildScrollView), findsOneWidget);
     expect(find.text('29/08/2026'), findsOneWidget);
-    expect(find.text('Anfitriã: Roberta'), findsOneWidget);
+    expect(find.text('00:00'), findsOneWidget);
+    expect(find.text('Anfitriã: Roberta'), findsNothing);
     expect(find.text('Conteúdo dos participantes'), findsOneWidget);
 
     final buttons = tester
@@ -160,7 +160,7 @@ void main() {
       await tester.tap(nextEvent);
       await tester.pump();
       expect(find.text('29/08/2026'), findsOneWidget);
-      expect(find.text('Anfitriã: Roberta'), findsOneWidget);
+      expect(find.text('00:00'), findsOneWidget);
       expect(find.text('Conteúdo dos participantes'), findsNothing);
     },
   );

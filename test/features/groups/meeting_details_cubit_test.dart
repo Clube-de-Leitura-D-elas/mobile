@@ -52,7 +52,30 @@ void main() {
     act: (cubit) => cubit.load('meeting-1'),
     expect: () => [
       const MeetingDetailsLoading(),
-      const MeetingDetailsError('Encontro não encontrado.'),
+      const MeetingDetailsError(MeetingNotFoundFailure()),
+    ],
+  );
+
+  blocTest<MeetingDetailsCubit, MeetingDetailsState>(
+    'retry reloads the last meeting after a retryable failure',
+    build: () {
+      var calls = 0;
+      when(() => mockRepository.getMeetingDetails('meeting-1')).thenAnswer(
+        (_) async => calls++ == 0
+            ? const Failure(GroupNetworkFailure())
+            : const Success(meeting),
+      );
+      return MeetingDetailsCubit(groupRepository: mockRepository);
+    },
+    act: (cubit) async {
+      await cubit.load('meeting-1');
+      await cubit.retry();
+    },
+    expect: () => [
+      const MeetingDetailsLoading(),
+      const MeetingDetailsError(GroupNetworkFailure()),
+      const MeetingDetailsLoading(),
+      const MeetingDetailsLoaded(meeting),
     ],
   );
 

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 
@@ -86,9 +86,9 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
     final details = state.details;
     if (details == null || state.isUpdatingStatus) return;
 
-    final nextStatus = details.myStatus == ReadingStatus.read
+    final nextStatus = details.myStatus == BookReadingStatus.read
         ? null
-        : ReadingStatus.read;
+        : BookReadingStatus.read;
     emit(state.copyWith(isUpdatingStatus: true));
 
     final result = await repository.setReadingStatus(

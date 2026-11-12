@@ -90,7 +90,7 @@ void main() {
       when(() => mockAuthRepository.signInWithEmailAndPassword(
             email: 'test@example.com',
             password: 'password123',
-          )).thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
+          )).thenAnswer((_) async => const Failure(UnknownUserFailure()));
 
       await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
 
@@ -109,7 +109,7 @@ void main() {
       when(() => mockAuthRepository.signInWithEmailAndPassword(
             email: 'test@example.com',
             password: 'password123',
-          )).thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
+          )).thenAnswer((_) async => const Failure(UnknownUserFailure()));
 
       await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
 
@@ -126,7 +126,7 @@ void main() {
 
     testWidgets('triggers Google Sign-In when Entrar com Google is pressed', (tester) async {
       when(() => mockAuthRepository.signIn())
-          .thenAnswer((_) async => const Failure(UserFailure(message: 'Error')));
+          .thenAnswer((_) async => const Failure(UnknownUserFailure()));
 
       await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
 
@@ -161,19 +161,66 @@ void main() {
     testWidgets('displays email confirmation SnackBar on SessionError', (tester) async {
       await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
 
-      sessionCubit.emit(const SessionError(message: 'email not confirmed'));
+      sessionCubit.emit(
+        const SessionError(
+          failure: EmailNotConfirmedFailure(),
+          operation: SessionOperation.signIn,
+        ),
+      );
       await tester.pump();
 
       expect(find.text('Por favor, confirme seu e-mail antes de logar.'), findsOneWidget);
     });
 
-    testWidgets('displays generic error SnackBar on SessionError', (tester) async {
+    testWidgets('displays invalid credentials message on SessionError', (tester) async {
       await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
 
-      sessionCubit.emit(const SessionError(message: 'Credenciais inválidas'));
+      sessionCubit.emit(
+        const SessionError(
+          failure: InvalidCredentialsFailure(),
+          operation: SessionOperation.signIn,
+        ),
+      );
       await tester.pump();
 
-      expect(find.text('Credenciais inválidas'), findsOneWidget);
+      expect(
+        find.text('E-mail ou senha incorretos. Confira os dados e tente novamente.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('displays the login fallback for an unknown failure', (tester) async {
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      sessionCubit.emit(
+        const SessionError(
+          failure: UnknownUserFailure(),
+          operation: SessionOperation.signIn,
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.text('Não foi possível entrar. Tente novamente em alguns minutos.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('ignores sign-up errors (shown by the register screen)', (tester) async {
+      await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+
+      sessionCubit.emit(
+        const SessionError(
+          failure: InvalidCredentialsFailure(),
+          operation: SessionOperation.signUp,
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.text('E-mail ou senha incorretos. Confira os dados e tente novamente.'),
+        findsNothing,
+      );
     });
     testWidgets('displays CircularProgressIndicator overlay when session state is LoadingSession', (tester) async {
       await tester.pumpWidget(buildTestableWidget(const LoginScreen()));

@@ -7,14 +7,15 @@ import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/supabase/supabase_service_impl.dart';
+import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
+import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
+import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
-import 'package:mobile/features/books/domain/repository/book_repository.dart';
-import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
@@ -66,10 +67,12 @@ class DependenciesContainer {
       );
 
     serviceLocator<GoogleSignIn>().initialize(
-      clientId:
-          environment.iosClientId.isNotEmpty ? environment.iosClientId : null,
-      serverClientId:
-          environment.webClientId.isNotEmpty ? environment.webClientId : null,
+      clientId: environment.iosClientId.isNotEmpty
+          ? environment.iosClientId
+          : null,
+      serverClientId: environment.webClientId.isNotEmpty
+          ? environment.webClientId
+          : null,
     );
 
     serviceLocator.registerLazySingleton<AuthRepository>(
@@ -108,9 +111,7 @@ class DependenciesContainer {
       ),
     );
     serviceLocator.registerFactory<MeetingPresenceCubit>(
-      () => MeetingPresenceCubit(
-        repository: serviceLocator<GroupRepository>(),
-      ),
+      () => MeetingPresenceCubit(repository: serviceLocator<GroupRepository>()),
     );
     serviceLocator.registerFactory<MeetingEditCubit>(
       () =>
@@ -145,8 +146,7 @@ class DependenciesContainer {
       () => HomeCubit(groupRepository: serviceLocator<GroupRepository>()),
     );
     serviceLocator.registerFactory<ClaimTokenCubit>(
-      () =>
-          ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
+      () => ClaimTokenCubit(authRepository: serviceLocator<AuthRepository>()),
     );
 
     serviceLocator.registerFactory<OnboardingReviewCubit>(
@@ -174,6 +174,10 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<BookDetailsCubit>(
       () => BookDetailsCubit(repository: serviceLocator<BookRepository>()),
+    );
+
+    serviceLocator.registerFactory<BookSearchCubit>(
+      () => BookSearchCubit(bookRepository: serviceLocator<BookRepository>()),
     );
 
     // --- Notifications Feature ---
@@ -215,9 +219,8 @@ class DependenciesContainer {
     );
 
     serviceLocator.registerFactory<RaffleExecutionCubit>(
-      () => RaffleExecutionCubit(
-        repository: serviceLocator<RaffleRepository>(),
-      ),
+      () =>
+          RaffleExecutionCubit(repository: serviceLocator<RaffleRepository>()),
     );
   }
 }

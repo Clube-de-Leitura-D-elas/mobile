@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
@@ -36,16 +37,14 @@ class MockRafflePreparationCubit extends Cubit<RafflePreparationState>
     emit(const RafflePreparationSuccess());
   }
 
-  void emitError() => emit(const RafflePreparationError('Erro de teste'));
+  void emitError() => emit(const RafflePreparationError(RaffleServerFailure()));
 
   void emitSuccess() => emit(const RafflePreparationSuccess());
 
-  String? loadedMeetingId;
+  int retries = 0;
 
   @override
-  Future<void> loadEligibleParticipants(String meetingId) async {
-    loadedMeetingId = meetingId;
-  }
+  Future<void> retry() async => retries++;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -99,11 +98,14 @@ void main() {
     await tester.pump();
     errorCubit.emitError();
     await tester.pump();
-    expect(find.text('Não foi possível concluir o sorteio'), findsOneWidget);
+    expect(
+      find.text('Não foi possível concluir o sorteio. Tente novamente.'),
+      findsOneWidget,
+    );
     expect(find.text('Erro de teste'), findsNothing);
 
     await tester.tap(find.text('Tentar novamente'));
-    expect(errorCubit.loadedMeetingId, 'meeting-123');
+    expect(errorCubit.retries, 1);
   });
 
   testWidgets('deve voltar quando confirmacao concluir sem router', (

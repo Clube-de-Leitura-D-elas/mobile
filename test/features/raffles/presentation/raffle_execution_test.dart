@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_result.dart';
@@ -33,7 +34,7 @@ class MockRaffleExecutionCubit extends Cubit<RaffleExecutionState>
     confirmResultCalled = true;
   }
 
-  void emitError() => emit(const RaffleExecutionError('Erro de teste'));
+  void emitError() => emit(const RaffleExecutionError(RaffleServerFailure()));
 
   void emitSuccess(RaffleResult result) => emit(RaffleExecutionSuccess(result));
 
@@ -291,7 +292,10 @@ void main() {
     await tester.pumpWidget(buildWidget(cubit));
     cubit.emitError();
     await tester.pump();
-    expect(find.text('Não foi possível concluir o sorteio'), findsOneWidget);
+    expect(
+      find.text('Não foi possível concluir o sorteio. Tente novamente.'),
+      findsOneWidget,
+    );
     expect(find.text('Erro de teste'), findsNothing);
 
     await tester.tap(find.text('Tentar novamente'));

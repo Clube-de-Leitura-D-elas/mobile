@@ -28,7 +28,7 @@ class MeetingEditCubit extends Cubit<MeetingEditState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(MeetingEditError(failure.message));
+        emit(MeetingEditError(failure));
       case Success():
         emit(const MeetingEditSuccess());
     }

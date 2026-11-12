@@ -16,11 +16,51 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
   String? _meetingTitle;
   List<RaffleParticipant>? _participants;
 
-  Future<void> retry() => load(
-    _meetingId,
-    meetingTitle: _meetingTitle,
-    participants: _participants,
-  );
+  /// Quem a coordenadora escolheu na preparação. A lista rebuscada após um
+  /// 422 vem com todas marcadas e não pode trazer de volta quem foi tirado.
+  Set<String>? _chosenIds;
+
+  /// Sorteio mostrado na tela cujo salvamento falhou. O sorteio não é gravado
+  /// pelo servidor: recarregar obrigaria a sortear de novo e trocaria a
+  /// vencedora que o grupo já viu.
+  RaffleExecutionResultLoaded? _unsavedResult;
+
+  Future<void> retry() {
+    final unsaved = _unsavedResult;
+    if (unsaved != null) return _retrySave(unsaved);
+    return load(
+      _meetingId,
+      meetingTitle: _meetingTitle,
+      participants: _participants,
+    );
+  }
+
+  /// O salvamento pode ter chegado ao servidor antes de a conexão cair:
+  /// confere o resultado gravado antes de salvar de novo.
+  Future<void> _retrySave(RaffleExecutionResultLoaded unsaved) async {
+    emit(const RaffleExecutionLoading());
+
+    final existingResult = await repository.getRaffleResult(unsaved.meetingId);
+    if (isClosed) return;
+
+    switch (existingResult) {
+      case Failure(:final failure):
+        emit(RaffleExecutionError(failure));
+      case Success(data: final existing?):
+        _unsavedResult = null;
+        emit(
+          RaffleExecutionResultLoaded(
+            meetingId: unsaved.meetingId,
+            meetingTitle: unsaved.meetingTitle,
+            result: existing,
+            isPersisted: true,
+          ),
+        );
+      case Success():
+        emit(unsaved);
+        await confirmResult();
+    }
+  }
 
   Future<void> load(
     String meetingId, {
@@ -30,13 +70,19 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     _meetingId = meetingId;
     _meetingTitle = meetingTitle;
     _participants = participants;
+    if (participants != null) {
+      _chosenIds = {
+        for (final p in participants)
+          if (p.isSelected) p.id,
+      };
+    }
     emit(const RaffleExecutionLoading());
 
     final existingResult = await repository.getRaffleResult(meetingId);
     if (isClosed) return;
 
     final existing = existingResult.match((res) => res, (failure) {
-      emit(RaffleExecutionError(failure.message));
+      emit(RaffleExecutionError(failure));
       return null;
     });
     if (existingResult is Failure<RaffleResult?, RaffleFailure>) return;
@@ -63,9 +109,24 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     if (isClosed) return;
 
     participantsResult.match(
-      (fetched) => _emitEligible(meetingId, meetingTitle ?? '', fetched),
-      (failure) => emit(RaffleExecutionError(failure.message)),
+      (fetched) =>
+          _emitEligible(meetingId, meetingTitle ?? '', _keepChosen(fetched)),
+      (failure) => emit(RaffleExecutionError(failure)),
     );
+  }
+
+  List<RaffleParticipant> _keepChosen(List<RaffleParticipant> fetched) {
+    final chosenIds = _chosenIds;
+    if (chosenIds == null) return fetched;
+    return [
+      for (final p in fetched) p.copyWith(isSelected: chosenIds.contains(p.id)),
+    ];
+  }
+
+  void _onServerFailure(RaffleFailure failure) {
+    // Sem isso o "Tentar novamente" sorteia de novo a lista recusada.
+    if (failure is RaffleStaleListFailure) _participants = null;
+    emit(RaffleExecutionError(failure));
   }
 
   void _emitEligible(
@@ -145,7 +206,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
           isPersisted: false,
         ),
       ),
-      (failure) => emit(RaffleExecutionError(failure.message)),
+      _onServerFailure,
     );
   }
 
@@ -159,8 +220,19 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     if (isClosed) return;
 
     saveResult.match(
-      (_) => emit(RaffleExecutionSuccess(currentState.result)),
-      (failure) => emit(RaffleExecutionError(failure.message)),
+      (_) {
+        _unsavedResult = null;
+        emit(RaffleExecutionSuccess(currentState.result));
+      },
+      (failure) {
+        // Resultado já gravado ou lista que mudou pedem recarregar; nas
+        // outras falhas o mesmo sorteio é salvo de novo no "Tentar novamente".
+        final mustReload =
+            failure is RaffleAlreadyRecordedFailure ||
+            failure is RaffleStaleListFailure;
+        _unsavedResult = mustReload ? null : currentState;
+        _onServerFailure(failure);
+      },
     );
   }
 }

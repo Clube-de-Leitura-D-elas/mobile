@@ -5,6 +5,7 @@ import 'package:mobile/design_system/icons/app_icons.dart';
 import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/tokens/spacing_tokens.dart';
 import 'package:mobile/design_system/tokens/typography_tokens.dart';
+import 'package:mobile/design_system/widgets/app_button.dart';
 import 'package:mobile/design_system/widgets/app_card.dart';
 import 'package:mobile/design_system/widgets/app_icon.dart';
 
@@ -14,14 +15,12 @@ class GroupNextEventData {
   const GroupNextEventData({
     required this.location,
     required this.date,
-    required this.hostName,
     this.bookTitle,
     this.bookCover,
   });
 
   final String location;
   final DateTime date;
-  final String hostName;
 
   /// Null when the event has no book yet.
   final String? bookTitle;
@@ -34,6 +33,9 @@ class GroupNextEvent extends StatelessWidget {
     this.status = GroupNextEventStatus.empty,
     this.data,
     this.onMoreDetailsPressed,
+    this.errorMessage,
+    this.onRetry,
+    this.onLogout,
   }) : assert(
          status != GroupNextEventStatus.loaded || data != null,
          'Loaded state requires event data.',
@@ -46,13 +48,24 @@ class GroupNextEvent extends StatelessWidget {
   /// When null, the link is not rendered.
   final VoidCallback? onMoreDetailsPressed;
 
+  /// Texto do erro; sem ele, mostra o erro genérico.
+  final String? errorMessage;
+
+  /// Mostra "Tentar novamente" no estado de erro.
+  final VoidCallback? onRetry;
+
+  /// Mostra "Sair" no estado de erro (sessão expirada).
+  final VoidCallback? onLogout;
+
   @override
   Widget build(BuildContext context) {
     return switch (status) {
       GroupNextEventStatus.loading => const _LoadingState(),
       GroupNextEventStatus.error => _MessageState(
         icon: Icons.error_outline,
-        message: context.l10n.genericError,
+        message: errorMessage ?? context.l10n.genericError,
+        onRetry: onRetry,
+        onLogout: onLogout,
       ),
       GroupNextEventStatus.empty => _MessageState(
         icon: Icons.event_busy_outlined,
@@ -79,7 +92,9 @@ class _EventDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
-    final date = DateFormat('dd/MM/yyyy', 'pt_BR').format(data.date.toLocal());
+    final localDate = data.date.toLocal();
+    final date = DateFormat('dd/MM/yyyy', 'pt_BR').format(localDate);
+    final time = DateFormat('HH:mm', 'pt_BR').format(localDate);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,14 +102,11 @@ class _EventDetails extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _EventMetadata(
-                icon: AppIcons.user,
-                label: context.l10n.groupNextEventHost(data.hostName),
-              ),
+              child: _EventMetadata(icon: AppIcons.calendar, label: date),
             ),
             SizedBox(width: spacing.s16),
             Expanded(
-              child: _EventMetadata(icon: AppIcons.calendar, label: date),
+              child: _EventMetadata(icon: AppIcons.clock, label: time),
             ),
           ],
         ),
@@ -311,17 +323,26 @@ class _BookCoverLoading extends StatelessWidget {
 }
 
 class _MessageState extends StatelessWidget {
-  const _MessageState({required this.icon, required this.message});
+  const _MessageState({
+    required this.icon,
+    required this.message,
+    this.onRetry,
+    this.onLogout,
+  });
 
   final IconData icon;
   final String message;
+  final VoidCallback? onRetry;
+  final VoidCallback? onLogout;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final spacing = context.spacing;
 
-    return Row(
+    final onRetry = this.onRetry;
+    final onLogout = this.onLogout;
+    final row = Row(
       children: [
         Icon(icon, size: spacing.s16, color: colors.textMuted),
         SizedBox(width: spacing.s8),
@@ -330,6 +351,32 @@ class _MessageState extends StatelessWidget {
             message,
             style: context.text.bodySmall.copyWith(color: colors.textMuted),
           ),
+        ),
+      ],
+    );
+    if (onRetry == null && onLogout == null) return row;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        row,
+        SizedBox(height: spacing.s8),
+        Wrap(
+          spacing: spacing.s8,
+          children: [
+            if (onRetry != null)
+              AppButton.ghost(
+                label: context.l10n.errorRetryButton,
+                size: AppButtonSize.sm,
+                onPressed: onRetry,
+              ),
+            if (onLogout != null)
+              AppButton.ghost(
+                label: context.l10n.logoutTooltip,
+                size: AppButtonSize.sm,
+                onPressed: onLogout,
+              ),
+          ],
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
 
 abstract class OnboardingReviewState extends Equatable {
@@ -16,35 +17,51 @@ class OnboardingReviewLoadingProfile extends OnboardingReviewState {
   const OnboardingReviewLoadingProfile();
 }
 
+/// Os dados não carregaram. Sem eles o formulário abriria vazio e o envio
+/// apagaria o cadastro.
+class OnboardingReviewLoadError extends OnboardingReviewState {
+  final UserFailure failure;
+
+  const OnboardingReviewLoadError(this.failure);
+
+  @override
+  List<Object?> get props => [failure];
+}
+
 class OnboardingReviewFormState extends OnboardingReviewState {
   final int currentStep;
   final UserReviewProfile profile;
   final bool isSubmitting;
-  final String? errorMessage;
+  final UserFailure? submitFailure;
 
   const OnboardingReviewFormState({
     required this.currentStep,
     required this.profile,
     this.isSubmitting = false,
-    this.errorMessage,
+    this.submitFailure,
   });
 
   OnboardingReviewFormState copyWith({
     int? currentStep,
     UserReviewProfile? profile,
     bool? isSubmitting,
-    String? errorMessage,
+    UserFailure? submitFailure,
   }) {
     return OnboardingReviewFormState(
       currentStep: currentStep ?? this.currentStep,
       profile: profile ?? this.profile,
       isSubmitting: isSubmitting ?? this.isSubmitting,
-      errorMessage: errorMessage,
+      submitFailure: submitFailure,
     );
   }
 
   @override
-  List<Object?> get props => [currentStep, profile, isSubmitting, errorMessage];
+  List<Object?> get props => [
+    currentStep,
+    profile,
+    isSubmitting,
+    submitFailure,
+  ];
 }
 
 class OnboardingReviewSuccess extends OnboardingReviewState {

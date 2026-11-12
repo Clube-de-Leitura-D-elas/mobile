@@ -1,8 +1,8 @@
 import 'package:mobile/features/books/data/models/book_review_model.dart';
-import 'package:mobile/features/books/data/models/reading_status_model.dart';
+import 'package:mobile/features/books/data/models/book_reading_status_model.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 
 class BookDetailsModel {
   final String id;
@@ -14,7 +14,7 @@ class BookDetailsModel {
   final String? coverUrl;
   final double? ratingAverage;
   final int ratingsCount;
-  final ReadingStatus? myStatus;
+  final BookReadingStatus? myStatus;
   final MyBookReviewEntity? myReview;
   final List<BookReviewEntity> reviews;
   final bool hasMoreReviews;
@@ -49,7 +49,7 @@ class BookDetailsModel {
       coverUrl: json['cover_url'] as String?,
       ratingAverage: (json['rating_average'] as num?)?.toDouble(),
       ratingsCount: (json['ratings_count'] as num?)?.toInt() ?? 0,
-      myStatus: ReadingStatusModel.fromJson(json['my_status']),
+      myStatus: bookReadingStatusFromWire(json['my_status']),
       myReview: myReview is Map<String, dynamic>
           ? BookReviewModel.myReviewFromJson(myReview)
           : null,

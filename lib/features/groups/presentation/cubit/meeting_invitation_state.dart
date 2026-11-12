@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 
 sealed class MeetingInvitationState extends Equatable {
   const MeetingInvitationState();
@@ -32,16 +33,16 @@ class MeetingInvitationSubmitting extends MeetingInvitationState {
 class MeetingInvitationError extends MeetingInvitationState {
   const MeetingInvitationError(
     this.currentStatus,
-    this.message,
+    this.failure,
     this.attemptedStatus,
   );
 
   @override
   final MeetingInvitationStatus currentStatus;
 
-  final String message;
+  final GroupFailure failure;
   final MeetingInvitationStatus attemptedStatus;
 
   @override
-  List<Object?> get props => [currentStatus, message, attemptedStatus];
+  List<Object?> get props => [currentStatus, failure, attemptedStatus];
 }

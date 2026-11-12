@@ -5,12 +5,14 @@ import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
 import 'package:mobile/features/home/presentation/cubit/home_state.dart';
 import 'package:mobile/features/home/presentation/widgets/home_empty_state.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 
 class HomeGroupsList extends StatelessWidget {
   final List<GroupEntity> groups;
   final HomeEmptyKind? emptyKind;
   final bool isLoading;
-  final String? errorMessage;
+  final GroupFailure? error;
   final bool Function(String groupId) isExpanded;
   final ValueChanged<String> onToggleExpanded;
   final VoidCallback onRetry;
@@ -22,7 +24,7 @@ class HomeGroupsList extends StatelessWidget {
     required this.groups,
     required this.emptyKind,
     required this.isLoading,
-    required this.errorMessage,
+    required this.error,
     required this.isExpanded,
     required this.onToggleExpanded,
     required this.onRetry,
@@ -34,10 +36,11 @@ class HomeGroupsList extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.spacing;
 
-    if (errorMessage != null) {
+    final error = this.error;
+    if (error != null) {
       return SliverFillRemaining(
         hasScrollBody: false,
-        child: _GroupsLoadError(message: errorMessage!, onRetry: onRetry),
+        child: GroupErrorState(failure: error, onRetry: onRetry),
       );
     }
 
@@ -67,35 +70,6 @@ class HomeGroupsList extends StatelessWidget {
           onToggle: () => onToggleExpanded(groups[index].id),
           onMeetingResponseSuccess: onMeetingResponseSuccess,
           tasksOnly: tasksOnly,
-        ),
-      ),
-    );
-  }
-}
-
-class _GroupsLoadError extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _GroupsLoadError({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.spacing;
-
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(spacing.s24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(message, textAlign: TextAlign.center),
-            SizedBox(height: spacing.s16),
-            AppButton.secondary(
-              label: context.l10n.groupParticipantsRetryButton,
-              onPressed: onRetry,
-            ),
-          ],
         ),
       ),
     );

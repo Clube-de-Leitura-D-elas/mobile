@@ -6,7 +6,6 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_details_content.dart';
-import 'package:mobile/features/books/presentation/widgets/book_details_message.dart';
 
 class BookDetailsPage extends StatelessWidget {
   const BookDetailsPage({super.key});
@@ -20,7 +19,7 @@ class BookDetailsPage extends StatelessWidget {
           current.notice != null && previous.notice != current.notice,
       listener: (context, state) => switch (state.notice) {
         BookDetailsNotice.readingStatusFailed => context.showErrorToast(
-          l10n.bookDetailReadingStatusError,
+          l10n.bookReadingStatusError,
         ),
         null => null,
       },
@@ -43,11 +42,11 @@ class BookDetailsPage extends StatelessWidget {
                 ),
               ),
             ),
-            BookDetailsStatus.error => BookDetailsMessage(
+            BookDetailsStatus.error => AppErrorState(
               message: l10n.bookDetailLoadError,
               onRetry: cubit.retry,
             ),
-            BookDetailsStatus.notFound => BookDetailsMessage(
+            BookDetailsStatus.notFound => AppErrorState(
               message: l10n.bookDetailNotFound,
             ),
             BookDetailsStatus.loaded => BookDetailsContent(state: state),

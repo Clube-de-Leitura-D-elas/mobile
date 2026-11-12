@@ -41,6 +41,22 @@ void main() {
     expect(find.text('Faça o seu login'), findsOneWidget);
   });
 
+  testWidgets('StartupErrorApp shows a pt-BR message without the raw error', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const StartupErrorApp());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Não foi possível abrir o aplicativo. Feche e abra de novo; '
+        'se continuar, atualize o app.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Tentar novamente'), findsNothing);
+  });
+
   test('mainAsync initializes and runs app', () async {
     expect(mainAsync, isA<Function>());
   });

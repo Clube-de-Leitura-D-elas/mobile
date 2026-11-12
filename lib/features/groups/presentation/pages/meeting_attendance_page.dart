@@ -6,6 +6,7 @@ import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_attendance_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_attendance_screen.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 
 class MeetingAttendancePage extends StatelessWidget {
   final String meetingId;
@@ -35,32 +36,12 @@ class MeetingAttendancePage extends StatelessWidget {
               appBar: ScreenHeader.back(title: meetingName),
               body: const Center(child: CircularProgressIndicator()),
             ),
-            MeetingAttendanceError(:final message) => Scaffold(
+            MeetingAttendanceError(:final failure) => Scaffold(
               appBar: ScreenHeader.back(title: meetingName),
-              body: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(context.spacing.s24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        message,
-                        style: context.typography.bodyDefault.copyWith(
-                          color: context.colors.feedbackError,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: context.spacing.s16),
-                      AppButton.secondary(
-                        size: AppButtonSize.sm,
-                        label: 'Tentar novamente',
-                        onPressed: () => context
-                            .read<MeetingAttendanceCubit>()
-                            .fetchAttendance(),
-                      ),
-                    ],
-                  ),
-                ),
+              body: GroupErrorState(
+                failure: failure,
+                onRetry: () =>
+                    context.read<MeetingAttendanceCubit>().fetchAttendance(),
               ),
             ),
             MeetingAttendanceLoaded(:final participants) =>

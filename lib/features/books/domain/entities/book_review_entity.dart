@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 
 /// Avaliação de outra leitora, exibida na lista de comentários.
 class BookReviewEntity extends Equatable {
@@ -51,7 +51,7 @@ class BookReviewResultEntity extends Equatable {
   final MyBookReviewEntity review;
   final double? ratingAverage;
   final int ratingsCount;
-  final ReadingStatus? myStatus;
+  final BookReadingStatus? myStatus;
 
   const BookReviewResultEntity({
     required this.review,

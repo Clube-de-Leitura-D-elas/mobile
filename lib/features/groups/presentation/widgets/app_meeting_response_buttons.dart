@@ -6,6 +6,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_invitation_status
 import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/status_with_action_label.dart';
+import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 
 class AppMeetingResponseButtons extends StatelessWidget {
   const AppMeetingResponseButtons({super.key, this.onResponseSuccess});
@@ -93,7 +94,7 @@ class AppMeetingResponseButtons extends StatelessWidget {
             responseButtons,
             SizedBox(height: spacing.s8),
             Text(
-              state.message,
+              groupFailureMessage(l10n, state.failure),
               style: context.typography.bodySmall.copyWith(
                 color: colors.feedbackError,
               ),

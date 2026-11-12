@@ -1,9 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/books/data/models/book_details_model.dart';
 import 'package:mobile/features/books/data/models/book_review_model.dart';
-import 'package:mobile/features/books/data/models/reading_status_model.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 
 Map<String, dynamic> _details({
   Object? myStatus = 'READ',
@@ -61,7 +60,7 @@ void main() {
       expect(details.coverUrl, 'https://example.com/capa.jpg');
       expect(details.ratingAverage, 4.5);
       expect(details.ratingsCount, 12);
-      expect(details.myStatus, ReadingStatus.read);
+      expect(details.myStatus, BookReadingStatus.read);
       expect(
         details.myReview,
         MyBookReviewEntity(
@@ -105,24 +104,6 @@ void main() {
     });
   });
 
-  group('ReadingStatusModel', () {
-    test('maps the backend values both ways', () {
-      expect(ReadingStatusModel.fromJson('READ'), ReadingStatus.read);
-      expect(
-        ReadingStatusModel.fromJson('WANT_TO_READ'),
-        ReadingStatus.wantToRead,
-      );
-      expect(ReadingStatusModel.fromJson(null), isNull);
-      expect(ReadingStatusModel.fromJson('READING'), isNull);
-      expect(ReadingStatusModel.toJson(ReadingStatus.read), 'READ');
-      expect(
-        ReadingStatusModel.toJson(ReadingStatus.wantToRead),
-        'WANT_TO_READ',
-      );
-      expect(ReadingStatusModel.toJson(null), isNull);
-    });
-  });
-
   group('BookReviewModel.resultFromJson', () {
     test('parses the upsert-book-review response', () {
       final result = BookReviewModel.resultFromJson({
@@ -144,7 +125,7 @@ void main() {
           ),
           ratingAverage: 3.5,
           ratingsCount: 13,
-          myStatus: ReadingStatus.read,
+          myStatus: BookReadingStatus.read,
         ),
       );
     });

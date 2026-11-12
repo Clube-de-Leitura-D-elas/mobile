@@ -9,7 +9,12 @@ class MeetingDetailsCubit extends Cubit<MeetingDetailsState> {
 
   final GroupRepository groupRepository;
 
+  String _meetingId = '';
+
+  Future<void> retry() => load(_meetingId);
+
   Future<void> load(String meetingId) async {
+    _meetingId = meetingId;
     emit(const MeetingDetailsLoading());
 
     final result = await groupRepository.getMeetingDetails(meetingId);
@@ -17,7 +22,7 @@ class MeetingDetailsCubit extends Cubit<MeetingDetailsState> {
 
     switch (result) {
       case Failure(:final failure):
-        emit(MeetingDetailsError(failure.message));
+        emit(MeetingDetailsError(failure));
       case Success(:final data):
         emit(MeetingDetailsLoaded(data));
     }

@@ -9,13 +9,14 @@ import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/dependencies.dart';
+import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
+import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
+import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
-import 'package:mobile/features/books/domain/repository/book_repository.dart';
-import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
@@ -24,10 +25,16 @@ import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
+import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_edit_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
+import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
+import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
@@ -93,12 +100,26 @@ void main() {
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
       expect(serviceLocator<ProfileRepository>(), isA<ProfileRepositoryImpl>());
+      expect(serviceLocator<GroupDetailsCubit>(), isA<GroupDetailsCubit>());
+      expect(serviceLocator<EventHistoryCubit>(), isA<EventHistoryCubit>());
+      expect(serviceLocator<MeetingDetailsCubit>(), isA<MeetingDetailsCubit>());
+      expect(serviceLocator<NextEventCubit>(), isA<NextEventCubit>());
+      expect(
+        serviceLocator<GroupParticipantsCubit>(),
+        isA<GroupParticipantsCubit>(),
+      );
+      expect(serviceLocator<HomeCubit>(), isA<HomeCubit>());
       expect(serviceLocator<MeetingPhotosCubit>(), isA<MeetingPhotosCubit>());
       expect(serviceLocator<MeetingEditCubit>(), isA<MeetingEditCubit>());
+      expect(
+        serviceLocator<MeetingPresenceCubit>(),
+        isA<MeetingPresenceCubit>(),
+      );
       expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
       expect(serviceLocator<ClaimTokenCubit>(), isA<ClaimTokenCubit>());
       expect(serviceLocator<BookRepository>(), isA<BookRepositoryImpl>());
       expect(serviceLocator<BookDetailsCubit>(), isA<BookDetailsCubit>());
+      expect(serviceLocator<BookSearchCubit>(), isA<BookSearchCubit>());
       expect(
         serviceLocator<NotificationRepository>(),
         isA<NotificationRepositoryImpl>(),
@@ -131,4 +152,30 @@ void main() {
       );
     },
   );
+
+  test('passes the Google client ids when the environment has them', () async {
+    dotenv.testLoad(
+      fileInput: '''
+BASE_URL=http://localhost:8080
+IOS_CLIENT_ID=ios-client
+WEB_CLIENT_ID=web-client
+''',
+    );
+    try {
+      await Supabase.initialize(
+        url: 'http://localhost:54321',
+        publishableKey: 'test-key',
+        accessToken: () async => 'test-token',
+        authOptions: const FlutterAuthClientOptions(
+          localStorage: EmptyLocalStorage(),
+        ),
+        debug: false,
+      );
+    } catch (_) {}
+
+    DependenciesContainer();
+
+    expect(serviceLocator<Environment>().iosClientId, 'ios-client');
+    expect(serviceLocator<Environment>().webClientId, 'web-client');
+  });
 }

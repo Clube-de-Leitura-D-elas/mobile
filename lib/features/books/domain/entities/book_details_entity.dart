@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
-import 'package:mobile/features/books/domain/entities/reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 
 class BookDetailsEntity extends Equatable {
   final String id;
@@ -14,7 +14,7 @@ class BookDetailsEntity extends Equatable {
   /// Média arredondada à meia estrela; `null` sem avaliações.
   final double? ratingAverage;
   final int ratingsCount;
-  final ReadingStatus? myStatus;
+  final BookReadingStatus? myStatus;
   final MyBookReviewEntity? myReview;
 
   /// Página de avaliações das outras leitoras pedida junto com os detalhes.
@@ -37,7 +37,7 @@ class BookDetailsEntity extends Equatable {
     this.hasMoreReviews = false,
   });
 
-  BookDetailsEntity withReadingStatus(ReadingStatus? status) =>
+  BookDetailsEntity withReadingStatus(BookReadingStatus? status) =>
       _copy(myStatus: status);
 
   BookDetailsEntity withReview(BookReviewResultEntity result) => _copy(
@@ -48,7 +48,7 @@ class BookDetailsEntity extends Equatable {
   );
 
   BookDetailsEntity _copy({
-    required ReadingStatus? myStatus,
+    required BookReadingStatus? myStatus,
     MyBookReviewEntity? myReview,
     double? ratingAverage,
     int? ratingsCount,

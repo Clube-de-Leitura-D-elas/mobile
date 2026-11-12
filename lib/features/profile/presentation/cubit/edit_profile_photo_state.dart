@@ -9,6 +9,14 @@ sealed class EditProfilePhotoNotice extends Equatable {
   List<Object?> get props => [];
 }
 
+class EditProfilePhotoNetworkNotice extends EditProfilePhotoNotice {
+  const EditProfilePhotoNetworkNotice();
+}
+
+class EditProfilePhotoSessionExpiredNotice extends EditProfilePhotoNotice {
+  const EditProfilePhotoSessionExpiredNotice();
+}
+
 class EditProfilePhotoUploadFailedNotice extends EditProfilePhotoNotice {
   const EditProfilePhotoUploadFailedNotice();
 }

@@ -133,6 +133,28 @@ void main() {
   });
 
   testWidgets(
+    'given an incomplete year or time, when saving, then shows the errors',
+    (tester) async {
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(meeting: meeting, onSaved: (result) => saved = result),
+      );
+
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '01/05/26');
+      await tester.enterText(fields.at(1), '9:3');
+      await tapSave(tester);
+
+      expect(
+        find.text('Informe uma data válida (DD/MM/AAAA).'),
+        findsOneWidget,
+      );
+      expect(find.text('Informe um horário válido (HH:MM).'), findsOneWidget);
+      expect(saved, isNull);
+    },
+  );
+
+  testWidgets(
     'given the location was not changed, when saving, then keeps the current place',
     (tester) async {
       MeetingEditResult? saved;
@@ -146,6 +168,55 @@ void main() {
       expect(saved?.date, DateTime(2026, 10, 30, 19, 30));
       expect(saved?.googlePlaceId, isNull);
       expect(saved?.description, 'Discussão dos principais temas do livro.');
+    },
+  );
+
+  testWidgets(
+    'given date and time typed as digits only, when saving, then masks and saves them',
+    (tester) async {
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(meeting: meeting, onSaved: (result) => saved = result),
+      );
+
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '30102026');
+      await tester.enterText(fields.at(1), '1930');
+      await tester.pump();
+
+      expect(find.text('30/10/2026'), findsOneWidget);
+      expect(find.text('19:30'), findsOneWidget);
+
+      await tapSave(tester);
+
+      expect(saved?.date, DateTime(2026, 10, 30, 19, 30));
+    },
+  );
+
+  testWidgets(
+    'regression: given a prefilled date and time, when saving untouched, then the masks keep them parseable',
+    (tester) async {
+      MeetingEditResult? saved;
+      await tester.pumpWidget(
+        _wrap(
+          meeting: MeetingDetailsEntity(
+            id: meeting.id,
+            bookTitle: meeting.bookTitle,
+            hostName: meeting.hostName,
+            locationName: meeting.locationName,
+            locationAddress: meeting.locationAddress,
+            date: DateTime(2026, 3, 5, 9, 7),
+          ),
+          onSaved: (result) => saved = result,
+        ),
+      );
+
+      expect(find.text('05/03/2026'), findsOneWidget);
+      expect(find.text('09:07'), findsOneWidget);
+
+      await tapSave(tester);
+
+      expect(saved?.date, DateTime(2026, 3, 5, 9, 7));
     },
   );
 

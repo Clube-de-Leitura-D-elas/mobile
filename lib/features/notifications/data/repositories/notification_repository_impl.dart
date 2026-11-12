@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/notifications/data/models/notifications_page_model.dart';
@@ -25,8 +27,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
     );
 
     switch (result) {
-      case Failure():
-        return const Failure(NotificationsLoadFailure());
+      case Failure(:final failure):
+        return Failure(_failureFrom(failure, const NotificationsLoadFailure()));
       case Success(:final data):
         final model = data.data;
         if (model == null) return const Failure(NotificationsLoadFailure());
@@ -44,8 +46,23 @@ class NotificationRepositoryImpl implements NotificationRepository {
     );
 
     return switch (result) {
-      Failure() => const Failure(NotificationMarkReadFailure()),
+      Failure(:final failure) => Failure(
+        _failureFrom(failure, const NotificationMarkReadFailure()),
+      ),
       Success() => const Success(null),
+    };
+  }
+
+  NotificationFailure _failureFrom(
+    SupabaseFailure failure,
+    NotificationFailure fallback,
+  ) {
+    debugPrint('[NotificationFailure] ${failure.message} (${failure.code})');
+    return switch (failure.kind) {
+      SupabaseFailureKind.network => const NotificationNetworkFailure(),
+      SupabaseFailureKind.unauthorized =>
+        const NotificationSessionExpiredFailure(),
+      _ => fallback,
     };
   }
 }

@@ -74,6 +74,28 @@ void main() {
       expect(result, isA<Success<void, UserFailure>>());
     });
 
+    test('updateUserProfile maps a network failure', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<dynamic>(
+          functionName: 'update-user-profile',
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(
+            message: 'Failed to fetch',
+            kind: SupabaseFailureKind.network,
+          ),
+        ),
+      );
+
+      final result = await repository.updateUserProfile(
+        const UserReviewProfile(name: 'Maria'),
+      );
+
+      expect(result, const Failure<void, UserFailure>(UserNetworkFailure()));
+    });
+
 
   });
 }
