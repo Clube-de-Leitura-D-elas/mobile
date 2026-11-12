@@ -43,6 +43,12 @@ android {
         }
     }
 
+    androidResources {
+        // Padrão do AGP sem o ".*": desde o Flutter 3.50 os assets passam pelo merge do AGP,
+        // que descartaria o .env (asset do pubspec) e o app abriria na tela de erro.
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }
+
     buildTypes {
         release {
             signingConfig = if (keystorePropertiesFile.exists()) {
