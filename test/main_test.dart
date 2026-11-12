@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
@@ -55,6 +56,24 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Tentar novamente'), findsNothing);
+  });
+
+  testWidgets('MainApp provides pt Material localizations', (tester) async {
+    await tester.pumpWidget(const MainApp());
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(LoginScreen));
+    expect(MaterialLocalizations.of(context).backButtonTooltip, 'Voltar');
+  });
+
+  testWidgets('StartupErrorApp provides pt Material localizations', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const StartupErrorApp());
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(Scaffold));
+    expect(MaterialLocalizations.of(context).backButtonTooltip, 'Voltar');
   });
 
   test('mainAsync initializes and runs app', () async {
