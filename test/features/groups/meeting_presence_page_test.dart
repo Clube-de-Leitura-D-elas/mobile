@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/theme/app_theme.dart';
 import 'package:mobile/design_system/widgets/app_button.dart';
@@ -45,7 +45,10 @@ void main() {
 
   Widget buildApp({Widget? home}) => MaterialApp(
     theme: AppTheme.light,
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      ...GlobalMaterialLocalizations.delegates,
+    ],
     supportedLocales: AppLocalizations.supportedLocales,
     locale: const Locale('pt'),
     home:

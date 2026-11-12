@@ -1,9 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/routes/app_route_observer.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
@@ -45,6 +48,16 @@ abstract class AppRoutes {
         ...RaffleRoutes.routes,
         ...QuickAccessRoutes.routes,
       ],
+      errorPageBuilder: (context, state) => AppPageTransitions.createFadePage(
+        state: state,
+        child: Scaffold(
+          body: AppErrorState(
+            message: context.l10n.routeNotFoundMessage,
+            secondaryLabel: context.l10n.routeNotFoundHomeButton,
+            onSecondary: () => context.go(HomeRoutes.home),
+          ),
+        ),
+      ),
       redirect: (context, state) {
         final sessionState = sessionCubit.state;
 

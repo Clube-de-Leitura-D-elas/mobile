@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/widgets/app_bottom_navigation_bar.dart';

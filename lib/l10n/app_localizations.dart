@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -2046,6 +2047,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.'**
   String get appStartupError;
+
+  /// Tela mostrada quando o app abre um endereço que não corresponde a nenhuma rota.
+  ///
+  /// In pt, this message translates to:
+  /// **'Página não encontrada.'**
+  String get routeNotFoundMessage;
+
+  /// Botão da tela de rota não encontrada que leva para a home.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ir para o início'**
+  String get routeNotFoundHomeButton;
 
   /// Ação recusada por falta de permissão (HTTP 403). Sem "Tentar novamente", que falharia igual.
   ///
