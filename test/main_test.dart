@@ -1,5 +1,9 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:marionette_flutter/marionette_flutter.dart'
+    show MarionetteConfiguration;
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/marionette/app_marionette_configuration.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
@@ -76,7 +80,64 @@ void main() {
     expect(MaterialLocalizations.of(context).backButtonTooltip, 'Voltar');
   });
 
-  test('mainAsync initializes and runs app', () async {
-    expect(mainAsync, isA<Function>());
+  test(
+    'ensureAppBinding starts Marionette with the app configuration in debug',
+    () {
+      final binding = TestWidgetsFlutterBinding.ensureInitialized();
+      MarionetteConfiguration? configuration;
+
+      final result = ensureAppBinding(
+        isDebug: true,
+        initMarionette: (value) {
+          configuration = value;
+          return binding;
+        },
+        initDefault: () => fail('the default binding must not start in debug'),
+      );
+
+      expect(result, same(binding));
+      expect(configuration, same(appMarionetteConfiguration));
+    },
+  );
+
+  test('ensureAppBinding starts the default binding in release', () {
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
+
+    final result = ensureAppBinding(
+      isDebug: false,
+      initMarionette: (_) => fail('Marionette must not start in release'),
+      initDefault: () => binding,
+    );
+
+    expect(result, same(binding));
   });
+
+  testWidgets(
+    'mainAsync shows StartupErrorApp when the .env cannot be loaded',
+    (tester) async {
+      rootBundle.evict('.env');
+      tester.binding.defaultBinaryMessenger.setMockMessageHandler(
+        'flutter/assets',
+        (_) async => null,
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMessageHandler(
+          'flutter/assets',
+          null,
+        ),
+      );
+      var bindingRequested = false;
+
+      await mainAsync(
+        ensureBinding: () {
+          bindingRequested = true;
+          return tester.binding;
+        },
+      );
+      await tester.pumpAndSettle();
+
+      expect(bindingRequested, isTrue);
+      expect(find.byType(StartupErrorApp), findsOneWidget);
+    },
+  );
 }

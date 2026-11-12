@@ -24,10 +24,22 @@ void main() async {
   await mainAsync();
 }
 
-Future<void> mainAsync() async {
-  final widgetsBinding = kDebugMode
-      ? MarionetteBinding.ensureInitialized(appMarionetteConfiguration)
-      : WidgetsFlutterBinding.ensureInitialized();
+/// Em debug, o binding do Marionette (automação via Marionette MCP) com os
+/// widgets do material_ui; em release, o binding padrão.
+WidgetsBinding ensureAppBinding({
+  bool isDebug = kDebugMode,
+  WidgetsBinding Function(MarionetteConfiguration) initMarionette =
+      MarionetteBinding.ensureInitialized,
+  WidgetsBinding Function() initDefault =
+      WidgetsFlutterBinding.ensureInitialized,
+}) {
+  return isDebug ? initMarionette(appMarionetteConfiguration) : initDefault();
+}
+
+Future<void> mainAsync({
+  WidgetsBinding Function() ensureBinding = ensureAppBinding,
+}) async {
+  final widgetsBinding = ensureBinding();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   try {
