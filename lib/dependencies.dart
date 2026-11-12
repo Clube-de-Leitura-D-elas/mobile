@@ -30,8 +30,10 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
 import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/domain/usecases/sync_fcm_token_use_case.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
@@ -139,6 +141,8 @@ class DependenciesContainer {
       () => SessionCubit(
         authRepository: serviceLocator<AuthRepository>(),
         supabaseService: serviceLocator<SupabaseService>(),
+        syncFcmTokenUseCase: serviceLocator<SyncFcmTokenUseCase>(),
+        notificationRepository: serviceLocator<NotificationRepository>(),
       ),
     );
 
@@ -181,9 +185,22 @@ class DependenciesContainer {
     );
 
     // --- Notifications Feature ---
+    serviceLocator.registerLazySingleton<NotificationsRemoteDataSource>(
+      () => NotificationsRemoteDataSourceImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
     serviceLocator.registerLazySingleton<NotificationRepository>(
       () => NotificationRepositoryImpl(
         supabaseService: serviceLocator<SupabaseService>(),
+        remoteDataSource: serviceLocator<NotificationsRemoteDataSource>(),
+      ),
+    );
+
+    serviceLocator.registerLazySingleton<SyncFcmTokenUseCase>(
+      () => SyncFcmTokenUseCase(
+        repository: serviceLocator<NotificationRepository>(),
       ),
     );
 
