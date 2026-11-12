@@ -15,6 +15,21 @@ void main() {
     }
   });
 
+  test('recognizes generic material_ui widgets with type arguments', () {
+    for (final type in [
+      DropdownButton<String>,
+      Radio<int>,
+      PopupMenuButton<String>,
+    ]) {
+      expect(
+        configuration.isInteractiveWidgetType(type),
+        isTrue,
+        reason: '$type',
+      );
+      expect(configuration.shouldStopAtType(type), isTrue, reason: '$type');
+    }
+  });
+
   test('does not treat a plain Text as interactive', () {
     expect(configuration.isInteractiveWidgetType(Text), isFalse);
   });
@@ -36,5 +51,28 @@ void main() {
 
     final element = tester.element(find.byType(TextField));
     expect(configuration.extractTextFromWidget(element), 'Clube');
+  });
+
+  testWidgets('extracts the text of a material_ui TextFormField', (
+    tester,
+  ) async {
+    final controller = TextEditingController(text: 'Leitura');
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: TextFormField(controller: controller)),
+      ),
+    );
+
+    final element = tester.element(find.byType(TextFormField));
+    expect(extractMaterialUiText(element), 'Leitura');
+  });
+
+  testWidgets('extracts no text from other widgets', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: Placeholder()));
+
+    final element = tester.element(find.byType(Placeholder));
+    expect(extractMaterialUiText(element), isNull);
   });
 }

@@ -35,12 +35,27 @@ const appMarionetteConfiguration = MarionetteConfiguration(
   extractText: extractMaterialUiText,
 );
 
+// Compara pelo nome sem os argumentos de tipo: `DropdownButton<String>` não
+// é igual ao `DropdownButton` (`DropdownButton<dynamic>`) do conjunto.
+final Set<String> _interactiveTypeNames = materialUiInteractiveTypes
+    .map(_typeName)
+    .toSet();
+
+String _typeName(Type type) {
+  final name = type.toString();
+  final typeArgumentsStart = name.indexOf('<');
+  return typeArgumentsStart == -1
+      ? name
+      : name.substring(0, typeArgumentsStart);
+}
+
 bool isMaterialUiInteractiveWidget(Type type) =>
-    materialUiInteractiveTypes.contains(type);
+    _interactiveTypeNames.contains(_typeName(type));
 
 /// Como no Marionette, a travessia continua dentro de um [InkWell].
 bool shouldStopTraversalAtMaterialUiWidget(Type type) =>
-    type != InkWell && materialUiInteractiveTypes.contains(type);
+    _typeName(type) != _typeName(InkWell) &&
+    isMaterialUiInteractiveWidget(type);
 
 String? extractMaterialUiText(Element element) {
   final widget = element.widget;
