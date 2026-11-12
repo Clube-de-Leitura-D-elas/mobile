@@ -7,10 +7,12 @@ import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/supabase/supabase_service_impl.dart';
+import 'package:mobile/features/books/data/datasources/rated_books_remote_data_source.dart';
 import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
+import 'package:mobile/features/books/presentation/cubit/rated_books_cubit.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
@@ -199,9 +201,17 @@ class DependenciesContainer {
     );
 
     // --- Books Feature ---
+    serviceLocator.registerLazySingleton<RatedBooksRemoteDataSource>(
+      () => RatedBooksRemoteDataSourceImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
     serviceLocator.registerLazySingleton<BookRepository>(
       () => BookRepositoryImpl(
         supabaseService: serviceLocator<SupabaseService>(),
+        ratedBooksRemoteDataSource:
+            serviceLocator<RatedBooksRemoteDataSource>(),
       ),
     );
 
@@ -211,6 +221,10 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<BookSearchCubit>(
       () => BookSearchCubit(bookRepository: serviceLocator<BookRepository>()),
+    );
+
+    serviceLocator.registerFactory<RatedBooksCubit>(
+      () => RatedBooksCubit(bookRepository: serviceLocator<BookRepository>()),
     );
 
     // --- Notifications Feature ---
