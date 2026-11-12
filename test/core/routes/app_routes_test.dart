@@ -1,19 +1,41 @@
-import 'package:flutter/widgets.dart';
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/routes/app_routes.dart';
+import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
+import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
+import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/repository/group_repository.dart';
+import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
+import 'package:mobile/features/notifications/domain/entities/notifications_page_entity.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 class MockSupabaseService extends Mock implements SupabaseService {}
+
+class MockSessionCubit extends MockCubit<SessionState>
+    implements SessionCubit {}
+
+class MockGroupRepository extends Mock implements GroupRepository {}
+
+class MockNotificationRepository extends Mock
+    implements NotificationRepository {}
 
 void main() {
   late SessionCubit sessionCubit;
@@ -115,6 +137,92 @@ void main() {
       );
 
       expect(redirect, equals(HomeRoutes.home));
+    });
+  });
+
+  group('Unknown route', () {
+    late MockSessionCubit authenticatedSessionCubit;
+
+    setUp(() {
+      authenticatedSessionCubit = MockSessionCubit();
+      whenListen(
+        authenticatedSessionCubit,
+        const Stream<SessionState>.empty(),
+        initialState: const AuthenticatedSession(
+          user: testUser,
+          profile: testProfile,
+        ),
+      );
+
+      final groupRepository = MockGroupRepository();
+      when(
+        () => groupRepository.getMyGroups(),
+      ).thenAnswer((_) async => const Success(<GroupEntity>[]));
+      final notificationRepository = MockNotificationRepository();
+      when(() => notificationRepository.getNotifications(page: 1)).thenAnswer(
+        (_) async => const Success(
+          NotificationsPageEntity(items: [], total: 0, unreadCount: 0),
+        ),
+      );
+
+      serviceLocator.allowReassignment = true;
+      serviceLocator.registerFactory<HomeCubit>(
+        () => HomeCubit(groupRepository: groupRepository),
+      );
+      serviceLocator.registerFactory<NotificationBadgeCubit>(
+        () => NotificationBadgeCubit(repository: notificationRepository),
+      );
+    });
+
+    tearDown(() {
+      if (serviceLocator.isRegistered<HomeCubit>()) {
+        serviceLocator.unregister<HomeCubit>();
+      }
+      if (serviceLocator.isRegistered<NotificationBadgeCubit>()) {
+        serviceLocator.unregister<NotificationBadgeCubit>();
+      }
+    });
+
+    testWidgets('shows AppErrorState and goes home from the button', (
+      tester,
+    ) async {
+      final router = AppRoutes.createRouter(authenticatedSessionCubit);
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        BlocProvider<SessionCubit>.value(
+          value: authenticatedSessionCubit,
+          child: MaterialApp.router(
+            theme: AppTheme.light,
+            locale: const Locale('pt'),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              ...GlobalMaterialLocalizations.delegates,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: router,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      router.go('/rota-inexistente');
+      await tester.pumpAndSettle();
+
+      expect(
+        find.widgetWithText(AppErrorState, 'Página não encontrada.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Ir para o início'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppErrorState), findsNothing);
+      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(
+        router.routerDelegate.currentConfiguration.uri.path,
+        HomeRoutes.home,
+      );
     });
   });
 }

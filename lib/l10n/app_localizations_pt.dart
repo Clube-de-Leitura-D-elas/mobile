@@ -1186,6 +1186,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.';
 
   @override
+  String get routeNotFoundMessage => 'Página não encontrada.';
+
+  @override
+  String get routeNotFoundHomeButton => 'Ir para o início';
+
+  @override
   String get errorForbidden => 'Você não tem permissão para fazer isso.';
 
   @override
