@@ -133,23 +133,31 @@ void main() {
     ).called(1);
   });
 
-  test('maps a search failure', () async {
-    when(
-      () => supabase.invokeFunction<BookPageModel>(
-        functionName: 'search-books',
-        queryParameters: any(named: 'queryParameters'),
-        method: HttpMethod.get,
-        decoder: any(named: 'decoder'),
-      ),
-    ).thenAnswer(
-      (_) async => const Failure(FunctionSupabaseFailure(message: 'down')),
-    );
+  for (final (kind, expected) in const <(SupabaseFailureKind, BookFailure)>[
+    (SupabaseFailureKind.network, BookNetworkFailure()),
+    (SupabaseFailureKind.unauthorized, BookSessionExpiredFailure()),
+    (SupabaseFailureKind.forbidden, BookSearchFailure()),
+    (SupabaseFailureKind.server, BookSearchFailure()),
+    (SupabaseFailureKind.unknown, BookSearchFailure()),
+  ]) {
+    test('maps a ${kind.name} search failure', () async {
+      when(
+        () => supabase.invokeFunction<BookPageModel>(
+          functionName: 'search-books',
+          queryParameters: any(named: 'queryParameters'),
+          method: HttpMethod.get,
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            Failure(FunctionSupabaseFailure(message: 'down', kind: kind)),
+      );
 
-    final result = await repository.searchBooks(page: 1);
+      final result = await repository.searchBooks(page: 1);
 
-    expect(result, isA<Failure<BookPage, BookFailure>>());
-    expect((result as Failure).failure, isA<BookSearchFailure>());
-  });
+      expect(result, Failure<BookPage, BookFailure>(expected));
+    });
+  }
 
   test('posts set-book-reading-status and reads the status back', () async {
     when(

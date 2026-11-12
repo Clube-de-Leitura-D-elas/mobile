@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Design system color tokens for Clube de Leitura D'Elas.
 ///

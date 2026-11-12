@@ -1,8 +1,8 @@
 import 'dart:ui' show Tristate;
 
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/widgets/book_list_tile.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -12,7 +12,10 @@ Future<void> _pumpTile(WidgetTester tester, BookListTile tile) {
     MaterialApp(
       theme: AppTheme.light,
       locale: const Locale('pt'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(body: tile),
     ),
@@ -316,7 +319,10 @@ void main() {
           MaterialApp(
             theme: AppTheme.light,
             locale: const Locale('pt'),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              ...GlobalMaterialLocalizations.delegates,
+            ],
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
               return MediaQuery(
@@ -382,7 +388,10 @@ void main() {
             ],
           ),
           locale: const Locale('pt'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            ...GlobalMaterialLocalizations.delegates,
+          ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: SizedBox(width: width, child: tile),
@@ -487,7 +496,10 @@ void main() {
       MaterialApp(
         theme: AppTheme.light,
         locale: const Locale('pt'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
         supportedLocales: AppLocalizations.supportedLocales,
         home: const Scaffold(
           body: Row(
@@ -512,7 +524,10 @@ void main() {
       MaterialApp(
         theme: AppTheme.light,
         locale: const Locale('pt'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
         supportedLocales: AppLocalizations.supportedLocales,
         home: const Scaffold(
           body: Row(
@@ -547,7 +562,10 @@ void main() {
         MaterialApp(
           theme: AppTheme.light,
           locale: const Locale('pt'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            ...GlobalMaterialLocalizations.delegates,
+          ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: SizedBox(
@@ -593,7 +611,10 @@ void main() {
       MaterialApp(
         theme: AppTheme.light,
         locale: const Locale('pt'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
         supportedLocales: AppLocalizations.supportedLocales,
         home: const Scaffold(
           body: SizedBox(

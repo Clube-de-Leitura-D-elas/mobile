@@ -1541,10 +1541,6 @@
   "@bookSearchLoadError": {
     "description": "Erro ao carregar a busca de livros."
   },
-  "bookSearchRetry": "Tentar novamente",
-  "@bookSearchRetry": {
-    "description": "Botão que repete a busca de livros."
-  },
   "bookSearchLoading": "Carregando livros",
   "@bookSearchLoading": {
     "description": "Rótulo de acessibilidade do skeleton da busca."
@@ -1625,6 +1621,14 @@
   "appStartupError": "Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.",
   "@appStartupError": {
     "description": "Tela mostrada quando a inicialização do app falha (configuração, Firebase ou Supabase)."
+  },
+  "routeNotFoundMessage": "Página não encontrada.",
+  "@routeNotFoundMessage": {
+    "description": "Tela mostrada quando o app abre um endereço que não corresponde a nenhuma rota."
+  },
+  "routeNotFoundHomeButton": "Ir para o início",
+  "@routeNotFoundHomeButton": {
+    "description": "Botão da tela de rota não encontrada que leva para a home."
   },
   "errorForbidden": "Você não tem permissão para fazer isso.",
   "@errorForbidden": {

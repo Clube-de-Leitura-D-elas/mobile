@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -36,8 +38,8 @@ class BookRepositoryImpl implements BookRepository {
     );
 
     switch (result) {
-      case Failure():
-        return const Failure(BookSearchFailure());
+      case Failure(:final failure):
+        return Failure(_failureFrom(failure, const BookSearchFailure()));
       case Success(:final data):
         final pageData = data.data;
         if (pageData == null) {
@@ -103,5 +105,14 @@ class BookRepositoryImpl implements BookRepository {
       case Success(:final data):
         return Success(data.data);
     }
+  }
+
+  BookFailure _failureFrom(SupabaseFailure failure, BookFailure fallback) {
+    debugPrint('[BookFailure] ${failure.message} (${failure.code})');
+    return switch (failure.kind) {
+      SupabaseFailureKind.network => const BookNetworkFailure(),
+      SupabaseFailureKind.unauthorized => const BookSessionExpiredFailure(),
+      _ => fallback,
+    };
   }
 }

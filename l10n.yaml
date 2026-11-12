@@ -4,4 +4,7 @@ output-localization-file: app_localizations.dart
 output-dir: lib/l10n
 nullable-getter: false
 
-
+# O gen-l10n ainda gera AppLocalizations.localizationsDelegates com os delegates
+# depreciados do flutter_localizations, que o MaterialApp do material_ui ignora.
+# Use [AppLocalizations.delegate, ...GlobalMaterialLocalizations.delegates].
+header: '// ignore_for_file: deprecated_member_use'

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_actions.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -7,7 +7,10 @@ import 'package:mobile/l10n/app_localizations.dart';
 void main() {
   Widget buildSubject(Widget child) => MaterialApp(
     theme: AppTheme.light,
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      ...GlobalMaterialLocalizations.delegates,
+    ],
     supportedLocales: AppLocalizations.supportedLocales,
     locale: const Locale('pt', 'BR'),
     home: Scaffold(body: child),

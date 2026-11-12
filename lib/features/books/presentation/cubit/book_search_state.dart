@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_summary.dart';
 
 enum BookSearchMode { popular, results }
@@ -12,7 +13,7 @@ class BookSearchState extends Equatable {
     this.hasMore = false,
     this.isLoading = false,
     this.isLoadingMore = false,
-    this.hasError = false,
+    this.failure,
     this.hasLoadMoreError = false,
     this.updatingStatusIds = const [],
     this.hasStatusError = false,
@@ -25,10 +26,14 @@ class BookSearchState extends Equatable {
   final bool hasMore;
   final bool isLoading;
   final bool isLoadingMore;
-  final bool hasError;
+
+  /// Por que a primeira página não carregou.
+  final BookFailure? failure;
   final bool hasLoadMoreError;
   final List<String> updatingStatusIds;
   final bool hasStatusError;
+
+  bool get hasError => failure != null;
 
   bool get isEmpty => !isLoading && !hasError && books.isEmpty && page > 0;
 
@@ -40,7 +45,8 @@ class BookSearchState extends Equatable {
     bool? hasMore,
     bool? isLoading,
     bool? isLoadingMore,
-    bool? hasError,
+    BookFailure? failure,
+    bool clearFailure = false,
     bool? hasLoadMoreError,
     List<String>? updatingStatusIds,
     bool? hasStatusError,
@@ -53,7 +59,7 @@ class BookSearchState extends Equatable {
       hasMore: hasMore ?? this.hasMore,
       isLoading: isLoading ?? this.isLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      hasError: hasError ?? this.hasError,
+      failure: clearFailure ? null : failure ?? this.failure,
       hasLoadMoreError: hasLoadMoreError ?? this.hasLoadMoreError,
       updatingStatusIds: updatingStatusIds ?? this.updatingStatusIds,
       hasStatusError: hasStatusError ?? this.hasStatusError,
@@ -69,7 +75,7 @@ class BookSearchState extends Equatable {
     hasMore,
     isLoading,
     isLoadingMore,
-    hasError,
+    failure,
     hasLoadMoreError,
     updatingStatusIds,
     hasStatusError,

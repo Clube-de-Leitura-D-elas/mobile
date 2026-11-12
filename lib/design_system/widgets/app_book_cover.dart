@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/icons/app_icons.dart';
 import 'package:mobile/design_system/tokens/color_tokens.dart';
 import 'package:mobile/design_system/tokens/spacing_tokens.dart';

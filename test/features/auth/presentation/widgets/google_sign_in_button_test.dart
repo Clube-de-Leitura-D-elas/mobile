@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/widgets/google_sign_in_button.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -7,7 +7,10 @@ import 'package:mobile/l10n/app_localizations.dart';
 void main() {
   Widget buildWidget(Widget child) {
     return MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.light,
       home: Scaffold(body: child),

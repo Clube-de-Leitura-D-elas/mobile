@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';

@@ -169,12 +169,13 @@ class BookSearchCubit extends Cubit<BookSearchState> {
     }
 
     switch (result) {
-      case Failure():
+      case Failure(:final failure):
         emit(
           state.copyWith(
             isLoading: false,
             isLoadingMore: false,
-            hasError: !append && state.books.isEmpty,
+            failure: failure,
+            clearFailure: append,
             hasLoadMoreError: append,
           ),
         );
@@ -186,7 +187,7 @@ class BookSearchCubit extends Cubit<BookSearchState> {
             hasMore: data.hasMore,
             isLoading: false,
             isLoadingMore: false,
-            hasError: false,
+            clearFailure: true,
             hasLoadMoreError: false,
           ),
         );
