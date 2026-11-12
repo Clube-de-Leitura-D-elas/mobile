@@ -1497,6 +1497,10 @@
   "@bookDetailNoReviews": {
     "description": "Texto quando nenhuma outra leitora avaliou o livro."
   },
+  "bookDetailNoSynopsis": "Este livro ainda não tem sinopse.",
+  "@bookDetailNoSynopsis": {
+    "description": "Texto da seção Sinopse quando o livro não tem sinopse cadastrada."
+  },
   "bookDetailLoading": "Carregando livro",
   "@bookDetailLoading": {
     "description": "Rótulo de acessibilidade do carregamento do detalhe do livro."

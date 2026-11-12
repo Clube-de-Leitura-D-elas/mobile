@@ -104,16 +104,16 @@ class BookDetailsContent extends StatelessWidget {
 
   List<Widget> _synopsis(BuildContext context, String? synopsis) {
     final text = synopsis?.trim() ?? '';
-    if (text.isEmpty) return const [];
+    final colors = context.colors;
 
     return [
       SizedBox(height: context.spacing.s24),
       _SectionTitle(context.l10n.bookDetailSynopsisTitle),
       SizedBox(height: context.spacing.s8),
       Text(
-        text,
+        text.isEmpty ? context.l10n.bookDetailNoSynopsis : text,
         style: context.typography.bodyDefault.copyWith(
-          color: context.colors.textDefault,
+          color: text.isEmpty ? colors.textMuted : colors.textDefault,
         ),
       ),
     ];

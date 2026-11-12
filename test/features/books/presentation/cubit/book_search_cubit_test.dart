@@ -368,6 +368,29 @@ void main() {
   );
 
   blocTest<BookSearchCubit, BookSearchState>(
+    'given a status changed on the details, when applied, then the chip follows',
+    build: buildCubit,
+    seed: () => const BookSearchState(books: [book], page: 1),
+    act: (cubit) => cubit.applyReadingStatus('book-1', BookReadingStatus.read),
+    expect: () => [
+      BookSearchState(
+        books: [book.copyWithStatus(BookReadingStatus.read)],
+        page: 1,
+      ),
+    ],
+  );
+
+  blocTest<BookSearchCubit, BookSearchState>(
+    'given the same status or another book, when applied, then nothing changes',
+    build: buildCubit,
+    seed: () => const BookSearchState(books: [book], page: 1),
+    act: (cubit) => cubit
+      ..applyReadingStatus('book-1', null)
+      ..applyReadingStatus('other', BookReadingStatus.read),
+    expect: () => <BookSearchState>[],
+  );
+
+  blocTest<BookSearchCubit, BookSearchState>(
     'given no status error, when clearing, then nothing is emitted',
     build: buildCubit,
     seed: () => const BookSearchState(books: [book], page: 1),

@@ -245,6 +245,7 @@
   "bookDetailSynopsisTitle": "Sinopse",
   "bookDetailReviewsTitle": "Comentários",
   "bookDetailNoReviews": "Ainda não há comentários",
+  "bookDetailNoSynopsis": "Este livro ainda não tem sinopse.",
   "bookDetailLoading": "Carregando livro",
   "bookDetailLoadError": "Não foi possível carregar o livro.",
   "bookDetailNotFound": "Livro não encontrado.",

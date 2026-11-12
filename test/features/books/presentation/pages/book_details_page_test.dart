@@ -65,7 +65,11 @@ void main() {
     ).thenAnswer((_) async => Success(details));
   }
 
-  Future<void> pumpPage(WidgetTester tester, {bool settle = true}) async {
+  Future<void> pumpPage(
+    WidgetTester tester, {
+    bool settle = true,
+    ValueChanged<BookReadingStatus?>? onReadingStatusChanged,
+  }) async {
     final router = GoRouter(
       initialLocation: '/books/b1',
       routes: [
@@ -75,7 +79,9 @@ void main() {
             create: (_) =>
                 BookDetailsCubit(repository: repository)
                   ..load(state.pathParameters['bookId']!),
-            child: const BookDetailsPage(),
+            child: BookDetailsPage(
+              onReadingStatusChanged: onReadingStatusChanged,
+            ),
           ),
         ),
       ],
@@ -165,14 +171,15 @@ void main() {
       );
     });
 
-    testWidgets('hides an empty synopsis and explains missing reviews', (
+    testWidgets('explains a missing synopsis and missing reviews', (
       tester,
     ) async {
       stubDetails(_details(synopsis: '  ', reviews: []));
 
       await pumpPage(tester);
 
-      expect(find.text('Sinopse'), findsNothing);
+      expect(find.text('Sinopse'), findsOneWidget);
+      expect(find.text('Este livro ainda não tem sinopse.'), findsOneWidget);
       expect(find.text('Ainda não há comentários'), findsOneWidget);
     });
   });
@@ -240,11 +247,15 @@ void main() {
         ),
       ).thenAnswer((_) async => const Success(BookReadingStatus.read));
 
-      await pumpPage(tester);
+      final changes = <BookReadingStatus?>[];
+      await pumpPage(tester, onReadingStatusChanged: changes.add);
+      expect(changes, isEmpty);
+
       await tester.tap(find.text('Marcar como lido'));
       await tester.pumpAndSettle();
 
       expect(find.text('Já lido'), findsOneWidget);
+      expect(changes, [BookReadingStatus.read]);
     });
 
     testWidgets('shows an error toast when the update fails', (tester) async {
@@ -337,13 +348,21 @@ void main() {
 
       await pumpPage(tester);
       await tester.scrollUntilVisible(
-        find.text('Não foi possível carregar mais comentários.'),
+        find.widgetWithText(AppButton, 'Tentar novamente'),
         300,
         scrollable: find.byType(Scrollable).first,
       );
+      expect(
+        find.text('Não foi possível carregar mais comentários.'),
+        findsOneWidget,
+      );
 
       stubDetails(_details(reviews: [_review('r2')]), page: 2);
-      await tester.tap(find.text('Tentar novamente'));
+      // Rola até o botão inteiro aparecer; ele pode ficar sob a barra inferior.
+      final retry = find.widgetWithText(AppButton, 'Tentar novamente');
+      await tester.ensureVisible(retry);
+      await tester.pumpAndSettle();
+      await tester.tap(retry);
       await tester.pumpAndSettle();
 
       expect(find.text('Leitora r2'), findsOneWidget);

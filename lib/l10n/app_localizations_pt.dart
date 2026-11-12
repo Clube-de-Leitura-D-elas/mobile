@@ -1114,6 +1114,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get bookDetailNoReviews => 'Ainda não há comentários';
 
   @override
+  String get bookDetailNoSynopsis => 'Este livro ainda não tem sinopse.';
+
+  @override
   String get bookDetailLoading => 'Carregando livro';
 
   @override
@@ -2136,6 +2139,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get bookDetailNoReviews => 'Ainda não há comentários';
+
+  @override
+  String get bookDetailNoSynopsis => 'Este livro ainda não tem sinopse.';
 
   @override
   String get bookDetailLoading => 'Carregando livro';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -112,5 +113,62 @@ void main() {
     );
 
     AppToast.dismiss();
+  });
+
+  testWidgets('opens the tapped book and follows its new status on return', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      initialLocation: '/search',
+      routes: [
+        GoRoute(
+          path: '/search',
+          builder: (_, _) => BlocProvider(
+            create: (_) => serviceLocator<BookSearchCubit>()..load(),
+            child: const BookSearchPage(),
+          ),
+        ),
+        GoRoute(
+          path: '/books/:bookId',
+          builder: (context, state) {
+            final onChanged = state.extra! as ValueChanged<BookReadingStatus?>;
+            return Scaffold(
+              body: TextButton(
+                onPressed: () {
+                  onChanged(BookReadingStatus.read);
+                  context.pop();
+                },
+                child: Text('detalhe ${state.pathParameters['bookId']}'),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        locale: const Locale('pt'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(EditableText), 'harry');
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Harry Potter e a Pedra Filosofal'));
+    await tester.pumpAndSettle();
+    expect(find.text('detalhe book-1'), findsOneWidget);
+
+    await tester.tap(find.text('detalhe book-1'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Harry Potter e a Pedra Filosofal'), findsOneWidget);
+    expect(find.text('Já lido'), findsOneWidget);
   });
 }

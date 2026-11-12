@@ -5,6 +5,8 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
+import 'package:mobile/features/books/domain/entities/book_failure.dart';
+import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
@@ -67,5 +69,40 @@ void main() {
     expect(find.byType(BookDetailsPage), findsOneWidget);
     expect(find.text('Dom Casmurro'), findsOneWidget);
     verify(() => repository.getBookDetails(bookId: 'b-42')).called(1);
+  });
+
+  testWidgets('hands the status callback from extra to the page', (
+    tester,
+  ) async {
+    void onChanged(BookReadingStatus? status) {}
+    final router = GoRouter(routes: BookRoutes.routes);
+    addTearDown(router.dispose);
+    when(
+      () => repository.getBookDetails(bookId: 'b-42'),
+    ).thenAnswer((_) async => const Failure(BookNotFoundFailure()));
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        routerConfig: router,
+      ),
+    );
+    router.go(BookRoutePaths.detailsFor('b-42'), extra: onChanged);
+    await tester.pumpAndSettle();
+
+    final page = tester.widget<BookDetailsPage>(find.byType(BookDetailsPage));
+    expect(page.onReadingStatusChanged, onChanged);
+
+    router.go(BookRoutePaths.detailsFor('b-42'), extra: 'outra coisa');
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<BookDetailsPage>(find.byType(BookDetailsPage))
+          .onReadingStatusChanged,
+      isNull,
+    );
   });
 }

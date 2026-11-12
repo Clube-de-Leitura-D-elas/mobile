@@ -1945,6 +1945,12 @@ abstract class AppLocalizations {
   /// **'Ainda não há comentários'**
   String get bookDetailNoReviews;
 
+  /// Texto da seção Sinopse quando o livro não tem sinopse cadastrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este livro ainda não tem sinopse.'**
+  String get bookDetailNoSynopsis;
+
   /// Rótulo de acessibilidade do carregamento do detalhe do livro.
   ///
   /// In pt, this message translates to:

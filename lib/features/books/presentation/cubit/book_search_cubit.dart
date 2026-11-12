@@ -111,6 +111,24 @@ class BookSearchCubit extends Cubit<BookSearchState> {
     }
   }
 
+  /// Reflete na lista o status alterado em outra tela (detalhes do livro).
+  void applyReadingStatus(String bookId, BookReadingStatus? status) {
+    if (isClosed ||
+        !state.books.any(
+          (book) => book.id == bookId && book.myStatus != status,
+        )) {
+      return;
+    }
+    emit(
+      state.copyWith(
+        books: [
+          for (final book in state.books)
+            book.id == bookId ? book.copyWithStatus(status) : book,
+        ],
+      ),
+    );
+  }
+
   void clearStatusError() {
     if (!state.hasStatusError) {
       return;
