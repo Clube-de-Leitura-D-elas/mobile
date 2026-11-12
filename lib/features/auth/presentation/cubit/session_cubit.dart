@@ -8,16 +8,27 @@ import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/domain/usecases/sync_fcm_token_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionCubit extends Cubit<SessionState> {
   final AuthRepository authRepository;
   final SupabaseService supabaseService;
+  final SyncFcmTokenUseCase? syncFcmTokenUseCase;
+  final NotificationRepository? notificationRepository;
 
   StreamSubscription<AuthState>? _authStateSubscription;
+  StreamSubscription<String>? _tokenRefreshSubscription;
+  Future<void>? _ongoingTokenSync;
 
-  SessionCubit({required this.authRepository, required this.supabaseService})
-    : super(const LoadingSession()) {
+  SessionCubit({
+    required this.authRepository,
+    required this.supabaseService,
+    this.syncFcmTokenUseCase,
+    this.notificationRepository,
+  }) : super(const LoadingSession()) {
     _listenToAuthState();
     _checkCurrentSession();
   }
@@ -47,6 +58,9 @@ class SessionCubit extends Cubit<SessionState> {
         if (kDebugMode) {
           debugPrint('[SessionCubit] User signed out -> emitting GuestSession');
         }
+        unawaited(_tokenRefreshSubscription?.cancel());
+        _tokenRefreshSubscription = null;
+        unawaited(notificationRepository?.clearDeviceToken());
         emit(const GuestSession());
         return;
       }
@@ -223,6 +237,35 @@ class SessionCubit extends Cubit<SessionState> {
       );
     }
     emit(AuthenticatedSession(user: user, profile: data));
+    _triggerFcmTokenSync();
+  }
+
+  void _triggerFcmTokenSync() {
+    final syncFuture = syncFcmTokenUseCase?.execute();
+    if (syncFuture != null) {
+      _ongoingTokenSync = syncFuture
+          .then((result) {
+            if (kDebugMode) {
+              debugPrint('[SessionCubit] FCM Token sync completed: $result');
+            }
+          })
+          .catchError((Object error) {
+            if (kDebugMode) {
+              debugPrint(
+                '[SessionCubit] Error executing FCM Token sync: $error',
+              );
+            }
+          });
+    }
+
+    if (_tokenRefreshSubscription == null && notificationRepository != null) {
+      _tokenRefreshSubscription = notificationRepository!.onTokenRefresh.listen(
+        (_) {
+          debugPrint('[SessionCubit] FCM Token refreshed, re-syncing...');
+          unawaited(syncFcmTokenUseCase?.execute());
+        },
+      );
+    }
   }
 
   Future<void> retryProfile() async {
@@ -260,9 +303,39 @@ class SessionCubit extends Cubit<SessionState> {
         '[SessionCubit] Logging out user and clearing Supabase/Google session',
       );
     }
+    unawaited(_tokenRefreshSubscription?.cancel());
+    _tokenRefreshSubscription = null;
     emit(const LoadingSession());
+
+    final pendingSync = _ongoingTokenSync;
+    _ongoingTokenSync = null;
+    if (pendingSync != null) {
+      await pendingSync.timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {},
+      );
+    }
+
+    final repository = notificationRepository;
+    if (repository != null) {
+      final clearResult =
+          await Future<Result<void, NotificationFailure>>.value(
+            repository.clearDeviceToken(),
+          ).timeout(
+            const Duration(seconds: 3),
+            onTimeout: () => const Failure(FcmTokenSyncFailure()),
+          );
+      if (clearResult case Failure(:final failure)) {
+        if (kDebugMode) {
+          debugPrint('[SessionCubit] Failed to clear FCM token: $failure');
+        }
+      }
+    }
+
     await authRepository.logOut();
-    emit(const GuestSession());
+    if (!isClosed) {
+      emit(const GuestSession());
+    }
   }
 
   void reset() {
@@ -272,6 +345,7 @@ class SessionCubit extends Cubit<SessionState> {
   @override
   Future<void> close() {
     _authStateSubscription?.cancel();
+    _tokenRefreshSubscription?.cancel();
     return super.close();
   }
 }

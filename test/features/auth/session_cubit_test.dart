@@ -9,11 +9,17 @@ import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/domain/usecases/sync_fcm_token_use_case.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 class MockSupabaseService extends Mock implements SupabaseService {}
+class MockSyncFcmTokenUseCase extends Mock implements SyncFcmTokenUseCase {}
+class MockNotificationRepository extends Mock
+    implements NotificationRepository {}
 
 void main() {
   late MockAuthRepository mockAuthRepository;
@@ -515,6 +521,110 @@ void main() {
           const AuthenticatedSession(user: testUserEntity),
         );
       });
+    });
+
+    group('FCM token synchronization and cleanup', () {
+      late MockSyncFcmTokenUseCase mockSyncFcmTokenUseCase;
+      late MockNotificationRepository mockNotificationRepository;
+      late StreamController<String> tokenRefreshController;
+      late SessionCubit fcmSessionCubit;
+
+      setUp(() {
+        mockSyncFcmTokenUseCase = MockSyncFcmTokenUseCase();
+        mockNotificationRepository = MockNotificationRepository();
+        tokenRefreshController = StreamController<String>.broadcast();
+
+        when(
+          () => mockNotificationRepository.onTokenRefresh,
+        ).thenAnswer((_) => tokenRefreshController.stream);
+
+        fcmSessionCubit = SessionCubit(
+          authRepository: mockAuthRepository,
+          supabaseService: mockSupabaseService,
+          syncFcmTokenUseCase: mockSyncFcmTokenUseCase,
+          notificationRepository: mockNotificationRepository,
+        );
+      });
+
+      tearDown(() async {
+        await fcmSessionCubit.close();
+        await tokenRefreshController.close();
+      });
+
+      blocTest<SessionCubit, SessionState>(
+        'triggers FCM token sync after authentication and re-syncs on token refresh',
+        build: () {
+          when(
+            () => mockAuthRepository.getUserProfile('user-123'),
+          ).thenAnswer((_) async => const Success(testProfile));
+          when(
+            () => mockSyncFcmTokenUseCase.execute(),
+          ).thenAnswer((_) async => const Success(null));
+          return fcmSessionCubit;
+        },
+        act: (cubit) async {
+          await cubit.checkUserProfile('user-123', testUserEntity);
+          tokenRefreshController.add('new-token');
+          await pumpEventQueue();
+        },
+        expect: () => [
+          const LoadingSession(),
+          const AuthenticatedSession(
+            user: testUserEntity,
+            profile: testProfile,
+          ),
+        ],
+        verify: (_) {
+          verify(() => mockSyncFcmTokenUseCase.execute()).called(2);
+        },
+      );
+
+      blocTest<SessionCubit, SessionState>(
+        'keeps AuthenticatedSession even when FCM token sync returns Failure',
+        build: () {
+          when(
+            () => mockAuthRepository.getUserProfile('user-123'),
+          ).thenAnswer((_) async => const Success(testProfile));
+          when(
+            () => mockSyncFcmTokenUseCase.execute(),
+          ).thenAnswer((_) async => const Failure(FcmTokenSyncFailure()));
+          return fcmSessionCubit;
+        },
+        act: (cubit) => cubit.checkUserProfile('user-123', testUserEntity),
+        expect: () => [
+          const LoadingSession(),
+          const AuthenticatedSession(
+            user: testUserEntity,
+            profile: testProfile,
+          ),
+        ],
+        verify: (_) {
+          verify(() => mockSyncFcmTokenUseCase.execute()).called(1);
+        },
+      );
+
+      blocTest<SessionCubit, SessionState>(
+        'awaits clearDeviceToken before authRepository.logOut on logOut',
+        build: () {
+          when(
+            () => mockNotificationRepository.clearDeviceToken(),
+          ).thenAnswer(
+            (_) async => const Success<void, NotificationFailure>(null),
+          );
+          when(
+            () => mockAuthRepository.logOut(),
+          ).thenAnswer((_) async => const Success(null));
+          return fcmSessionCubit;
+        },
+        act: (cubit) => cubit.logOut(),
+        expect: () => [const LoadingSession(), const GuestSession()],
+        verify: (_) {
+          verifyInOrder([
+            () => mockNotificationRepository.clearDeviceToken(),
+            () => mockAuthRepository.logOut(),
+          ]);
+        },
+      );
     });
   });
 }
