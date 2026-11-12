@@ -250,13 +250,14 @@ void main() {
 
       final changes = <BookReadingStatus?>[];
       await pumpPage(tester, onReadingStatusChanged: changes.add);
-      expect(changes, isEmpty);
+      // Ao carregar sem status, avisa mesmo assim: a busca pode estar velha.
+      expect(changes, [null]);
 
       await tester.tap(find.text('Marcar como lido'));
       await tester.pumpAndSettle();
 
       expect(find.text('Já lido'), findsOneWidget);
-      expect(changes, [BookReadingStatus.read]);
+      expect(changes, [null, BookReadingStatus.read]);
     });
 
     testWidgets('shows an error toast when the update fails', (tester) async {

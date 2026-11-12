@@ -132,12 +132,16 @@ void main() {
     );
 
     blocTest<BookDetailsCubit, BookDetailsState>(
-      'flags the failure and clears it on retry',
+      'flags the failure and recovers the page on retry',
       setUp: () {
         stubPage(1, first);
+        final answers = <Result<BookDetailsEntity, BookFailure>>[
+          const Failure(BookDetailsLoadFailure()),
+          Success(_details(reviews: [_review('r2')], hasMore: false)),
+        ];
         when(
           () => repository.getBookDetails(bookId: 'b1', reviewsPage: 2),
-        ).thenAnswer((_) async => const Failure(BookDetailsLoadFailure()));
+        ).thenAnswer((_) async => answers.removeAt(0));
       },
       build: build,
       act: (cubit) async {
@@ -150,7 +154,11 @@ void main() {
         loaded(first).copyWith(isLoadingMoreReviews: true),
         loaded(first).copyWith(loadMoreReviewsFailed: true),
         loaded(first).copyWith(isLoadingMoreReviews: true),
-        loaded(first).copyWith(loadMoreReviewsFailed: true),
+        loaded(first).copyWith(
+          reviews: [_review('r1'), _review('r2')],
+          reviewsPage: 2,
+          hasMoreReviews: false,
+        ),
       ],
     );
 

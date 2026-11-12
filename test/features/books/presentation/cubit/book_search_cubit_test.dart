@@ -381,6 +381,57 @@ void main() {
   );
 
   blocTest<BookSearchCubit, BookSearchState>(
+    'given a book on the shelf, when the details clear it, then the chip clears',
+    build: buildCubit,
+    seed: () => BookSearchState(
+      books: [book.copyWithStatus(BookReadingStatus.read)],
+      page: 1,
+    ),
+    act: (cubit) => cubit.applyReadingStatus('book-1', null),
+    expect: () => [
+      const BookSearchState(books: [book], page: 1),
+    ],
+  );
+
+  blocTest<BookSearchCubit, BookSearchState>(
+    'given a chip write in flight, when the details change the status, then the late answer is ignored',
+    build: () {
+      when(
+        () => repository.setReadingStatus(
+          bookId: 'book-1',
+          status: BookReadingStatus.wantToRead,
+        ),
+      ).thenAnswer((_) async {
+        await Future<void>.delayed(Duration.zero);
+        return const Success(BookReadingStatus.wantToRead);
+      });
+      return buildCubit();
+    },
+    seed: () => const BookSearchState(books: [book], page: 1),
+    act: (cubit) async {
+      final write = cubit.toggleStatus('book-1');
+      cubit.applyReadingStatus('book-1', BookReadingStatus.read);
+      await write;
+    },
+    expect: () => [
+      const BookSearchState(
+        books: [book],
+        page: 1,
+        updatingStatusIds: ['book-1'],
+      ),
+      BookSearchState(
+        books: [book.copyWithStatus(BookReadingStatus.read)],
+        page: 1,
+        updatingStatusIds: const ['book-1'],
+      ),
+      BookSearchState(
+        books: [book.copyWithStatus(BookReadingStatus.read)],
+        page: 1,
+      ),
+    ],
+  );
+
+  blocTest<BookSearchCubit, BookSearchState>(
     'given the same status or another book, when applied, then nothing changes',
     build: buildCubit,
     seed: () => const BookSearchState(books: [book], page: 1),

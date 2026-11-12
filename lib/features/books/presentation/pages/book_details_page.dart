@@ -18,10 +18,12 @@ class BookDetailsPage extends StatelessWidget {
     final l10n = context.l10n;
 
     return BlocListener<BookDetailsCubit, BookDetailsState>(
-      // Avisa quem abriu a tela (a busca) para o chip da lista não ficar velho.
+      // Avisa quem abriu a tela (a busca) para o chip da lista não ficar velho:
+      // ao carregar, mesmo sem status, e a cada mudança depois.
       listenWhen: (previous, current) =>
           current.details != null &&
-          previous.details?.myStatus != current.details?.myStatus,
+          (previous.details == null ||
+              previous.details?.myStatus != current.details?.myStatus),
       listener: (context, state) =>
           onReadingStatusChanged?.call(state.details?.myStatus),
       child: BlocConsumer<BookDetailsCubit, BookDetailsState>(

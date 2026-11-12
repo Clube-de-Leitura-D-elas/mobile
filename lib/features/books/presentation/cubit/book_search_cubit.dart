@@ -15,6 +15,10 @@ class BookSearchCubit extends Cubit<BookSearchState> {
 
   int _request = 0;
 
+  // Mudanças de status vindas dos detalhes, por livro. A resposta de um toque
+  // no chip que começou antes de uma delas está velha e não pode sobrescrever.
+  final Map<String, int> _externalStatusChanges = {};
+
   Future<void> load() => search('');
 
   Future<void> search(String raw) {
@@ -70,6 +74,7 @@ class BookSearchCubit extends Cubit<BookSearchState> {
       return;
     }
 
+    final changesAtStart = _externalStatusChanges[bookId] ?? 0;
     emit(
       state.copyWith(
         updatingStatusIds: [...state.updatingStatusIds, bookId],
@@ -99,13 +104,16 @@ class BookSearchCubit extends Cubit<BookSearchState> {
           ),
         );
       case Success(:final data):
+        final isStale = (_externalStatusChanges[bookId] ?? 0) != changesAtStart;
         emit(
           state.copyWith(
             updatingStatusIds: stillUpdating,
-            books: [
-              for (final book in state.books)
-                book.id == bookId ? book.copyWithStatus(data) : book,
-            ],
+            books: isStale
+                ? null
+                : [
+                    for (final book in state.books)
+                      book.id == bookId ? book.copyWithStatus(data) : book,
+                  ],
           ),
         );
     }
@@ -119,6 +127,11 @@ class BookSearchCubit extends Cubit<BookSearchState> {
         )) {
       return;
     }
+    _externalStatusChanges.update(
+      bookId,
+      (count) => count + 1,
+      ifAbsent: () => 1,
+    );
     emit(
       state.copyWith(
         books: [
