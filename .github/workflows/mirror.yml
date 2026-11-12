@@ -42,12 +42,13 @@ jobs:
           : "${GITLAB_USERNAME:?Repository secret GITLAB_USERNAME is required}"
           : "${GITLAB_TOKEN:?Repository secret GITLAB_TOKEN is required}"
 
-          gitlab_url="https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${GITLAB_REPOSITORY}"
+          gitlab_url="https://${GITLAB_REPOSITORY}"
+          auth_header=$(printf '%s:%s' "${GITLAB_USERNAME}" "${GITLAB_TOKEN}" | base64 | tr -d '\n')
 
           push_with_retry() {
             local attempt
             for attempt in 1 2 3; do
-              if git push "${gitlab_url}" --force "$@"; then
+              if git -c "http.extraheader=Authorization: Basic ${auth_header}" push "${gitlab_url}" --force "$@"; then
                 return 0
               fi
               if (( attempt == 3 )); then

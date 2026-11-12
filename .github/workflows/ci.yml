@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Run Tests & Generate Coverage
@@ -29,15 +32,17 @@ jobs:
           cache: true
 
       - name: Create .env file
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
         run: |
-          if [ -n "${{ secrets.ENV_FILE }}" ]; then
-            echo "${{ secrets.ENV_FILE }}" > .env
+          if [ -n "$ENV_FILE_CONTENT" ]; then
+            printf '%s\n' "$ENV_FILE_CONTENT" > .env
           else
             cp .env.example .env
           fi
 
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
 
       - name: Run static analysis
         run: flutter analyze

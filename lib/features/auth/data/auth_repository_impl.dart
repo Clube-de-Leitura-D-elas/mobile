@@ -111,8 +111,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Result<void, UserFailure>> logOut() async {
-    await supabaseService.signOut();
-    await googleSignInClient.signOut();
+    try {
+      await supabaseService.signOut();
+    } finally {
+      try {
+        await googleSignInClient.signOut();
+      } catch (_) {}
+    }
     return const Success(null);
   }
 

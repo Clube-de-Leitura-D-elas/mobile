@@ -15,12 +15,14 @@ class ClaimTokenCubit extends Cubit<ClaimTokenState> {
     required String userId,
   }) async {
     final cleanToken = claimToken.trim();
-    debugPrint(
-      '[ClaimTokenCubit] Submitting claimToken "$cleanToken" for userId: $userId',
-    );
+    if (kDebugMode) {
+      debugPrint('[ClaimTokenCubit] Submitting claimToken for userId: $userId');
+    }
 
     if (cleanToken.isEmpty) {
-      debugPrint('[ClaimTokenCubit] Empty token submitted');
+      if (kDebugMode) {
+        debugPrint('[ClaimTokenCubit] Empty token submitted');
+      }
       // O emit ignora estado igual ao atual: sem isso, o segundo toque com o
       // campo vazio não mostra o aviso.
       if (state is ClaimTokenEmpty) emit(const ClaimTokenInitial());
@@ -33,24 +35,34 @@ class ClaimTokenCubit extends Cubit<ClaimTokenState> {
     final claimResult = await authRepository.claimProfile(cleanToken);
 
     if (claimResult case Failure(:final failure)) {
-      debugPrint('[ClaimTokenCubit] claimProfile failed: $failure');
+      if (kDebugMode) {
+        debugPrint('[ClaimTokenCubit] claimProfile failed: $failure');
+      }
       emit(ClaimTokenFailure(failure));
       return;
     }
 
-    debugPrint(
-      '[ClaimTokenCubit] claimProfile succeeded! Re-fetching profile for userId: $userId',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[ClaimTokenCubit] claimProfile succeeded! Re-fetching profile for userId: $userId',
+      );
+    }
     final profileResult = await authRepository.getUserProfile(userId);
 
     if (profileResult case Failure(:final failure)) {
-      debugPrint('[ClaimTokenCubit] Profile re-fetch failed: $failure');
+      if (kDebugMode) {
+        debugPrint('[ClaimTokenCubit] Profile re-fetch failed: $failure');
+      }
       emit(const ClaimTokenSuccess(profile: null));
       return;
     }
 
     final profile = profileResult.unwrap();
-    debugPrint('[ClaimTokenCubit] Profile re-fetch result: $profile');
+    if (kDebugMode) {
+      debugPrint(
+        '[ClaimTokenCubit] Profile re-fetch succeeded: ${profile != null}',
+      );
+    }
     emit(ClaimTokenSuccess(profile: profile));
   }
 }

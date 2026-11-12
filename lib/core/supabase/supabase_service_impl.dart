@@ -136,7 +136,9 @@ class SupabaseServiceImpl implements SupabaseService {
     String? accessToken,
   }) async {
     try {
-      debugPrint('[SupabaseService] Signing in with ID token');
+      if (kDebugMode) {
+        debugPrint('[SupabaseService] Signing in with ID token');
+      }
       final response = await _client.auth.signInWithIdToken(
         provider: provider,
         idToken: idToken,
@@ -152,15 +154,19 @@ class SupabaseServiceImpl implements SupabaseService {
 
       return Success(user);
     } on AuthException catch (e) {
-      debugPrint(
-        '[SupabaseService] AuthException during sign in: ${e.message}',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          '[SupabaseService] AuthException during sign in: ${e.message}',
+        );
+      }
       return Failure(_authFailure(e));
     } catch (e) {
-      debugPrint('[SupabaseService] Unexpected error during sign in: $e');
-      return Failure(
+      if (kDebugMode) {
+        debugPrint('[SupabaseService] Unexpected error during sign in: $e');
+      }
+      return const Failure(
         UnknownSupabaseFailure(
-          message: 'Erro inesperado ao realizar login: $e',
+          message: 'Erro inesperado ao realizar login',
         ),
       );
     }
@@ -172,9 +178,9 @@ class SupabaseServiceImpl implements SupabaseService {
     required String password,
   }) async {
     try {
-      debugPrint(
-        '[SupabaseService] Signing in with password for email: $email',
-      );
+      if (kDebugMode) {
+        debugPrint('[SupabaseService] Signing in with password');
+      }
       final response = await _client.auth.signInWithPassword(
         email: email,
         password: password,
@@ -189,17 +195,21 @@ class SupabaseServiceImpl implements SupabaseService {
 
       return Success(user);
     } on AuthException catch (e) {
-      debugPrint(
-        '[SupabaseService] AuthException during password sign in: ${e.message}',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          '[SupabaseService] AuthException during password sign in: ${e.message}',
+        );
+      }
       return Failure(_authFailure(e));
     } catch (e) {
-      debugPrint(
-        '[SupabaseService] Unexpected error during password sign in: $e',
-      );
-      return Failure(
+      if (kDebugMode) {
+        debugPrint(
+          '[SupabaseService] Unexpected error during password sign in: $e',
+        );
+      }
+      return const Failure(
         UnknownSupabaseFailure(
-          message: 'Erro inesperado ao realizar login com e-mail: $e',
+          message: 'Erro inesperado ao realizar login com e-mail',
         ),
       );
     }
@@ -211,9 +221,9 @@ class SupabaseServiceImpl implements SupabaseService {
     required String password,
   }) async {
     try {
-      debugPrint(
-        '[SupabaseService] Signing up with password for email: $email',
-      );
+      if (kDebugMode) {
+        debugPrint('[SupabaseService] Signing up with password');
+      }
       final response = await _client.auth.signUp(
         email: email,
         password: password,
@@ -228,15 +238,19 @@ class SupabaseServiceImpl implements SupabaseService {
 
       return Success(user);
     } on AuthException catch (e) {
-      debugPrint(
-        '[SupabaseService] AuthException during sign up: ${e.message}',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          '[SupabaseService] AuthException during sign up: ${e.message}',
+        );
+      }
       return Failure(_authFailure(e));
     } catch (e) {
-      debugPrint('[SupabaseService] Unexpected error during sign up: $e');
-      return Failure(
+      if (kDebugMode) {
+        debugPrint('[SupabaseService] Unexpected error during sign up: $e');
+      }
+      return const Failure(
         UnknownSupabaseFailure(
-          message: 'Erro inesperado ao realizar registro: $e',
+          message: 'Erro inesperado ao realizar registro',
         ),
       );
     }
@@ -245,13 +259,17 @@ class SupabaseServiceImpl implements SupabaseService {
   @override
   Future<Result<void, SupabaseFailure>> signOut() async {
     try {
-      debugPrint('[SupabaseService] Signing out user');
+      if (kDebugMode) {
+        debugPrint('[SupabaseService] Signing out user');
+      }
       await _client.auth.signOut();
       return const Success(null);
     } catch (e) {
-      debugPrint('[SupabaseService] Error signing out: $e');
-      return Failure(
-        UnknownSupabaseFailure(message: 'Erro ao realizar logout: $e'),
+      if (kDebugMode) {
+        debugPrint('[SupabaseService] Error signing out: $e');
+      }
+      return const Failure(
+        UnknownSupabaseFailure(message: 'Erro ao realizar logout'),
       );
     }
   }
