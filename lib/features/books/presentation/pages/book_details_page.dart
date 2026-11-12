@@ -8,24 +8,43 @@ import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_details_content.dart';
 
+/// Avisa quem abriu os detalhes (a busca) sobre o status do livro.
+/// [isWrite] é `true` quando a leitora mudou o status aqui e `false` quando os
+/// detalhes só carregaram o que o backend tem.
+typedef ReadingStatusChanged =
+    void Function(BookReadingStatus? status, {required bool isWrite});
+
 class BookDetailsPage extends StatelessWidget {
   const BookDetailsPage({super.key, this.onReadingStatusChanged});
 
-  final ValueChanged<BookReadingStatus?>? onReadingStatusChanged;
+  final ReadingStatusChanged? onReadingStatusChanged;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return BlocListener<BookDetailsCubit, BookDetailsState>(
-      // Avisa quem abriu a tela (a busca) para o chip da lista não ficar velho:
-      // ao carregar, mesmo sem status, e a cada mudança depois.
-      listenWhen: (previous, current) =>
-          current.details != null &&
-          (previous.details == null ||
-              previous.details?.myStatus != current.details?.myStatus),
-      listener: (context, state) =>
-          onReadingStatusChanged?.call(state.details?.myStatus),
+    return MultiBlocListener(
+      listeners: [
+        // Ao carregar, mesmo sem status: a lista da busca pode estar velha.
+        BlocListener<BookDetailsCubit, BookDetailsState>(
+          listenWhen: (previous, current) =>
+              previous.details == null && current.details != null,
+          listener: (context, state) => onReadingStatusChanged?.call(
+            state.details?.myStatus,
+            isWrite: false,
+          ),
+        ),
+        BlocListener<BookDetailsCubit, BookDetailsState>(
+          listenWhen: (previous, current) =>
+              previous.details != null &&
+              current.details != null &&
+              previous.details?.myStatus != current.details?.myStatus,
+          listener: (context, state) => onReadingStatusChanged?.call(
+            state.details?.myStatus,
+            isWrite: true,
+          ),
+        ),
+      ],
       child: BlocConsumer<BookDetailsCubit, BookDetailsState>(
         listenWhen: (previous, current) =>
             current.notice != null && previous.notice != current.notice,

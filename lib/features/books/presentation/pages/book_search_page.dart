@@ -39,8 +39,8 @@ class BookSearchPage extends StatelessWidget {
               onStatusTap: cubit.toggleStatus,
               onBookTap: (bookId) => context.push(
                 BookRoutePaths.detailsFor(bookId),
-                extra: (BookReadingStatus? status) =>
-                    cubit.applyReadingStatus(bookId, status),
+                extra: (BookReadingStatus? status, {required bool isWrite}) =>
+                    cubit.applyReadingStatus(bookId, status, isWrite: isWrite),
               ),
             );
           },

@@ -67,7 +67,7 @@ void main() {
   Future<void> pumpPage(
     WidgetTester tester, {
     bool settle = true,
-    ValueChanged<BookReadingStatus?>? onReadingStatusChanged,
+    ReadingStatusChanged? onReadingStatusChanged,
   }) async {
     final router = GoRouter(
       initialLocation: '/books/b1',
@@ -248,16 +248,23 @@ void main() {
         ),
       ).thenAnswer((_) async => const Success(BookReadingStatus.read));
 
-      final changes = <BookReadingStatus?>[];
-      await pumpPage(tester, onReadingStatusChanged: changes.add);
+      final changes = <({BookReadingStatus? status, bool isWrite})>[];
+      await pumpPage(
+        tester,
+        onReadingStatusChanged: (status, {required isWrite}) =>
+            changes.add((status: status, isWrite: isWrite)),
+      );
       // Ao carregar sem status, avisa mesmo assim: a busca pode estar velha.
-      expect(changes, [null]);
+      expect(changes, [(status: null, isWrite: false)]);
 
       await tester.tap(find.text('Marcar como lido'));
       await tester.pumpAndSettle();
 
       expect(find.text('Já lido'), findsOneWidget);
-      expect(changes, [null, BookReadingStatus.read]);
+      expect(changes, [
+        (status: null, isWrite: false),
+        (status: BookReadingStatus.read, isWrite: true),
+      ]);
     });
 
     testWidgets('shows an error toast when the update fails', (tester) async {

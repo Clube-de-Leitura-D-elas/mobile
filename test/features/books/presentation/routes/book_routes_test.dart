@@ -74,7 +74,7 @@ void main() {
   testWidgets('hands the status callback from extra to the page', (
     tester,
   ) async {
-    void onChanged(BookReadingStatus? status) {}
+    void onChanged(BookReadingStatus? status, {required bool isWrite}) {}
     final router = GoRouter(routes: BookRoutes.routes);
     addTearDown(router.dispose);
     when(

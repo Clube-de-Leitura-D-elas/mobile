@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +13,7 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
+import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -115,9 +118,11 @@ void main() {
     AppToast.dismiss();
   });
 
-  testWidgets('opens the tapped book and follows its new status on return', (
-    tester,
-  ) async {
+  // Busca com uma tela de detalhes falsa, que avisa [status] ao voltar.
+  Future<void> openSearchWithFakeDetails(
+    WidgetTester tester, {
+    required bool isWrite,
+  }) async {
     final router = GoRouter(
       initialLocation: '/search',
       routes: [
@@ -131,11 +136,11 @@ void main() {
         GoRoute(
           path: '/books/:bookId',
           builder: (context, state) {
-            final onChanged = state.extra! as ValueChanged<BookReadingStatus?>;
+            final onChanged = state.extra! as ReadingStatusChanged;
             return Scaffold(
               body: TextButton(
                 onPressed: () {
-                  onChanged(BookReadingStatus.read);
+                  onChanged(BookReadingStatus.read, isWrite: isWrite);
                   context.pop();
                 },
                 child: Text('detalhe ${state.pathParameters['bookId']}'),
@@ -160,15 +165,54 @@ void main() {
     await tester.enterText(find.byType(EditableText), 'harry');
     await tester.pump(const Duration(milliseconds: 300));
     await tester.pumpAndSettle();
+  }
 
+  // Avança o tempo das transições sem esperar o chip parar de girar.
+  Future<void> settleNavigation(WidgetTester tester) async {
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+  }
+
+  Future<void> visitDetailsAndReturn(WidgetTester tester) async {
     await tester.tap(find.text('Harry Potter e a Pedra Filosofal'));
-    await tester.pumpAndSettle();
+    await settleNavigation(tester);
     expect(find.text('detalhe book-1'), findsOneWidget);
 
     await tester.tap(find.text('detalhe book-1'));
-    await tester.pumpAndSettle();
+    await settleNavigation(tester);
+  }
+
+  testWidgets('opens the tapped book and follows its new status on return', (
+    tester,
+  ) async {
+    await openSearchWithFakeDetails(tester, isWrite: true);
+
+    await visitDetailsAndReturn(tester);
 
     expect(find.text('Harry Potter e a Pedra Filosofal'), findsOneWidget);
     expect(find.text('Já lido'), findsOneWidget);
+  });
+
+  testWidgets('keeps the chip write when the details only loaded meanwhile', (
+    tester,
+  ) async {
+    final pending = Completer<Result<BookReadingStatus?, BookFailure>>();
+    when(
+      () => repository.setReadingStatus(
+        bookId: 'book-1',
+        status: BookReadingStatus.wantToRead,
+      ),
+    ).thenAnswer((_) => pending.future);
+    await openSearchWithFakeDetails(tester, isWrite: false);
+
+    await tester.tap(find.text('Marcar como lido'));
+    await tester.pump();
+    await visitDetailsAndReturn(tester);
+
+    pending.complete(const Success(BookReadingStatus.wantToRead));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Quero ler'), findsOneWidget);
   });
 }
