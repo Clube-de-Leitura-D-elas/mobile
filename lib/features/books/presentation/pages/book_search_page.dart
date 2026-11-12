@@ -4,7 +4,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_state.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_screen.dart';
@@ -39,8 +38,7 @@ class BookSearchPage extends StatelessWidget {
               onStatusTap: cubit.toggleStatus,
               onBookTap: (bookId) => context.push(
                 BookRoutePaths.detailsFor(bookId),
-                extra: (BookReadingStatus? status, {required bool isWrite}) =>
-                    cubit.applyReadingStatus(bookId, status, isWrite: isWrite),
+                extra: cubit.statusSyncFor(bookId),
               ),
             );
           },

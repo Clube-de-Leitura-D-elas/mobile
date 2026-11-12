@@ -180,13 +180,20 @@ void main() {
     }
   }
 
-  Future<void> visitDetailsAndReturn(WidgetTester tester) async {
+  Future<void> openDetails(WidgetTester tester) async {
     await tester.tap(find.text('Harry Potter e a Pedra Filosofal'));
     await settleNavigation(tester);
     expect(find.text('detalhe book-1'), findsOneWidget);
+  }
 
+  Future<void> returnFromDetails(WidgetTester tester) async {
     await tester.tap(find.text('detalhe book-1'));
     await settleNavigation(tester);
+  }
+
+  Future<void> visitDetailsAndReturn(WidgetTester tester) async {
+    await openDetails(tester);
+    await returnFromDetails(tester);
   }
 
   testWidgets('opens the tapped book and follows its new status on return', (
@@ -217,6 +224,31 @@ void main() {
     await visitDetailsAndReturn(tester);
 
     pending.complete(const Success(BookReadingStatus.wantToRead));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Quero ler'), findsOneWidget);
+  });
+
+  testWidgets('ignores an old details load once the chip write is confirmed', (
+    tester,
+  ) async {
+    final pending = Completer<Result<BookReadingStatus?, BookFailure>>();
+    when(
+      () => repository.setReadingStatus(
+        bookId: 'book-1',
+        status: BookReadingStatus.wantToRead,
+      ),
+    ).thenAnswer((_) => pending.future);
+    await openSearchWithFakeDetails(tester, isWrite: false);
+
+    await tester.tap(find.text('Marcar como lido'));
+    await tester.pump();
+    await openDetails(tester);
+
+    // A gravação confirma antes de os detalhes responderem com a leitura velha.
+    pending.complete(const Success(BookReadingStatus.wantToRead));
+    await tester.pump();
+    await returnFromDetails(tester);
     await tester.pumpAndSettle();
 
     expect(find.text('Quero ler'), findsOneWidget);

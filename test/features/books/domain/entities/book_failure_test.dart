@@ -9,9 +9,14 @@ void main() {
     expect(const BookStatusFailure().props, [
       'Não foi possível atualizar o status de leitura.',
     ]);
-    expect(const BookDetailsLoadFailure().props, [
-      'Não foi possível carregar o livro.',
-    ]);
-    expect(const BookNotFoundFailure().props, ['Livro não encontrado.']);
+  });
+
+  test('keeps the details failures apart, with the text left to l10n', () {
+    expect(const BookDetailsLoadFailure().message, isEmpty);
+    expect(const BookNotFoundFailure().message, isEmpty);
+    expect(
+      const BookDetailsLoadFailure(),
+      isNot(equals(const BookNotFoundFailure())),
+    );
   });
 }

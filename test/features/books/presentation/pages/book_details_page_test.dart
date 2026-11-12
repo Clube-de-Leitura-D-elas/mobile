@@ -1,11 +1,16 @@
 import 'dart:async';
 
+import 'package:bloc_test/bloc_test.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
@@ -19,6 +24,9 @@ import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockBookRepository extends Mock implements BookRepository {}
+
+class MockSessionCubit extends MockCubit<SessionState>
+    implements SessionCubit {}
 
 BookReviewEntity _review(String id) => BookReviewEntity(
   id: id,
@@ -68,10 +76,26 @@ void main() {
     WidgetTester tester, {
     bool settle = true,
     ReadingStatusChanged? onReadingStatusChanged,
+    SessionCubit? sessionCubit,
+    String initialLocation = '/books/b1',
   }) async {
     final router = GoRouter(
-      initialLocation: '/books/b1',
+      initialLocation: initialLocation,
       routes: [
+        GoRoute(
+          path: QuickAccessRoutes.search,
+          builder: (context, _) => Scaffold(
+            body: Column(
+              children: [
+                const TextField(),
+                TextButton(
+                  onPressed: () => context.push('/books/b1'),
+                  child: const Text('tela de busca'),
+                ),
+              ],
+            ),
+          ),
+        ),
         GoRoute(
           path: '/books/:bookId',
           builder: (_, state) => BlocProvider(
@@ -87,17 +111,20 @@ void main() {
     );
     addTearDown(router.dispose);
 
+    final app = MaterialApp.router(
+      theme: AppTheme.light,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('pt', 'BR'),
+      routerConfig: router,
+    );
     await tester.pumpWidget(
-      MaterialApp.router(
-        theme: AppTheme.light,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          ...GlobalMaterialLocalizations.delegates,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('pt', 'BR'),
-        routerConfig: router,
-      ),
+      sessionCubit == null
+          ? app
+          : BlocProvider<SessionCubit>.value(value: sessionCubit, child: app),
     );
     if (settle) await tester.pumpAndSettle();
   }
@@ -227,6 +254,45 @@ void main() {
       expect(find.byType(BookDetailHeader), findsOneWidget);
     });
 
+    testWidgets('explains a missing connection, without the logout exit', (
+      tester,
+    ) async {
+      when(
+        () => repository.getBookDetails(bookId: 'b1'),
+      ).thenAnswer((_) async => const Failure(BookNetworkFailure()));
+
+      await pumpPage(tester);
+
+      expect(
+        find.text(
+          'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Tentar novamente'), findsOneWidget);
+      expect(find.text('Sair'), findsNothing);
+    });
+
+    testWidgets('offers to log out when the session expired', (tester) async {
+      final sessionCubit = MockSessionCubit();
+      when(() => sessionCubit.state).thenReturn(const GuestSession());
+      when(() => sessionCubit.logOut()).thenAnswer((_) async {});
+      when(
+        () => repository.getBookDetails(bookId: 'b1'),
+      ).thenAnswer((_) async => const Failure(BookSessionExpiredFailure()));
+
+      await pumpPage(tester, sessionCubit: sessionCubit);
+
+      expect(
+        find.text(
+          'Sua sessão expirou. Saia do app e entre de novo na sua conta.',
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Sair'));
+      verify(() => sessionCubit.logOut()).called(1);
+    });
+
     testWidgets('says when the book does not exist, without retry', (
       tester,
     ) async {
@@ -337,6 +403,39 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Leitora r2'), findsOneWidget);
+    });
+  });
+
+  group('bottom navigation', () {
+    testWidgets('the search tab goes back to the search that opened the book', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      await pumpPage(tester, initialLocation: QuickAccessRoutes.search);
+      await tester.enterText(find.byType(TextField), 'harry');
+      await tester.tap(find.text('tela de busca'));
+      await tester.pumpAndSettle();
+      expect(find.byType(BookDetailsPage), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel('Busca'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BookDetailsPage), findsNothing);
+      expect(find.text('tela de busca'), findsOneWidget);
+      // A busca é a mesma, não recriada: a consulta continua lá.
+      expect(find.text('harry'), findsOneWidget);
+    });
+
+    testWidgets('the search tab opens the search from a direct link', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      await pumpPage(tester);
+
+      await tester.tap(find.bySemanticsLabel('Busca'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('tela de busca'), findsOneWidget);
     });
   });
 }

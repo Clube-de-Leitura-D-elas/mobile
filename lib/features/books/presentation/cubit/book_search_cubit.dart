@@ -19,6 +19,10 @@ class BookSearchCubit extends Cubit<BookSearchState> {
   // no chip que começou antes de uma delas está velha e não pode sobrescrever.
   final Map<String, int> _externalStatusChanges = {};
 
+  // Gravações do chip já confirmadas, por livro. Um carregamento dos detalhes
+  // aberto antes de uma delas pode ter lido o status antigo.
+  final Map<String, int> _confirmedChipWrites = {};
+
   Future<void> load() => search('');
 
   Future<void> search(String raw) {
@@ -104,6 +108,11 @@ class BookSearchCubit extends Cubit<BookSearchState> {
           ),
         );
       case Success(:final data):
+        _confirmedChipWrites.update(
+          bookId,
+          (count) => count + 1,
+          ifAbsent: () => 1,
+        );
         final isStale = (_externalStatusChanges[bookId] ?? 0) != changesAtStart;
         emit(
           state.copyWith(
@@ -119,6 +128,23 @@ class BookSearchCubit extends Cubit<BookSearchState> {
     }
   }
 
+  /// Callback para os detalhes do livro avisarem o status ao voltar. Descarta
+  /// o carregamento (`isWrite: false`) se o chip gravou ou está gravando desde
+  /// a abertura: a resposta da gravação é mais confiável que essa leitura.
+  void Function(BookReadingStatus? status, {required bool isWrite})
+  statusSyncFor(String bookId) {
+    final confirmedAtOpen = _confirmedChipWrites[bookId] ?? 0;
+    return (status, {required isWrite}) {
+      final chipWroteSinceOpen =
+          state.updatingStatusIds.contains(bookId) ||
+          (_confirmedChipWrites[bookId] ?? 0) != confirmedAtOpen;
+      if (!isWrite && chipWroteSinceOpen) {
+        return;
+      }
+      applyReadingStatus(bookId, status, isWrite: isWrite);
+    };
+  }
+
   /// Reflete na lista o status visto nos detalhes do livro. Só uma gravação
   /// feita lá ([isWrite]) invalida a resposta pendente de um toque no chip; o
   /// carregamento dos detalhes pode ter lido o backend antes dela terminar.
@@ -127,18 +153,22 @@ class BookSearchCubit extends Cubit<BookSearchState> {
     BookReadingStatus? status, {
     required bool isWrite,
   }) {
-    if (isClosed ||
-        !state.books.any(
-          (book) => book.id == bookId && book.myStatus != status,
-        )) {
+    if (isClosed) {
       return;
     }
+    // Conta antes de comparar: mesmo igual ao que a lista mostra, uma gravação
+    // nos detalhes é a mais recente e invalida a resposta pendente do chip.
     if (isWrite) {
       _externalStatusChanges.update(
         bookId,
         (count) => count + 1,
         ifAbsent: () => 1,
       );
+    }
+    if (!state.books.any(
+      (book) => book.id == bookId && book.myStatus != status,
+    )) {
+      return;
     }
     emit(
       state.copyWith(

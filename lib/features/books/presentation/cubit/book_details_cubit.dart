@@ -22,11 +22,12 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
     switch (result) {
       case Failure(:final failure):
         emit(
-          BookDetailsState(
-            status: failure is BookNotFoundFailure
-                ? BookDetailsStatus.notFound
-                : BookDetailsStatus.error,
-          ),
+          failure is BookNotFoundFailure
+              ? const BookDetailsState(status: BookDetailsStatus.notFound)
+              : BookDetailsState(
+                  status: BookDetailsStatus.error,
+                  failure: failure,
+                ),
         );
       case Success(:final data):
         emit(

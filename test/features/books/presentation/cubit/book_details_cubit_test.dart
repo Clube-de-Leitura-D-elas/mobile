@@ -87,7 +87,7 @@ void main() {
       'emits error and loads the same book again on retry',
       setUp: () => when(
         () => repository.getBookDetails(bookId: 'b1'),
-      ).thenAnswer((_) async => const Failure(BookDetailsLoadFailure())),
+      ).thenAnswer((_) async => const Failure(BookNetworkFailure())),
       build: build,
       act: (cubit) async {
         await cubit.load('b1');
@@ -96,7 +96,10 @@ void main() {
       },
       expect: () => [
         const BookDetailsState(),
-        const BookDetailsState(status: BookDetailsStatus.error),
+        const BookDetailsState(
+          status: BookDetailsStatus.error,
+          failure: BookNetworkFailure(),
+        ),
         const BookDetailsState(),
         loaded(_details()),
       ],

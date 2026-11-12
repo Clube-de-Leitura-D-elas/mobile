@@ -297,14 +297,48 @@ void main() {
       );
     });
 
-    test('maps 404 to BookNotFoundFailure', () async {
-      stubDetails(
-        const Failure(FunctionSupabaseFailure(message: 'x', code: '404')),
-      );
+    test('maps 404 and an invalid id (400) to BookNotFoundFailure', () async {
+      for (final kind in [
+        SupabaseFailureKind.notFound,
+        SupabaseFailureKind.validation,
+      ]) {
+        stubDetails(Failure(FunctionSupabaseFailure(message: 'x', kind: kind)));
 
+        expect(
+          await repository.getBookDetails(bookId: 'b1'),
+          const Failure<BookDetailsEntity, BookFailure>(BookNotFoundFailure()),
+          reason: '$kind',
+        );
+      }
+    });
+
+    test('maps no connection and an expired session', () async {
+      stubDetails(
+        const Failure(
+          FunctionSupabaseFailure(
+            message: 'x',
+            kind: SupabaseFailureKind.network,
+          ),
+        ),
+      );
       expect(
         await repository.getBookDetails(bookId: 'b1'),
-        const Failure<BookDetailsEntity, BookFailure>(BookNotFoundFailure()),
+        const Failure<BookDetailsEntity, BookFailure>(BookNetworkFailure()),
+      );
+
+      stubDetails(
+        const Failure(
+          FunctionSupabaseFailure(
+            message: 'x',
+            kind: SupabaseFailureKind.unauthorized,
+          ),
+        ),
+      );
+      expect(
+        await repository.getBookDetails(bookId: 'b1'),
+        const Failure<BookDetailsEntity, BookFailure>(
+          BookSessionExpiredFailure(),
+        ),
       );
     });
 

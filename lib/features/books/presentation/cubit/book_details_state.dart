@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
+import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 
 enum BookDetailsStatus { loading, loaded, error, notFound }
@@ -9,6 +10,9 @@ enum BookDetailsNotice { readingStatusFailed }
 
 class BookDetailsState extends Equatable {
   final BookDetailsStatus status;
+
+  /// Motivo do erro ao carregar, para a tela escolher o texto e as saídas.
+  final BookFailure? failure;
   final BookDetailsEntity? details;
   final List<BookReviewEntity> reviews;
   final int reviewsPage;
@@ -20,6 +24,7 @@ class BookDetailsState extends Equatable {
 
   const BookDetailsState({
     this.status = BookDetailsStatus.loading,
+    this.failure,
     this.details,
     this.reviews = const [],
     this.reviewsPage = 0,
@@ -43,6 +48,7 @@ class BookDetailsState extends Equatable {
   }) {
     return BookDetailsState(
       status: status,
+      failure: failure,
       details: details ?? this.details,
       reviews: reviews ?? this.reviews,
       reviewsPage: reviewsPage ?? this.reviewsPage,
@@ -58,6 +64,7 @@ class BookDetailsState extends Equatable {
   @override
   List<Object?> get props => [
     status,
+    failure,
     details,
     reviews,
     reviewsPage,

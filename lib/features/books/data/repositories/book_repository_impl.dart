@@ -69,11 +69,12 @@ class BookRepositoryImpl implements BookRepository {
 
     switch (result) {
       case Failure(:final failure):
-        return Failure(
-          failure.code == '404'
-              ? const BookNotFoundFailure()
-              : const BookDetailsLoadFailure(),
-        );
+        return Failure(switch (failure.kind) {
+          // O 400 só vem de um bookId que não é UUID (link quebrado).
+          SupabaseFailureKind.notFound ||
+          SupabaseFailureKind.validation => const BookNotFoundFailure(),
+          _ => _failureFrom(failure, const BookDetailsLoadFailure()),
+        });
       case Success(:final data):
         final model = data.data;
         if (model == null) {
