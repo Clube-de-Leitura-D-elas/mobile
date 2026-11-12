@@ -14,7 +14,6 @@ import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
-import 'package:mobile/features/books/presentation/widgets/book_review_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -128,13 +127,15 @@ void main() {
       expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
     });
 
-    testWidgets('keeps the recommend action disabled for now', (tester) async {
+    testWidgets('keeps rate and recommend disabled until their tasks exist', (
+      tester,
+    ) async {
       stubDetails(_details());
 
       await pumpPage(tester);
 
+      expect(button(tester, 'Avaliar').onPressed, isNull);
       expect(button(tester, 'Indicar').onPressed, isNull);
-      expect(button(tester, 'Avaliar').onPressed, isNotNull);
     });
 
     testWidgets('meets the 48px touch target on the actions', (tester) async {
@@ -278,47 +279,6 @@ void main() {
       );
       expect(find.text('Marcar como lido'), findsOneWidget);
       await tester.pumpAndSettle(const Duration(seconds: 5));
-    });
-  });
-
-  group('review', () {
-    testWidgets('after reviewing, the chip turns to read and the action to '
-        'edit', (tester) async {
-      stubDetails(_details());
-      when(() => repository.upsertReview(bookId: 'b1', rating: 4)).thenAnswer(
-        (_) async => Success(
-          BookReviewResultEntity(
-            review: MyBookReviewEntity(
-              rating: 4,
-              evaluatedAt: DateTime.utc(2026, 11, 7),
-            ),
-            ratingAverage: 4.5,
-            ratingsCount: 11,
-            myStatus: BookReadingStatus.read,
-          ),
-        ),
-      );
-
-      await pumpPage(tester);
-      await tester.tap(find.text('Avaliar'));
-      await tester.pumpAndSettle();
-      expect(find.byType(BookReviewDialog), findsOneWidget);
-
-      final stars = find.descendant(
-        of: find.byType(BookReviewDialog),
-        matching: find.descendant(
-          of: find.byType(AppStarRating),
-          matching: find.byType(GestureDetector),
-        ),
-      );
-      await tester.tap(stars.at(3));
-      await tester.pump();
-      await tester.tap(find.text('Salvar'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(BookReviewDialog), findsNothing);
-      expect(find.text('Já lido'), findsOneWidget);
-      expect(find.text('Editar avaliação'), findsOneWidget);
     });
   });
 

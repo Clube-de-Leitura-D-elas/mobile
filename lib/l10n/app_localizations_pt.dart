@@ -1133,29 +1133,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível carregar mais comentários.';
 
   @override
-  String get bookReviewDialogTitle => 'Avaliar livro';
-
-  @override
-  String get bookReviewDialogEditTitle => 'Editar avaliação';
-
-  @override
-  String get bookReviewRatingLabel => 'Sua nota';
-
-  @override
-  String get bookReviewCommentaryLabel => 'Comentário (opcional)';
-
-  @override
-  String bookReviewCommentaryTooLong(int max) {
-    return 'O comentário pode ter até $max caracteres.';
-  }
-
-  @override
-  String get bookReviewSaveButton => 'Salvar';
-
-  @override
-  String get bookReviewSaveError => 'Não foi possível salvar sua avaliação.';
-
-  @override
   String get bookSearchTitle => 'Busca';
 
   @override
@@ -2158,29 +2135,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get bookDetailLoadMoreReviewsError =>
       'Não foi possível carregar mais comentários.';
-
-  @override
-  String get bookReviewDialogTitle => 'Avaliar livro';
-
-  @override
-  String get bookReviewDialogEditTitle => 'Editar avaliação';
-
-  @override
-  String get bookReviewRatingLabel => 'Sua nota';
-
-  @override
-  String get bookReviewCommentaryLabel => 'Comentário (opcional)';
-
-  @override
-  String bookReviewCommentaryTooLong(int max) {
-    return 'O comentário pode ter até $max caracteres.';
-  }
-
-  @override
-  String get bookReviewSaveButton => 'Salvar';
-
-  @override
-  String get bookReviewSaveError => 'Não foi possível salvar sua avaliação.';
 
   @override
   String get bookReadingStatusError =>

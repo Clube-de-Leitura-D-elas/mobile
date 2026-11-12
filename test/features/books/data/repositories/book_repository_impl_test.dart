@@ -11,7 +11,6 @@ import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
-import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -323,69 +322,5 @@ void main() {
         );
       },
     );
-  });
-
-  group('upsertReview', () {
-    final saved = BookReviewResultEntity(
-      review: MyBookReviewEntity(
-        rating: 4,
-        commentary: 'Bom',
-        evaluatedAt: DateTime.utc(2026, 11, 7),
-      ),
-      ratingAverage: 4.5,
-      ratingsCount: 3,
-      myStatus: BookReadingStatus.read,
-    );
-
-    void stubReview(
-      Result<SupabaseResponse<BookReviewResultEntity>, SupabaseFailure> result,
-    ) {
-      when(
-        () => supabase.invokeFunction<BookReviewResultEntity>(
-          functionName: any(named: 'functionName'),
-          body: any(named: 'body'),
-          decoder: any(named: 'decoder'),
-        ),
-      ).thenAnswer((_) async => result);
-    }
-
-    test('sends rating and commentary', () async {
-      stubReview(Success(SupabaseResponse(data: saved)));
-
-      final result = await repository.upsertReview(
-        bookId: 'b1',
-        rating: 4,
-        commentary: 'Bom',
-      );
-
-      expect(result.unwrap(), saved);
-      verify(
-        () => supabase.invokeFunction<BookReviewResultEntity>(
-          functionName: 'upsert-book-review',
-          body: {'book_id': 'b1', 'rating': 4, 'commentary': 'Bom'},
-          decoder: any(named: 'decoder'),
-        ),
-      ).called(1);
-    });
-
-    test('maps a failure and empty data to BookReviewSaveFailure', () async {
-      stubReview(
-        const Failure(FunctionSupabaseFailure(message: 'x', code: '400')),
-      );
-      expect(
-        await repository.upsertReview(bookId: 'b1', rating: 4),
-        const Failure<BookReviewResultEntity, BookFailure>(
-          BookReviewSaveFailure(),
-        ),
-      );
-
-      stubReview(const Success(SupabaseResponse()));
-      expect(
-        await repository.upsertReview(bookId: 'b1', rating: 4),
-        const Failure<BookReviewResultEntity, BookFailure>(
-          BookReviewSaveFailure(),
-        ),
-      );
-    });
   });
 }

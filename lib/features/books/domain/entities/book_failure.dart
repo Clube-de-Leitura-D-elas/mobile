@@ -30,9 +30,3 @@ class BookDetailsLoadFailure extends BookFailure {
 class BookNotFoundFailure extends BookFailure {
   const BookNotFoundFailure({super.message = 'Livro não encontrado.'});
 }
-
-class BookReviewSaveFailure extends BookFailure {
-  const BookReviewSaveFailure({
-    super.message = 'Não foi possível salvar sua avaliação.',
-  });
-}

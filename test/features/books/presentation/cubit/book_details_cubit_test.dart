@@ -246,48 +246,4 @@ void main() {
       ),
     );
   });
-
-  group('submitReview', () {
-    final saved = BookReviewResultEntity(
-      review: MyBookReviewEntity(
-        rating: 5,
-        commentary: 'Ótimo',
-        evaluatedAt: DateTime.utc(2026, 11, 7),
-      ),
-      ratingAverage: 4.5,
-      ratingsCount: 3,
-      myStatus: BookReadingStatus.read,
-    );
-
-    test('applies the saved review and marks the book as read', () async {
-      when(
-        () => repository.upsertReview(
-          bookId: 'b1',
-          rating: 5,
-          commentary: 'Ótimo',
-        ),
-      ).thenAnswer((_) async => Success(saved));
-      final cubit = build()..emit(loaded(_details()));
-      addTearDown(cubit.close);
-
-      final ok = await cubit.submitReview(rating: 5, commentary: 'Ótimo');
-
-      expect(ok, isTrue);
-      expect(cubit.state.details, _details().withReview(saved));
-      expect(cubit.state.details?.myStatus, BookReadingStatus.read);
-    });
-
-    test('reports a failure and keeps the book unchanged', () async {
-      when(
-        () => repository.upsertReview(bookId: 'b1', rating: 2),
-      ).thenAnswer((_) async => const Failure(BookReviewSaveFailure()));
-      final cubit = build()..emit(loaded(_details()));
-      addTearDown(cubit.close);
-
-      final ok = await cubit.submitReview(rating: 2);
-
-      expect(ok, isFalse);
-      expect(cubit.state, loaded(_details()));
-    });
-  });
 }

@@ -114,25 +114,4 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
         );
     }
   }
-
-  /// Devolve se salvou, para o modal decidir se fecha.
-  Future<bool> submitReview({required int rating, String? commentary}) async {
-    final details = state.details;
-    if (details == null) return false;
-
-    final result = await repository.upsertReview(
-      bookId: details.id,
-      rating: rating,
-      commentary: commentary,
-    );
-    if (isClosed) return false;
-
-    switch (result) {
-      case Failure():
-        return false;
-      case Success(:final data):
-        emit(state.copyWith(details: state.details?.withReview(data)));
-        return true;
-    }
-  }
 }

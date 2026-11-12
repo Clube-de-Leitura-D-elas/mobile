@@ -13,8 +13,5 @@ void main() {
       'Não foi possível carregar o livro.',
     ]);
     expect(const BookNotFoundFailure().props, ['Livro não encontrado.']);
-    expect(const BookReviewSaveFailure().props, [
-      'Não foi possível salvar sua avaliação.',
-    ]);
   });
 }

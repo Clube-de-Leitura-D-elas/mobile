@@ -7,7 +7,6 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
-import 'package:mobile/features/books/presentation/widgets/book_review_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
 
 class BookDetailsContent extends StatelessWidget {
@@ -128,28 +127,22 @@ class _BookActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final cubit = context.read<BookDetailsCubit>();
-    final myReview = details.myReview;
 
     return Row(
       children: [
         Expanded(
+          // TODO(CLU-271): abrir o modal Avaliar livro (upsert-book-review).
           child: AppButton.secondary(
-            label: myReview == null
+            label: details.myReview == null
                 ? l10n.bookDetailRateButton
                 : l10n.bookDetailEditReviewButton,
             size: AppButtonSize.lg,
-            onPressed: () => showBookReviewDialog(
-              context,
-              initialReview: myReview,
-              onSubmit: cubit.submitReview,
-            ),
+            onPressed: null,
           ),
         ),
         SizedBox(width: context.spacing.s16),
         Expanded(
-          // TODO(CLU-270): ligar ao fluxo de indicação (recommend-book) quando
-          // a tarefa dele existir.
+          // TODO(CLU-272): abrir o modal Selecione o grupo (recommend-book).
           child: AppButton.primary(
             label: l10n.bookDetailRecommendButton,
             size: AppButtonSize.lg,
@@ -180,7 +173,6 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-/// Fim da lista: o sliver só constrói este item quando ele se aproxima da tela.
 class _LoadMoreReviewsError extends StatelessWidget {
   const _LoadMoreReviewsError({required this.onRetry});
 
@@ -211,6 +203,7 @@ class _LoadMoreReviewsError extends StatelessWidget {
   }
 }
 
+/// Fim da lista: o sliver só constrói este item quando ele se aproxima da tela.
 class _LoadMoreReviewsTrigger extends StatefulWidget {
   const _LoadMoreReviewsTrigger({super.key, required this.onVisible});
 

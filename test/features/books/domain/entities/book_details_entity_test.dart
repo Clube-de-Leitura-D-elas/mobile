@@ -32,30 +32,4 @@ void main() {
     expect(cleared.myStatus, isNull);
     expect(cleared.withReadingStatus(BookReadingStatus.read), details);
   });
-
-  test('withReview applies the saved review, average and status', () {
-    final saved = MyBookReviewEntity(
-      rating: 3,
-      evaluatedAt: DateTime.utc(2026, 11, 7),
-    );
-
-    final updated = details
-        .withReadingStatus(null)
-        .withReview(
-          BookReviewResultEntity(
-            review: saved,
-            ratingAverage: 3.5,
-            ratingsCount: 3,
-            myStatus: BookReadingStatus.read,
-          ),
-        );
-
-    expect(updated.myReview, saved);
-    expect(updated.ratingAverage, 3.5);
-    expect(updated.ratingsCount, 3);
-    expect(updated.myStatus, BookReadingStatus.read);
-    expect(updated.reviews, [review]);
-    expect(updated.hasMoreReviews, isTrue);
-    expect(updated.title, details.title);
-  });
 }

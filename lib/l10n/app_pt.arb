@@ -1521,39 +1521,6 @@
   "@bookDetailLoadMoreReviewsError": {
     "description": "Erro ao carregar a próxima página de comentários."
   },
-  "bookReviewDialogTitle": "Avaliar livro",
-  "@bookReviewDialogTitle": {
-    "description": "Título do modal de avaliação do livro."
-  },
-  "bookReviewDialogEditTitle": "Editar avaliação",
-  "@bookReviewDialogEditTitle": {
-    "description": "Título do modal ao editar uma avaliação existente."
-  },
-  "bookReviewRatingLabel": "Sua nota",
-  "@bookReviewRatingLabel": {
-    "description": "Rótulo das estrelas no modal de avaliação."
-  },
-  "bookReviewCommentaryLabel": "Comentário (opcional)",
-  "@bookReviewCommentaryLabel": {
-    "description": "Rótulo do campo de comentário no modal de avaliação."
-  },
-  "bookReviewCommentaryTooLong": "O comentário pode ter até {max} caracteres.",
-  "@bookReviewCommentaryTooLong": {
-    "description": "Erro do campo de comentário acima do limite.",
-    "placeholders": {
-      "max": {
-        "type": "int"
-      }
-    }
-  },
-  "bookReviewSaveButton": "Salvar",
-  "@bookReviewSaveButton": {
-    "description": "Botão que salva a avaliação do livro."
-  },
-  "bookReviewSaveError": "Não foi possível salvar sua avaliação.",
-  "@bookReviewSaveError": {
-    "description": "Toast de erro ao salvar a avaliação do livro."
-  },
   "bookSearchTitle": "Busca",
   "@bookSearchTitle": {
     "description": "Título da aba de busca de livros."

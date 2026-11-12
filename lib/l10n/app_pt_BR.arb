@@ -251,12 +251,5 @@
   "bookDetailNotFound": "Livro não encontrado.",
   "bookDetailLoadingMoreReviews": "Carregando mais comentários",
   "bookDetailLoadMoreReviewsError": "Não foi possível carregar mais comentários.",
-  "bookReadingStatusError": "Não foi possível atualizar o status de leitura.",
-  "bookReviewDialogTitle": "Avaliar livro",
-  "bookReviewDialogEditTitle": "Editar avaliação",
-  "bookReviewRatingLabel": "Sua nota",
-  "bookReviewCommentaryLabel": "Comentário (opcional)",
-  "bookReviewCommentaryTooLong": "O comentário pode ter até {max} caracteres.",
-  "bookReviewSaveButton": "Salvar",
-  "bookReviewSaveError": "Não foi possível salvar sua avaliação."
+  "bookReadingStatusError": "Não foi possível atualizar o status de leitura."
 }

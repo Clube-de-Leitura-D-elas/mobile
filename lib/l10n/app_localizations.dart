@@ -1981,48 +1981,6 @@ abstract class AppLocalizations {
   /// **'Não foi possível carregar mais comentários.'**
   String get bookDetailLoadMoreReviewsError;
 
-  /// Título do modal de avaliação do livro.
-  ///
-  /// In pt, this message translates to:
-  /// **'Avaliar livro'**
-  String get bookReviewDialogTitle;
-
-  /// Título do modal ao editar uma avaliação existente.
-  ///
-  /// In pt, this message translates to:
-  /// **'Editar avaliação'**
-  String get bookReviewDialogEditTitle;
-
-  /// Rótulo das estrelas no modal de avaliação.
-  ///
-  /// In pt, this message translates to:
-  /// **'Sua nota'**
-  String get bookReviewRatingLabel;
-
-  /// Rótulo do campo de comentário no modal de avaliação.
-  ///
-  /// In pt, this message translates to:
-  /// **'Comentário (opcional)'**
-  String get bookReviewCommentaryLabel;
-
-  /// Erro do campo de comentário acima do limite.
-  ///
-  /// In pt, this message translates to:
-  /// **'O comentário pode ter até {max} caracteres.'**
-  String bookReviewCommentaryTooLong(int max);
-
-  /// Botão que salva a avaliação do livro.
-  ///
-  /// In pt, this message translates to:
-  /// **'Salvar'**
-  String get bookReviewSaveButton;
-
-  /// Toast de erro ao salvar a avaliação do livro.
-  ///
-  /// In pt, this message translates to:
-  /// **'Não foi possível salvar sua avaliação.'**
-  String get bookReviewSaveError;
-
   /// Título da aba de busca de livros.
   ///
   /// In pt, this message translates to:

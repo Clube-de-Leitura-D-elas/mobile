@@ -37,22 +37,7 @@ class BookDetailsEntity extends Equatable {
     this.hasMoreReviews = false,
   });
 
-  BookDetailsEntity withReadingStatus(BookReadingStatus? status) =>
-      _copy(myStatus: status);
-
-  BookDetailsEntity withReview(BookReviewResultEntity result) => _copy(
-    myStatus: result.myStatus,
-    myReview: result.review,
-    ratingAverage: result.ratingAverage,
-    ratingsCount: result.ratingsCount,
-  );
-
-  BookDetailsEntity _copy({
-    required BookReadingStatus? myStatus,
-    MyBookReviewEntity? myReview,
-    double? ratingAverage,
-    int? ratingsCount,
-  }) {
+  BookDetailsEntity withReadingStatus(BookReadingStatus? status) {
     return BookDetailsEntity(
       id: id,
       title: title,
@@ -61,10 +46,10 @@ class BookDetailsEntity extends Equatable {
       publisher: publisher,
       synopsis: synopsis,
       coverUrl: coverUrl,
-      ratingAverage: ratingAverage ?? this.ratingAverage,
-      ratingsCount: ratingsCount ?? this.ratingsCount,
-      myStatus: myStatus,
-      myReview: myReview ?? this.myReview,
+      ratingAverage: ratingAverage,
+      ratingsCount: ratingsCount,
+      myStatus: status,
+      myReview: myReview,
       reviews: reviews,
       hasMoreReviews: hasMoreReviews,
     );

@@ -4,12 +4,10 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/data/models/book_details_model.dart';
 import 'package:mobile/features/books/data/models/book_page_model.dart';
 import 'package:mobile/features/books/data/models/book_reading_status_model.dart';
-import 'package:mobile/features/books/data/models/book_review_model.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
-import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 
 class BookRepositoryImpl implements BookRepository {
@@ -104,31 +102,6 @@ class BookRepositoryImpl implements BookRepository {
         return const Failure(BookStatusFailure());
       case Success(:final data):
         return Success(data.data);
-    }
-  }
-
-  @override
-  Future<Result<BookReviewResultEntity, BookFailure>> upsertReview({
-    required String bookId,
-    required int rating,
-    String? commentary,
-  }) async {
-    final result = await supabaseService.invokeFunction<BookReviewResultEntity>(
-      functionName: 'upsert-book-review',
-      body: {'book_id': bookId, 'rating': rating, 'commentary': commentary},
-      decoder: (data) =>
-          BookReviewModel.resultFromJson(data as Map<String, dynamic>),
-    );
-
-    switch (result) {
-      case Failure():
-        return const Failure(BookReviewSaveFailure());
-      case Success(:final data):
-        final review = data.data;
-        if (review == null) {
-          return const Failure(BookReviewSaveFailure());
-        }
-        return Success(review);
     }
   }
 }

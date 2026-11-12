@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/books/data/models/book_details_model.dart';
-import 'package:mobile/features/books/data/models/book_review_model.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 
@@ -101,33 +100,6 @@ void main() {
       ).toDomain();
 
       expect(details.ratingAverage, 4.0);
-    });
-  });
-
-  group('BookReviewModel.resultFromJson', () {
-    test('parses the upsert-book-review response', () {
-      final result = BookReviewModel.resultFromJson({
-        'id': 'r9',
-        'rating': 3,
-        'commentary': null,
-        'evaluated_at': '2026-11-07T09:00:00+00:00',
-        'rating_average': 3.5,
-        'ratings_count': 13,
-        'my_status': 'READ',
-      });
-
-      expect(
-        result,
-        BookReviewResultEntity(
-          review: MyBookReviewEntity(
-            rating: 3,
-            evaluatedAt: DateTime.utc(2026, 11, 7, 9),
-          ),
-          ratingAverage: 3.5,
-          ratingsCount: 13,
-          myStatus: BookReadingStatus.read,
-        ),
-      );
     });
   });
 }
