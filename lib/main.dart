@@ -10,6 +10,7 @@ import 'package:marionette_flutter/marionette_flutter.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/environment/environment.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/marionette/app_marionette_configuration.dart';
 import 'package:mobile/core/routes/app_routes.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/dependencies.dart';
@@ -25,7 +26,7 @@ void main() async {
 
 Future<void> mainAsync() async {
   final widgetsBinding = kDebugMode
-      ? MarionetteBinding.ensureInitialized()
+      ? MarionetteBinding.ensureInitialized(appMarionetteConfiguration)
       : WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
