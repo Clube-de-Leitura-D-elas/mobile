@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
@@ -25,12 +26,18 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
       final sorted = [...attendees]
         ..sort((a, b) => _sortKey(a.name).compareTo(_sortKey(b.name)));
       final alreadyRegistered = sorted.any((a) => a.presenceStatus != null);
+      // Sem registro, começa marcada só quem confirmou presença no convite;
+      // quem recusou ou não respondeu começa desmarcada.
       emit(
         alreadyRegistered
             ? MeetingPresenceClosed(sorted)
             : MeetingPresenceEditing(
                 attendees: sorted,
-                marked: {for (final a in sorted) a.id},
+                marked: {
+                  for (final a in sorted)
+                    if (a.invitationStatus == MeetingInvitationStatus.confirmed)
+                      a.id,
+                },
               ),
       );
     }, (failure) => emit(MeetingPresenceError(failure)));

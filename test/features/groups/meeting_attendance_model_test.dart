@@ -100,6 +100,24 @@ void main() {
       expect(entity.presenceStatus, MeetingPresenceStatus.present);
     });
 
+    test('reconhece registros antigos em português', () {
+      for (final (raw, expected) in [
+        ('presente', MeetingPresenceStatus.present),
+        (' PRESENTE ', MeetingPresenceStatus.present),
+        ('ausente', MeetingPresenceStatus.absent),
+        ('Ausente', MeetingPresenceStatus.absent),
+      ]) {
+        final model = MeetingAttendanceModel.fromJson({
+          'id': 'user-1',
+          'name': 'Ana Souza',
+          'invitation_status': 'CONFIRMED',
+          'presence_status': raw,
+        });
+
+        expect(model.toDomain().presenceStatus, expected, reason: raw);
+      }
+    });
+
     test('usa pending para status de convite desconhecido', () {
       final model = MeetingAttendanceModel.fromJson({
         'id': 'user-1',

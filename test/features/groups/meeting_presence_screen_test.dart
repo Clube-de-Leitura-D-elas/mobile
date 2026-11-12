@@ -18,14 +18,16 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
+// Por padrão a participante não respondeu ao convite, e começa desmarcada.
 MeetingAttendanceEntity _attendee(
   String id,
   String name, {
   MeetingPresenceStatus? presenceStatus,
+  MeetingInvitationStatus invitationStatus = MeetingInvitationStatus.pending,
 }) => MeetingAttendanceEntity(
   id: id,
   name: name,
-  invitationStatus: MeetingInvitationStatus.confirmed,
+  invitationStatus: invitationStatus,
   presenceStatus: presenceStatus,
 );
 
@@ -125,7 +127,7 @@ void main() {
 
       tile.onChanged!();
 
-      expect((cubit.state as MeetingPresenceEditing).marked, {'u-2'});
+      expect((cubit.state as MeetingPresenceEditing).marked, {'u-1'});
     });
 
     testWidgets('exibe botão de confirmar habilitado e dispara confirm', (
