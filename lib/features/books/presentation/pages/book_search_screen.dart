@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_summary.dart';
+import 'package:mobile/features/books/presentation/book_failure_message.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_list_tile.dart';
 import 'package:mobile/features/books/presentation/widgets/book_search_skeleton.dart';
@@ -96,8 +100,9 @@ class _BookSearchBody extends StatelessWidget {
         child: const BookSearchSkeleton(),
       );
     }
-    if (state.hasError) {
-      return _Message(onRetry: onRetry, isError: true);
+    final failure = state.failure;
+    if (failure != null) {
+      return _LoadError(failure: failure, onRetry: onRetry);
     }
     if (state.isEmpty) {
       return const _Message();
@@ -219,6 +224,28 @@ class _PopularCell extends StatelessWidget {
   }
 }
 
+class _LoadError extends StatelessWidget {
+  const _LoadError({required this.failure, required this.onRetry});
+
+  final BookFailure failure;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final sessionExpired = failure is BookSessionExpiredFailure;
+
+    return AppErrorState(
+      message: bookSearchFailureMessage(l10n, failure),
+      onRetry: onRetry,
+      secondaryLabel: sessionExpired ? l10n.logoutTooltip : null,
+      onSecondary: sessionExpired
+          ? () => context.read<SessionCubit>().logOut()
+          : null,
+    );
+  }
+}
+
 class _Message extends StatelessWidget {
   const _Message({this.onRetry, this.isError = false});
 
@@ -247,7 +274,7 @@ class _Message extends StatelessWidget {
           if (onRetry != null) ...[
             const Gap12(),
             AppButton.secondary(
-              label: l10n.bookSearchRetry,
+              label: l10n.errorRetryButton,
               size: AppButtonSize.lg,
               onPressed: onRetry,
             ),

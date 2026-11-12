@@ -1933,12 +1933,6 @@ abstract class AppLocalizations {
   /// **'Não foi possível carregar os livros. Tente novamente.'**
   String get bookSearchLoadError;
 
-  /// Botão que repete a busca de livros.
-  ///
-  /// In pt, this message translates to:
-  /// **'Tentar novamente'**
-  String get bookSearchRetry;
-
   /// Rótulo de acessibilidade do skeleton da busca.
   ///
   /// In pt, this message translates to:

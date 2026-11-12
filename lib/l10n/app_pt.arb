@@ -1489,10 +1489,6 @@
   "@bookSearchLoadError": {
     "description": "Erro ao carregar a busca de livros."
   },
-  "bookSearchRetry": "Tentar novamente",
-  "@bookSearchRetry": {
-    "description": "Botão que repete a busca de livros."
-  },
   "bookSearchLoading": "Carregando livros",
   "@bookSearchLoading": {
     "description": "Rótulo de acessibilidade do skeleton da busca."

@@ -96,11 +96,11 @@ void main() {
   );
 
   blocTest<BookSearchCubit, BookSearchState>(
-    'given the first page fails, when searching, then exposes an error',
+    'given the first page fails, when searching, then exposes that failure',
     build: () {
       when(
         () => repository.searchBooks(query: 'harry', page: 1),
-      ).thenAnswer((_) async => const Failure(BookSearchFailure()));
+      ).thenAnswer((_) async => const Failure(BookNetworkFailure()));
       return buildCubit();
     },
     act: (cubit) => cubit.search('harry'),
@@ -113,7 +113,7 @@ void main() {
       const BookSearchState(
         mode: BookSearchMode.results,
         query: 'harry',
-        hasError: true,
+        failure: BookNetworkFailure(),
       ),
     ],
   );
@@ -227,7 +227,7 @@ void main() {
     seed: () => const BookSearchState(
       mode: BookSearchMode.results,
       query: 'harry',
-      hasError: true,
+      failure: BookSearchFailure(),
     ),
     act: (cubit) => cubit.retry(),
     expect: () => [
@@ -424,7 +424,7 @@ void main() {
       mode: BookSearchMode.results,
       query: 'harry',
       page: 1,
-      hasError: true,
+      failure: BookSearchFailure(),
     ),
     act: (cubit) => cubit.search('harry'),
     expect: () => [
