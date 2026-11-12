@@ -1,12 +1,21 @@
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_state.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_screen.dart';
 import 'package:mobile/features/books/presentation/widgets/book_list_tile.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockSessionCubit extends MockCubit<SessionState>
+    implements SessionCubit {}
 
 const book = BookSummary(
   id: 'book-1',
@@ -24,7 +33,15 @@ Future<void> pumpScreen(
   VoidCallback? onRetry,
   VoidCallback? onLoadMore,
   ValueChanged<String>? onStatusTap,
+  SessionCubit? sessionCubit,
 }) {
+  final screen = BookSearchScreen(
+    state: state,
+    onQueryChanged: onQueryChanged ?? (_) {},
+    onRetry: onRetry ?? () {},
+    onLoadMore: onLoadMore ?? () {},
+    onStatusTap: onStatusTap ?? (_) {},
+  );
   return tester.pumpWidget(
     MaterialApp(
       theme: AppTheme.light,
@@ -34,13 +51,12 @@ Future<void> pumpScreen(
         ...GlobalMaterialLocalizations.delegates,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: BookSearchScreen(
-        state: state,
-        onQueryChanged: onQueryChanged ?? (_) {},
-        onRetry: onRetry ?? () {},
-        onLoadMore: onLoadMore ?? () {},
-        onStatusTap: onStatusTap ?? (_) {},
-      ),
+      home: sessionCubit == null
+          ? screen
+          : BlocProvider<SessionCubit>.value(
+              value: sessionCubit,
+              child: screen,
+            ),
     ),
   );
 }
@@ -107,20 +123,62 @@ void main() {
     expect(find.bySemanticsLabel('Carregando livros'), findsOneWidget);
   });
 
-  testWidgets('retries from the error state', (tester) async {
+  for (final (failure, text) in const <(BookFailure, String)>[
+    (
+      BookSearchFailure(),
+      'Não foi possível carregar os livros. Tente novamente.',
+    ),
+    (
+      BookNetworkFailure(),
+      'Sem conexão com a internet. Verifique sua conexão e tente novamente.',
+    ),
+  ]) {
+    testWidgets('retries from the ${failure.runtimeType} error state', (
+      tester,
+    ) async {
+      var retries = 0;
+      await pumpScreen(
+        tester,
+        state: BookSearchState(
+          mode: BookSearchMode.results,
+          query: 'harry',
+          failure: failure,
+        ),
+        onRetry: () => retries++,
+      );
+
+      expect(find.byType(AppErrorState), findsOneWidget);
+      expect(find.text(text), findsOneWidget);
+      expect(find.text('Sair'), findsNothing);
+      await tester.tap(find.text('Tentar novamente'));
+      expect(retries, 1);
+    });
+  }
+
+  testWidgets('offers retry and logout when the session expired', (
+    tester,
+  ) async {
+    final sessionCubit = MockSessionCubit();
+    when(() => sessionCubit.state).thenReturn(const GuestSession());
+    when(() => sessionCubit.logOut()).thenAnswer((_) async {});
     var retries = 0;
     await pumpScreen(
       tester,
-      state: const BookSearchState(
-        mode: BookSearchMode.results,
-        query: 'harry',
-        hasError: true,
-      ),
+      state: const BookSearchState(failure: BookSessionExpiredFailure()),
       onRetry: () => retries++,
+      sessionCubit: sessionCubit,
     );
 
+    expect(
+      find.text(
+        'Sua sessão expirou. Saia do app e entre de novo na sua conta.',
+      ),
+      findsOneWidget,
+    );
     await tester.tap(find.text('Tentar novamente'));
     expect(retries, 1);
+    await tester.tap(find.text('Sair'));
+    verify(() => sessionCubit.logOut()).called(1);
   });
 
   testWidgets('does not auto load more after a load-more error', (
@@ -144,6 +202,7 @@ void main() {
 
     expect(loadMoreCalls, 0);
     expect(find.text('Harry Potter e a Pedra Filosofal'), findsOneWidget);
+    expect(find.byType(AppErrorState), findsNothing);
     expect(
       find.text('Não foi possível carregar os livros. Tente novamente.'),
       findsOneWidget,
