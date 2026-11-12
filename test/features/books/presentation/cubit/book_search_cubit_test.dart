@@ -487,6 +487,68 @@ void main() {
       ],
     );
 
+    void stubFailingChipWrite() {
+      when(
+        () => repository.setReadingStatus(
+          bookId: 'book-1',
+          status: BookReadingStatus.wantToRead,
+        ),
+      ).thenAnswer((_) async {
+        await Future<void>.delayed(Duration.zero);
+        return const Failure(BookStatusFailure());
+      });
+    }
+
+    blocTest<BookSearchCubit, BookSearchState>(
+      'given a load held during a chip write, when the write fails, then the load is applied',
+      build: () {
+        stubFailingChipWrite();
+        return buildCubit();
+      },
+      seed: () => const BookSearchState(books: [book], page: 1),
+      act: (cubit) async {
+        final write = cubit.toggleStatus('book-1');
+        cubit.statusSyncFor('book-1')(BookReadingStatus.read, isWrite: false);
+        await write;
+      },
+      expect: () => [
+        const BookSearchState(
+          books: [book],
+          page: 1,
+          updatingStatusIds: ['book-1'],
+        ),
+        BookSearchState(
+          books: [book.copyWithStatus(BookReadingStatus.read)],
+          page: 1,
+          hasStatusError: true,
+        ),
+      ],
+    );
+
+    blocTest<BookSearchCubit, BookSearchState>(
+      'given a held load, when the details write later and the chip fails, then the details write stays',
+      build: () {
+        stubFailingChipWrite();
+        return buildCubit();
+      },
+      seed: () => const BookSearchState(books: [book], page: 1),
+      act: (cubit) async {
+        final write = cubit.toggleStatus('book-1');
+        final sync = cubit.statusSyncFor('book-1');
+        sync(BookReadingStatus.read, isWrite: false);
+        sync(null, isWrite: true);
+        await write;
+      },
+      expect: () => [
+        const BookSearchState(
+          books: [book],
+          page: 1,
+          updatingStatusIds: ['book-1'],
+        ),
+        const BookSearchState(books: [book], page: 1, hasStatusError: true),
+      ],
+    );
+
     blocTest<BookSearchCubit, BookSearchState>(
       'given a chip write confirmed after opening, when the old load arrives, then it is ignored',
       build: () {

@@ -23,6 +23,10 @@ class BookSearchCubit extends Cubit<BookSearchState> {
   // aberto antes de uma delas pode ter lido o status antigo.
   final Map<String, int> _confirmedChipWrites = {};
 
+  // Leitura dos detalhes que chegou com o chip gravando, por livro. Se a
+  // gravação falhar, ela volta a ser o status mais novo que a lista conhece.
+  final Map<String, BookReadingStatus?> _heldDetailsLoads = {};
+
   Future<void> load() => search('');
 
   Future<void> search(String raw) {
@@ -99,12 +103,21 @@ class BookSearchCubit extends Cubit<BookSearchState> {
         if (id != bookId) id,
     ];
 
+    final hasHeldLoad = _heldDetailsLoads.containsKey(bookId);
+    final heldLoad = _heldDetailsLoads.remove(bookId);
+
     switch (result) {
       case Failure():
         emit(
           state.copyWith(
             updatingStatusIds: stillUpdating,
             hasStatusError: true,
+            books: hasHeldLoad
+                ? [
+                    for (final book in state.books)
+                      book.id == bookId ? book.copyWithStatus(heldLoad) : book,
+                  ]
+                : null,
           ),
         );
       case Success(:final data):
@@ -128,9 +141,10 @@ class BookSearchCubit extends Cubit<BookSearchState> {
     }
   }
 
-  /// Callback para os detalhes do livro avisarem o status ao voltar. Descarta
-  /// o carregamento (`isWrite: false`) se o chip gravou ou está gravando desde
-  /// a abertura: a resposta da gravação é mais confiável que essa leitura.
+  /// Callback para os detalhes do livro avisarem o status ao voltar. O
+  /// carregamento (`isWrite: false`) não vale se o chip gravou desde a
+  /// abertura; se o chip ainda está gravando, ele fica guardado para o caso de
+  /// a gravação falhar.
   void Function(BookReadingStatus? status, {required bool isWrite})
   statusSyncFor(String bookId) {
     final confirmedAtOpen = _confirmedChipWrites[bookId] ?? 0;
@@ -139,6 +153,9 @@ class BookSearchCubit extends Cubit<BookSearchState> {
           state.updatingStatusIds.contains(bookId) ||
           (_confirmedChipWrites[bookId] ?? 0) != confirmedAtOpen;
       if (!isWrite && chipWroteSinceOpen) {
+        if (state.updatingStatusIds.contains(bookId)) {
+          _heldDetailsLoads[bookId] = status;
+        }
         return;
       }
       applyReadingStatus(bookId, status, isWrite: isWrite);
@@ -159,6 +176,7 @@ class BookSearchCubit extends Cubit<BookSearchState> {
     // Conta antes de comparar: mesmo igual ao que a lista mostra, uma gravação
     // nos detalhes é a mais recente e invalida a resposta pendente do chip.
     if (isWrite) {
+      _heldDetailsLoads.remove(bookId);
       _externalStatusChanges.update(
         bookId,
         (count) => count + 1,
