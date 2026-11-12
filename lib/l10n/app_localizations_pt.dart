@@ -1095,6 +1095,46 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get bookDetailScreenTitle => 'Detalhes do livro';
+
+  @override
+  String get bookDetailRateButton => 'Avaliar';
+
+  @override
+  String get bookDetailEditReviewButton => 'Editar avaliação';
+
+  @override
+  String get bookDetailRecommendButton => 'Indicar';
+
+  @override
+  String get bookDetailSynopsisTitle => 'Sinopse';
+
+  @override
+  String get bookDetailReviewsTitle => 'Comentários';
+
+  @override
+  String get bookDetailNoReviews => 'Ainda não há comentários';
+
+  @override
+  String get bookDetailNoSynopsis => 'Este livro ainda não tem sinopse.';
+
+  @override
+  String get bookDetailLoading => 'Carregando livro';
+
+  @override
+  String get bookDetailLoadError => 'Não foi possível carregar o livro.';
+
+  @override
+  String get bookDetailNotFound => 'Livro não encontrado.';
+
+  @override
+  String get bookDetailLoadingMoreReviews => 'Carregando mais comentários';
+
+  @override
+  String get bookDetailLoadMoreReviewsError =>
+      'Não foi possível carregar mais comentários.';
+
+  @override
   String get bookSearchTitle => 'Busca';
 
   @override
@@ -1114,7 +1154,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get bookSearchLoading => 'Carregando livros';
 
   @override
-  String get bookSearchStatusError =>
+  String get bookReadingStatusError =>
       'Não foi possível atualizar o status de leitura.';
 
   @override
@@ -2060,4 +2100,48 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
     );
     return '$_temp0';
   }
+
+  @override
+  String get bookDetailScreenTitle => 'Detalhes do livro';
+
+  @override
+  String get bookDetailRateButton => 'Avaliar';
+
+  @override
+  String get bookDetailEditReviewButton => 'Editar avaliação';
+
+  @override
+  String get bookDetailRecommendButton => 'Indicar';
+
+  @override
+  String get bookDetailSynopsisTitle => 'Sinopse';
+
+  @override
+  String get bookDetailReviewsTitle => 'Comentários';
+
+  @override
+  String get bookDetailNoReviews => 'Ainda não há comentários';
+
+  @override
+  String get bookDetailNoSynopsis => 'Este livro ainda não tem sinopse.';
+
+  @override
+  String get bookDetailLoading => 'Carregando livro';
+
+  @override
+  String get bookDetailLoadError => 'Não foi possível carregar o livro.';
+
+  @override
+  String get bookDetailNotFound => 'Livro não encontrado.';
+
+  @override
+  String get bookDetailLoadingMoreReviews => 'Carregando mais comentários';
+
+  @override
+  String get bookDetailLoadMoreReviewsError =>
+      'Não foi possível carregar mais comentários.';
+
+  @override
+  String get bookReadingStatusError =>
+      'Não foi possível atualizar o status de leitura.';
 }

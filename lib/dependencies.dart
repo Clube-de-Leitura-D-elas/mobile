@@ -9,6 +9,7 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/supabase/supabase_service_impl.dart';
 import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
@@ -164,6 +165,21 @@ class DependenciesContainer {
       ),
     );
 
+    // --- Books Feature ---
+    serviceLocator.registerLazySingleton<BookRepository>(
+      () => BookRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<BookDetailsCubit>(
+      () => BookDetailsCubit(repository: serviceLocator<BookRepository>()),
+    );
+
+    serviceLocator.registerFactory<BookSearchCubit>(
+      () => BookSearchCubit(bookRepository: serviceLocator<BookRepository>()),
+    );
+
     // --- Notifications Feature ---
     serviceLocator.registerLazySingleton<NotificationRepository>(
       () => NotificationRepositoryImpl(
@@ -181,15 +197,6 @@ class DependenciesContainer {
       () => NotificationsCubit(
         repository: serviceLocator<NotificationRepository>(),
       ),
-    );
-
-    serviceLocator.registerLazySingleton<BookRepository>(
-      () => BookRepositoryImpl(
-        supabaseService: serviceLocator<SupabaseService>(),
-      ),
-    );
-    serviceLocator.registerFactory<BookSearchCubit>(
-      () => BookSearchCubit(bookRepository: serviceLocator<BookRepository>()),
     );
 
     // --- Raffles Feature ---

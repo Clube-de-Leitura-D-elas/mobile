@@ -30,3 +30,13 @@ class BookStatusFailure extends BookFailure {
     super.message = 'Não foi possível atualizar o status de leitura.',
   });
 }
+
+/// Falha genérica ao abrir os detalhes. O texto vem do l10n, na apresentação.
+class BookDetailsLoadFailure extends BookFailure {
+  const BookDetailsLoadFailure() : super(message: '');
+}
+
+/// Livro inexistente (404) ou id inválido (400). O texto vem do l10n.
+class BookNotFoundFailure extends BookFailure {
+  const BookNotFoundFailure() : super(message: '');
+}

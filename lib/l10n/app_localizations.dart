@@ -1904,6 +1904,84 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{ontem} other{há {count} dias}}'**
   String notificationDateDays(int count);
 
+  /// Título do cabeçalho da tela de detalhes do livro enquanto carrega ou em erro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do livro'**
+  String get bookDetailScreenTitle;
+
+  /// Botão que abre o modal de avaliação do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliar'**
+  String get bookDetailRateButton;
+
+  /// Botão que abre o modal para editar a avaliação já feita.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar avaliação'**
+  String get bookDetailEditReviewButton;
+
+  /// Botão para indicar o livro a um grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar'**
+  String get bookDetailRecommendButton;
+
+  /// Título da seção de sinopse no detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sinopse'**
+  String get bookDetailSynopsisTitle;
+
+  /// Título da seção de avaliações das leitoras no detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comentários'**
+  String get bookDetailReviewsTitle;
+
+  /// Texto quando nenhuma outra leitora avaliou o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há comentários'**
+  String get bookDetailNoReviews;
+
+  /// Texto da seção Sinopse quando o livro não tem sinopse cadastrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este livro ainda não tem sinopse.'**
+  String get bookDetailNoSynopsis;
+
+  /// Rótulo de acessibilidade do carregamento do detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando livro'**
+  String get bookDetailLoading;
+
+  /// Erro ao carregar o detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o livro.'**
+  String get bookDetailLoadError;
+
+  /// Mensagem quando o livro não existe.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro não encontrado.'**
+  String get bookDetailNotFound;
+
+  /// Rótulo de acessibilidade do carregamento da próxima página de comentários.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando mais comentários'**
+  String get bookDetailLoadingMoreReviews;
+
+  /// Erro ao carregar a próxima página de comentários.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar mais comentários.'**
+  String get bookDetailLoadMoreReviewsError;
+
   /// Título da aba de busca de livros.
   ///
   /// In pt, this message translates to:
@@ -1940,11 +2018,11 @@ abstract class AppLocalizations {
   /// **'Carregando livros'**
   String get bookSearchLoading;
 
-  /// Toast quando o chip de status não grava.
+  /// Toast quando o chip de status de leitura não grava (busca e detalhes do livro).
   ///
   /// In pt, this message translates to:
   /// **'Não foi possível atualizar o status de leitura.'**
-  String get bookSearchStatusError;
+  String get bookReadingStatusError;
 
   /// Botão para repetir uma ação ou carregamento que falhou.
   ///

@@ -4,11 +4,14 @@ import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/books/data/models/book_details_model.dart';
 import 'package:mobile/features/books/data/models/book_page_model.dart';
 import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
+import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
@@ -16,6 +19,8 @@ class MockSupabaseService extends Mock implements SupabaseService {}
 void main() {
   late MockSupabaseService supabase;
   late BookRepositoryImpl repository;
+
+  setUpAll(() => registerFallbackValue(HttpMethod.post));
 
   const pageJson = {
     'items': [
@@ -226,5 +231,138 @@ void main() {
     );
 
     expect((result as Failure).failure, isA<BookStatusFailure>());
+  });
+
+  group('getBookDetails', () {
+    void stubDetails(
+      Result<SupabaseResponse<BookDetailsModel>, SupabaseFailure> result,
+    ) {
+      when(
+        () => supabase.invokeFunction<BookDetailsModel>(
+          functionName: any(named: 'functionName'),
+          method: any(named: 'method'),
+          queryParameters: any(named: 'queryParameters'),
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer((_) async => result);
+    }
+
+    test('sends a GET with the book and the reviews page', () async {
+      stubDetails(
+        const Success(
+          SupabaseResponse(
+            data: BookDetailsModel(
+              id: 'b1',
+              title: 'Livro',
+              author: 'Autora',
+              genre: '',
+              publisher: '',
+              ratingsCount: 0,
+              reviews: [],
+              hasMoreReviews: false,
+            ),
+          ),
+        ),
+      );
+
+      final result = await repository.getBookDetails(
+        bookId: 'b1',
+        reviewsPage: 2,
+      );
+
+      expect(result.unwrap().title, 'Livro');
+      final call = verify(
+        () => supabase.invokeFunction<BookDetailsModel>(
+          functionName: 'get-book-details',
+          method: HttpMethod.get,
+          queryParameters: {
+            'bookId': 'b1',
+            'reviewsPage': '2',
+            'reviewsPageSize': '${BookRepository.reviewsPageSize}',
+          },
+          decoder: captureAny(named: 'decoder'),
+        ),
+      )..called(1);
+
+      final decoder =
+          call.captured.single as BookDetailsModel Function(dynamic);
+      expect(
+        decoder({
+          'id': 'b2',
+          'title': 'Outro',
+          'ratings_count': 0,
+          'reviews': {'items': <dynamic>[], 'has_more': false},
+        }).title,
+        'Outro',
+      );
+    });
+
+    test('maps 404 and an invalid id (400) to BookNotFoundFailure', () async {
+      for (final kind in [
+        SupabaseFailureKind.notFound,
+        SupabaseFailureKind.validation,
+      ]) {
+        stubDetails(Failure(FunctionSupabaseFailure(message: 'x', kind: kind)));
+
+        expect(
+          await repository.getBookDetails(bookId: 'b1'),
+          const Failure<BookDetailsEntity, BookFailure>(BookNotFoundFailure()),
+          reason: '$kind',
+        );
+      }
+    });
+
+    test('maps no connection and an expired session', () async {
+      stubDetails(
+        const Failure(
+          FunctionSupabaseFailure(
+            message: 'x',
+            kind: SupabaseFailureKind.network,
+          ),
+        ),
+      );
+      expect(
+        await repository.getBookDetails(bookId: 'b1'),
+        const Failure<BookDetailsEntity, BookFailure>(BookNetworkFailure()),
+      );
+
+      stubDetails(
+        const Failure(
+          FunctionSupabaseFailure(
+            message: 'x',
+            kind: SupabaseFailureKind.unauthorized,
+          ),
+        ),
+      );
+      expect(
+        await repository.getBookDetails(bookId: 'b1'),
+        const Failure<BookDetailsEntity, BookFailure>(
+          BookSessionExpiredFailure(),
+        ),
+      );
+    });
+
+    test(
+      'maps other failures and empty data to BookDetailsLoadFailure',
+      () async {
+        stubDetails(
+          const Failure(FunctionSupabaseFailure(message: 'x', code: '500')),
+        );
+        expect(
+          await repository.getBookDetails(bookId: 'b1'),
+          const Failure<BookDetailsEntity, BookFailure>(
+            BookDetailsLoadFailure(),
+          ),
+        );
+
+        stubDetails(const Success(SupabaseResponse()));
+        expect(
+          await repository.getBookDetails(bookId: 'b1'),
+          const Failure<BookDetailsEntity, BookFailure>(
+            BookDetailsLoadFailure(),
+          ),
+        );
+      },
+    );
   });
 }

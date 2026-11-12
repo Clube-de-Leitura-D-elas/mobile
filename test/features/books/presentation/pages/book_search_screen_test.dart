@@ -33,6 +33,7 @@ Future<void> pumpScreen(
   VoidCallback? onRetry,
   VoidCallback? onLoadMore,
   ValueChanged<String>? onStatusTap,
+  ValueChanged<String>? onBookTap,
   SessionCubit? sessionCubit,
 }) {
   final screen = BookSearchScreen(
@@ -41,6 +42,7 @@ Future<void> pumpScreen(
     onRetry: onRetry ?? () {},
     onLoadMore: onLoadMore ?? () {},
     onStatusTap: onStatusTap ?? (_) {},
+    onBookTap: onBookTap ?? (_) {},
   );
   return tester.pumpWidget(
     MaterialApp(
@@ -85,12 +87,46 @@ void main() {
         page: 1,
       ),
       onStatusTap: taps.add,
+      onBookTap: (id) => fail('the chip must not open the book ($id)'),
     );
 
     expect(find.byType(BookListTile), findsOneWidget);
     expect(find.text('Marcar como lido'), findsOneWidget);
     await tester.tap(find.text('Marcar como lido'));
     expect(taps, ['book-1']);
+  });
+
+  testWidgets('opens the book when a result is tapped', (tester) async {
+    final opened = <String>[];
+    await pumpScreen(
+      tester,
+      state: const BookSearchState(
+        mode: BookSearchMode.results,
+        query: 'harry',
+        books: [book],
+        page: 1,
+      ),
+      onBookTap: opened.add,
+    );
+
+    await tester.tap(find.text('Harry Potter e a Pedra Filosofal'));
+    expect(opened, ['book-1']);
+  });
+
+  testWidgets('opens the book when a popular cover is tapped', (tester) async {
+    final opened = <String>[];
+    await pumpScreen(
+      tester,
+      state: const BookSearchState(books: [book], page: 1),
+      onBookTap: opened.add,
+    );
+
+    expect(
+      tester.getSemantics(find.bySemanticsLabel(book.title)),
+      isSemantics(label: book.title, isButton: true, hasTapAction: true),
+    );
+    await tester.tap(find.byType(AppBookCover));
+    expect(opened, ['book-1']);
   });
 
   testWidgets('shows the empty copy', (tester) async {

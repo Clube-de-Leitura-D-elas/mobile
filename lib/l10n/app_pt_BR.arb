@@ -237,5 +237,19 @@
   "notificationDateNow": "agora",
   "notificationDateMinutes": "há {count} min",
   "notificationDateHours": "há {count} h",
-  "notificationDateDays": "{count, plural, =1{ontem} other{há {count} dias}}"
+  "notificationDateDays": "{count, plural, =1{ontem} other{há {count} dias}}",
+  "bookDetailScreenTitle": "Detalhes do livro",
+  "bookDetailRateButton": "Avaliar",
+  "bookDetailEditReviewButton": "Editar avaliação",
+  "bookDetailRecommendButton": "Indicar",
+  "bookDetailSynopsisTitle": "Sinopse",
+  "bookDetailReviewsTitle": "Comentários",
+  "bookDetailNoReviews": "Ainda não há comentários",
+  "bookDetailNoSynopsis": "Este livro ainda não tem sinopse.",
+  "bookDetailLoading": "Carregando livro",
+  "bookDetailLoadError": "Não foi possível carregar o livro.",
+  "bookDetailNotFound": "Livro não encontrado.",
+  "bookDetailLoadingMoreReviews": "Carregando mais comentários",
+  "bookDetailLoadMoreReviewsError": "Não foi possível carregar mais comentários.",
+  "bookReadingStatusError": "Não foi possível atualizar o status de leitura."
 }
