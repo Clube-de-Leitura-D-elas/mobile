@@ -21,6 +21,9 @@ import 'package:mobile/features/group_discovery/domain/entities/group_search_pag
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
 import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
 import 'package:mobile/features/group_discovery/presentation/pages/group_search_view.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/search_page.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -32,6 +35,26 @@ class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
 
 class MockBookRepository extends Mock implements BookRepository {}
+
+class MockProfileRepository extends Mock implements ProfileRepository {}
+
+MockProfileRepository _registerProfileSummary() {
+  final repository = MockProfileRepository();
+  when(() => repository.getProfileSummary()).thenAnswer(
+    (_) async => const Success(ProfileSummaryEntity(booksReadCount: 0)),
+  );
+  serviceLocator.allowReassignment = true;
+  serviceLocator.registerFactory<ProfileSummaryCubit>(
+    () => ProfileSummaryCubit(repository: repository),
+  );
+  return repository;
+}
+
+void _unregisterProfileSummary() {
+  if (serviceLocator.isRegistered<ProfileSummaryCubit>()) {
+    serviceLocator.unregister<ProfileSummaryCubit>();
+  }
+}
 
 class MockGroupDiscoveryRepository extends Mock
     implements GroupDiscoveryRepository {}
@@ -157,6 +180,8 @@ void main() {
         addTearDown(() => serviceLocator.allowReassignment = allowReassignment);
         _registerBookSearch();
         addTearDown(_unregisterBookSearch);
+        final profileRepository = _registerProfileSummary();
+        addTearDown(_unregisterProfileSummary);
         _registerCalendar();
         addTearDown(_unregisterCalendar);
         _registerGroupSearch();
@@ -211,6 +236,8 @@ void main() {
         expect(find.byType(ProfilePage), findsOneWidget);
         expect(find.byType(BookSearchPage), findsNothing);
         expectSelected(QuickAccessItem.profile);
+        // A aba do perfil já abre carregando livros lidos, grupos e avaliações.
+        verify(() => profileRepository.getProfileSummary()).called(1);
 
         router.go('/calendar');
         await tester.pumpAndSettle();

@@ -169,29 +169,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileTitle => 'Meu Perfil';
 
   @override
-  String profileClubTimeMonths(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count meses no clube',
-      one: '1 mês no clube',
-      zero: 'Chegou ao clube este mês',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String profileClubTimeYears(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count anos no clube',
-      one: '1 ano no clube',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get profilePhotoEditButtonLabel => 'Editar foto de perfil';
 
   @override
@@ -1632,6 +1609,73 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupJoinRequestsRejectSemantics(String name) {
     return 'Recusar pedido de $name';
   }
+
+  @override
+  String profileBooksReadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count livros lidos',
+      one: '1 livro lido',
+      zero: '0 livros lidos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileGroupsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count grupos',
+      one: '1 grupo',
+      zero: '0 grupos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileMyGroupsTitle => 'Meus grupos';
+
+  @override
+  String profileGroupLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get profileMoreGroupsButtonLabel => 'Ver mais grupos';
+
+  @override
+  String get profileNoGroups => 'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get profileReviewedBooksTitle => 'Livros avaliados';
+
+  @override
+  String get profileNoReviewedBooks => 'Você ainda não avaliou nenhum livro.';
+
+  @override
+  String get profileSeeAllBooks => 'Ver todos os livros';
+
+  @override
+  String get profileSummaryLoading => 'Carregando seus grupos e livros';
+
+  @override
+  String get profileSummaryLoadError =>
+      'Não foi possível carregar seus grupos e livros.';
+
+  @override
+  String get meetingPresenceEmptyConfirmTitle => 'Ninguém compareceu?';
+
+  @override
+  String get meetingPresenceEmptyConfirmMessage =>
+      'Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.';
+
+  @override
+  String get meetingPresenceEmptyConfirmCancel => 'Voltar';
+
+  @override
+  String get meetingPresenceEmptyConfirmConfirm => 'Confirmar mesmo assim';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1795,29 +1839,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get profileTitle => 'Meu Perfil';
-
-  @override
-  String profileClubTimeMonths(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count meses no clube',
-      one: '1 mês no clube',
-      zero: 'Chegou ao clube este mês',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String profileClubTimeYears(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count anos no clube',
-      one: '1 ano no clube',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get profilePhotoEditButtonLabel => 'Editar foto de perfil';
@@ -2894,4 +2915,71 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupJoinRequestsRejectSemantics(String name) {
     return 'Recusar pedido de $name';
   }
+
+  @override
+  String profileBooksReadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count livros lidos',
+      one: '1 livro lido',
+      zero: '0 livros lidos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileGroupsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count grupos',
+      one: '1 grupo',
+      zero: '0 grupos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileMyGroupsTitle => 'Meus grupos';
+
+  @override
+  String profileGroupLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get profileMoreGroupsButtonLabel => 'Ver mais grupos';
+
+  @override
+  String get profileNoGroups => 'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get profileReviewedBooksTitle => 'Livros avaliados';
+
+  @override
+  String get profileNoReviewedBooks => 'Você ainda não avaliou nenhum livro.';
+
+  @override
+  String get profileSeeAllBooks => 'Ver todos os livros';
+
+  @override
+  String get profileSummaryLoading => 'Carregando seus grupos e livros';
+
+  @override
+  String get profileSummaryLoadError =>
+      'Não foi possível carregar seus grupos e livros.';
+
+  @override
+  String get meetingPresenceEmptyConfirmTitle => 'Ninguém compareceu?';
+
+  @override
+  String get meetingPresenceEmptyConfirmMessage =>
+      'Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.';
+
+  @override
+  String get meetingPresenceEmptyConfirmCancel => 'Voltar';
+
+  @override
+  String get meetingPresenceEmptyConfirmConfirm => 'Confirmar mesmo assim';
 }

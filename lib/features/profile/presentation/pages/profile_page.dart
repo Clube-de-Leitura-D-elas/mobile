@@ -4,6 +4,8 @@ import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_state.dart';
 
 import 'profile_screen.dart';
 
@@ -20,9 +22,19 @@ class ProfilePage extends StatelessWidget {
         // apagaria o nome antes do redirect.
         child: BlocBuilder<SessionCubit, SessionState>(
           buildWhen: (_, state) => state is AuthenticatedSession,
-          builder: (context, state) => ProfileScreen(
-            profile: state is AuthenticatedSession ? state.profile : null,
-          ),
+          builder: (context, session) =>
+              BlocBuilder<ProfileSummaryCubit, ProfileSummaryState>(
+                builder: (context, summary) => ProfileScreen(
+                  profile: session is AuthenticatedSession
+                      ? session.profile
+                      : null,
+                  summary: summary,
+                  onRetry: context.read<ProfileSummaryCubit>().load,
+                  // Ao voltar de um livro ou grupo, os contadores podem ter
+                  // mudado.
+                  onReturn: context.read<ProfileSummaryCubit>().refresh,
+                ),
+              ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
