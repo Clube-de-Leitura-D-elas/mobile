@@ -227,6 +227,45 @@ void main() {
         ],
       );
 
+      test('a return during a pending load still brings fresh data', () async {
+        final staleLoad = Completer<Result<List<GroupEntity>, GroupFailure>>();
+        var calls = 0;
+        when(() => repository.getMyGroups()).thenAnswer(
+          (_) => calls++ == 0
+              ? staleLoad.future
+              : Future.value(const Success([testGroup27])),
+        );
+        final cubit = build();
+        addTearDown(cubit.close);
+
+        final load = cubit.loadGroups();
+        await cubit.refreshGroups();
+        staleLoad.complete(const Success([testGroup1]));
+        await load;
+
+        expect(cubit.state.status, HomeStatus.loaded);
+        expect(cubit.state.groups, [testGroup27]);
+      });
+
+      test('a failed return during a pending load ends in error', () async {
+        final staleLoad = Completer<Result<List<GroupEntity>, GroupFailure>>();
+        var calls = 0;
+        when(() => repository.getMyGroups()).thenAnswer(
+          (_) => calls++ == 0
+              ? staleLoad.future
+              : Future.value(const Failure(GroupNetworkFailure())),
+        );
+        final cubit = build();
+        addTearDown(cubit.close);
+
+        final load = cubit.loadGroups();
+        await cubit.refreshGroups();
+        staleLoad.complete(const Success([testGroup1]));
+        await load;
+
+        expect(cubit.state.status, HomeStatus.error);
+      });
+
       test('a slower earlier read does not overwrite the latest one', () async {
         final slow = Completer<Result<List<GroupEntity>, GroupFailure>>();
         var calls = 0;

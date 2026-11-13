@@ -42,11 +42,22 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> refreshGroups() async {
     // Com erro na tela, voltar tenta de novo (como o load fazia antes).
     if (state.status == HomeStatus.error) return loadGroups();
-    if (state.status != HomeStatus.loaded) return;
+    // Durante um load, esta leitura o substitui: a dele pode ser de antes da
+    // mudança feita na outra tela.
+    if (state.status != HomeStatus.loaded &&
+        state.status != HomeStatus.loading) {
+      return;
+    }
     final read = ++_latestRead;
     final result = await groupRepository.getMyGroups();
     if (isClosed || read != _latestRead) return;
 
+    if (result case Failure(
+      :final failure,
+    ) when state.status == HomeStatus.loading) {
+      emit(state.copyWith(status: HomeStatus.error, error: failure));
+      return;
+    }
     if (result case Success(:final data)) {
       final previousMeetingIds = {
         for (final group in state.groups) group.id: group.nextMeeting?.id,
@@ -54,6 +65,7 @@ class HomeCubit extends Cubit<HomeState> {
       final currentIds = data.map((group) => group.id).toSet();
       emit(
         state.copyWith(
+          status: HomeStatus.loaded,
           groups: data,
           expandedGroupIds: {
             ...state.expandedGroupIds.where(currentIds.contains),
