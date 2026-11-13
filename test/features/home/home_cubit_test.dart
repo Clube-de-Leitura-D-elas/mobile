@@ -237,14 +237,20 @@ void main() {
         );
         final cubit = build();
         addTearDown(cubit.close);
+        final states = <HomeState>[];
+        final sub = cubit.stream.listen(states.add);
+        addTearDown(sub.cancel);
 
         final load = cubit.loadGroups();
         await cubit.refreshGroups();
         staleLoad.complete(const Success([testGroup1]));
         await load;
+        await Future<void>.delayed(Duration.zero);
 
-        expect(cubit.state.status, HomeStatus.loaded);
-        expect(cubit.state.groups, [testGroup27]);
+        expect(states, const [
+          HomeState(status: HomeStatus.loading),
+          HomeState(status: HomeStatus.loaded, groups: [testGroup27]),
+        ]);
       });
 
       test('a failed return during a pending load ends in error', () async {
@@ -257,13 +263,20 @@ void main() {
         );
         final cubit = build();
         addTearDown(cubit.close);
+        final states = <HomeState>[];
+        final sub = cubit.stream.listen(states.add);
+        addTearDown(sub.cancel);
 
         final load = cubit.loadGroups();
         await cubit.refreshGroups();
         staleLoad.complete(const Success([testGroup1]));
         await load;
+        await Future<void>.delayed(Duration.zero);
 
-        expect(cubit.state.status, HomeStatus.error);
+        expect(states, const [
+          HomeState(status: HomeStatus.loading),
+          HomeState(status: HomeStatus.error, error: GroupNetworkFailure()),
+        ]);
       });
 
       test('a slower earlier read does not overwrite the latest one', () async {
