@@ -30,85 +30,88 @@ class PublicGroupContent extends StatelessWidget {
     final photoUrl = group.photoUrl;
     final cityState = group.cityState;
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          GroupCover(
-            image: photoUrl == null ? null : NetworkImage(photoUrl),
-            name: name,
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              spacing.s24,
-              spacing.s16,
-              spacing.s24,
-              spacing.s24,
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            GroupCover(
+              image: photoUrl == null ? null : NetworkImage(photoUrl),
+              name: name,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Semantics(
-                  header: true,
-                  child: Text(
-                    name,
-                    style: typography.headingH2.copyWith(
-                      color: colors.textDefault,
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                spacing.s24,
+                spacing.s16,
+                spacing.s24,
+                spacing.s24,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Semantics(
+                    header: true,
+                    child: Text(
+                      name,
+                      style: typography.headingH2.copyWith(
+                        color: colors.textDefault,
+                      ),
                     ),
                   ),
-                ),
-                if (group.genres.isNotEmpty) ...[
-                  SizedBox(height: spacing.s8),
-                  Wrap(
-                    spacing: spacing.s8,
-                    runSpacing: spacing.s8,
-                    children: [
-                      for (final genre in group.genres) AppTag(label: genre),
-                    ],
-                  ),
-                ],
-                SizedBox(height: spacing.s12),
-                LayoutBuilder(
-                  builder: (context, constraints) => Wrap(
-                    spacing: spacing.s24,
-                    runSpacing: spacing.s8,
-                    children: [
-                      GroupMetadata(
-                        icon: AppIcons.user,
-                        label: l10n.groupParticipantsCount(
-                          group.participantCount,
-                        ),
-                        maxWidth: constraints.maxWidth,
-                      ),
-                      if (cityState != null)
+                  if (group.genres.isNotEmpty) ...[
+                    SizedBox(height: spacing.s8),
+                    Wrap(
+                      spacing: spacing.s8,
+                      runSpacing: spacing.s8,
+                      children: [
+                        for (final genre in group.genres) AppTag(label: genre),
+                      ],
+                    ),
+                  ],
+                  SizedBox(height: spacing.s12),
+                  LayoutBuilder(
+                    builder: (context, constraints) => Wrap(
+                      spacing: spacing.s24,
+                      runSpacing: spacing.s8,
+                      children: [
                         GroupMetadata(
-                          icon: AppIcons.location,
-                          label: cityState,
+                          icon: AppIcons.user,
+                          label: l10n.groupParticipantsCount(
+                            group.participantCount,
+                          ),
                           maxWidth: constraints.maxWidth,
                         ),
-                    ],
-                  ),
-                ),
-                if (group.description.trim().isNotEmpty) ...[
-                  SizedBox(height: spacing.s16),
-                  Text(
-                    group.description,
-                    style: typography.bodyDefault.copyWith(
-                      color: colors.textDefault,
+                        if (cityState != null)
+                          GroupMetadata(
+                            icon: AppIcons.location,
+                            label: cityState,
+                            maxWidth: constraints.maxWidth,
+                          ),
+                      ],
                     ),
                   ),
+                  if (group.description.trim().isNotEmpty) ...[
+                    SizedBox(height: spacing.s16),
+                    Text(
+                      group.description,
+                      style: typography.bodyDefault.copyWith(
+                        color: colors.textDefault,
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: spacing.s24),
+                  PublicGroupMembershipSection(
+                    status: group.membershipStatus,
+                    isRequesting: isRequesting,
+                    onRequestJoin: onRequestJoin,
+                    onOpenMemberDetails: onOpenMemberDetails,
+                  ),
                 ],
-                SizedBox(height: spacing.s24),
-                PublicGroupMembershipSection(
-                  status: group.membershipStatus,
-                  isRequesting: isRequesting,
-                  onRequestJoin: onRequestJoin,
-                  onOpenMemberDetails: onOpenMemberDetails,
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
