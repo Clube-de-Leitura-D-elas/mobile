@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/group_join_requests/domain/entities/group_join_request_entity.dart';
 import 'package:mobile/features/group_join_requests/domain/entities/group_join_requests_failure.dart';
 import 'package:mobile/features/group_join_requests/domain/entities/join_request_decision.dart';
 import 'package:mobile/features/group_join_requests/domain/repository/group_join_requests_repository.dart';
@@ -58,6 +59,34 @@ void main() {
   }
 
   group('load', () {
+    test('a slower earlier read does not overwrite the latest one', () async {
+      final first =
+          Completer<
+            Result<List<GroupJoinRequestEntity>, GroupJoinRequestsFailure>
+          >();
+      final second =
+          Completer<
+            Result<List<GroupJoinRequestEntity>, GroupJoinRequestsFailure>
+          >();
+      final reads = [first, second];
+      var call = 0;
+      when(
+        () => repository.getRequests(groupId),
+      ).thenAnswer((_) => reads[call++].future);
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      final initial = cubit.load(groupId);
+      final retry = cubit.retry();
+      second.complete(Success([anaRequest]));
+      await retry;
+      first.complete(const Failure(GroupJoinRequestsNetworkFailure()));
+      await initial;
+
+      expect(cubit.state.status, GroupJoinRequestsStatus.loaded);
+      expect(cubit.state.requests, [anaRequest]);
+    });
+
     blocTest<GroupJoinRequestsCubit, GroupJoinRequestsState>(
       'emits loading and the requests',
       setUp: () => stubRequests([

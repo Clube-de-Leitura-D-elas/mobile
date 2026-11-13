@@ -12,6 +12,10 @@ class GroupJoinRequestsCubit extends Cubit<GroupJoinRequestsState> {
   final GroupJoinRequestsRepository repository;
   String _groupId = '';
 
+  // Só a resposta da leitura mais recente vale: um retry logo após a criação
+  // do cubit dispara duas, e a mais antiga pode chegar por último.
+  int _latestRead = 0;
+
   GroupJoinRequestsCubit({required this.repository})
     : super(const GroupJoinRequestsState());
 
@@ -29,8 +33,9 @@ class GroupJoinRequestsCubit extends Cubit<GroupJoinRequestsState> {
     }
     emit(const GroupJoinRequestsState());
 
+    final read = ++_latestRead;
     final result = await repository.getRequests(groupId);
-    if (isClosed) return;
+    if (isClosed || read != _latestRead) return;
 
     switch (result) {
       case Success(:final data):
@@ -62,8 +67,9 @@ class GroupJoinRequestsCubit extends Cubit<GroupJoinRequestsState> {
   /// está na tela (menos quando a leitora deixou de ser coordenadora).
   Future<void> refresh() async {
     if (!isUuid(_groupId)) return;
+    final read = ++_latestRead;
     final result = await repository.getRequests(_groupId);
-    if (isClosed) return;
+    if (isClosed || read != _latestRead) return;
 
     switch (result) {
       case Success(:final data):
