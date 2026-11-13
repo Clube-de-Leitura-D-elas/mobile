@@ -212,6 +212,14 @@ void main() {
 
         expect(find.byType(AppDialog), findsOneWidget);
         expect(find.byTooltip('Fechar'), findsOneWidget);
+        // A ação principal vai por último: à direita lado a lado, em cima
+        // quando empilha.
+        final save = find.byKey(const ValueKey('meeting-photo-caption-save'));
+        final skip = find.byKey(const ValueKey('meeting-photo-caption-skip'));
+        expect(
+          tester.getTopLeft(save).dx,
+          greaterThan(tester.getTopLeft(skip).dx),
+        );
         await tester.enterText(
           find.byKey(const ValueKey('meeting-photo-caption-field')),
           'Legenda salva',
