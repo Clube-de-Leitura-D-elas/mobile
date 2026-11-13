@@ -166,6 +166,17 @@ void main() {
       expect(CalendarMeetingModel.listFromJson({'meetings': []}), isEmpty);
     });
 
+    test('rejects a response without the meetings list', () {
+      expect(
+        () => CalendarMeetingModel.listFromJson({}),
+        throwsA(isA<FormatException>()),
+      );
+      expect(
+        () => CalendarMeetingModel.listFromJson({'meetings': null}),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
     test('skips a malformed meeting and keeps the others', () {
       final models = CalendarMeetingModel.listFromJson({
         'meetings': [

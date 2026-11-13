@@ -55,9 +55,14 @@ class CalendarMeetingModel {
 
   /// Corpo da resposta da `get-city-calendar`: `{ "meetings": [...] }`.
   ///
-  /// Um item malformado é descartado para não esconder o resto do mês.
+  /// Um item malformado é descartado para não esconder o resto do mês, mas
+  /// uma resposta sem a lista `meetings` lança [FormatException]: tratá-la
+  /// como mês vazio esconderia o erro.
   static List<CalendarMeetingModel> listFromJson(Map<String, dynamic> json) {
-    final meetings = json['meetings'] as List<dynamic>? ?? const [];
+    final meetings = json['meetings'];
+    if (meetings is! List<dynamic>) {
+      throw const FormatException('get-city-calendar: missing "meetings"');
+    }
     final models = <CalendarMeetingModel>[];
     for (final meeting in meetings) {
       try {
