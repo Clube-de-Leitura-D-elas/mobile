@@ -2444,6 +2444,150 @@ abstract class AppLocalizations {
   /// **'Não foi possível enviar o pedido. Tente novamente.'**
   String get publicGroupJoinError;
 
+  /// Aba da busca com os livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livros'**
+  String get searchTabBooks;
+
+  /// Aba da busca com os grupos da cidade.
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupos'**
+  String get searchTabGroups;
+
+  /// Título da aba de busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontre seu grupo ideal'**
+  String get groupSearchTitle;
+
+  /// Texto de exemplo do campo de busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar grupo'**
+  String get groupSearchHint;
+
+  /// Botão que abre os filtros da busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Filtros'**
+  String get groupSearchFiltersButton;
+
+  /// Valor acessível do botão de filtros quando há filtro aplicado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Filtros aplicados'**
+  String get groupSearchFiltersActive;
+
+  /// Rótulo do filtro de gênero da busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gênero'**
+  String get groupSearchFilterGenre;
+
+  /// Opção do filtro de gênero que não filtra.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos os gêneros'**
+  String get groupSearchFilterGenreAll;
+
+  /// Rótulo do filtro de mínimo de participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mínimo de participantes'**
+  String get groupSearchFilterMin;
+
+  /// Exemplo no campo de mínimo de participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex.: 10'**
+  String get groupSearchFilterMinHint;
+
+  /// Rótulo do filtro de máximo de participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Máximo de participantes'**
+  String get groupSearchFilterMax;
+
+  /// Exemplo no campo de máximo de participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex.: 20'**
+  String get groupSearchFilterMaxHint;
+
+  /// Erro quando o mínimo de participantes passa do máximo.
+  ///
+  /// In pt, this message translates to:
+  /// **'O mínimo não pode ser maior que o máximo.'**
+  String get groupSearchFilterRangeError;
+
+  /// Botão que aplica os filtros da busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aplicar filtros'**
+  String get groupSearchFiltersApply;
+
+  /// Botão que tira todos os filtros da busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar filtros'**
+  String get groupSearchFiltersClear;
+
+  /// Rótulo acessível do carregamento da lista de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando grupos'**
+  String get groupSearchLoading;
+
+  /// Rótulo acessível do carregamento da próxima página de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando mais grupos'**
+  String get groupSearchLoadingMore;
+
+  /// Erro ao buscar a lista de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os grupos.'**
+  String get groupSearchLoadError;
+
+  /// Erro ao buscar a próxima página de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar mais grupos.'**
+  String get groupSearchLoadMoreError;
+
+  /// Lista de grupos vazia, sem busca nem filtro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há grupos na sua cidade.'**
+  String get groupSearchEmpty;
+
+  /// Lista de grupos vazia com busca ou filtro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo encontrado. Tente outra busca ou mude os filtros.'**
+  String get groupSearchEmptyFiltered;
+
+  /// Rodapé da lista de grupos quando não há mais páginas.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você chegou ao fim da lista.'**
+  String get groupSearchEnd;
+
+  /// Link do card que abre a tela do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhes'**
+  String get groupSearchSeeDetails;
+
+  /// Rótulo acessível do link que abre a tela do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhes do Grupo {number}'**
+  String groupSearchSeeDetailsSemantic(int number);
+
   /// Botão no detalhe do grupo, só para a coordenadora, com a quantidade de pedidos pendentes.
   ///
   /// In pt, this message translates to:

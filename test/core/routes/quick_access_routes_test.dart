@@ -16,8 +16,14 @@ import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
 import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_search_page_entity.dart';
+import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
+import 'package:mobile/features/group_discovery/presentation/pages/group_search_view.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
+import 'package:mobile/features/quick_access/presentation/pages/search_page.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -27,6 +33,9 @@ class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
 
 class MockBookRepository extends Mock implements BookRepository {}
+
+class MockGroupDiscoveryRepository extends Mock
+    implements GroupDiscoveryRepository {}
 
 class MockCalendarRepository extends Mock implements CalendarRepository {}
 
@@ -47,6 +56,29 @@ void _registerBookSearch() {
   serviceLocator.registerFactory<BookSearchCubit>(
     () => BookSearchCubit(bookRepository: serviceLocator<BookRepository>()),
   );
+}
+
+void _registerGroupSearch() {
+  final repository = MockGroupDiscoveryRepository();
+  when(
+    () => repository.searchGroups(
+      page: any(named: 'page'),
+      search: any(named: 'search'),
+      filters: any(named: 'filters'),
+    ),
+  ).thenAnswer(
+    (_) async =>
+        const Success(GroupSearchPageEntity(items: [], total: 0, genres: [])),
+  );
+  serviceLocator.registerFactory<GroupSearchCubit>(
+    () => GroupSearchCubit(repository: repository),
+  );
+}
+
+void _unregisterGroupSearch() {
+  if (serviceLocator.isRegistered<GroupSearchCubit>()) {
+    serviceLocator.unregister<GroupSearchCubit>();
+  }
 }
 
 void _unregisterBookSearch() {
@@ -78,6 +110,10 @@ void _unregisterCalendar() {
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(GroupSearchFilters.empty);
+  });
+
   group('QuickAccessRoutes', () {
     test('maps every item to its corresponding path', () {
       expect(QuickAccessItem.values.map(QuickAccessRoutes.pathFor).toList(), [
@@ -151,6 +187,8 @@ void main() {
         addTearDown(_unregisterBookSearch);
         _registerCalendar();
         addTearDown(_unregisterCalendar);
+        _registerGroupSearch();
+        addTearDown(_unregisterGroupSearch);
 
         final router = GoRouter(
           initialLocation: '/search',
@@ -177,8 +215,14 @@ void main() {
         );
         await tester.pumpAndSettle();
 
+        expect(find.byType(SearchPage), findsOneWidget);
         expect(find.byType(BookSearchPage), findsOneWidget);
         expect(find.byType(ProfilePage), findsNothing);
+
+        await tester.tap(find.text('Grupos'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(GroupSearchView), findsOneWidget);
 
         router.go('/profile');
         await tester.pumpAndSettle();

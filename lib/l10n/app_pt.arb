@@ -1914,6 +1914,107 @@
   "@publicGroupJoinError": {
     "description": "Erro genérico ao pedir entrada no grupo."
   },
+  "searchTabBooks": "Livros",
+  "@searchTabBooks": {
+    "description": "Aba da busca com os livros."
+  },
+  "searchTabGroups": "Grupos",
+  "@searchTabGroups": {
+    "description": "Aba da busca com os grupos da cidade."
+  },
+  "groupSearchTitle": "Encontre seu grupo ideal",
+  "@groupSearchTitle": {
+    "description": "Título da aba de busca de grupos."
+  },
+  "groupSearchHint": "Buscar grupo",
+  "@groupSearchHint": {
+    "description": "Texto de exemplo do campo de busca de grupos."
+  },
+  "groupSearchFiltersButton": "Filtros",
+  "@groupSearchFiltersButton": {
+    "description": "Botão que abre os filtros da busca de grupos."
+  },
+  "groupSearchFiltersActive": "Filtros aplicados",
+  "@groupSearchFiltersActive": {
+    "description": "Valor acessível do botão de filtros quando há filtro aplicado."
+  },
+  "groupSearchFilterGenre": "Gênero",
+  "@groupSearchFilterGenre": {
+    "description": "Rótulo do filtro de gênero da busca de grupos."
+  },
+  "groupSearchFilterGenreAll": "Todos os gêneros",
+  "@groupSearchFilterGenreAll": {
+    "description": "Opção do filtro de gênero que não filtra."
+  },
+  "groupSearchFilterMin": "Mínimo de participantes",
+  "@groupSearchFilterMin": {
+    "description": "Rótulo do filtro de mínimo de participantes."
+  },
+  "groupSearchFilterMinHint": "Ex.: 10",
+  "@groupSearchFilterMinHint": {
+    "description": "Exemplo no campo de mínimo de participantes."
+  },
+  "groupSearchFilterMax": "Máximo de participantes",
+  "@groupSearchFilterMax": {
+    "description": "Rótulo do filtro de máximo de participantes."
+  },
+  "groupSearchFilterMaxHint": "Ex.: 20",
+  "@groupSearchFilterMaxHint": {
+    "description": "Exemplo no campo de máximo de participantes."
+  },
+  "groupSearchFilterRangeError": "O mínimo não pode ser maior que o máximo.",
+  "@groupSearchFilterRangeError": {
+    "description": "Erro quando o mínimo de participantes passa do máximo."
+  },
+  "groupSearchFiltersApply": "Aplicar filtros",
+  "@groupSearchFiltersApply": {
+    "description": "Botão que aplica os filtros da busca de grupos."
+  },
+  "groupSearchFiltersClear": "Limpar filtros",
+  "@groupSearchFiltersClear": {
+    "description": "Botão que tira todos os filtros da busca de grupos."
+  },
+  "groupSearchLoading": "Carregando grupos",
+  "@groupSearchLoading": {
+    "description": "Rótulo acessível do carregamento da lista de grupos."
+  },
+  "groupSearchLoadingMore": "Carregando mais grupos",
+  "@groupSearchLoadingMore": {
+    "description": "Rótulo acessível do carregamento da próxima página de grupos."
+  },
+  "groupSearchLoadError": "Não foi possível carregar os grupos.",
+  "@groupSearchLoadError": {
+    "description": "Erro ao buscar a lista de grupos."
+  },
+  "groupSearchLoadMoreError": "Não foi possível carregar mais grupos.",
+  "@groupSearchLoadMoreError": {
+    "description": "Erro ao buscar a próxima página de grupos."
+  },
+  "groupSearchEmpty": "Ainda não há grupos na sua cidade.",
+  "@groupSearchEmpty": {
+    "description": "Lista de grupos vazia, sem busca nem filtro."
+  },
+  "groupSearchEmptyFiltered": "Nenhum grupo encontrado. Tente outra busca ou mude os filtros.",
+  "@groupSearchEmptyFiltered": {
+    "description": "Lista de grupos vazia com busca ou filtro."
+  },
+  "groupSearchEnd": "Você chegou ao fim da lista.",
+  "@groupSearchEnd": {
+    "description": "Rodapé da lista de grupos quando não há mais páginas."
+  },
+  "groupSearchSeeDetails": "Ver detalhes",
+  "@groupSearchSeeDetails": {
+    "description": "Link do card que abre a tela do grupo."
+  },
+  "groupSearchSeeDetailsSemantic": "Ver detalhes do Grupo {number}",
+  "@groupSearchSeeDetailsSemantic": {
+    "description": "Rótulo acessível do link que abre a tela do grupo.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "groupJoinRequestsAccess": "Pedidos de entrada ({count})",
   "@groupJoinRequestsAccess": {
     "description": "Botão no detalhe do grupo, só para a coordenadora, com a quantidade de pedidos pendentes.",

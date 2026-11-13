@@ -24,6 +24,8 @@ class DiscoveryGroupEntity extends Equatable {
     this.photoUrl,
   });
 
+  bool get isMember => membershipStatus == GroupMembershipStatus.member;
+
   /// Sem relação com o grupo ou com o pedido recusado, pode pedir entrada.
   bool get canRequestJoin =>
       membershipStatus == GroupMembershipStatus.none ||

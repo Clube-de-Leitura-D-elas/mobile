@@ -21,6 +21,7 @@ import 'package:mobile/features/calendar/domain/repository/calendar_repository.d
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
 import 'package:mobile/features/group_discovery/presentation/cubit/public_group_cubit.dart';
 import 'package:mobile/features/group_join_requests/data/repositories/group_join_requests_repository_impl.dart';
 import 'package:mobile/features/group_join_requests/domain/repository/group_join_requests_repository.dart';
@@ -245,6 +246,12 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<PublicGroupCubit>(
       () => PublicGroupCubit(
+        repository: serviceLocator<GroupDiscoveryRepository>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<GroupSearchCubit>(
+      () => GroupSearchCubit(
         repository: serviceLocator<GroupDiscoveryRepository>(),
       ),
     );
