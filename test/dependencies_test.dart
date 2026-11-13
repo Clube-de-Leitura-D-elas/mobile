@@ -18,6 +18,7 @@ import 'package:mobile/features/calendar/domain/repository/calendar_repository.d
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
 import 'package:mobile/features/group_discovery/presentation/cubit/public_group_cubit.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
@@ -136,6 +137,7 @@ void main() {
         isA<GroupDiscoveryRepositoryImpl>(),
       );
       expect(serviceLocator<PublicGroupCubit>(), isA<PublicGroupCubit>());
+      expect(serviceLocator<GroupSearchCubit>(), isA<GroupSearchCubit>());
       expect(
         serviceLocator<NotificationRepository>(),
         isA<NotificationRepositoryImpl>(),

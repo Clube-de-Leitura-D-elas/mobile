@@ -37,3 +37,24 @@ Map<String, dynamic> discoveryGroupJson({
   'participant_count': 34,
   'membership_status': membershipStatus,
 };
+
+/// Id determinístico do grupo [number] da lista.
+String searchGroupId(int number) =>
+    '00000000-0000-0000-0000-${number.toString().padLeft(12, '0')}';
+
+/// Grupo [number] da busca, com id e número próprios.
+DiscoveryGroupEntity searchGroup(
+  int number, {
+  GroupMembershipStatus membership = GroupMembershipStatus.none,
+  String? cityState = 'Porto Alegre, RS',
+}) {
+  return DiscoveryGroupEntity(
+    id: searchGroupId(number),
+    number: number,
+    description: '',
+    cityState: cityState,
+    genres: const [],
+    participantCount: 30 + number,
+    membershipStatus: membership,
+  );
+}

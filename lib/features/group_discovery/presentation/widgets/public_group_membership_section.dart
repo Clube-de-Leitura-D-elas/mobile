@@ -9,14 +9,18 @@ class PublicGroupMembershipSection extends StatelessWidget {
   final GroupMembershipStatus status;
   final bool isRequesting;
   final VoidCallback onRequestJoin;
-  final VoidCallback onOpenMemberDetails;
+
+  /// `null` esconde o botão de membro (o card da busca tem "Ver detalhes").
+  final VoidCallback? onOpenMemberDetails;
+  final AppButtonSize buttonSize;
 
   const PublicGroupMembershipSection({
     super.key,
     required this.status,
     required this.isRequesting,
     required this.onRequestJoin,
-    required this.onOpenMemberDetails,
+    this.onOpenMemberDetails,
+    this.buttonSize = AppButtonSize.lg,
   });
 
   @override
@@ -48,21 +52,23 @@ class PublicGroupMembershipSection extends StatelessWidget {
     final Widget? action = switch (status) {
       GroupMembershipStatus.none => AppButton.primary(
         label: l10n.publicGroupRequestJoin,
-        size: AppButtonSize.lg,
+        size: buttonSize,
         isLoading: isRequesting,
         onPressed: onRequestJoin,
       ),
       GroupMembershipStatus.rejected => AppButton.primary(
         label: l10n.publicGroupRequestAgain,
-        size: AppButtonSize.lg,
+        size: buttonSize,
         isLoading: isRequesting,
         onPressed: onRequestJoin,
       ),
-      GroupMembershipStatus.member => AppButton.secondary(
-        label: l10n.publicGroupOpenMemberDetails,
-        size: AppButtonSize.lg,
-        onPressed: onOpenMemberDetails,
-      ),
+      GroupMembershipStatus.member when onOpenMemberDetails != null =>
+        AppButton.secondary(
+          label: l10n.publicGroupOpenMemberDetails,
+          size: buttonSize,
+          onPressed: onOpenMemberDetails,
+        ),
+      GroupMembershipStatus.member => null,
       GroupMembershipStatus.requested || GroupMembershipStatus.pending => null,
     };
 

@@ -7,6 +7,10 @@ import 'package:mobile/features/group_discovery/data/models/discovery_group_mode
 import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
+import 'package:mobile/features/group_discovery/data/models/group_search_page_model.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_search_page_entity.dart';
+import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -32,6 +36,129 @@ void main() {
   setUp(() {
     service = MockSupabaseService();
     repository = GroupDiscoveryRepositoryImpl(supabaseService: service);
+  });
+
+  group('searchGroups', () {
+    void stub(
+      Result<SupabaseResponse<GroupSearchPageModel>, SupabaseFailure> result,
+    ) {
+      when(
+        () => service.invokeFunction<GroupSearchPageModel>(
+          functionName: any(named: 'functionName'),
+          method: any(named: 'method'),
+          queryParameters: any(named: 'queryParameters'),
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer((_) async => result);
+    }
+
+    const emptyPage = GroupSearchPageModel(items: [], total: 0, genres: []);
+
+    test('asks only for the page when there is no search or filter', () async {
+      stub(const Success(SupabaseResponse(data: emptyPage)));
+
+      await repository.searchGroups(page: 1, search: '   ');
+
+      final call = verify(
+        () => service.invokeFunction<GroupSearchPageModel>(
+          functionName: 'get-city-groups',
+          method: HttpMethod.get,
+          queryParameters: {
+            'page': '1',
+            'pageSize': '${GroupDiscoveryRepository.pageSize}',
+          },
+          decoder: captureAny(named: 'decoder'),
+        ),
+      )..called(1);
+      final decoder =
+          call.captured.single as GroupSearchPageModel Function(dynamic);
+      final decoded = decoder({
+        'items': [discoveryGroupJson()],
+        'total': 1,
+        'genres': <dynamic>[],
+      });
+      expect(decoded.total, 1);
+    });
+
+    test('sends the search and every filter', () async {
+      stub(const Success(SupabaseResponse(data: emptyPage)));
+
+      await repository.searchGroups(
+        page: 3,
+        search: ' clube ',
+        filters: const GroupSearchFilters(
+          genreId: 'genre-1',
+          minParticipants: 10,
+          maxParticipants: 20,
+        ),
+      );
+
+      verify(
+        () => service.invokeFunction<GroupSearchPageModel>(
+          functionName: 'get-city-groups',
+          method: HttpMethod.get,
+          queryParameters: {
+            'page': '3',
+            'pageSize': '${GroupDiscoveryRepository.pageSize}',
+            'search': 'clube',
+            'genreId': 'genre-1',
+            'minParticipants': '10',
+            'maxParticipants': '20',
+          },
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
+    });
+
+    test('cuts the search to the 100 characters the backend accepts', () async {
+      stub(const Success(SupabaseResponse(data: emptyPage)));
+
+      await repository.searchGroups(page: 1, search: 'a' * 150);
+
+      final captured =
+          verify(
+                () => service.invokeFunction<GroupSearchPageModel>(
+                  functionName: 'get-city-groups',
+                  method: HttpMethod.get,
+                  queryParameters: captureAny(named: 'queryParameters'),
+                  decoder: any(named: 'decoder'),
+                ),
+              ).captured.single
+              as Map<String, String>;
+      expect(captured['search'], 'a' * 100);
+    });
+
+    test('returns the page as entities', () async {
+      stub(
+        Success(
+          SupabaseResponse(
+            data: GroupSearchPageModel.fromJson({
+              'items': [discoveryGroupJson()],
+              'total': 1,
+              'genres': [
+                {'id': 'g-1', 'name': 'Ficção'},
+              ],
+            }),
+          ),
+        ),
+      );
+
+      final page = (await repository.searchGroups(page: 1)).unwrap();
+
+      expect(page.items.single.id, groupId);
+      expect(page.genres.single.name, 'Ficção');
+    });
+
+    test('maps the failures', () async {
+      stub(Failure(_backendError('403', 'inactive account')));
+
+      expect(
+        await repository.searchGroups(page: 1),
+        const Failure<GroupSearchPageEntity, GroupDiscoveryFailure>(
+          GroupDiscoveryInactiveAccountFailure(),
+        ),
+      );
+    });
   });
 
   group('getGroup', () {
