@@ -134,13 +134,23 @@ void main() {
       );
       final cubit = build();
       addTearDown(cubit.close);
+      final states = <GroupParticipantsState>[];
+      final sub = cubit.stream.listen(states.add);
+      addTearDown(sub.cancel);
 
       final loading = cubit.load('g1');
       await cubit.refresh();
+      await Future<void>.delayed(Duration.zero);
+      expect(states, [
+        const GroupParticipantsLoading(),
+        isA<GroupParticipantsError>(),
+      ]);
+
       initial.complete(const Success([coordinator]));
       await loading;
+      await Future<void>.delayed(Duration.zero);
 
-      expect(cubit.state, isA<GroupParticipantsError>());
+      expect(states, hasLength(2), reason: 'stale load must not emit');
     });
 
     test('a slow initial load does not overwrite a newer refresh', () async {
@@ -154,13 +164,20 @@ void main() {
       );
       final cubit = build();
       addTearDown(cubit.close);
+      final states = <GroupParticipantsState>[];
+      final sub = cubit.stream.listen(states.add);
+      addTearDown(sub.cancel);
 
       final loading = cubit.load('g1');
       await cubit.refresh();
       initial.complete(const Success([coordinator]));
       await loading;
+      await Future<void>.delayed(Duration.zero);
 
-      expect(cubit.state, const GroupParticipantsLoaded([coordinator, member]));
+      expect(states, [
+        const GroupParticipantsLoading(),
+        const GroupParticipantsLoaded([coordinator, member]),
+      ]);
     });
 
     blocTest<GroupParticipantsCubit, GroupParticipantsState>(
