@@ -340,6 +340,29 @@ void main() {
       ],
     );
 
+    test('a reload started before the request does not undo it', () async {
+      final staleRead =
+          Completer<Result<DiscoveryGroupEntity, GroupDiscoveryFailure>>();
+      when(
+        () => repository.getGroup(g1.id),
+      ).thenAnswer((_) => staleRead.future);
+      when(
+        () => repository.requestJoin(g1.id),
+      ).thenAnswer((_) async => const Success(null));
+      final cubit = buildCubit()..emit(loadedWith([g1, g2]));
+      addTearDown(cubit.close);
+
+      final reload = cubit.refreshGroup(g1.id);
+      await cubit.requestJoin(g1.id);
+      staleRead.complete(Success(g1));
+      await reload;
+
+      expect(
+        cubit.state.items.first.membershipStatus,
+        GroupMembershipStatus.requested,
+      );
+    });
+
     blocTest<GroupSearchCubit, GroupSearchState>(
       'asks again for a rejected group',
       setUp: () => when(

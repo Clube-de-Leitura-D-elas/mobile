@@ -13,6 +13,10 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
   /// Só a resposta da busca mais recente é aplicada.
   int _request = 0;
 
+  // Versão do vínculo por grupo: um pedido de entrada invalida releituras
+  // iniciadas antes dele, que trariam o status antigo.
+  final Map<String, int> _membershipVersion = {};
+
   GroupSearchCubit({required this.repository})
     : super(const GroupSearchState());
 
@@ -94,6 +98,7 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
 
     final result = await repository.requestJoin(groupId);
     if (isClosed) return;
+    _membershipVersion[groupId] = (_membershipVersion[groupId] ?? 0) + 1;
 
     switch (result) {
       case Success():
@@ -144,8 +149,10 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
   /// que está na tela.
   Future<void> refreshGroup(String groupId) async {
     if (_find(groupId) == null) return;
+    final version = _membershipVersion[groupId] ?? 0;
     final result = await repository.getGroup(groupId);
     if (isClosed || _find(groupId) == null) return;
+    if (version != (_membershipVersion[groupId] ?? 0)) return;
 
     switch (result) {
       case Success(:final data):
