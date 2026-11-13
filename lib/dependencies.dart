@@ -16,6 +16,9 @@ import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/calendar/data/repositories/calendar_repository_impl.dart';
+import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
+import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
@@ -214,6 +217,17 @@ class DependenciesContainer {
       () => NotificationsCubit(
         repository: serviceLocator<NotificationRepository>(),
       ),
+    );
+
+    // --- Calendar Feature ---
+    serviceLocator.registerLazySingleton<CalendarRepository>(
+      () => CalendarRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<CalendarCubit>(
+      () => CalendarCubit(repository: serviceLocator<CalendarRepository>()),
     );
 
     // --- Raffles Feature ---

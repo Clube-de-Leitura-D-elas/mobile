@@ -13,6 +13,9 @@ import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
+import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
+import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
+import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -24,6 +27,8 @@ class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
 
 class MockBookRepository extends Mock implements BookRepository {}
+
+class MockCalendarRepository extends Mock implements CalendarRepository {}
 
 void _registerBookSearch() {
   final repository = MockBookRepository();
@@ -50,6 +55,25 @@ void _unregisterBookSearch() {
   }
   if (serviceLocator.isRegistered<BookRepository>()) {
     serviceLocator.unregister<BookRepository>();
+  }
+}
+
+void _registerCalendar() {
+  final repository = MockCalendarRepository();
+  when(
+    () => repository.getMeetings(
+      from: any(named: 'from'),
+      to: any(named: 'to'),
+    ),
+  ).thenAnswer((_) async => const Success([]));
+  serviceLocator.registerFactory<CalendarCubit>(
+    () => CalendarCubit(repository: repository),
+  );
+}
+
+void _unregisterCalendar() {
+  if (serviceLocator.isRegistered<CalendarCubit>()) {
+    serviceLocator.unregister<CalendarCubit>();
   }
 }
 
@@ -94,13 +118,13 @@ void main() {
     });
 
     testWidgets(
-      'renders a placeholder with the selected tab for non-profile routes',
+      'renders a placeholder with the selected tab for tabs without a screen',
       (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             theme: AppTheme.light,
             home: const QuickAccessPlaceholderScreen(
-              item: QuickAccessItem.calendar,
+              item: QuickAccessItem.plus,
             ),
           ),
         );
@@ -113,15 +137,20 @@ void main() {
           find.byType(BottomNavigationBarWidget),
         );
 
-        expect(navigationBar.currentIndex, QuickAccessItem.calendar.index);
+        expect(navigationBar.currentIndex, QuickAccessItem.plus.index);
       },
     );
 
     testWidgets(
-      'renders the book search on /search and ProfilePage on /profile',
+      'renders the book search, the profile, the calendar and the add '
+      'placeholder on their tabs',
       (tester) async {
+        final allowReassignment = serviceLocator.allowReassignment;
+        addTearDown(() => serviceLocator.allowReassignment = allowReassignment);
         _registerBookSearch();
         addTearDown(_unregisterBookSearch);
+        _registerCalendar();
+        addTearDown(_unregisterCalendar);
 
         final router = GoRouter(
           initialLocation: '/search',
@@ -160,8 +189,14 @@ void main() {
         router.go('/calendar');
         await tester.pumpAndSettle();
 
+        expect(find.byType(CalendarPage), findsOneWidget);
+        expect(find.byType(QuickAccessPlaceholderScreen), findsNothing);
+
+        router.go('/add');
+        await tester.pumpAndSettle();
+
         expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
-        expect(find.byType(BookSearchPage), findsNothing);
+        expect(find.byType(CalendarPage), findsNothing);
       },
     );
   });

@@ -1257,6 +1257,147 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get raffleListRefreshedHint =>
       'Atualizamos a lista: confira as participantes e confirme de novo.';
+
+  @override
+  String calendarMonthName(DateTime month) {
+    final intl.DateFormat monthDateFormat = intl.DateFormat.LLLL(localeName);
+    final String monthString = monthDateFormat.format(month);
+
+    return '$monthString';
+  }
+
+  @override
+  String calendarMonthSemantic(DateTime month) {
+    final intl.DateFormat monthDateFormat = intl.DateFormat.yMMMM(localeName);
+    final String monthString = monthDateFormat.format(month);
+
+    return '$monthString';
+  }
+
+  @override
+  String get calendarPreviousMonth => 'Mês anterior';
+
+  @override
+  String get calendarNextMonth => 'Próximo mês';
+
+  @override
+  String calendarWeekdayShort(String weekday) {
+    String _temp0 = intl.Intl.selectLogic(weekday, {
+      'sunday': 'Dom',
+      'monday': 'Seg',
+      'tuesday': 'Ter',
+      'wednesday': 'Qua',
+      'thursday': 'Qui',
+      'friday': 'Sex',
+      'saturday': 'Sáb',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String calendarDaySemantic(DateTime day, int count) {
+    final intl.DateFormat dayDateFormat = intl.DateFormat.MMMMd(localeName);
+    final String dayString = dayDateFormat.format(day);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count encontros',
+      one: '1 encontro',
+      zero: 'sem encontros',
+    );
+    return '$dayString, $_temp0';
+  }
+
+  @override
+  String get calendarToday => 'Hoje';
+
+  @override
+  String get calendarFilterAll => 'Todos';
+
+  @override
+  String calendarFilterUpcoming(int count) {
+    return 'Próximos eventos ($count)';
+  }
+
+  @override
+  String get calendarFilterPast => 'Eventos passados';
+
+  @override
+  String calendarSelectedDayTitle(DateTime day) {
+    final intl.DateFormat dayDateFormat = intl.DateFormat.MMMMEEEEd(localeName);
+    final String dayString = dayDateFormat.format(day);
+
+    return '$dayString';
+  }
+
+  @override
+  String get calendarClearSelectedDay => 'Limpar dia selecionado';
+
+  @override
+  String calendarMeetingTitle(int number) {
+    return 'Encontro Grupo $number';
+  }
+
+  @override
+  String calendarMeetingTitleWithDate(DateTime date, int number) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString - Encontro Grupo $number';
+  }
+
+  @override
+  String calendarMeetingTime(DateTime time) {
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return '$timeString';
+  }
+
+  @override
+  String calendarParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String calendarMeetingHost(String name) {
+    return '$name (Anfitriã)';
+  }
+
+  @override
+  String get calendarLoading => 'Carregando encontros';
+
+  @override
+  String get calendarLoadError => 'Não foi possível carregar o calendário.';
+
+  @override
+  String get calendarEmptyMonth => 'Nenhum encontro neste mês.';
+
+  @override
+  String get calendarEmptyUpcoming => 'Nenhum próximo encontro neste mês.';
+
+  @override
+  String get calendarEmptyPast => 'Nenhum encontro passado neste mês.';
+
+  @override
+  String get calendarEmptyDay => 'Nenhum encontro neste dia.';
+
+  @override
+  String calendarMonthTitle(String month, int year) {
+    return '$month $year';
+  }
+
+  @override
+  String get calendarMeetingDraftTag => 'Rascunho';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2144,4 +2285,145 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get bookReadingStatusError =>
       'Não foi possível atualizar o status de leitura.';
+
+  @override
+  String calendarMonthName(DateTime month) {
+    final intl.DateFormat monthDateFormat = intl.DateFormat.LLLL(localeName);
+    final String monthString = monthDateFormat.format(month);
+
+    return '$monthString';
+  }
+
+  @override
+  String calendarMonthSemantic(DateTime month) {
+    final intl.DateFormat monthDateFormat = intl.DateFormat.yMMMM(localeName);
+    final String monthString = monthDateFormat.format(month);
+
+    return '$monthString';
+  }
+
+  @override
+  String get calendarPreviousMonth => 'Mês anterior';
+
+  @override
+  String get calendarNextMonth => 'Próximo mês';
+
+  @override
+  String calendarWeekdayShort(String weekday) {
+    String _temp0 = intl.Intl.selectLogic(weekday, {
+      'sunday': 'Dom',
+      'monday': 'Seg',
+      'tuesday': 'Ter',
+      'wednesday': 'Qua',
+      'thursday': 'Qui',
+      'friday': 'Sex',
+      'saturday': 'Sáb',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String calendarDaySemantic(DateTime day, int count) {
+    final intl.DateFormat dayDateFormat = intl.DateFormat.MMMMd(localeName);
+    final String dayString = dayDateFormat.format(day);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count encontros',
+      one: '1 encontro',
+      zero: 'sem encontros',
+    );
+    return '$dayString, $_temp0';
+  }
+
+  @override
+  String get calendarToday => 'Hoje';
+
+  @override
+  String get calendarFilterAll => 'Todos';
+
+  @override
+  String calendarFilterUpcoming(int count) {
+    return 'Próximos eventos ($count)';
+  }
+
+  @override
+  String get calendarFilterPast => 'Eventos passados';
+
+  @override
+  String calendarSelectedDayTitle(DateTime day) {
+    final intl.DateFormat dayDateFormat = intl.DateFormat.MMMMEEEEd(localeName);
+    final String dayString = dayDateFormat.format(day);
+
+    return '$dayString';
+  }
+
+  @override
+  String get calendarClearSelectedDay => 'Limpar dia selecionado';
+
+  @override
+  String calendarMeetingTitle(int number) {
+    return 'Encontro Grupo $number';
+  }
+
+  @override
+  String calendarMeetingTitleWithDate(DateTime date, int number) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString - Encontro Grupo $number';
+  }
+
+  @override
+  String calendarMeetingTime(DateTime time) {
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return '$timeString';
+  }
+
+  @override
+  String calendarParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String calendarMeetingHost(String name) {
+    return '$name (Anfitriã)';
+  }
+
+  @override
+  String get calendarLoading => 'Carregando encontros';
+
+  @override
+  String get calendarLoadError => 'Não foi possível carregar o calendário.';
+
+  @override
+  String get calendarEmptyMonth => 'Nenhum encontro neste mês.';
+
+  @override
+  String get calendarEmptyUpcoming => 'Nenhum próximo encontro neste mês.';
+
+  @override
+  String get calendarEmptyPast => 'Nenhum encontro passado neste mês.';
+
+  @override
+  String get calendarEmptyDay => 'Nenhum encontro neste dia.';
+
+  @override
+  String calendarMonthTitle(String month, int year) {
+    return '$month $year';
+  }
+
+  @override
+  String get calendarMeetingDraftTag => 'Rascunho';
 }
