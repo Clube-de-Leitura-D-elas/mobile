@@ -351,5 +351,9 @@
   "profileNoReviewedBooks": "Você ainda não avaliou nenhum livro.",
   "profileSeeAllBooks": "Ver todos os livros",
   "profileSummaryLoading": "Carregando seus grupos e livros",
-  "profileSummaryLoadError": "Não foi possível carregar seus grupos e livros."
+  "profileSummaryLoadError": "Não foi possível carregar seus grupos e livros.",
+  "meetingPresenceEmptyConfirmTitle": "Ninguém compareceu?",
+  "meetingPresenceEmptyConfirmMessage": "Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.",
+  "meetingPresenceEmptyConfirmCancel": "Voltar",
+  "meetingPresenceEmptyConfirmConfirm": "Confirmar mesmo assim"
 }

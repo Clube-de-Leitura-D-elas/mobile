@@ -1663,6 +1663,19 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get profileSummaryLoadError =>
       'Não foi possível carregar seus grupos e livros.';
+
+  @override
+  String get meetingPresenceEmptyConfirmTitle => 'Ninguém compareceu?';
+
+  @override
+  String get meetingPresenceEmptyConfirmMessage =>
+      'Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.';
+
+  @override
+  String get meetingPresenceEmptyConfirmCancel => 'Voltar';
+
+  @override
+  String get meetingPresenceEmptyConfirmConfirm => 'Confirmar mesmo assim';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2956,4 +2969,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get profileSummaryLoadError =>
       'Não foi possível carregar seus grupos e livros.';
+
+  @override
+  String get meetingPresenceEmptyConfirmTitle => 'Ninguém compareceu?';
+
+  @override
+  String get meetingPresenceEmptyConfirmMessage =>
+      'Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.';
+
+  @override
+  String get meetingPresenceEmptyConfirmCancel => 'Voltar';
+
+  @override
+  String get meetingPresenceEmptyConfirmConfirm => 'Confirmar mesmo assim';
 }

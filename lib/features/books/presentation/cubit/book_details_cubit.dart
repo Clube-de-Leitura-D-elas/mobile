@@ -87,9 +87,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
     final details = state.details;
     if (details == null || state.isUpdatingStatus) return;
 
-    final nextStatus = details.myStatus == BookReadingStatus.read
-        ? null
-        : BookReadingStatus.read;
+    final nextStatus = nextReadingStatus(details.myStatus);
     emit(state.copyWith(isUpdatingStatus: true));
 
     final result = await repository.setReadingStatus(
