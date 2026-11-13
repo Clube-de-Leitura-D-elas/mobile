@@ -1135,7 +1135,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível carregar mais comentários.';
 
   @override
-  String get bookSearchTitle => 'Busca';
+  String get bookSearchTitle => 'Catálogo';
 
   @override
   String get bookSearchHint => 'Buscar livro';
@@ -2140,6 +2140,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get bookDetailLoadMoreReviewsError =>
       'Não foi possível carregar mais comentários.';
+
+  @override
+  String get bookSearchTitle => 'Catálogo';
 
   @override
   String get bookReadingStatusError =>

@@ -64,6 +64,19 @@ Future<void> pumpScreen(
 }
 
 void main() {
+  testWidgets('renders screen header with Catálogo and headingH2 style', (
+    tester,
+  ) async {
+    await pumpScreen(
+      tester,
+      state: const BookSearchState(),
+    );
+
+    expect(find.text('Catálogo'), findsOneWidget);
+    final textWidget = tester.widget<Text>(find.text('Catálogo'));
+    expect(textWidget.style?.fontSize, 24.0);
+  });
+
   testWidgets('shows the popular grid when there is no query', (tester) async {
     await pumpScreen(
       tester,

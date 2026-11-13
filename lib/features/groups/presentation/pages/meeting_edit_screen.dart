@@ -153,6 +153,7 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
           children: [
             AppTextField(
               label: l10n.meetingEditDateLabel,
+              isRequired: true,
               controller: _dateController,
               hintText: l10n.meetingEditDateHint,
               keyboardType: TextInputType.datetime,
@@ -167,6 +168,7 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
             SizedBox(height: spacing.s16),
             AppTextField(
               label: l10n.meetingEditTimeLabel,
+              isRequired: true,
               controller: _timeController,
               hintText: l10n.meetingEditTimeHint,
               keyboardType: TextInputType.datetime,
@@ -180,6 +182,7 @@ class _MeetingEditScreenState extends State<MeetingEditScreen> {
             ),
             SizedBox(height: spacing.s16),
             PlaceSearchField(
+              isRequired: true,
               controller: _locationController,
               validator: _validateLocation,
               onEdited: () => _selectedPlaceId = null,

@@ -1982,10 +1982,10 @@ abstract class AppLocalizations {
   /// **'Não foi possível carregar mais comentários.'**
   String get bookDetailLoadMoreReviewsError;
 
-  /// Título da aba de busca de livros.
+  /// Título da aba de catálogo de livros.
   ///
   /// In pt, this message translates to:
-  /// **'Busca'**
+  /// **'Catálogo'**
   String get bookSearchTitle;
 
   /// Placeholder do campo de busca de livros.

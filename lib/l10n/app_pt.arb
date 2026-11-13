@@ -1521,9 +1521,9 @@
   "@bookDetailLoadMoreReviewsError": {
     "description": "Erro ao carregar a próxima página de comentários."
   },
-  "bookSearchTitle": "Busca",
+  "bookSearchTitle": "Catálogo",
   "@bookSearchTitle": {
-    "description": "Título da aba de busca de livros."
+    "description": "Título da aba de catálogo de livros."
   },
   "bookSearchHint": "Buscar livro",
   "@bookSearchHint": {
