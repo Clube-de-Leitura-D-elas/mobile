@@ -12,6 +12,9 @@ import '../tokens/spacing_tokens.dart';
 /// na largura toda, com a última da lista em cima: passe a ação principal por
 /// último.
 ///
+/// A escolha é refeita a cada layout: trocar o conteúdo de uma ação (por
+/// exemplo, `isLoading` no [AppButton]) pode trocar o modo.
+///
 /// As ações precisam responder a dry layout (o [AppButton] responde), e o pai
 /// precisa limitar a largura.
 class AppDialogActions extends StatelessWidget {
@@ -25,6 +28,7 @@ class AppDialogActions extends StatelessWidget {
     return _AdaptiveActions(
       spacing: spacing.s16,
       runSpacing: spacing.s8,
+      textDirection: Directionality.of(context),
       children: actions,
     );
   }
@@ -34,15 +38,21 @@ class _AdaptiveActions extends MultiChildRenderObjectWidget {
   const _AdaptiveActions({
     required this.spacing,
     required this.runSpacing,
+    required this.textDirection,
     super.children,
   });
 
   final double spacing;
   final double runSpacing;
+  final TextDirection textDirection;
 
   @override
   _RenderAdaptiveActions createRenderObject(BuildContext context) {
-    return _RenderAdaptiveActions(spacing: spacing, runSpacing: runSpacing);
+    return _RenderAdaptiveActions(
+      spacing: spacing,
+      runSpacing: runSpacing,
+      textDirection: textDirection,
+    );
   }
 
   @override
@@ -52,7 +62,8 @@ class _AdaptiveActions extends MultiChildRenderObjectWidget {
   ) {
     renderObject
       ..spacing = spacing
-      ..runSpacing = runSpacing;
+      ..runSpacing = runSpacing
+      ..textDirection = textDirection;
   }
 }
 
@@ -62,9 +73,13 @@ class _RenderAdaptiveActions extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, _ActionsParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, _ActionsParentData> {
-  _RenderAdaptiveActions({required double spacing, required double runSpacing})
-    : _spacing = spacing,
-      _runSpacing = runSpacing;
+  _RenderAdaptiveActions({
+    required double spacing,
+    required double runSpacing,
+    required TextDirection textDirection,
+  }) : _spacing = spacing,
+       _runSpacing = runSpacing,
+       _textDirection = textDirection;
 
   double _spacing;
   double get spacing => _spacing;
@@ -85,6 +100,19 @@ class _RenderAdaptiveActions extends RenderBox
     _runSpacing = value;
     markNeedsLayout();
   }
+
+  TextDirection _textDirection;
+  TextDirection get textDirection => _textDirection;
+  set textDirection(TextDirection value) {
+    if (_textDirection == value) {
+      return;
+    }
+    _textDirection = value;
+    markNeedsLayout();
+  }
+
+  bool _hasOverflow = false;
+  final _clipRectLayer = LayerHandle<ClipRectLayer>();
 
   @override
   void setupParentData(RenderBox child) {
@@ -121,7 +149,8 @@ class _RenderAdaptiveActions extends RenderBox
     );
   }
 
-  /// Calcula o tamanho e, quando [place] é dado, faz o layout dos filhos.
+  /// Calcula o tamanho do conteúdo com [layoutChild] e informa a posição de
+  /// cada filho a [place].
   Size _layout(
     BoxConstraints constraints, {
     required ChildLayouter layoutChild,
@@ -130,7 +159,7 @@ class _RenderAdaptiveActions extends RenderBox
   }) {
     final children = _children;
     if (children.isEmpty) {
-      return constraints.smallest;
+      return Size.zero;
     }
     assert(
       constraints.hasBoundedWidth,
@@ -144,20 +173,21 @@ class _RenderAdaptiveActions extends RenderBox
       for (final child in children) {
         height = math.max(
           height,
-          layoutChild(child, BoxConstraints.tightFor(width: slot)).height,
+          child.getDryLayout(BoxConstraints.tightFor(width: slot)).height,
         );
       }
       final childConstraints = BoxConstraints.tightFor(
         width: slot,
         height: height,
       );
-      var x = 0.0;
+      final rtl = _textDirection == TextDirection.rtl;
+      var x = rtl ? width - slot : 0.0;
       for (final child in children) {
         layoutChild(child, childConstraints);
         place?.call(child, Offset(x, 0), childConstraints);
-        x += slot + _spacing;
+        x += rtl ? -(slot + _spacing) : slot + _spacing;
       }
-      return constraints.constrain(Size(width, height));
+      return Size(width, height);
     }
 
     final childConstraints = BoxConstraints.tightFor(width: width);
@@ -167,22 +197,26 @@ class _RenderAdaptiveActions extends RenderBox
       place?.call(child, Offset(0, y), childConstraints);
       y += childSize.height + _runSpacing;
     }
-    return constraints.constrain(Size(width, y - _runSpacing));
+    return Size(width, y - _runSpacing);
   }
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
-    return _layout(constraints, layoutChild: ChildLayoutHelper.dryLayoutChild);
+    return constraints.constrain(
+      _layout(constraints, layoutChild: ChildLayoutHelper.dryLayoutChild),
+    );
   }
 
   @override
   void performLayout() {
-    size = _layout(
+    final content = _layout(
       constraints,
       layoutChild: ChildLayoutHelper.layoutChild,
       place: (child, offset, _) =>
           (child.parentData! as _ActionsParentData).offset = offset,
     );
+    size = constraints.constrain(content);
+    _hasOverflow = content.height > size.height || content.width > size.width;
   }
 
   @override
@@ -199,11 +233,12 @@ class _RenderAdaptiveActions extends RenderBox
     if (children.isEmpty) {
       return 0;
     }
-    return children.fold(
-          0.0,
-          (width, child) => width + child.getMaxIntrinsicWidth(height),
-        ) +
-        _spacing * (children.length - 1);
+    // As fatias têm a mesma largura: a linha só cabe se a maior ação couber.
+    final widest = children.fold(
+      0.0,
+      (width, child) => math.max(width, child.getMaxIntrinsicWidth(height)),
+    );
+    return widest * children.length + _spacing * (children.length - 1);
   }
 
   @override
@@ -254,6 +289,23 @@ class _RenderAdaptiveActions extends RenderBox
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    defaultPaint(context, offset);
+    if (!_hasOverflow) {
+      _clipRectLayer.layer = null;
+      defaultPaint(context, offset);
+      return;
+    }
+    _clipRectLayer.layer = context.pushClipRect(
+      needsCompositing,
+      offset,
+      Offset.zero & size,
+      defaultPaint,
+      oldLayer: _clipRectLayer.layer,
+    );
+  }
+
+  @override
+  void dispose() {
+    _clipRectLayer.layer = null;
+    super.dispose();
   }
 }

@@ -212,6 +212,11 @@ void main() {
 
         expect(find.byType(AppDialog), findsOneWidget);
         expect(find.byTooltip('Fechar'), findsOneWidget);
+        // O AppDialog põe a última ação em cima quando empilha.
+        expect(
+          tester.widget<AppDialog>(find.byType(AppDialog)).actions.last.key,
+          const ValueKey('meeting-photo-caption-save'),
+        );
         await tester.enterText(
           find.byKey(const ValueKey('meeting-photo-caption-field')),
           'Legenda salva',
@@ -296,10 +301,7 @@ void main() {
         await tester.pumpWidget(
           _app(
             MeetingPhotoViewer(
-              photo: const MeetingPhotoEntity(
-                id: 'p1',
-                url: 'http://a/p1.jpg',
-              ),
+              photo: const MeetingPhotoEntity(id: 'p1', url: 'http://a/p1.jpg'),
               index: 0,
               total: 1,
               onDownload: (_) async {
