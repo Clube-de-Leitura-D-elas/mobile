@@ -14,12 +14,17 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_details_state.
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_cubit.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_state.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockMeetingDetailsCubit extends Mock implements MeetingDetailsCubit {}
 
 class MockMeetingPhotosCubit extends Mock implements MeetingPhotosCubit {}
+
+class MockMeetingGuestRequestsCubit extends Mock
+    implements MeetingGuestRequestsCubit {}
 
 Widget _wrap(MeetingDetailsState state) {
   final cubit = MockMeetingDetailsCubit();
@@ -29,6 +34,11 @@ Widget _wrap(MeetingDetailsState state) {
   const photosState = MeetingPhotosState(status: MeetingPhotosStatus.loaded);
   when(() => photosCubit.state).thenReturn(photosState);
   when(() => photosCubit.stream).thenAnswer((_) => const Stream.empty());
+  final guestRequestsCubit = MockMeetingGuestRequestsCubit();
+  when(
+    () => guestRequestsCubit.state,
+  ).thenReturn(const MeetingGuestRequestsState());
+  when(() => guestRequestsCubit.stream).thenAnswer((_) => const Stream.empty());
 
   return MaterialApp(
     theme: AppTheme.light,
@@ -44,6 +54,9 @@ Widget _wrap(MeetingDetailsState state) {
       providers: [
         BlocProvider<MeetingDetailsCubit>.value(value: cubit),
         BlocProvider<MeetingPhotosCubit>.value(value: photosCubit),
+        BlocProvider<MeetingGuestRequestsCubit>.value(
+          value: guestRequestsCubit,
+        ),
       ],
       child: const MeetingDetailsPage(),
     ),

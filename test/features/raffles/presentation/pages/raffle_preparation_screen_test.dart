@@ -105,6 +105,16 @@ void main() {
     ),
   ).called(1);
 
+  testWidgets('labels the columns as participant and raffle inclusion', (
+    tester,
+  ) async {
+    await pumpScreen(tester);
+
+    expect(find.text('Participante'), findsOneWidget);
+    expect(find.text('Incluir no sorteio'), findsOneWidget);
+    expect(find.text('Nome'), findsNothing);
+  });
+
   testWidgets('shows the reason in a toast when confirming fails', (
     tester,
   ) async {

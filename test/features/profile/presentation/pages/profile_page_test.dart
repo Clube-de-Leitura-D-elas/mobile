@@ -12,6 +12,11 @@ import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_state.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_screen.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
@@ -25,11 +30,15 @@ class MockSessionCubit extends MockCubit<SessionState>
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 
+class MockProfileSummaryCubit extends MockCubit<ProfileSummaryState>
+    implements ProfileSummaryCubit {}
+
 class MockSupabaseService extends Mock implements SupabaseService {}
 
 void main() {
   late MockGoRouter mockGoRouter;
   late MockSessionCubit sessionCubit;
+  late MockProfileSummaryCubit summaryCubit;
 
   const user = UserEntity(
     name: 'Roberta',
@@ -62,6 +71,10 @@ void main() {
     when(
       () => sessionCubit.state,
     ).thenReturn(const AuthenticatedSession(user: user, profile: profile));
+    summaryCubit = MockProfileSummaryCubit();
+    when(() => summaryCubit.state).thenReturn(
+      const ProfileSummaryLoaded(ProfileSummaryEntity(booksReadCount: 0)),
+    );
   });
 
   Widget buildSubject() {
@@ -73,8 +86,11 @@ void main() {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt'),
-      home: BlocProvider<SessionCubit>.value(
-        value: sessionCubit,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<SessionCubit>.value(value: sessionCubit),
+          BlocProvider<ProfileSummaryCubit>.value(value: summaryCubit),
+        ],
         child: InheritedGoRouter(
           goRouter: mockGoRouter,
           child: const ProfilePage(),
@@ -96,6 +112,26 @@ void main() {
       expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
     },
   );
+
+  testWidgets('Repassa o resumo à tela e tenta de novo pelo cubit', (
+    tester,
+  ) async {
+    when(() => summaryCubit.load()).thenAnswer((_) async {});
+    when(
+      () => summaryCubit.state,
+    ).thenReturn(const ProfileSummaryError(ProfileSummaryNetworkFailure()));
+
+    await tester.pumpWidget(buildSubject());
+
+    final screen = tester.widget<ProfileScreen>(find.byType(ProfileScreen));
+    expect(
+      screen.summary,
+      const ProfileSummaryError(ProfileSummaryNetworkFailure()),
+    );
+
+    await tester.tap(find.text('Tentar novamente'));
+    verify(() => summaryCubit.load()).called(1);
+  });
 
   testWidgets('Deve passar o perfil da sessão para a ProfileScreen', (
     tester,
@@ -152,8 +188,11 @@ void main() {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt'),
-      home: BlocProvider<SessionCubit>.value(
-        value: realCubit,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<SessionCubit>.value(value: realCubit),
+          BlocProvider<ProfileSummaryCubit>.value(value: summaryCubit),
+        ],
         child: InheritedGoRouter(
           goRouter: mockGoRouter,
           child: const ProfilePage(),
@@ -162,9 +201,9 @@ void main() {
     );
 
     await tester.pumpWidget(page());
-    tester
-        .widget<ProfileHeader>(find.byType(ProfileHeader))
-        .onPhotoChanged!('https://example.com/nova.jpg');
+    tester.widget<ProfileHeader>(find.byType(ProfileHeader)).onPhotoChanged!(
+      'https://example.com/nova.jpg',
+    );
     await tester.pump();
 
     await tester.pumpWidget(const SizedBox.shrink());
@@ -259,4 +298,71 @@ void main() {
       verify(() => mockGoRouter.go('/search')).called(1);
     },
   );
+
+  testWidgets('Recarrega o resumo ao voltar de um grupo aberto pelo perfil, '
+      'mas não ao fechar um diálogo', (tester) async {
+    when(() => summaryCubit.refresh()).thenAnswer((_) async {});
+    when(() => summaryCubit.state).thenReturn(
+      const ProfileSummaryLoaded(
+        ProfileSummaryEntity(
+          booksReadCount: 0,
+          groups: [ProfileGroupEntity(id: 'g-1', number: 1)],
+        ),
+      ),
+    );
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) => MultiBlocProvider(
+            providers: [
+              BlocProvider<SessionCubit>.value(value: sessionCubit),
+              BlocProvider<ProfileSummaryCubit>.value(value: summaryCubit),
+            ],
+            child: const ProfilePage(),
+          ),
+        ),
+        GoRoute(
+          path: GroupRoutes.groupDetails,
+          builder: (_, _) => const Text('grupo'),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt'),
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Abrir e cancelar o diálogo de sair não recarrega o resumo.
+    await tester.tap(
+      find.ancestor(
+        of: find.byWidgetPredicate(
+          (widget) => widget is AppIcon && widget.icon == AppIcons.leave,
+        ),
+        matching: find.byType(InkWell),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancelar'));
+    await tester.pumpAndSettle();
+    verifyNever(() => summaryCubit.refresh());
+
+    await tester.tap(find.byKey(const ValueKey('profile-group-g-1')));
+    await tester.pumpAndSettle();
+    expect(find.text('grupo'), findsOneWidget);
+    router.pop();
+    await tester.pumpAndSettle();
+
+    verify(() => summaryCubit.refresh()).called(1);
+  });
 }

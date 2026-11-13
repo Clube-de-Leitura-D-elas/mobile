@@ -169,29 +169,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileTitle => 'Meu Perfil';
 
   @override
-  String profileClubTimeMonths(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count meses no clube',
-      one: '1 mês no clube',
-      zero: 'Chegou ao clube este mês',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String profileClubTimeYears(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count anos no clube',
-      one: '1 ano no clube',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get profilePhotoEditButtonLabel => 'Editar foto de perfil';
 
   @override
@@ -734,7 +711,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get rafflePreparationSubtitle => 'Selecione as participantes';
 
   @override
-  String get raffleTableHeaderName => 'Nome';
+  String get raffleTableHeaderName => 'Participante';
 
   @override
   String get raffleTableHeaderInclude => 'Incluir no sorteio';
@@ -1634,6 +1611,194 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String profileBooksReadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count livros lidos',
+      one: '1 livro lido',
+      zero: '0 livros lidos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileGroupsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count grupos',
+      one: '1 grupo',
+      zero: '0 grupos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileMyGroupsTitle => 'Meus grupos';
+
+  @override
+  String profileGroupLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get profileMoreGroupsButtonLabel => 'Ver mais grupos';
+
+  @override
+  String get profileNoGroups => 'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get profileReviewedBooksTitle => 'Livros avaliados';
+
+  @override
+  String get profileNoReviewedBooks => 'Você ainda não avaliou nenhum livro.';
+
+  @override
+  String get profileSeeAllBooks => 'Ver todos os livros';
+
+  @override
+  String get profileSummaryLoading => 'Carregando seus grupos e livros';
+
+  @override
+  String get profileSummaryLoadError =>
+      'Não foi possível carregar seus grupos e livros.';
+
+  @override
+  String get meetingPresenceEmptyConfirmTitle => 'Ninguém compareceu?';
+
+  @override
+  String get meetingPresenceEmptyConfirmMessage =>
+      'Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.';
+
+  @override
+  String get meetingPresenceEmptyConfirmCancel => 'Voltar';
+
+  @override
+  String get meetingPresenceEmptyConfirmConfirm => 'Confirmar mesmo assim';
+
+  @override
+  String profileClubTimeMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meses no clube',
+      one: '1 mês no clube',
+      zero: 'Chegou ao clube este mês',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileClubTimeYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count anos no clube',
+      one: '1 ano no clube',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String meetingGuestRequestsAccess(int count) {
+    return 'Pedidos de participação ($count)';
+  }
+
+  @override
+  String get meetingGuestRequestsTitle => 'Pedidos de participação';
+
+  @override
+  String get meetingGuestRequestsLoading =>
+      'Carregando pedidos de participação';
+
+  @override
+  String get meetingGuestRequestsEmpty => 'Nenhum pedido de participação';
+
+  @override
+  String get meetingGuestRequestsLoadError =>
+      'Não foi possível carregar os pedidos de participação.';
+
+  @override
+  String get meetingGuestRequestsNotReviewer =>
+      'Só a anfitriã do encontro ou a coordenação do grupo pode ver os pedidos de participação.';
+
+  @override
+  String get meetingGuestRequestsMeetingUnavailable =>
+      'Este encontro não está disponível.';
+
+  @override
+  String meetingGuestRequestsRequestedAt(DateTime date, DateTime time) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return 'Pedido em $dateString às $timeString';
+  }
+
+  @override
+  String get meetingGuestRequestsApprove => 'Aceitar';
+
+  @override
+  String get meetingGuestRequestsReject => 'Recusar';
+
+  @override
+  String get meetingGuestRequestsApproveDialogTitle => 'Aceitar pedido?';
+
+  @override
+  String meetingGuestRequestsApproveDialogMessage(String name) {
+    return '$name vai participar deste encontro como convidada.';
+  }
+
+  @override
+  String get meetingGuestRequestsRejectDialogTitle => 'Recusar pedido?';
+
+  @override
+  String meetingGuestRequestsRejectDialogMessage(String name) {
+    return '$name não vai participar deste encontro, mas poderá pedir de novo.';
+  }
+
+  @override
+  String get meetingGuestRequestsDialogCancel => 'Cancelar';
+
+  @override
+  String get meetingGuestRequestsApproved =>
+      'Pedido aceito! A leitora foi confirmada no encontro.';
+
+  @override
+  String get meetingGuestRequestsRejected => 'Pedido recusado.';
+
+  @override
+  String get meetingGuestRequestsAlreadyReviewed =>
+      'Este pedido já foi respondido.';
+
+  @override
+  String get meetingGuestRequestsNotFound =>
+      'Este pedido não está mais disponível.';
+
+  @override
+  String get meetingGuestRequestsNoLongerValid =>
+      'Este pedido não pode mais ser aceito: o encontro foi encerrado, a conta da leitora foi desativada ou ela já faz parte do grupo.';
+
+  @override
+  String get meetingGuestRequestsReviewError =>
+      'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String meetingGuestRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de participação de $name';
+  }
+
+  @override
+  String meetingGuestRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de participação de $name';
+  }
+
+  @override
+  String get meetingAttendanceGuestTag => 'Convidada';
+
+  @override
   String get calendarGuestRequest => 'Solicitar participação';
 
   @override
@@ -1859,29 +2024,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get profileTitle => 'Meu Perfil';
-
-  @override
-  String profileClubTimeMonths(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count meses no clube',
-      one: '1 mês no clube',
-      zero: 'Chegou ao clube este mês',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String profileClubTimeYears(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count anos no clube',
-      one: '1 ano no clube',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get profilePhotoEditButtonLabel => 'Editar foto de perfil';
@@ -2382,7 +2524,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get rafflePreparationSubtitle => 'Selecione as participantes';
 
   @override
-  String get raffleTableHeaderName => 'Nome';
+  String get raffleTableHeaderName => 'Participante';
 
   @override
   String get raffleTableHeaderInclude => 'Incluir no sorteio';
@@ -2958,6 +3100,194 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupJoinRequestsRejectSemantics(String name) {
     return 'Recusar pedido de $name';
   }
+
+  @override
+  String profileBooksReadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count livros lidos',
+      one: '1 livro lido',
+      zero: '0 livros lidos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileGroupsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count grupos',
+      one: '1 grupo',
+      zero: '0 grupos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileMyGroupsTitle => 'Meus grupos';
+
+  @override
+  String profileGroupLabel(int number) {
+    return 'Grupo $number';
+  }
+
+  @override
+  String get profileMoreGroupsButtonLabel => 'Ver mais grupos';
+
+  @override
+  String get profileNoGroups => 'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get profileReviewedBooksTitle => 'Livros avaliados';
+
+  @override
+  String get profileNoReviewedBooks => 'Você ainda não avaliou nenhum livro.';
+
+  @override
+  String get profileSeeAllBooks => 'Ver todos os livros';
+
+  @override
+  String get profileSummaryLoading => 'Carregando seus grupos e livros';
+
+  @override
+  String get profileSummaryLoadError =>
+      'Não foi possível carregar seus grupos e livros.';
+
+  @override
+  String get meetingPresenceEmptyConfirmTitle => 'Ninguém compareceu?';
+
+  @override
+  String get meetingPresenceEmptyConfirmMessage =>
+      'Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.';
+
+  @override
+  String get meetingPresenceEmptyConfirmCancel => 'Voltar';
+
+  @override
+  String get meetingPresenceEmptyConfirmConfirm => 'Confirmar mesmo assim';
+
+  @override
+  String profileClubTimeMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meses no clube',
+      one: '1 mês no clube',
+      zero: 'Chegou ao clube este mês',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profileClubTimeYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count anos no clube',
+      one: '1 ano no clube',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String meetingGuestRequestsAccess(int count) {
+    return 'Pedidos de participação ($count)';
+  }
+
+  @override
+  String get meetingGuestRequestsTitle => 'Pedidos de participação';
+
+  @override
+  String get meetingGuestRequestsLoading =>
+      'Carregando pedidos de participação';
+
+  @override
+  String get meetingGuestRequestsEmpty => 'Nenhum pedido de participação';
+
+  @override
+  String get meetingGuestRequestsLoadError =>
+      'Não foi possível carregar os pedidos de participação.';
+
+  @override
+  String get meetingGuestRequestsNotReviewer =>
+      'Só a anfitriã do encontro ou a coordenação do grupo pode ver os pedidos de participação.';
+
+  @override
+  String get meetingGuestRequestsMeetingUnavailable =>
+      'Este encontro não está disponível.';
+
+  @override
+  String meetingGuestRequestsRequestedAt(DateTime date, DateTime time) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return 'Pedido em $dateString às $timeString';
+  }
+
+  @override
+  String get meetingGuestRequestsApprove => 'Aceitar';
+
+  @override
+  String get meetingGuestRequestsReject => 'Recusar';
+
+  @override
+  String get meetingGuestRequestsApproveDialogTitle => 'Aceitar pedido?';
+
+  @override
+  String meetingGuestRequestsApproveDialogMessage(String name) {
+    return '$name vai participar deste encontro como convidada.';
+  }
+
+  @override
+  String get meetingGuestRequestsRejectDialogTitle => 'Recusar pedido?';
+
+  @override
+  String meetingGuestRequestsRejectDialogMessage(String name) {
+    return '$name não vai participar deste encontro, mas poderá pedir de novo.';
+  }
+
+  @override
+  String get meetingGuestRequestsDialogCancel => 'Cancelar';
+
+  @override
+  String get meetingGuestRequestsApproved =>
+      'Pedido aceito! A leitora foi confirmada no encontro.';
+
+  @override
+  String get meetingGuestRequestsRejected => 'Pedido recusado.';
+
+  @override
+  String get meetingGuestRequestsAlreadyReviewed =>
+      'Este pedido já foi respondido.';
+
+  @override
+  String get meetingGuestRequestsNotFound =>
+      'Este pedido não está mais disponível.';
+
+  @override
+  String get meetingGuestRequestsNoLongerValid =>
+      'Este pedido não pode mais ser aceito: o encontro foi encerrado, a conta da leitora foi desativada ou ela já faz parte do grupo.';
+
+  @override
+  String get meetingGuestRequestsReviewError =>
+      'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String meetingGuestRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de participação de $name';
+  }
+
+  @override
+  String meetingGuestRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de participação de $name';
+  }
+
+  @override
+  String get meetingAttendanceGuestTag => 'Convidada';
 
   @override
   String get calendarGuestRequest => 'Solicitar participação';

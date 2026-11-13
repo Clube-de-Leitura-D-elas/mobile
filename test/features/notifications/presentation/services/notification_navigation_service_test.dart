@@ -8,6 +8,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/routes/meeting_guest_requests_route_paths.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 import 'package:mocktail/mocktail.dart';
@@ -78,6 +79,28 @@ void main() {
         'type': 'GROUP_JOIN_REQUESTED',
       });
       expect(route, isNull);
+    });
+
+    test('a MEETING_GUEST_REQUESTED push opens the guest requests of the '
+        'meeting', () {
+      final route = NotificationNavigationService.parseRouteFromData({
+        'type': 'MEETING_GUEST_REQUESTED',
+        'meeting_id': ' meeting-789 ',
+        'group_id': 'group-456',
+      });
+      expect(
+        route,
+        MeetingGuestRequestsRoutePaths.guestRequestsFor('meeting-789'),
+      );
+    });
+
+    test('a MEETING_GUEST_REQUESTED push without meeting_id falls back to '
+        'the group', () {
+      final route = NotificationNavigationService.parseRouteFromData({
+        'type': 'MEETING_GUEST_REQUESTED',
+        'group_id': 'group-456',
+      });
+      expect(route, '${GroupRoutePaths.groupDetails}?group_id=group-456');
     });
 
     test('a GROUP_JOIN_APPROVED push opens the public group page', () {

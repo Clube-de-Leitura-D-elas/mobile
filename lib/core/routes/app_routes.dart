@@ -14,6 +14,7 @@ import 'package:mobile/features/group_discovery/presentation/routes/group_discov
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_routes.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/routes/meeting_guest_requests_routes.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_routes.dart';
 import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
@@ -55,6 +56,7 @@ abstract class AppRoutes {
         ...NotificationRoutes.routes,
         ...RaffleRoutes.routes,
         ...QuickAccessRoutes.routes,
+        ...MeetingGuestRequestsRoutes.routes,
       ],
       errorPageBuilder: (context, state) => AppPageTransitions.createFadePage(
         state: state,

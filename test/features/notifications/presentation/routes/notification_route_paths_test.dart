@@ -3,6 +3,7 @@ import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/routes/meeting_guest_requests_route_paths.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_entity.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_type.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_route_paths.dart';
@@ -90,6 +91,20 @@ void main() {
           ),
         ),
         GroupDiscoveryRoutePaths.publicGroupFor('g1'),
+      );
+    });
+
+    test('a guest request opens the meeting guest requests list, not the '
+        'meeting', () {
+      expect(
+        NotificationRoutePaths.destinationFor(
+          _notification(
+            meetingId: 'm1',
+            groupId: 'g1',
+            type: NotificationType.meetingGuestRequested,
+          ),
+        ),
+        MeetingGuestRequestsRoutePaths.guestRequestsFor('m1'),
       );
     });
 

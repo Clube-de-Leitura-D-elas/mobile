@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
+import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
@@ -30,7 +31,11 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
             ? MeetingPresenceClosed(sorted)
             : MeetingPresenceEditing(
                 attendees: sorted,
-                marked: {for (final a in sorted) a.id},
+                marked: {
+                  for (final a in sorted)
+                    if (a.invitationStatus == MeetingInvitationStatus.confirmed)
+                      a.id,
+                },
               ),
       );
     }, (failure) => emit(MeetingPresenceError(failure)));
@@ -83,6 +88,7 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
                 presenceStatus: current.marked.contains(a.id)
                     ? MeetingPresenceStatus.present
                     : MeetingPresenceStatus.absent,
+                isGuest: a.isGuest,
               ),
           ], confirmed: true),
         );

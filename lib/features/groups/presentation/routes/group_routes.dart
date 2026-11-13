@@ -27,6 +27,7 @@ import 'package:mobile/features/groups/presentation/pages/meeting_edit_route_pag
 import 'package:mobile/features/groups/presentation/pages/meeting_presence_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_tasks_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_cubit.dart';
 
 abstract class GroupRoutes {
   static const groupDetails = GroupRoutePaths.groupDetails;
@@ -54,6 +55,9 @@ abstract class GroupRoutes {
               BlocProvider(
                 create: (_) =>
                     serviceLocator<MeetingPhotosCubit>()..load(meetingId),
+              ),
+              BlocProvider(
+                create: (_) => serviceLocator<MeetingGuestRequestsCubit>(),
               ),
             ],
             child: const MeetingDetailsPage(),
@@ -113,6 +117,9 @@ abstract class GroupRoutes {
               BlocProvider(
                 create: (_) =>
                     serviceLocator<MeetingPhotosCubit>()..load(meetingId),
+              ),
+              BlocProvider(
+                create: (_) => serviceLocator<MeetingGuestRequestsCubit>(),
               ),
             ],
             child: const MeetingDetailsPage(),

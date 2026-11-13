@@ -12,6 +12,7 @@ class MeetingDetailsEntity extends Equatable {
   final String? description;
   final String? coverPhotoUrl;
   final bool canEdit;
+  final String? status;
 
   const MeetingDetailsEntity({
     required this.id,
@@ -25,7 +26,13 @@ class MeetingDetailsEntity extends Equatable {
     this.description,
     this.coverPhotoUrl,
     this.canEdit = false,
+    this.status,
   });
+
+  bool acceptsGuestRequests(DateTime now) {
+    final date = this.date;
+    return status == 'SCHEDULED' && date != null && date.isAfter(now);
+  }
 
   @override
   List<Object?> get props => [
@@ -40,5 +47,6 @@ class MeetingDetailsEntity extends Equatable {
     description,
     coverPhotoUrl,
     canEdit,
+    status,
   ];
 }

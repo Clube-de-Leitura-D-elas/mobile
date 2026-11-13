@@ -4,15 +4,13 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
 import 'package:mobile/features/profile/presentation/widgets/edit_profile_photo_dialog.dart';
 
-/// Foto, nome e tempo no clube da leitora, no topo do perfil.
+/// Foto, nome, livros lidos e grupos da leitora, no topo do perfil.
 class ProfileHeader extends StatefulWidget {
   final String name;
 
-  /// Entrada no clube. Sem ela, o tempo no clube não aparece.
-  final DateTime? joinedAt;
-
-  /// Relógio do cálculo do tempo no clube; os testes passam uma data fixa.
-  final DateTime Function() now;
+  /// Contadores do resumo do perfil. Enquanto não carregam, não aparecem.
+  final int? booksReadCount;
+  final int? groupsCount;
 
   /// Foto atual do perfil.
   final String? photoUrl;
@@ -24,24 +22,13 @@ class ProfileHeader extends StatefulWidget {
   const ProfileHeader({
     super.key,
     required this.name,
-    this.joinedAt,
-    this.now = DateTime.now,
+    this.booksReadCount,
+    this.groupsCount,
     this.photoUrl,
     this.onPhotoChanged,
   });
 
   static const double avatarDiameter = 96;
-
-  /// Meses completos entre [from] e [to], nunca negativo.
-  static int monthsBetween(DateTime from, DateTime to) {
-    var months = (to.year - from.year) * 12 + to.month - from.month;
-    // Último dia do mês fecha o mês: de 31/01 a 28/02 já é 1 mês.
-    final lastDayOfMonth = DateTime(to.year, to.month + 1, 0).day;
-    if (to.day < from.day && to.day < lastDayOfMonth) {
-      months--;
-    }
-    return months < 0 ? 0 : months;
-  }
 
   @override
   State<ProfileHeader> createState() => _ProfileHeaderState();
@@ -74,31 +61,14 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     widget.onPhotoChanged?.call(updatedUrl);
   }
 
-  String? _clubTime(BuildContext context) {
-    final joinedAt = widget.joinedAt;
-    if (joinedAt == null) {
-      return null;
-    }
-
-    final l10n = context.l10n;
-    // O created_at chega em UTC; a virada do mês é a do aparelho.
-    final months = ProfileHeader.monthsBetween(
-      joinedAt.toLocal(),
-      widget.now().toLocal(),
-    );
-
-    return months < 12
-        ? l10n.profileClubTimeMonths(months)
-        : l10n.profileClubTimeYears(months ~/ 12);
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final spacing = context.spacing;
     final typography = context.typography;
     final l10n = context.l10n;
-    final clubTime = _clubTime(context);
+    final booksReadCount = widget.booksReadCount;
+    final groupsCount = widget.groupsCount;
 
     return Row(
       children: [
@@ -125,16 +95,55 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 widget.name,
                 style: typography.headingH3.copyWith(color: colors.textDefault),
               ),
-              if (clubTime != null) ...[
+              if (booksReadCount != null) ...[
                 SizedBox(height: spacing.s4),
-                Text(
-                  clubTime,
-                  style: typography.bodyDefault.copyWith(
-                    color: colors.textMuted,
-                  ),
+                _ProfileStat(
+                  icon: AppIcons.book,
+                  text: l10n.profileBooksReadCount(booksReadCount),
+                ),
+              ],
+              if (groupsCount != null) ...[
+                SizedBox(height: spacing.s4),
+                _ProfileStat(
+                  icon: AppIcons.group,
+                  text: l10n.profileGroupsCount(groupsCount),
                 ),
               ],
             ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileStat extends StatelessWidget {
+  const _ProfileStat({required this.icon, required this.text});
+
+  final AppIconAsset icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final spacing = context.spacing;
+
+    return Row(
+      children: [
+        ExcludeSemantics(
+          child: AppIcon(
+            icon: icon,
+            size: spacing.s16,
+            color: colors.textMuted,
+          ),
+        ),
+        SizedBox(width: spacing.s8),
+        Flexible(
+          child: Text(
+            text,
+            style: context.typography.bodySmall.copyWith(
+              color: colors.textMuted,
+            ),
           ),
         ),
       ],

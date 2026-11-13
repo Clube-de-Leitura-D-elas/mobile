@@ -7,6 +7,7 @@ import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/routes/meeting_guest_requests_route_paths.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 
 class NotificationNavigationService {
@@ -65,6 +66,13 @@ class NotificationNavigationService {
     final screen = data['screen'] as String?;
     final groupId = data['group_id'] as String?;
     final meetingId = data['meeting_id'] as String?;
+
+    // Vem com `meeting_id`: precisa ser checada antes do detalhe do encontro.
+    if (data['type'] == 'MEETING_GUEST_REQUESTED' &&
+        meetingId != null &&
+        meetingId.trim().isNotEmpty) {
+      return MeetingGuestRequestsRoutePaths.guestRequestsFor(meetingId.trim());
+    }
 
     // Vêm com `meeting_id`, mas a convidada não abre o detalhe de membro.
     if (data['type'] == 'MEETING_GUEST_APPROVED' ||
