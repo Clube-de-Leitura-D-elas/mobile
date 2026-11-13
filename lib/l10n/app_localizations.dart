@@ -2329,6 +2329,120 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Rascunho'**
   String get calendarMeetingDraftTag;
+
+  /// Título da tela de grupo para quem não é membro, enquanto o grupo não carregou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do grupo'**
+  String get publicGroupTitle;
+
+  /// Rótulo acessível do carregamento da tela de grupo para quem não é membro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando grupo'**
+  String get publicGroupLoading;
+
+  /// Erro ao buscar o grupo na tela de grupo para quem não é membro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o grupo.'**
+  String get publicGroupLoadError;
+
+  /// Grupo inexistente, inativo ou de outra cidade.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo não está disponível.'**
+  String get publicGroupUnavailable;
+
+  /// Botão para pedir entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar entrada'**
+  String get publicGroupRequestJoin;
+
+  /// Botão para pedir entrada de novo depois de um pedido recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedir novamente'**
+  String get publicGroupRequestAgain;
+
+  /// Situação de quem pediu entrada e espera a coordenação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguardando aprovação'**
+  String get publicGroupStatusRequested;
+
+  /// Situação de quem teve o pedido de entrada recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitação recusada'**
+  String get publicGroupStatusRejected;
+
+  /// Situação de quem foi convidada e ainda não terminou de criar a conta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguardando criação de conta'**
+  String get publicGroupStatusPending;
+
+  /// Situação de quem já é membro do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já faz parte deste grupo'**
+  String get publicGroupStatusMember;
+
+  /// Botão que abre os detalhes completos do grupo para quem já é membro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver grupo'**
+  String get publicGroupOpenMemberDetails;
+
+  /// Título da confirmação do pedido de entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar entrada?'**
+  String get publicGroupJoinDialogTitle;
+
+  /// Texto da confirmação do pedido de entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'A coordenação do Grupo {number} vai analisar o seu pedido.'**
+  String publicGroupJoinDialogMessage(int number);
+
+  /// Botão que fecha a confirmação sem pedir entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get publicGroupJoinDialogCancel;
+
+  /// Botão que confirma o pedido de entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar'**
+  String get publicGroupJoinDialogConfirm;
+
+  /// Aviso depois de pedir entrada no grupo com sucesso.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido enviado! Agora é só aguardar a aprovação.'**
+  String get publicGroupJoinSuccess;
+
+  /// Pedido recusado porque a leitora já pediu ou já é membro (HTTP 409); a tela recarrega o status.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já pediu entrada ou já faz parte deste grupo.'**
+  String get publicGroupJoinAlreadyRequested;
+
+  /// Pedido recusado porque o grupo ainda não tem coordenadora (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo ainda não aceita pedidos de entrada.'**
+  String get publicGroupJoinNoCoordinator;
+
+  /// Erro genérico ao pedir entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível enviar o pedido. Tente novamente.'**
+  String get publicGroupJoinError;
 }
 
 class _AppLocalizationsDelegate

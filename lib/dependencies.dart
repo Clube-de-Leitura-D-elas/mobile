@@ -19,6 +19,9 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/calendar/data/repositories/calendar_repository_impl.dart';
 import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
+import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
+import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/public_group_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
@@ -228,6 +231,19 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<CalendarCubit>(
       () => CalendarCubit(repository: serviceLocator<CalendarRepository>()),
+    );
+
+    // --- Group Discovery Feature ---
+    serviceLocator.registerLazySingleton<GroupDiscoveryRepository>(
+      () => GroupDiscoveryRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<PublicGroupCubit>(
+      () => PublicGroupCubit(
+        repository: serviceLocator<GroupDiscoveryRepository>(),
+      ),
     );
 
     // --- Raffles Feature ---

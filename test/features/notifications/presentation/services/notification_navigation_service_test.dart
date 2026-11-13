@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
@@ -45,6 +46,27 @@ void main() {
         );
       },
     );
+
+    test('a rejected join request push opens the public group page', () {
+      final route = NotificationNavigationService.parseRouteFromData({
+        'type': 'GROUP_JOIN_REJECTED',
+        'group_id': ' group-456 ',
+      });
+      expect(
+        route,
+        '${GroupDiscoveryRoutePaths.publicGroup}?group_id=group-456',
+      );
+    });
+
+    for (final type in ['GROUP_JOIN_REQUESTED', 'GROUP_JOIN_APPROVED']) {
+      test('a $type push opens the member group details', () {
+        final route = NotificationNavigationService.parseRouteFromData({
+          'type': type,
+          'group_id': 'group-456',
+        });
+        expect(route, '${GroupRoutePaths.groupDetails}?group_id=group-456');
+      });
+    }
 
     test('returns null when data is empty or invalid', () {
       final route = NotificationNavigationService.parseRouteFromData({});

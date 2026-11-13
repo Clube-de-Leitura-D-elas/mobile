@@ -1,15 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_entity.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_type.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_route_paths.dart';
 
-NotificationEntity _notification({String? meetingId, String? groupId}) {
+NotificationEntity _notification({
+  String? meetingId,
+  String? groupId,
+  NotificationType type = NotificationType.meetingReminder,
+}) {
   return NotificationEntity(
     id: 'n1',
     title: 'Título',
     message: 'Mensagem',
-    type: NotificationType.meetingReminder,
+    type: type,
     date: DateTime.utc(2026, 11, 5),
     isRead: false,
     meetingId: meetingId,
@@ -34,6 +39,32 @@ void main() {
         '${GroupRoutePaths.groupDetails}?group_id=g1',
       );
     });
+
+    test('a rejected join request opens the public group page', () {
+      expect(
+        NotificationRoutePaths.destinationFor(
+          _notification(
+            groupId: 'g1',
+            type: NotificationType.groupJoinRejected,
+          ),
+        ),
+        '${GroupDiscoveryRoutePaths.publicGroup}?group_id=g1',
+      );
+    });
+
+    for (final type in [
+      NotificationType.groupJoinRequested,
+      NotificationType.groupJoinApproved,
+    ]) {
+      test('${type.name} opens the member group details', () {
+        expect(
+          NotificationRoutePaths.destinationFor(
+            _notification(groupId: 'g1', type: type),
+          ),
+          '${GroupRoutePaths.groupDetails}?group_id=g1',
+        );
+      });
+    }
 
     test('returns null without a destination', () {
       expect(NotificationRoutePaths.destinationFor(_notification()), isNull);

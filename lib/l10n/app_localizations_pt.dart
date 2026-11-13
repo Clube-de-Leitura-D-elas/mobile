@@ -1398,6 +1398,69 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get calendarMeetingDraftTag => 'Rascunho';
+
+  @override
+  String get publicGroupTitle => 'Detalhes do grupo';
+
+  @override
+  String get publicGroupLoading => 'Carregando grupo';
+
+  @override
+  String get publicGroupLoadError => 'Não foi possível carregar o grupo.';
+
+  @override
+  String get publicGroupUnavailable => 'Este grupo não está disponível.';
+
+  @override
+  String get publicGroupRequestJoin => 'Solicitar entrada';
+
+  @override
+  String get publicGroupRequestAgain => 'Pedir novamente';
+
+  @override
+  String get publicGroupStatusRequested => 'Aguardando aprovação';
+
+  @override
+  String get publicGroupStatusRejected => 'Solicitação recusada';
+
+  @override
+  String get publicGroupStatusPending => 'Aguardando criação de conta';
+
+  @override
+  String get publicGroupStatusMember => 'Você já faz parte deste grupo';
+
+  @override
+  String get publicGroupOpenMemberDetails => 'Ver grupo';
+
+  @override
+  String get publicGroupJoinDialogTitle => 'Solicitar entrada?';
+
+  @override
+  String publicGroupJoinDialogMessage(int number) {
+    return 'A coordenação do Grupo $number vai analisar o seu pedido.';
+  }
+
+  @override
+  String get publicGroupJoinDialogCancel => 'Cancelar';
+
+  @override
+  String get publicGroupJoinDialogConfirm => 'Solicitar';
+
+  @override
+  String get publicGroupJoinSuccess =>
+      'Pedido enviado! Agora é só aguardar a aprovação.';
+
+  @override
+  String get publicGroupJoinAlreadyRequested =>
+      'Você já pediu entrada ou já faz parte deste grupo.';
+
+  @override
+  String get publicGroupJoinNoCoordinator =>
+      'Este grupo ainda não aceita pedidos de entrada.';
+
+  @override
+  String get publicGroupJoinError =>
+      'Não foi possível enviar o pedido. Tente novamente.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2426,4 +2489,67 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get calendarMeetingDraftTag => 'Rascunho';
+
+  @override
+  String get publicGroupTitle => 'Detalhes do grupo';
+
+  @override
+  String get publicGroupLoading => 'Carregando grupo';
+
+  @override
+  String get publicGroupLoadError => 'Não foi possível carregar o grupo.';
+
+  @override
+  String get publicGroupUnavailable => 'Este grupo não está disponível.';
+
+  @override
+  String get publicGroupRequestJoin => 'Solicitar entrada';
+
+  @override
+  String get publicGroupRequestAgain => 'Pedir novamente';
+
+  @override
+  String get publicGroupStatusRequested => 'Aguardando aprovação';
+
+  @override
+  String get publicGroupStatusRejected => 'Solicitação recusada';
+
+  @override
+  String get publicGroupStatusPending => 'Aguardando criação de conta';
+
+  @override
+  String get publicGroupStatusMember => 'Você já faz parte deste grupo';
+
+  @override
+  String get publicGroupOpenMemberDetails => 'Ver grupo';
+
+  @override
+  String get publicGroupJoinDialogTitle => 'Solicitar entrada?';
+
+  @override
+  String publicGroupJoinDialogMessage(int number) {
+    return 'A coordenação do Grupo $number vai analisar o seu pedido.';
+  }
+
+  @override
+  String get publicGroupJoinDialogCancel => 'Cancelar';
+
+  @override
+  String get publicGroupJoinDialogConfirm => 'Solicitar';
+
+  @override
+  String get publicGroupJoinSuccess =>
+      'Pedido enviado! Agora é só aguardar a aprovação.';
+
+  @override
+  String get publicGroupJoinAlreadyRequested =>
+      'Você já pediu entrada ou já faz parte deste grupo.';
+
+  @override
+  String get publicGroupJoinNoCoordinator =>
+      'Este grupo ainda não aceita pedidos de entrada.';
+
+  @override
+  String get publicGroupJoinError =>
+      'Não foi possível enviar o pedido. Tente novamente.';
 }

@@ -22,6 +22,7 @@ import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
 import 'package:mobile/features/calendar/presentation/widgets/calendar_list_skeleton.dart';
 import 'package:mobile/features/calendar/presentation/widgets/calendar_meeting_tile.dart';
 import 'package:mobile/features/calendar/presentation/widgets/calendar_month_grid.dart';
+import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -108,10 +109,14 @@ void main() {
             child: const CalendarPage(),
           ),
         ),
-        GoRoute(
-          path: GroupRoutePaths.groupDetails,
-          builder: (_, state) => Text('destino: ${state.uri}'),
-        ),
+        for (final path in [
+          GroupRoutePaths.groupDetails,
+          GroupDiscoveryRoutePaths.publicGroup,
+        ])
+          GoRoute(
+            path: path,
+            builder: (_, state) => Text('destino: ${state.uri}'),
+          ),
       ],
     );
 
@@ -309,7 +314,7 @@ void main() {
       );
     });
 
-    testWidgets('a non-member meeting has no arrow and does not navigate', (
+    testWidgets('opens the public group page of a non-member meeting', (
       tester,
     ) async {
       await pumpPage(tester);
@@ -318,21 +323,20 @@ void main() {
       final tile = tileOf('other');
       expect(
         find.descendant(of: tile, matching: find.byIcon(Icons.chevron_right)),
-        findsNothing,
+        findsOneWidget,
       );
       expect(
-        find.descendant(
-          of: tileOf('member'),
-          matching: find.byIcon(Icons.chevron_right),
-        ),
-        findsOneWidget,
+        tester.getSemantics(tile),
+        isSemantics(isButton: true, hasTapAction: true),
       );
 
       await tester.tap(tile);
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('destino:'), findsNothing);
-      expect(find.byType(CalendarPage), findsOneWidget);
+      expect(
+        find.text('destino: /group-public?group_id=group-other'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('loads the next month with its grid range', (tester) async {
