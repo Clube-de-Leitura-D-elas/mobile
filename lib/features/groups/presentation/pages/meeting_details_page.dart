@@ -16,7 +16,16 @@ class MeetingDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MeetingDetailsCubit, MeetingDetailsState>(
+    return BlocConsumer<MeetingDetailsCubit, MeetingDetailsState>(
+      listenWhen: (_, current) =>
+          current is MeetingDetailsLoaded &&
+          current.meeting.canEdit &&
+          current.meeting.acceptsGuestRequests(DateTime.now()),
+      listener: (context, state) {
+        if (state is MeetingDetailsLoaded) {
+          context.read<MeetingGuestRequestsCubit>().load(state.meeting.id);
+        }
+      },
       builder: (context, state) => switch (state) {
         MeetingDetailsLoading() => Scaffold(
           appBar: ScreenHeader.back(title: context.l10n.meetingDetailsHeader),
@@ -26,24 +35,26 @@ class MeetingDetailsPage extends StatelessWidget {
           appBar: ScreenHeader.back(title: context.l10n.meetingDetailsHeader),
           body: GroupErrorState(
             failure: failure,
-            onRetry: () {
-              context.read<MeetingDetailsCubit>().retry();
-              context.read<MeetingGuestRequestsCubit>().retry();
-            },
+            onRetry: () => context.read<MeetingDetailsCubit>().retry(),
           ),
         ),
         MeetingDetailsLoaded(:final meeting) => MeetingDetailsScreen(
           meeting: meeting,
           canEdit: meeting.canEdit,
-          guestRequestsAccess: GuestRequestsAccessButton(
-            onPressed: () async {
-              await context.push(
-                MeetingGuestRequestsRoutePaths.guestRequestsFor(meeting.id),
-              );
-              if (!context.mounted) return;
-              await context.read<MeetingGuestRequestsCubit>().refresh();
-            },
-          ),
+          guestRequestsAccess: meeting.canEdit
+              ? GuestRequestsAccessButton(
+                  acceptsGuests: meeting.acceptsGuestRequests(DateTime.now()),
+                  onPressed: () async {
+                    await context.push(
+                      MeetingGuestRequestsRoutePaths.guestRequestsFor(
+                        meeting.id,
+                      ),
+                    );
+                    if (!context.mounted) return;
+                    await context.read<MeetingGuestRequestsCubit>().refresh();
+                  },
+                )
+              : null,
         ),
       },
     );

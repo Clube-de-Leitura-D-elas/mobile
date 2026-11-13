@@ -6,13 +6,21 @@ import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meetin
 import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_state.dart';
 
 /// Acesso aos pedidos de participação no detalhe do encontro. Só aparece para
-/// a anfitriã e a coordenação; para as outras leitoras, e se a consulta falhar,
-/// não ocupa espaço.
+/// a anfitriã e a coordenação, e enquanto o encontro ainda aceita convidadas;
+/// se a consulta falhar, não ocupa espaço.
 class GuestRequestsAccessButton extends StatefulWidget {
   /// Abre a lista; o botão ignora novos toques até ela terminar.
   final Future<void> Function() onPressed;
 
-  const GuestRequestsAccessButton({super.key, required this.onPressed});
+  /// Falso quando o encontro já não aceita convidadas (já aconteceu ou saiu de
+  /// agendado).
+  final bool acceptsGuests;
+
+  const GuestRequestsAccessButton({
+    super.key,
+    required this.onPressed,
+    this.acceptsGuests = true,
+  });
 
   @override
   State<GuestRequestsAccessButton> createState() =>
@@ -34,6 +42,7 @@ class _GuestRequestsAccessButtonState extends State<GuestRequestsAccessButton> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.acceptsGuests) return const SizedBox.shrink();
     return BlocBuilder<MeetingGuestRequestsCubit, MeetingGuestRequestsState>(
       buildWhen: (previous, current) =>
           previous.status != current.status ||

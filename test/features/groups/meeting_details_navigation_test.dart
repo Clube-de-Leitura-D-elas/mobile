@@ -54,12 +54,9 @@ void main() {
         photoPicker: MockPhotoPicker(),
       ),
     );
-    when(
-      () => mockRepository.getMeetingPhotos(any()),
-    ).thenAnswer(
-      (_) async => const Success(
-        MeetingPhotosEntity(photos: [], canAddPhotos: true),
-      ),
+    when(() => mockRepository.getMeetingPhotos(any())).thenAnswer(
+      (_) async =>
+          const Success(MeetingPhotosEntity(photos: [], canAddPhotos: true)),
     );
   });
 
@@ -165,12 +162,15 @@ void main() {
     ) async {
       const meetingId = '55555555-5555-5555-5555-555555555555';
       when(() => mockRepository.getMeetingDetails(meetingId)).thenAnswer(
-        (_) async => const Success(
+        (_) async => Success(
           MeetingDetailsEntity(
             id: meetingId,
             number: 3,
             bookTitle: 'Dom Casmurro',
             hostName: 'Beatriz Souza',
+            canEdit: true,
+            status: 'SCHEDULED',
+            date: DateTime.now().add(const Duration(days: 30)),
           ),
         ),
       );

@@ -12,6 +12,7 @@ import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_details_page.dart';
+import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/meeting_guest_requests/domain/entities/meeting_guest_request_entity.dart';
 import 'package:mobile/features/meeting_guest_requests/domain/entities/meeting_guest_requests_failure.dart';
 import 'package:mobile/features/meeting_guest_requests/domain/repository/meeting_guest_requests_repository.dart';
@@ -29,11 +30,14 @@ class MockPhotoPicker extends Mock implements PhotoPicker {}
 
 const _meetingId = '44444444-4444-4444-4444-444444444444';
 
-const _meeting = MeetingDetailsEntity(
+final _meeting = MeetingDetailsEntity(
   id: _meetingId,
   number: 12,
   bookTitle: 'Dom Casmurro',
   hostName: 'Beatriz Souza',
+  canEdit: true,
+  status: 'SCHEDULED',
+  date: DateTime.now().add(const Duration(days: 30)),
 );
 
 MeetingGuestRequestEntity _request(String id) =>
@@ -52,8 +56,14 @@ void main() {
     );
     when(
       () => groupRepository.getMeetingDetails(_meetingId),
-    ).thenAnswer((_) async => const Success(_meeting));
+    ).thenAnswer((_) async => Success(_meeting));
   });
+
+  void stubMeeting(MeetingDetailsEntity meeting) {
+    when(
+      () => groupRepository.getMeetingDetails(_meetingId),
+    ).thenAnswer((_) async => Success(meeting));
+  }
 
   Future<GoRouter> pumpDetails(WidgetTester tester) async {
     final router = GoRouter(
@@ -76,10 +86,19 @@ void main() {
               BlocProvider(
                 create: (_) => MeetingGuestRequestsCubit(
                   repository: guestRequestsRepository,
-                )..load(_meetingId),
+                ),
               ),
             ],
             child: const MeetingDetailsPage(),
+          ),
+        ),
+        GoRoute(
+          path: GroupRoutePaths.meetingEdit,
+          builder: (context, _) => Scaffold(
+            body: TextButton(
+              onPressed: () => context.pop(true),
+              child: const Text('close edit'),
+            ),
           ),
         ),
         GoRoute(
@@ -126,6 +145,74 @@ void main() {
     await pumpDetails(tester);
 
     expect(find.text('Pedidos de participação (0)'), findsOneWidget);
+  });
+
+  testWidgets(
+    'does not ask for the requests when the meeting cannot be edited',
+    (tester) async {
+      stubMeeting(
+        MeetingDetailsEntity(
+          id: _meetingId,
+          number: 12,
+          bookTitle: 'Dom Casmurro',
+          hostName: 'Beatriz Souza',
+          status: 'SCHEDULED',
+          date: DateTime.now().add(const Duration(days: 30)),
+        ),
+      );
+
+      await pumpDetails(tester);
+
+      verifyNever(() => guestRequestsRepository.getRequests(any()));
+      expect(find.textContaining('Pedidos de participação'), findsNothing);
+      expect(find.text('Encontro 12'), findsWidgets);
+    },
+  );
+
+  testWidgets('hides the access when the meeting date has passed', (
+    tester,
+  ) async {
+    stubMeeting(
+      MeetingDetailsEntity(
+        id: _meetingId,
+        number: 12,
+        bookTitle: 'Dom Casmurro',
+        hostName: 'Beatriz Souza',
+        canEdit: true,
+        status: 'SCHEDULED',
+        date: DateTime.now().subtract(const Duration(hours: 1)),
+      ),
+    );
+    when(
+      () => guestRequestsRepository.getRequests(_meetingId),
+    ).thenAnswer((_) async => Success([_request('a')]));
+
+    await pumpDetails(tester);
+
+    expect(find.textContaining('Pedidos de participação'), findsNothing);
+  });
+
+  testWidgets('hides the access when the meeting is no longer scheduled', (
+    tester,
+  ) async {
+    stubMeeting(
+      MeetingDetailsEntity(
+        id: _meetingId,
+        number: 12,
+        bookTitle: 'Dom Casmurro',
+        hostName: 'Beatriz Souza',
+        canEdit: true,
+        status: 'CREATED',
+        date: DateTime.now().add(const Duration(days: 30)),
+      ),
+    );
+    when(
+      () => guestRequestsRepository.getRequests(_meetingId),
+    ).thenAnswer((_) async => Success([_request('a')]));
+
+    await pumpDetails(tester);
+
+    expect(find.textContaining('Pedidos de participação'), findsNothing);
   });
 
   testWidgets('hides the access from a reader who cannot decide (403)', (
@@ -208,29 +295,47 @@ void main() {
     verify(() => guestRequestsRepository.getRequests(_meetingId)).called(2);
   });
 
-  testWidgets('retrying the meeting also checks the requests again', (
+  testWidgets('checks the requests only once the meeting loads after a retry', (
     tester,
   ) async {
     var detailsCalls = 0;
-    var requestCalls = 0;
     when(() => groupRepository.getMeetingDetails(_meetingId)).thenAnswer(
       (_) async => detailsCalls++ == 0
           ? const Failure(GroupNetworkFailure())
-          : const Success(_meeting),
+          : Success(_meeting),
     );
-    when(() => guestRequestsRepository.getRequests(_meetingId)).thenAnswer(
-      (_) async => requestCalls++ == 0
-          ? const Failure(MeetingGuestRequestsNetworkFailure())
-          : Success([_request('a')]),
-    );
+    when(
+      () => guestRequestsRepository.getRequests(_meetingId),
+    ).thenAnswer((_) async => Success([_request('a')]));
 
     await pumpDetails(tester);
     expect(find.text('Tentar novamente'), findsOneWidget);
+    verifyNever(() => guestRequestsRepository.getRequests(any()));
 
     await tester.tap(find.text('Tentar novamente'));
     await tester.pumpAndSettle();
 
     expect(find.text('Pedidos de participação (1)'), findsOneWidget);
-    expect(requestCalls, 2);
+    verify(() => guestRequestsRepository.getRequests(_meetingId)).called(1);
+  });
+
+  testWidgets('saving an edit reloads the pending count', (tester) async {
+    var calls = 0;
+    when(() => guestRequestsRepository.getRequests(_meetingId)).thenAnswer(
+      (_) async => calls++ == 0
+          ? Success([_request('a'), _request('b')])
+          : Success([_request('b')]),
+    );
+
+    await pumpDetails(tester);
+    expect(find.text('Pedidos de participação (2)'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Editar encontro'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('close edit'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Pedidos de participação (1)'), findsOneWidget);
+    verify(() => guestRequestsRepository.getRequests(_meetingId)).called(2);
   });
 }

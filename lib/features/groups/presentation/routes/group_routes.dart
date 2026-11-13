@@ -57,9 +57,7 @@ abstract class GroupRoutes {
                     serviceLocator<MeetingPhotosCubit>()..load(meetingId),
               ),
               BlocProvider(
-                create: (_) =>
-                    serviceLocator<MeetingGuestRequestsCubit>()
-                      ..load(meetingId),
+                create: (_) => serviceLocator<MeetingGuestRequestsCubit>(),
               ),
             ],
             child: const MeetingDetailsPage(),
@@ -121,9 +119,7 @@ abstract class GroupRoutes {
                     serviceLocator<MeetingPhotosCubit>()..load(meetingId),
               ),
               BlocProvider(
-                create: (_) =>
-                    serviceLocator<MeetingGuestRequestsCubit>()
-                      ..load(meetingId),
+                create: (_) => serviceLocator<MeetingGuestRequestsCubit>(),
               ),
             ],
             child: const MeetingDetailsPage(),
