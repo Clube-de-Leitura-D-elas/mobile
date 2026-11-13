@@ -1657,5 +1657,489 @@
   "raffleListRefreshedHint": "Atualizamos a lista: confira as participantes e confirme de novo.",
   "@raffleListRefreshedHint": {
     "description": "Depois do motivo, quando a preparação recarrega a lista sozinha."
+  },
+  "calendarMonthName": "{month}",
+  "@calendarMonthName": {
+    "description": "Nome do mês no cabeçalho do calendário; a tela põe a inicial maiúscula.",
+    "placeholders": {
+      "month": {
+        "type": "DateTime",
+        "format": "LLLL"
+      }
+    }
+  },
+  "calendarMonthSemantic": "{month}",
+  "@calendarMonthSemantic": {
+    "description": "Rótulo acessível do mês exibido (\"agosto de 2026\"); a tela põe a inicial maiúscula.",
+    "placeholders": {
+      "month": {
+        "type": "DateTime",
+        "format": "yMMMM"
+      }
+    }
+  },
+  "calendarPreviousMonth": "Mês anterior",
+  "@calendarPreviousMonth": {
+    "description": "Botão que mostra o mês anterior no calendário."
+  },
+  "calendarNextMonth": "Próximo mês",
+  "@calendarNextMonth": {
+    "description": "Botão que mostra o mês seguinte no calendário."
+  },
+  "calendarWeekdayShort": "{weekday, select, sunday{Dom} monday{Seg} tuesday{Ter} wednesday{Qua} thursday{Qui} friday{Sex} saturday{Sáb} other{}}",
+  "@calendarWeekdayShort": {
+    "description": "Abreviação do dia da semana no topo da grade do calendário.",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDaySemantic": "{day}, {count, plural, =0{sem encontros} =1{1 encontro} other{{count} encontros}}",
+  "@calendarDaySemantic": {
+    "description": "Rótulo acessível de um dia da grade com a quantidade de encontros.",
+    "placeholders": {
+      "day": {
+        "type": "DateTime",
+        "format": "MMMMd"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarToday": "Hoje",
+  "@calendarToday": {
+    "description": "Valor acessível do dia de hoje na grade do calendário."
+  },
+  "calendarFilterAll": "Todos",
+  "@calendarFilterAll": {
+    "description": "Filtro do calendário que mostra todos os encontros do mês."
+  },
+  "calendarFilterUpcoming": "Próximos eventos ({count})",
+  "@calendarFilterUpcoming": {
+    "description": "Filtro do calendário com os encontros futuros do mês e a quantidade deles.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarFilterPast": "Eventos passados",
+  "@calendarFilterPast": {
+    "description": "Filtro do calendário com os encontros do mês que já aconteceram."
+  },
+  "calendarSelectedDayTitle": "{day}",
+  "@calendarSelectedDayTitle": {
+    "description": "Título da lista quando um dia está selecionado (\"segunda-feira, 14 de agosto\"); a tela põe a inicial maiúscula.",
+    "placeholders": {
+      "day": {
+        "type": "DateTime",
+        "format": "MMMMEEEEd"
+      }
+    }
+  },
+  "calendarClearSelectedDay": "Limpar dia selecionado",
+  "@calendarClearSelectedDay": {
+    "description": "Botão que tira a seleção do dia e volta para a lista do mês."
+  },
+  "calendarMeetingTitle": "Encontro Grupo {number}",
+  "@calendarMeetingTitle": {
+    "description": "Título do encontro na lista do dia selecionado.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMeetingTitleWithDate": "{date} - Encontro Grupo {number}",
+  "@calendarMeetingTitleWithDate": {
+    "description": "Título do encontro na lista do mês, com a data.",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMeetingTime": "{time}",
+  "@calendarMeetingTime": {
+    "description": "Horário de início do encontro na lista do calendário.",
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "Hm"
+      }
+    }
+  },
+  "calendarParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
+  "@calendarParticipantsCount": {
+    "description": "Quantidade de participantes do grupo do encontro no calendário.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMeetingHost": "{name} (Anfitriã)",
+  "@calendarMeetingHost": {
+    "description": "Anfitriã do encontro no calendário; só aparece para quem é membro do grupo.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarLoading": "Carregando encontros",
+  "@calendarLoading": {
+    "description": "Rótulo acessível do carregamento da lista de encontros do calendário."
+  },
+  "calendarLoadError": "Não foi possível carregar o calendário.",
+  "@calendarLoadError": {
+    "description": "Erro ao buscar os encontros do mês no calendário."
+  },
+  "calendarEmptyMonth": "Nenhum encontro neste mês.",
+  "@calendarEmptyMonth": {
+    "description": "Calendário sem encontros no mês exibido."
+  },
+  "calendarEmptyUpcoming": "Nenhum próximo encontro neste mês.",
+  "@calendarEmptyUpcoming": {
+    "description": "Calendário com o filtro de próximos eventos e nenhum encontro futuro no mês."
+  },
+  "calendarEmptyPast": "Nenhum encontro passado neste mês.",
+  "@calendarEmptyPast": {
+    "description": "Calendário com o filtro de eventos passados e nenhum encontro passado no mês."
+  },
+  "calendarEmptyDay": "Nenhum encontro neste dia.",
+  "@calendarEmptyDay": {
+    "description": "Dia selecionado no calendário sem encontros."
+  },
+  "calendarMonthTitle": "{month} {year}",
+  "@calendarMonthTitle": {
+    "description": "Título do mês no cabeçalho do calendário (\"Agosto 2026\"); month já vem com a inicial maiúscula.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMeetingDraftTag": "Rascunho",
+  "@calendarMeetingDraftTag": {
+    "description": "Tag do encontro ainda em rascunho (status CREATED), visível só para quem é membro do grupo."
+  },
+  "publicGroupTitle": "Detalhes do grupo",
+  "@publicGroupTitle": {
+    "description": "Título da tela de grupo para quem não é membro, enquanto o grupo não carregou."
+  },
+  "publicGroupLoading": "Carregando grupo",
+  "@publicGroupLoading": {
+    "description": "Rótulo acessível do carregamento da tela de grupo para quem não é membro."
+  },
+  "publicGroupLoadError": "Não foi possível carregar o grupo.",
+  "@publicGroupLoadError": {
+    "description": "Erro ao buscar o grupo na tela de grupo para quem não é membro."
+  },
+  "publicGroupUnavailable": "Este grupo não está disponível.",
+  "@publicGroupUnavailable": {
+    "description": "Grupo inexistente, inativo ou de outra cidade."
+  },
+  "publicGroupRequestJoin": "Solicitar entrada",
+  "@publicGroupRequestJoin": {
+    "description": "Botão para pedir entrada no grupo."
+  },
+  "publicGroupRequestAgain": "Pedir novamente",
+  "@publicGroupRequestAgain": {
+    "description": "Botão para pedir entrada de novo depois de um pedido recusado."
+  },
+  "publicGroupStatusRequested": "Aguardando aprovação",
+  "@publicGroupStatusRequested": {
+    "description": "Situação de quem pediu entrada e espera a coordenação."
+  },
+  "publicGroupStatusRejected": "Solicitação recusada",
+  "@publicGroupStatusRejected": {
+    "description": "Situação de quem teve o pedido de entrada recusado."
+  },
+  "publicGroupStatusPending": "Aguardando criação de conta",
+  "@publicGroupStatusPending": {
+    "description": "Situação de quem foi convidada e ainda não terminou de criar a conta."
+  },
+  "publicGroupStatusMember": "Você já faz parte deste grupo",
+  "@publicGroupStatusMember": {
+    "description": "Situação de quem já é membro do grupo."
+  },
+  "publicGroupOpenMemberDetails": "Ver grupo",
+  "@publicGroupOpenMemberDetails": {
+    "description": "Botão que abre os detalhes completos do grupo para quem já é membro."
+  },
+  "publicGroupJoinDialogTitle": "Solicitar entrada?",
+  "@publicGroupJoinDialogTitle": {
+    "description": "Título da confirmação do pedido de entrada no grupo."
+  },
+  "publicGroupJoinDialogMessage": "A coordenação do Grupo {number} vai analisar o seu pedido.",
+  "@publicGroupJoinDialogMessage": {
+    "description": "Texto da confirmação do pedido de entrada no grupo.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "publicGroupJoinDialogCancel": "Cancelar",
+  "@publicGroupJoinDialogCancel": {
+    "description": "Botão que fecha a confirmação sem pedir entrada."
+  },
+  "publicGroupJoinDialogConfirm": "Solicitar",
+  "@publicGroupJoinDialogConfirm": {
+    "description": "Botão que confirma o pedido de entrada no grupo."
+  },
+  "publicGroupJoinSuccess": "Pedido enviado! Agora é só aguardar a aprovação.",
+  "@publicGroupJoinSuccess": {
+    "description": "Aviso depois de pedir entrada no grupo com sucesso."
+  },
+  "publicGroupJoinAlreadyRequested": "Você já pediu entrada ou já faz parte deste grupo.",
+  "@publicGroupJoinAlreadyRequested": {
+    "description": "Pedido recusado porque a leitora já pediu ou já é membro (HTTP 409); a tela recarrega o status."
+  },
+  "publicGroupJoinNoCoordinator": "Este grupo ainda não aceita pedidos de entrada.",
+  "@publicGroupJoinNoCoordinator": {
+    "description": "Pedido recusado porque o grupo ainda não tem coordenadora (HTTP 409)."
+  },
+  "publicGroupJoinError": "Não foi possível enviar o pedido. Tente novamente.",
+  "@publicGroupJoinError": {
+    "description": "Erro genérico ao pedir entrada no grupo."
+  },
+  "searchTabBooks": "Livros",
+  "@searchTabBooks": {
+    "description": "Aba da busca com os livros."
+  },
+  "searchTabGroups": "Grupos",
+  "@searchTabGroups": {
+    "description": "Aba da busca com os grupos da cidade."
+  },
+  "groupSearchTitle": "Encontre seu grupo ideal",
+  "@groupSearchTitle": {
+    "description": "Título da aba de busca de grupos."
+  },
+  "groupSearchHint": "Buscar grupo",
+  "@groupSearchHint": {
+    "description": "Texto de exemplo do campo de busca de grupos."
+  },
+  "groupSearchFiltersButton": "Filtros",
+  "@groupSearchFiltersButton": {
+    "description": "Botão que abre os filtros da busca de grupos."
+  },
+  "groupSearchFiltersActive": "Filtros aplicados",
+  "@groupSearchFiltersActive": {
+    "description": "Valor acessível do botão de filtros quando há filtro aplicado."
+  },
+  "groupSearchFilterGenre": "Gênero",
+  "@groupSearchFilterGenre": {
+    "description": "Rótulo do filtro de gênero da busca de grupos."
+  },
+  "groupSearchFilterGenreAll": "Todos os gêneros",
+  "@groupSearchFilterGenreAll": {
+    "description": "Opção do filtro de gênero que não filtra."
+  },
+  "groupSearchFilterMin": "Mínimo de participantes",
+  "@groupSearchFilterMin": {
+    "description": "Rótulo do filtro de mínimo de participantes."
+  },
+  "groupSearchFilterMinHint": "Ex.: 10",
+  "@groupSearchFilterMinHint": {
+    "description": "Exemplo no campo de mínimo de participantes."
+  },
+  "groupSearchFilterMax": "Máximo de participantes",
+  "@groupSearchFilterMax": {
+    "description": "Rótulo do filtro de máximo de participantes."
+  },
+  "groupSearchFilterMaxHint": "Ex.: 20",
+  "@groupSearchFilterMaxHint": {
+    "description": "Exemplo no campo de máximo de participantes."
+  },
+  "groupSearchFilterRangeError": "O mínimo não pode ser maior que o máximo.",
+  "@groupSearchFilterRangeError": {
+    "description": "Erro quando o mínimo de participantes passa do máximo."
+  },
+  "groupSearchFiltersApply": "Aplicar filtros",
+  "@groupSearchFiltersApply": {
+    "description": "Botão que aplica os filtros da busca de grupos."
+  },
+  "groupSearchFiltersClear": "Limpar filtros",
+  "@groupSearchFiltersClear": {
+    "description": "Botão que tira todos os filtros da busca de grupos."
+  },
+  "groupSearchLoading": "Carregando grupos",
+  "@groupSearchLoading": {
+    "description": "Rótulo acessível do carregamento da lista de grupos."
+  },
+  "groupSearchLoadingMore": "Carregando mais grupos",
+  "@groupSearchLoadingMore": {
+    "description": "Rótulo acessível do carregamento da próxima página de grupos."
+  },
+  "groupSearchLoadError": "Não foi possível carregar os grupos.",
+  "@groupSearchLoadError": {
+    "description": "Erro ao buscar a lista de grupos."
+  },
+  "groupSearchLoadMoreError": "Não foi possível carregar mais grupos.",
+  "@groupSearchLoadMoreError": {
+    "description": "Erro ao buscar a próxima página de grupos."
+  },
+  "groupSearchEmpty": "Ainda não há grupos na sua cidade.",
+  "@groupSearchEmpty": {
+    "description": "Lista de grupos vazia, sem busca nem filtro."
+  },
+  "groupSearchEmptyFiltered": "Nenhum grupo encontrado. Tente outra busca ou mude os filtros.",
+  "@groupSearchEmptyFiltered": {
+    "description": "Lista de grupos vazia com busca ou filtro."
+  },
+  "groupSearchEnd": "Você chegou ao fim da lista.",
+  "@groupSearchEnd": {
+    "description": "Rodapé da lista de grupos quando não há mais páginas."
+  },
+  "groupSearchSeeDetails": "Ver detalhes",
+  "@groupSearchSeeDetails": {
+    "description": "Link do card que abre a tela do grupo."
+  },
+  "groupSearchSeeDetailsSemantic": "Ver detalhes do Grupo {number}",
+  "@groupSearchSeeDetailsSemantic": {
+    "description": "Rótulo acessível do link que abre a tela do grupo.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "groupJoinRequestsAccess": "Pedidos de entrada ({count})",
+  "@groupJoinRequestsAccess": {
+    "description": "Botão no detalhe do grupo, só para a coordenadora, com a quantidade de pedidos pendentes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupJoinRequestsTitle": "Pedidos de entrada",
+  "@groupJoinRequestsTitle": {
+    "description": "Título da tela de pedidos de entrada do grupo."
+  },
+  "groupJoinRequestsLoading": "Carregando pedidos de entrada",
+  "@groupJoinRequestsLoading": {
+    "description": "Rótulo de acessibilidade do carregamento da lista de pedidos."
+  },
+  "groupJoinRequestsEmpty": "Nenhum pedido de entrada",
+  "@groupJoinRequestsEmpty": {
+    "description": "Lista de pedidos de entrada vazia."
+  },
+  "groupJoinRequestsLoadError": "Não foi possível carregar os pedidos de entrada.",
+  "@groupJoinRequestsLoadError": {
+    "description": "Erro genérico ao carregar os pedidos de entrada."
+  },
+  "groupJoinRequestsNotCoordinator": "Só a coordenação do grupo pode ver os pedidos de entrada.",
+  "@groupJoinRequestsNotCoordinator": {
+    "description": "A leitora não é coordenadora do grupo (HTTP 403)."
+  },
+  "groupJoinRequestsGroupUnavailable": "Este grupo não está disponível.",
+  "@groupJoinRequestsGroupUnavailable": {
+    "description": "Link para os pedidos sem um grupo válido."
+  },
+  "groupJoinRequestsRequestedAt": "Pedido em {date} às {time}",
+  "@groupJoinRequestsRequestedAt": {
+    "description": "Data e hora do pedido de entrada, no fuso de São Paulo.",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "time": {
+        "type": "DateTime",
+        "format": "Hm"
+      }
+    }
+  },
+  "groupJoinRequestsApprove": "Aceitar",
+  "@groupJoinRequestsApprove": {
+    "description": "Botão que aceita o pedido de entrada."
+  },
+  "groupJoinRequestsReject": "Recusar",
+  "@groupJoinRequestsReject": {
+    "description": "Botão que recusa o pedido de entrada."
+  },
+  "groupJoinRequestsApproveDialogTitle": "Aceitar pedido?",
+  "@groupJoinRequestsApproveDialogTitle": {
+    "description": "Título da confirmação de aceite do pedido de entrada."
+  },
+  "groupJoinRequestsApproveDialogMessage": "{name} vai passar a fazer parte do grupo.",
+  "@groupJoinRequestsApproveDialogMessage": {
+    "description": "Texto da confirmação de aceite do pedido de entrada.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupJoinRequestsRejectDialogTitle": "Recusar pedido?",
+  "@groupJoinRequestsRejectDialogTitle": {
+    "description": "Título da confirmação de recusa do pedido de entrada."
+  },
+  "groupJoinRequestsRejectDialogMessage": "{name} não vai entrar no grupo agora, mas poderá pedir de novo.",
+  "@groupJoinRequestsRejectDialogMessage": {
+    "description": "Texto da confirmação de recusa do pedido de entrada.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupJoinRequestsDialogCancel": "Cancelar",
+  "@groupJoinRequestsDialogCancel": {
+    "description": "Botão que fecha a confirmação sem decidir o pedido."
+  },
+  "groupJoinRequestsApproved": "Pedido aceito! A leitora já faz parte do grupo.",
+  "@groupJoinRequestsApproved": {
+    "description": "Aviso depois de aceitar um pedido de entrada."
+  },
+  "groupJoinRequestsRejected": "Pedido recusado.",
+  "@groupJoinRequestsRejected": {
+    "description": "Aviso depois de recusar um pedido de entrada."
+  },
+  "groupJoinRequestsAlreadyReviewed": "Este pedido já foi respondido.",
+  "@groupJoinRequestsAlreadyReviewed": {
+    "description": "O pedido já foi decidido, por exemplo por outra coordenadora (HTTP 409); ele sai da lista."
+  },
+  "groupJoinRequestsNotFound": "Este pedido não está mais disponível.",
+  "@groupJoinRequestsNotFound": {
+    "description": "O pedido não existe mais (HTTP 404); ele sai da lista."
+  },
+  "groupJoinRequestsNoLongerValid": "Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.",
+  "@groupJoinRequestsNoLongerValid": {
+    "description": "Aceite recusado porque o grupo ou a conta da leitora foi inativado (HTTP 409); a lista recarrega."
+  },
+  "groupJoinRequestsReviewError": "Não foi possível responder ao pedido. Tente novamente.",
+  "@groupJoinRequestsReviewError": {
+    "description": "Erro genérico ao aceitar ou recusar um pedido de entrada."
+  },
+  "groupJoinRequestsApproveSemantics": "Aceitar pedido de {name}",
+  "@groupJoinRequestsApproveSemantics": {
+    "description": "Rótulo de acessibilidade do botão Aceitar de um pedido de entrada.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupJoinRequestsRejectSemantics": "Recusar pedido de {name}",
+  "@groupJoinRequestsRejectSemantics": {
+    "description": "Rótulo de acessibilidade do botão Recusar de um pedido de entrada.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

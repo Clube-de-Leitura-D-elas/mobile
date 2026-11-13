@@ -13,6 +13,9 @@ void main() {
     NotificationType.meetingSchedulePending: AppIcons.calendar,
     NotificationType.meetingUpdated: AppIcons.calendar,
     NotificationType.drawResult: AppIcons.book,
+    NotificationType.groupJoinRequested: AppIcons.group,
+    NotificationType.groupJoinApproved: AppIcons.group,
+    NotificationType.groupJoinRejected: AppIcons.group,
     NotificationType.unknown: AppIcons.bell,
   };
 

@@ -1,9 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/features/group_join_requests/presentation/cubit/group_join_requests_cubit.dart';
+import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
+import 'package:mobile/features/group_join_requests/presentation/widgets/join_requests_access_button.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
+import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_state.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
@@ -33,7 +37,10 @@ class GroupDetailsPage extends StatelessWidget {
             appBar: AppBar(),
             body: GroupErrorState(
               failure: failure,
-              onRetry: context.read<GroupDetailsCubit>().retry,
+              onRetry: () {
+                context.read<GroupDetailsCubit>().retry();
+                context.read<GroupJoinRequestsCubit>().retry();
+              },
             ),
           ),
           GroupDetailsLoaded(:final group) => GroupDetailsScreen(
@@ -87,6 +94,20 @@ class GroupDetailsPage extends StatelessWidget {
               },
             ),
             participantsContent: const GroupParticipantsContent(),
+            joinRequestsAccess: JoinRequestsAccessButton(
+              onPressed: () async {
+                await context.push(
+                  GroupJoinRequestsRoutePaths.joinRequestsFor(groupId),
+                );
+                if (!context.mounted) return;
+                // Um pedido aceito muda a contagem e a lista de participantes.
+                await Future.wait([
+                  context.read<GroupJoinRequestsCubit>().refresh(),
+                  context.read<GroupDetailsCubit>().refresh(),
+                  context.read<GroupParticipantsCubit>().refresh(),
+                ]);
+              },
+            ),
             onEventHistoryPressed: () => context.push(
               Uri(
                 path: GroupRoutePaths.eventHistory,
