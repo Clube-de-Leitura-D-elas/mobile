@@ -48,6 +48,8 @@ class NotificationModel {
       'GROUP_JOIN_REQUESTED' => NotificationType.groupJoinRequested,
       'GROUP_JOIN_APPROVED' => NotificationType.groupJoinApproved,
       'GROUP_JOIN_REJECTED' => NotificationType.groupJoinRejected,
+      'MEETING_GUEST_APPROVED' => NotificationType.meetingGuestApproved,
+      'MEETING_GUEST_REJECTED' => NotificationType.meetingGuestRejected,
       _ => NotificationType.unknown,
     };
   }

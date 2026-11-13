@@ -2725,6 +2725,114 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Recusar pedido de {name}'**
   String groupJoinRequestsRejectSemantics(String name);
+
+  /// Botão do card do calendário para pedir participação num encontro de um grupo do qual a leitora não é membro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar participação'**
+  String get calendarGuestRequest;
+
+  /// Botão do card do calendário para pedir de novo a participação depois de um pedido recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedir novamente'**
+  String get calendarGuestRequestAgain;
+
+  /// Situação do pedido de participação num encontro enquanto a anfitriã ou a coordenação não responde.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguardando aprovação'**
+  String get calendarGuestStatusRequested;
+
+  /// Situação do pedido de participação num encontro depois de aprovado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Participação confirmada'**
+  String get calendarGuestStatusAccepted;
+
+  /// Situação do pedido de participação num encontro depois de recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido recusado'**
+  String get calendarGuestStatusRejected;
+
+  /// Título do modal que confirma o pedido de participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar participação?'**
+  String get calendarGuestDialogTitle;
+
+  /// Texto do modal que confirma o pedido de participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'A anfitriã ou a coordenação do Grupo {number} vai analisar o seu pedido.'**
+  String calendarGuestDialogMessage(int number);
+
+  /// Botão que fecha o modal de pedido de participação sem enviar.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get calendarGuestDialogCancel;
+
+  /// Botão que confirma o envio do pedido de participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar'**
+  String get calendarGuestDialogConfirm;
+
+  /// Aviso depois de enviar o pedido de participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido enviado! Agora é só aguardar a aprovação.'**
+  String get calendarGuestRequestSuccess;
+
+  /// Aviso quando a leitora já tinha um pedido de participação em aberto no encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já pediu para participar deste encontro.'**
+  String get calendarGuestAlreadyRequested;
+
+  /// Aviso quando a leitora pede participação num encontro de um grupo com o qual já tem vínculo ou pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já tem um vínculo ou pedido com este grupo.'**
+  String get calendarGuestAlreadyMember;
+
+  /// Aviso quando a leitora pede de novo menos de 24 horas depois de ter o pedido de participação recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você poderá pedir de novo amanhã.'**
+  String get calendarGuestRecentlyRejected;
+
+  /// Aviso quando o encontro deixou de estar agendado ou já passou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não está mais aberto a pedidos.'**
+  String get calendarGuestMeetingNotOpen;
+
+  /// Aviso quando o grupo do encontro não tem anfitriã nem coordenadora para analisar o pedido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro ainda não tem quem analise pedidos.'**
+  String get calendarGuestNoReviewer;
+
+  /// Aviso quando o encontro é de outra cidade.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não está disponível para você.'**
+  String get calendarGuestMeetingUnavailable;
+
+  /// Aviso quando o encontro foi removido antes do pedido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não existe mais.'**
+  String get calendarGuestMeetingNotFound;
+
+  /// Aviso de erro genérico ao pedir participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível enviar o pedido. Tente novamente.'**
+  String get calendarGuestRequestError;
 }
 
 class _AppLocalizationsDelegate

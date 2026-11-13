@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
@@ -64,6 +65,12 @@ class NotificationNavigationService {
     final screen = data['screen'] as String?;
     final groupId = data['group_id'] as String?;
     final meetingId = data['meeting_id'] as String?;
+
+    // Vêm com `meeting_id`, mas a convidada não abre o detalhe de membro.
+    if (data['type'] == 'MEETING_GUEST_APPROVED' ||
+        data['type'] == 'MEETING_GUEST_REJECTED') {
+      return QuickAccessRoutes.calendar;
+    }
 
     if (screen == GroupRoutePaths.meetingDetails ||
         screen == '/meeting-details' ||

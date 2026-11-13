@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/calendar/data/models/calendar_meeting_model.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_group_entity.dart';
+import 'package:mobile/features/calendar/domain/entities/calendar_guest_status.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_status.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_membership_status.dart';
@@ -154,6 +155,38 @@ void main() {
         ).toDomain();
 
         expect(entity.group.membershipStatus, status);
+      });
+    }
+
+    test('has no guest_status for a member or a response without it', () {
+      expect(
+        CalendarMeetingModel.fromJson(_memberJson()).toDomain().guestStatus,
+        isNull,
+      );
+      expect(
+        CalendarMeetingModel.fromJson({
+          ..._nonMemberJson(),
+          'guest_status': null,
+        }).toDomain().guestStatus,
+        isNull,
+      );
+    });
+
+    final guestStatuses = <String, CalendarGuestStatus>{
+      'REQUESTED': CalendarGuestStatus.requested,
+      'ACCEPTED': CalendarGuestStatus.accepted,
+      'REJECTED': CalendarGuestStatus.rejected,
+      // Status novo não pode virar "sem pedido", que oferece pedir de novo.
+      'SOMETHING_NEW': CalendarGuestStatus.unknown,
+    };
+    for (final MapEntry(key: raw, value: status) in guestStatuses.entries) {
+      test('maps guest_status $raw', () {
+        final entity = CalendarMeetingModel.fromJson({
+          ..._nonMemberJson(),
+          'guest_status': raw,
+        }).toDomain();
+
+        expect(entity.guestStatus, status);
       });
     }
 

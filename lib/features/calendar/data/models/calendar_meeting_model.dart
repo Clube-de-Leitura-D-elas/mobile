@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:mobile/features/calendar/data/models/calendar_group_model.dart';
+import 'package:mobile/features/calendar/domain/entities/calendar_guest_status.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_status.dart';
 
@@ -13,6 +14,7 @@ class CalendarMeetingModel {
   final String? neighborhood;
   final String? hostName;
   final CalendarGroupModel group;
+  final CalendarGuestStatus? guestStatus;
 
   const CalendarMeetingModel({
     required this.id,
@@ -24,6 +26,7 @@ class CalendarMeetingModel {
     this.locationAddress,
     this.neighborhood,
     this.hostName,
+    this.guestStatus,
   });
 
   factory CalendarMeetingModel.fromJson(Map<String, dynamic> json) {
@@ -39,7 +42,18 @@ class CalendarMeetingModel {
       neighborhood: location?['neighborhood'] as String?,
       hostName: json['host_name'] as String?,
       group: CalendarGroupModel.fromJson(json['group'] as Map<String, dynamic>),
+      guestStatus: _parseGuestStatus(json['guest_status']),
     );
+  }
+
+  static CalendarGuestStatus? _parseGuestStatus(dynamic value) {
+    return switch (value) {
+      null => null,
+      'REQUESTED' => CalendarGuestStatus.requested,
+      'ACCEPTED' => CalendarGuestStatus.accepted,
+      'REJECTED' => CalendarGuestStatus.rejected,
+      _ => CalendarGuestStatus.unknown,
+    };
   }
 
   static CalendarMeetingStatus _parseStatus(dynamic value) {
@@ -89,6 +103,7 @@ class CalendarMeetingModel {
       neighborhood: neighborhood,
       hostName: hostName,
       group: group.toDomain(),
+      guestStatus: guestStatus,
     );
   }
 }

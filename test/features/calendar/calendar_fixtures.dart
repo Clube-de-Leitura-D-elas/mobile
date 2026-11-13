@@ -1,4 +1,5 @@
 import 'package:mobile/features/calendar/domain/entities/calendar_group_entity.dart';
+import 'package:mobile/features/calendar/domain/entities/calendar_guest_status.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_status.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_membership_status.dart';
@@ -21,8 +22,12 @@ CalendarMeetingEntity calendarMeeting(
   String? locationName,
   String? neighborhood,
   String? hostName,
+  CalendarGuestStatus? guestStatus,
 }) {
-  final isMember = membership == CalendarMembershipStatus.member;
+  // Convidada aceita recebe local e anfitriã como membro.
+  final isMember =
+      membership == CalendarMembershipStatus.member ||
+      guestStatus == CalendarGuestStatus.accepted;
   return CalendarMeetingEntity(
     id: id,
     date: saoPauloInstant(day, hour, minute),
@@ -31,6 +36,7 @@ CalendarMeetingEntity calendarMeeting(
     locationName: isMember ? locationName : null,
     neighborhood: neighborhood,
     hostName: isMember ? hostName : null,
+    guestStatus: guestStatus,
     group: CalendarGroupEntity(
       id: 'group-$id',
       number: groupNumber,

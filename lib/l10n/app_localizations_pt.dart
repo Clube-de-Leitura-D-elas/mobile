@@ -1632,6 +1632,70 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupJoinRequestsRejectSemantics(String name) {
     return 'Recusar pedido de $name';
   }
+
+  @override
+  String get calendarGuestRequest => 'Solicitar participação';
+
+  @override
+  String get calendarGuestRequestAgain => 'Pedir novamente';
+
+  @override
+  String get calendarGuestStatusRequested => 'Aguardando aprovação';
+
+  @override
+  String get calendarGuestStatusAccepted => 'Participação confirmada';
+
+  @override
+  String get calendarGuestStatusRejected => 'Pedido recusado';
+
+  @override
+  String get calendarGuestDialogTitle => 'Solicitar participação?';
+
+  @override
+  String calendarGuestDialogMessage(int number) {
+    return 'A anfitriã ou a coordenação do Grupo $number vai analisar o seu pedido.';
+  }
+
+  @override
+  String get calendarGuestDialogCancel => 'Cancelar';
+
+  @override
+  String get calendarGuestDialogConfirm => 'Solicitar';
+
+  @override
+  String get calendarGuestRequestSuccess =>
+      'Pedido enviado! Agora é só aguardar a aprovação.';
+
+  @override
+  String get calendarGuestAlreadyRequested =>
+      'Você já pediu para participar deste encontro.';
+
+  @override
+  String get calendarGuestAlreadyMember =>
+      'Você já tem um vínculo ou pedido com este grupo.';
+
+  @override
+  String get calendarGuestRecentlyRejected =>
+      'Você poderá pedir de novo amanhã.';
+
+  @override
+  String get calendarGuestMeetingNotOpen =>
+      'Este encontro não está mais aberto a pedidos.';
+
+  @override
+  String get calendarGuestNoReviewer =>
+      'Este encontro ainda não tem quem analise pedidos.';
+
+  @override
+  String get calendarGuestMeetingUnavailable =>
+      'Este encontro não está disponível para você.';
+
+  @override
+  String get calendarGuestMeetingNotFound => 'Este encontro não existe mais.';
+
+  @override
+  String get calendarGuestRequestError =>
+      'Não foi possível enviar o pedido. Tente novamente.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2894,4 +2958,68 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupJoinRequestsRejectSemantics(String name) {
     return 'Recusar pedido de $name';
   }
+
+  @override
+  String get calendarGuestRequest => 'Solicitar participação';
+
+  @override
+  String get calendarGuestRequestAgain => 'Pedir novamente';
+
+  @override
+  String get calendarGuestStatusRequested => 'Aguardando aprovação';
+
+  @override
+  String get calendarGuestStatusAccepted => 'Participação confirmada';
+
+  @override
+  String get calendarGuestStatusRejected => 'Pedido recusado';
+
+  @override
+  String get calendarGuestDialogTitle => 'Solicitar participação?';
+
+  @override
+  String calendarGuestDialogMessage(int number) {
+    return 'A anfitriã ou a coordenação do Grupo $number vai analisar o seu pedido.';
+  }
+
+  @override
+  String get calendarGuestDialogCancel => 'Cancelar';
+
+  @override
+  String get calendarGuestDialogConfirm => 'Solicitar';
+
+  @override
+  String get calendarGuestRequestSuccess =>
+      'Pedido enviado! Agora é só aguardar a aprovação.';
+
+  @override
+  String get calendarGuestAlreadyRequested =>
+      'Você já pediu para participar deste encontro.';
+
+  @override
+  String get calendarGuestAlreadyMember =>
+      'Você já tem um vínculo ou pedido com este grupo.';
+
+  @override
+  String get calendarGuestRecentlyRejected =>
+      'Você poderá pedir de novo amanhã.';
+
+  @override
+  String get calendarGuestMeetingNotOpen =>
+      'Este encontro não está mais aberto a pedidos.';
+
+  @override
+  String get calendarGuestNoReviewer =>
+      'Este encontro ainda não tem quem analise pedidos.';
+
+  @override
+  String get calendarGuestMeetingUnavailable =>
+      'Este encontro não está disponível para você.';
+
+  @override
+  String get calendarGuestMeetingNotFound => 'Este encontro não existe mais.';
+
+  @override
+  String get calendarGuestRequestError =>
+      'Não foi possível enviar o pedido. Tente novamente.';
 }

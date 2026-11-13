@@ -2141,5 +2141,82 @@
         "type": "String"
       }
     }
+  },
+  "calendarGuestRequest": "Solicitar participação",
+  "@calendarGuestRequest": {
+    "description": "Botão do card do calendário para pedir participação num encontro de um grupo do qual a leitora não é membro."
+  },
+  "calendarGuestRequestAgain": "Pedir novamente",
+  "@calendarGuestRequestAgain": {
+    "description": "Botão do card do calendário para pedir de novo a participação depois de um pedido recusado."
+  },
+  "calendarGuestStatusRequested": "Aguardando aprovação",
+  "@calendarGuestStatusRequested": {
+    "description": "Situação do pedido de participação num encontro enquanto a anfitriã ou a coordenação não responde."
+  },
+  "calendarGuestStatusAccepted": "Participação confirmada",
+  "@calendarGuestStatusAccepted": {
+    "description": "Situação do pedido de participação num encontro depois de aprovado."
+  },
+  "calendarGuestStatusRejected": "Pedido recusado",
+  "@calendarGuestStatusRejected": {
+    "description": "Situação do pedido de participação num encontro depois de recusado."
+  },
+  "calendarGuestDialogTitle": "Solicitar participação?",
+  "@calendarGuestDialogTitle": {
+    "description": "Título do modal que confirma o pedido de participação num encontro."
+  },
+  "calendarGuestDialogMessage": "A anfitriã ou a coordenação do Grupo {number} vai analisar o seu pedido.",
+  "@calendarGuestDialogMessage": {
+    "description": "Texto do modal que confirma o pedido de participação num encontro.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarGuestDialogCancel": "Cancelar",
+  "@calendarGuestDialogCancel": {
+    "description": "Botão que fecha o modal de pedido de participação sem enviar."
+  },
+  "calendarGuestDialogConfirm": "Solicitar",
+  "@calendarGuestDialogConfirm": {
+    "description": "Botão que confirma o envio do pedido de participação num encontro."
+  },
+  "calendarGuestRequestSuccess": "Pedido enviado! Agora é só aguardar a aprovação.",
+  "@calendarGuestRequestSuccess": {
+    "description": "Aviso depois de enviar o pedido de participação num encontro."
+  },
+  "calendarGuestAlreadyRequested": "Você já pediu para participar deste encontro.",
+  "@calendarGuestAlreadyRequested": {
+    "description": "Aviso quando a leitora já tinha um pedido de participação em aberto no encontro."
+  },
+  "calendarGuestAlreadyMember": "Você já tem um vínculo ou pedido com este grupo.",
+  "@calendarGuestAlreadyMember": {
+    "description": "Aviso quando a leitora pede participação num encontro de um grupo com o qual já tem vínculo ou pedido de entrada."
+  },
+  "calendarGuestRecentlyRejected": "Você poderá pedir de novo amanhã.",
+  "@calendarGuestRecentlyRejected": {
+    "description": "Aviso quando a leitora pede de novo menos de 24 horas depois de ter o pedido de participação recusado."
+  },
+  "calendarGuestMeetingNotOpen": "Este encontro não está mais aberto a pedidos.",
+  "@calendarGuestMeetingNotOpen": {
+    "description": "Aviso quando o encontro deixou de estar agendado ou já passou."
+  },
+  "calendarGuestNoReviewer": "Este encontro ainda não tem quem analise pedidos.",
+  "@calendarGuestNoReviewer": {
+    "description": "Aviso quando o grupo do encontro não tem anfitriã nem coordenadora para analisar o pedido."
+  },
+  "calendarGuestMeetingUnavailable": "Este encontro não está disponível para você.",
+  "@calendarGuestMeetingUnavailable": {
+    "description": "Aviso quando o encontro é de outra cidade."
+  },
+  "calendarGuestMeetingNotFound": "Este encontro não existe mais.",
+  "@calendarGuestMeetingNotFound": {
+    "description": "Aviso quando o encontro foi removido antes do pedido."
+  },
+  "calendarGuestRequestError": "Não foi possível enviar o pedido. Tente novamente.",
+  "@calendarGuestRequestError": {
+    "description": "Aviso de erro genérico ao pedir participação num encontro."
   }
 }

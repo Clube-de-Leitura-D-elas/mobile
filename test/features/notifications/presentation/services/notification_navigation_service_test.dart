@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
@@ -84,6 +85,17 @@ void main() {
       });
       expect(route, GroupDiscoveryRoutePaths.publicGroupFor('group-456'));
     });
+
+    for (final type in ['MEETING_GUEST_APPROVED', 'MEETING_GUEST_REJECTED']) {
+      test('a $type push opens the calendar even with meeting_id', () {
+        final route = NotificationNavigationService.parseRouteFromData({
+          'type': type,
+          'meeting_id': 'meeting-789',
+          'group_id': 'group-456',
+        });
+        expect(route, QuickAccessRoutes.calendar);
+      });
+    }
 
     test('returns null when data is empty or invalid', () {
       final route = NotificationNavigationService.parseRouteFromData({});

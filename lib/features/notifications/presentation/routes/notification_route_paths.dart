@@ -1,3 +1,4 @@
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
@@ -9,6 +10,12 @@ abstract final class NotificationRoutePaths {
 
   /// Para onde a notificação leva; `null` quando ela não tem destino.
   static String? destinationFor(NotificationEntity notification) {
+    // Vêm com `meeting_id`, mas a convidada não abre o detalhe de membro.
+    if (notification.type == NotificationType.meetingGuestApproved ||
+        notification.type == NotificationType.meetingGuestRejected) {
+      return QuickAccessRoutes.calendar;
+    }
+
     final meetingId = notification.meetingId;
     if (meetingId != null) {
       return Uri(
