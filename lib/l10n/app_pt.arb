@@ -2141,5 +2141,21 @@
         "type": "String"
       }
     }
+  },
+  "meetingPresenceEmptyConfirmTitle": "Ninguém compareceu?",
+  "@meetingPresenceEmptyConfirmTitle": {
+    "description": "Título do modal ao confirmar a lista de presença sem ninguém marcado."
+  },
+  "meetingPresenceEmptyConfirmMessage": "Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.",
+  "@meetingPresenceEmptyConfirmMessage": {
+    "description": "Explica que confirmar sem marcações registra falta para todas, sem volta."
+  },
+  "meetingPresenceEmptyConfirmCancel": "Voltar",
+  "@meetingPresenceEmptyConfirmCancel": {
+    "description": "Botão que fecha o modal e volta para a lista de presença."
+  },
+  "meetingPresenceEmptyConfirmConfirm": "Confirmar mesmo assim",
+  "@meetingPresenceEmptyConfirmConfirm": {
+    "description": "Botão que envia a lista de presença sem ninguém marcado."
   }
 }

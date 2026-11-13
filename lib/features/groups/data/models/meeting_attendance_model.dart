@@ -53,11 +53,9 @@ class MeetingAttendanceModel {
         'DECLINED' => MeetingInvitationStatus.declined,
         _ => MeetingInvitationStatus.pending,
       },
-      // Há registros antigos em português ("presente"/"ausente"), como
-      // trata o _shared/presence.ts do backend.
-      presenceStatus: switch (presenceStatus?.trim().toUpperCase()) {
-        'PRESENT' || 'PRESENTE' => MeetingPresenceStatus.present,
-        'ABSENT' || 'AUSENTE' => MeetingPresenceStatus.absent,
+      presenceStatus: switch (presenceStatus?.toUpperCase()) {
+        'PRESENT' => MeetingPresenceStatus.present,
+        'ABSENT' => MeetingPresenceStatus.absent,
         _ => null,
       },
     );

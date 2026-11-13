@@ -342,5 +342,9 @@
   "groupJoinRequestsNoLongerValid": "Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.",
   "groupJoinRequestsReviewError": "Não foi possível responder ao pedido. Tente novamente.",
   "groupJoinRequestsApproveSemantics": "Aceitar pedido de {name}",
-  "groupJoinRequestsRejectSemantics": "Recusar pedido de {name}"
+  "groupJoinRequestsRejectSemantics": "Recusar pedido de {name}",
+  "meetingPresenceEmptyConfirmTitle": "Ninguém compareceu?",
+  "meetingPresenceEmptyConfirmMessage": "Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.",
+  "meetingPresenceEmptyConfirmCancel": "Voltar",
+  "meetingPresenceEmptyConfirmConfirm": "Confirmar mesmo assim"
 }

@@ -12,6 +12,7 @@ import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_state.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_presence_screen.dart';
+import 'package:mobile/features/groups/presentation/widgets/empty_presence_confirm_dialog.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_presence_attendee_tile.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -143,7 +144,7 @@ void main() {
       ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
 
       await cubit.load('meeting-1');
-      await pumpScreen(tester);
+      await pumpScreen(tester, marked: {'u-1'});
 
       final buttonFinder = find.byType(AppButton);
       final button = tester.widget<AppButton>(buttonFinder);
@@ -154,7 +155,40 @@ void main() {
       await tester.tap(buttonFinder);
       await tester.pump();
 
+      // Com alguém marcado, envia direto, sem o modal.
+      expect(find.byType(EmptyPresenceConfirmDialog), findsNothing);
       verify(() => repository.setMeetingPresence('meeting-1', any())).called(1);
+    });
+
+    testWidgets('sem ninguém marcado, pede confirmação antes de enviar', (
+      tester,
+    ) async {
+      when(() => repository.getMeetingAttendance('meeting-1')).thenAnswer(
+        (_) async =>
+            Success<List<MeetingAttendanceEntity>, GroupFailure>(attendees),
+      );
+      when(
+        () => repository.setMeetingPresence('meeting-1', any()),
+      ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
+      await cubit.load('meeting-1');
+      await pumpScreen(tester);
+
+      // Voltar não envia nada.
+      await tester.tap(find.widgetWithText(AppButton, 'Confirmar'));
+      await tester.pumpAndSettle();
+      expect(find.byType(EmptyPresenceConfirmDialog), findsOneWidget);
+      await tester.tap(find.text('Voltar'));
+      await tester.pumpAndSettle();
+      verifyNever(() => repository.setMeetingPresence(any(), any()));
+
+      // Confirmar mesmo assim envia a lista vazia.
+      await tester.tap(find.widgetWithText(AppButton, 'Confirmar'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Confirmar mesmo assim'));
+      await tester.pumpAndSettle();
+      verify(
+        () => repository.setMeetingPresence('meeting-1', <String>[]),
+      ).called(1);
     });
 
     testWidgets('durante envio desabilita botão e tiles e mostra spinner', (

@@ -377,24 +377,62 @@ void main() {
       ).called(1);
     });
 
-    test('mantém invitationStatus e photoUrl dos participantes', () async {
+    test('mantém invitationStatus e photoUrl e grava a presença de cada '
+        'resposta ao convite', () async {
+      const attendees = [
+        MeetingAttendanceEntity(
+          id: 'u-1',
+          name: 'Ana',
+          photoUrl: 'https://example.com/ana.jpg',
+          invitationStatus: MeetingInvitationStatus.confirmed,
+          presenceStatus: null,
+        ),
+        MeetingAttendanceEntity(
+          id: 'u-2',
+          name: 'Bruno',
+          photoUrl: 'https://example.com/bruno.jpg',
+          invitationStatus: MeetingInvitationStatus.declined,
+          presenceStatus: null,
+        ),
+        MeetingAttendanceEntity(
+          id: 'u-3',
+          name: 'Carla',
+          invitationStatus: MeetingInvitationStatus.pending,
+          presenceStatus: null,
+        ),
+      ];
+      stubAttendance(attendees);
+      await cubit.load(meetingId);
       when(
         () => repository.setMeetingPresence(meetingId, any()),
       ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
 
-      final original = (cubit.state as MeetingPresenceEditing).attendees;
-
       await cubit.confirm();
 
       final closed = cubit.state as MeetingPresenceClosed;
-      for (var i = 0; i < original.length; i++) {
-        expect(
-          closed.attendees[i].invitationStatus,
-          original[i].invitationStatus,
-        );
-        expect(closed.attendees[i].photoUrl, original[i].photoUrl);
-        expect(closed.attendees[i].name, original[i].name);
-      }
+      expect(closed.attendees, const [
+        MeetingAttendanceEntity(
+          id: 'u-1',
+          name: 'Ana',
+          photoUrl: 'https://example.com/ana.jpg',
+          invitationStatus: MeetingInvitationStatus.confirmed,
+          presenceStatus: MeetingPresenceStatus.present,
+        ),
+        MeetingAttendanceEntity(
+          id: 'u-2',
+          name: 'Bruno',
+          photoUrl: 'https://example.com/bruno.jpg',
+          invitationStatus: MeetingInvitationStatus.declined,
+          presenceStatus: MeetingPresenceStatus.absent,
+        ),
+        MeetingAttendanceEntity(
+          id: 'u-3',
+          name: 'Carla',
+          invitationStatus: MeetingInvitationStatus.pending,
+          presenceStatus: MeetingPresenceStatus.absent,
+        ),
+      ]);
+      verify(() => repository.setMeetingPresence(meetingId, ['u-1'])).called(1);
     });
 
     for (final failure in <GroupFailure>[

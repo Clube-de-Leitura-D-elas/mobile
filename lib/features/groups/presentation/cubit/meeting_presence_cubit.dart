@@ -26,8 +26,6 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
       final sorted = [...attendees]
         ..sort((a, b) => _sortKey(a.name).compareTo(_sortKey(b.name)));
       final alreadyRegistered = sorted.any((a) => a.presenceStatus != null);
-      // Sem registro, começa marcada só quem confirmou presença no convite;
-      // quem recusou ou não respondeu começa desmarcada.
       emit(
         alreadyRegistered
             ? MeetingPresenceClosed(sorted)

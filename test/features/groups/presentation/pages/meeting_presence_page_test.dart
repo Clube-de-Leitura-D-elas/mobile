@@ -180,6 +180,8 @@ void main() {
       await tester.pumpWidget(buildApp());
       await cubit.load(meetingId);
       await tester.pump();
+      cubit.toggle('u-1');
+      await tester.pump();
 
       await tester.tap(find.byType(AppButton));
       await tester.pump();
