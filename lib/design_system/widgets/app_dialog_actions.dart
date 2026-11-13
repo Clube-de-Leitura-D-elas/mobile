@@ -16,7 +16,8 @@ import '../tokens/spacing_tokens.dart';
 /// exemplo, `isLoading` no [AppButton]) pode trocar o modo.
 ///
 /// As ações precisam responder a dry layout (o [AppButton] responde), e o pai
-/// precisa limitar a largura.
+/// precisa limitar a largura. Só a quebra de linha é detectada: um
+/// [AppButton] com ícone não quebra e estoura na fatia em vez de empilhar.
 class AppDialogActions extends StatelessWidget {
   const AppDialogActions({super.key, required this.actions});
 
@@ -301,6 +302,20 @@ class _RenderAdaptiveActions extends RenderBox
       defaultPaint,
       oldLayer: _clipRectLayer.layer,
     );
+  }
+
+  @override
+  Rect? describeApproximatePaintClip(RenderObject child) {
+    return _hasOverflow ? Offset.zero & size : null;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DoubleProperty('spacing', _spacing))
+      ..add(DoubleProperty('runSpacing', _runSpacing))
+      ..add(EnumProperty<TextDirection>('textDirection', _textDirection));
   }
 
   @override
