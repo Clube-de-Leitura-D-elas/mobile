@@ -6,14 +6,22 @@ import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/profile/data/datasources/profile_remote_data_source.dart';
+import 'package:mobile/features/profile/data/models/profile_summary_model.dart';
 import 'package:mobile/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
 
+class MockProfileRemoteDataSource extends Mock
+    implements ProfileRemoteDataSource {}
+
 void main() {
   late MockSupabaseService mockSupabaseService;
+  late MockProfileRemoteDataSource remoteDataSource;
   late ProfileRepositoryImpl repository;
 
   final bytes = Uint8List.fromList([0xFF, 0xD8, 0xFF, 0x01]);
@@ -22,7 +30,11 @@ void main() {
 
   setUp(() {
     mockSupabaseService = MockSupabaseService();
-    repository = ProfileRepositoryImpl(supabaseService: mockSupabaseService);
+    remoteDataSource = MockProfileRemoteDataSource();
+    repository = ProfileRepositoryImpl(
+      supabaseService: mockSupabaseService,
+      remoteDataSource: remoteDataSource,
+    );
   });
 
   group('setProfilePhoto', () {
@@ -187,5 +199,77 @@ void main() {
         const Failure<String, ProfileFailure>(ProfilePhotoUploadFailure()),
       );
     });
+  });
+
+  group('getProfileSummary', () {
+    void stubSummary(Result<ProfileSummaryModel?, SupabaseFailure> result) {
+      when(
+        () => remoteDataSource.getMyProfileSummary(),
+      ).thenAnswer((_) async => result);
+    }
+
+    test('converte o model em entidade', () async {
+      stubSummary(
+        const Success(
+          ProfileSummaryModel(
+            booksReadCount: 5,
+            groups: [ProfileGroupModel(id: 'g-1', number: 1)],
+            reviewedBooks: [
+              ProfileReviewedBookModel(
+                bookId: 'b-1',
+                title: 'Livro',
+                rating: 4,
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(
+        await repository.getProfileSummary(),
+        const Success<ProfileSummaryEntity, ProfileSummaryFailure>(
+          ProfileSummaryEntity(
+            booksReadCount: 5,
+            groups: [ProfileGroupEntity(id: 'g-1', number: 1)],
+            reviewedBooks: [
+              ProfileReviewedBookEntity(
+                bookId: 'b-1',
+                title: 'Livro',
+                rating: 4,
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+
+    test('resposta sem corpo vira falha de carregamento', () async {
+      stubSummary(const Success(null));
+
+      expect(
+        await repository.getProfileSummary(),
+        const Failure<ProfileSummaryEntity, ProfileSummaryFailure>(
+          ProfileSummaryLoadFailure(),
+        ),
+      );
+    });
+
+    final cases = <SupabaseFailureKind, ProfileSummaryFailure>{
+      SupabaseFailureKind.network: const ProfileSummaryNetworkFailure(),
+      SupabaseFailureKind.unauthorized:
+          const ProfileSummarySessionExpiredFailure(),
+      SupabaseFailureKind.server: const ProfileSummaryLoadFailure(),
+      SupabaseFailureKind.notFound: const ProfileSummaryLoadFailure(),
+    };
+    for (final MapEntry(key: kind, value: expected) in cases.entries) {
+      test('falha $kind vira ${expected.runtimeType}', () async {
+        stubSummary(Failure(FunctionSupabaseFailure(message: 'x', kind: kind)));
+
+        expect(
+          await repository.getProfileSummary(),
+          Failure<ProfileSummaryEntity, ProfileSummaryFailure>(expected),
+        );
+      });
+    }
   });
 }

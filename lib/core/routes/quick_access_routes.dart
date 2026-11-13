@@ -8,6 +8,7 @@ import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart'
 import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/features/quick_access/presentation/pages/search_page.dart';
@@ -38,7 +39,10 @@ abstract class QuickAccessRoutes {
           path: pathFor(item),
           pageBuilder: (context, state) {
             final Widget pageChild = switch (item) {
-              QuickAccessItem.profile => const ProfilePage(),
+              QuickAccessItem.profile => BlocProvider(
+                create: (_) => serviceLocator<ProfileSummaryCubit>()..load(),
+                child: const ProfilePage(),
+              ),
               QuickAccessItem.search => MultiBlocProvider(
                 providers: [
                   BlocProvider(
