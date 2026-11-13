@@ -8,4 +8,8 @@ abstract class CalendarRepository {
     required DateTime from,
     required DateTime to,
   });
+
+  /// Pede para a leitora participar de [meetingId], encontro de um grupo do
+  /// qual ela não é membro.
+  Future<Result<void, CalendarFailure>> requestParticipation(String meetingId);
 }

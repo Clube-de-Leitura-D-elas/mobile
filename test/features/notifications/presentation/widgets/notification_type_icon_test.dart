@@ -17,6 +17,8 @@ void main() {
     NotificationType.groupJoinApproved: AppIcons.group,
     NotificationType.groupJoinRejected: AppIcons.group,
     NotificationType.meetingGuestRequested: AppIcons.group,
+    NotificationType.meetingGuestApproved: AppIcons.calendar,
+    NotificationType.meetingGuestRejected: AppIcons.calendar,
     NotificationType.unknown: AppIcons.bell,
   };
 

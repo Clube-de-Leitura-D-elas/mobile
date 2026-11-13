@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
@@ -73,6 +74,12 @@ class NotificationNavigationService {
       return MeetingGuestRequestsRoutePaths.guestRequestsFor(meetingId.trim());
     }
 
+    // Vêm com `meeting_id`, mas a convidada não abre o detalhe de membro.
+    if (data['type'] == 'MEETING_GUEST_APPROVED' ||
+        data['type'] == 'MEETING_GUEST_REJECTED') {
+      return QuickAccessRoutes.calendar;
+    }
+
     if (screen == GroupRoutePaths.meetingDetails ||
         screen == '/meeting-details' ||
         screen == 'meeting-details' ||
@@ -131,7 +138,7 @@ class NotificationNavigationService {
     } else {
       final context = navigatorKey.currentContext;
       if (context != null) {
-        GoRouter.of(context).push(route);
+        openNotificationRoute(GoRouter.of(context), route);
       } else {
         pendingRoute = route;
       }
@@ -143,5 +150,16 @@ class NotificationNavigationService {
     final route = pendingRoute;
     pendingRoute = null;
     return route;
+  }
+}
+
+/// Aba (como o calendário) é trocada com `go`, como faz a barra inferior;
+/// `push` empilharia uma segunda instância dela. O resto é empilhado. A aba
+/// é avisada para reler o conteúdo, que a notificação acabou de mudar.
+void openNotificationRoute(GoRouter router, String route) {
+  if (QuickAccessRoutes.isTabPath(route)) {
+    router.go(route, extra: RefreshTabRequest());
+  } else {
+    unawaited(router.push<Object?>(route));
   }
 }

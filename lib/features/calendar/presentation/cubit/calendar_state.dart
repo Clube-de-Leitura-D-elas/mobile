@@ -25,6 +25,14 @@ class CalendarState extends Equatable {
   /// Por que o mês não carregou, quando [status] é `error`.
   final CalendarFailure? failure;
 
+  /// Encontros com pedido de participação em andamento.
+  final Set<String> requestingIds;
+
+  /// Retorno do último pedido de participação, para um aviso único na tela;
+  /// a tela limpa com `clearParticipationFeedback` depois de mostrar.
+  final bool participationRequested;
+  final CalendarFailure? participationFailure;
+
   const CalendarState({
     required this.month,
     required this.today,
@@ -35,7 +43,13 @@ class CalendarState extends Equatable {
     this.filter = CalendarFilter.all,
     this.selectedDay,
     this.failure,
+    this.requestingIds = const {},
+    this.participationRequested = false,
+    this.participationFailure,
   });
+
+  bool get hasParticipationFeedback =>
+      participationRequested || participationFailure != null;
 
   Map<DateTime, int> get meetingCountByDay {
     final counts = <DateTime, int>{};
@@ -65,17 +79,30 @@ class CalendarState extends Equatable {
     CalendarFilter? filter,
     DateTime? selectedDay,
     bool clearSelectedDay = false,
+    List<CalendarMeetingEntity>? meetings,
+    List<CalendarMeetingEntity>? upcoming,
+    List<CalendarMeetingEntity>? past,
+    Set<String>? requestingIds,
+    bool? participationRequested,
+    CalendarFailure? participationFailure,
+    bool clearParticipationFailure = false,
   }) {
     return CalendarState(
       status: status,
       month: month,
       today: today,
-      meetings: meetings,
-      upcoming: upcoming,
-      past: past,
+      meetings: meetings ?? this.meetings,
+      upcoming: upcoming ?? this.upcoming,
+      past: past ?? this.past,
       filter: filter ?? this.filter,
       selectedDay: clearSelectedDay ? null : selectedDay ?? this.selectedDay,
       failure: failure,
+      requestingIds: requestingIds ?? this.requestingIds,
+      participationRequested:
+          participationRequested ?? this.participationRequested,
+      participationFailure: clearParticipationFailure
+          ? null
+          : participationFailure ?? this.participationFailure,
     );
   }
 
@@ -90,5 +117,8 @@ class CalendarState extends Equatable {
     filter,
     selectedDay,
     failure,
+    requestingIds,
+    participationRequested,
+    participationFailure,
   ];
 }

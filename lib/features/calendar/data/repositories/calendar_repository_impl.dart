@@ -37,6 +37,21 @@ class CalendarRepositoryImpl implements CalendarRepository {
     }
   }
 
+  @override
+  Future<Result<void, CalendarFailure>> requestParticipation(
+    String meetingId,
+  ) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'request-meeting-participation',
+      body: {'meeting_id': meetingId},
+    );
+
+    return switch (result) {
+      Failure(:final failure) => Failure(_participationFailureFrom(failure)),
+      Success() => const Success(null),
+    };
+  }
+
   /// `YYYY-MM-DD` do dia civil; `toIso8601String` levaria hora e fuso.
   static String _civilDate(DateTime day) {
     final month = day.month.toString().padLeft(2, '0');
@@ -51,6 +66,36 @@ class CalendarRepositoryImpl implements CalendarRepository {
       SupabaseFailureKind.unauthorized => const CalendarSessionExpiredFailure(),
       SupabaseFailureKind.forbidden => const CalendarForbiddenFailure(),
       _ => const CalendarLoadFailure(),
+    };
+  }
+
+  /// O backend usa o mesmo status para casos diferentes; o texto em `error`
+  /// (que chega no `message`) diz qual.
+  CalendarFailure _participationFailureFrom(SupabaseFailure failure) {
+    debugPrint('[CalendarFailure] ${failure.message} (${failure.code})');
+    final message = failure.message;
+    return switch (failure.kind) {
+      SupabaseFailureKind.network => const CalendarNetworkFailure(),
+      SupabaseFailureKind.unauthorized => const CalendarSessionExpiredFailure(),
+      SupabaseFailureKind.forbidden
+          when message.contains('meeting not available') =>
+        const CalendarMeetingUnavailableFailure(),
+      SupabaseFailureKind.forbidden when message.contains('inactive account') =>
+        const CalendarForbiddenFailure(),
+      SupabaseFailureKind.notFound when message.contains('meeting not found') =>
+        const CalendarMeetingNotFoundFailure(),
+      SupabaseFailureKind.conflict when message.contains('already requested') =>
+        const CalendarGuestAlreadyRequestedFailure(),
+      SupabaseFailureKind.conflict when message.contains('already a member') =>
+        const CalendarGuestAlreadyMemberFailure(),
+      SupabaseFailureKind.conflict when message.contains('recently rejected') =>
+        const CalendarGuestRecentlyRejectedFailure(),
+      SupabaseFailureKind.conflict when message.contains('meeting not open') =>
+        const CalendarMeetingNotOpenFailure(),
+      SupabaseFailureKind.conflict
+          when message.contains('meeting has no reviewer') =>
+        const CalendarMeetingNoReviewerFailure(),
+      _ => const CalendarGuestRequestFailure(),
     };
   }
 }

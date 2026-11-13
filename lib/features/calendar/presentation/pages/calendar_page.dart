@@ -8,6 +8,7 @@ import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_failure.dart';
+import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_state.dart';
 import 'package:mobile/features/calendar/presentation/routes/calendar_route_paths.dart';
@@ -17,6 +18,8 @@ import 'package:mobile/features/calendar/presentation/widgets/calendar_list_skel
 import 'package:mobile/features/calendar/presentation/widgets/calendar_meeting_tile.dart';
 import 'package:mobile/features/calendar/presentation/widgets/calendar_month_grid.dart';
 import 'package:mobile/features/calendar/presentation/widgets/calendar_month_header.dart';
+import 'package:mobile/features/calendar/presentation/widgets/meeting_participation_dialog.dart';
+import 'package:mobile/features/calendar/presentation/widgets/meeting_participation_feedback.dart';
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
@@ -26,8 +29,20 @@ class CalendarPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.colors.bgDefault,
       body: SafeArea(
-        child: BlocBuilder<CalendarCubit, CalendarState>(
-          builder: (context, state) => _CalendarContent(state: state),
+        child: _RefreshOnRequest(
+          child: BlocConsumer<CalendarCubit, CalendarState>(
+            listenWhen: (previous, current) =>
+                !previous.hasParticipationFeedback &&
+                current.hasParticipationFeedback,
+            listener: (context, state) {
+              showMeetingParticipationFeedback(
+                context,
+                failure: state.participationFailure,
+              );
+              context.read<CalendarCubit>().clearParticipationFeedback();
+            },
+            builder: (context, state) => _CalendarContent(state: state),
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
@@ -39,6 +54,37 @@ class CalendarPage extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Relê o mês quando uma navegação pede (`RefreshTabRequest`), como a
+/// notificação de aprovação que abre a aba já aberta.
+class _RefreshOnRequest extends StatefulWidget {
+  final Widget child;
+
+  const _RefreshOnRequest({required this.child});
+
+  @override
+  State<_RefreshOnRequest> createState() => _RefreshOnRequestState();
+}
+
+class _RefreshOnRequestState extends State<_RefreshOnRequest> {
+  bool _started = false;
+  Object? _lastExtra;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final extra = GoRouterState.of(context).extra;
+    // Ao abrir, a carga inicial do cubit já basta.
+    final isNewRequest =
+        _started && extra is RefreshTabRequest && !identical(extra, _lastExtra);
+    _started = true;
+    _lastExtra = extra;
+    if (isNewRequest) unawaited(context.read<CalendarCubit>().refresh());
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class _CalendarContent extends StatelessWidget {
@@ -165,6 +211,7 @@ class _CalendarContent extends StatelessWidget {
             ),
           ];
         }
+        final now = cubit.now;
         return [
           SliverPadding(
             padding: horizontal.copyWith(bottom: spacing.s16),
@@ -179,12 +226,28 @@ class _CalendarContent extends StatelessWidget {
                   meeting: meeting,
                   showDate: state.selectedDay == null,
                   onTap: () => unawaited(context.push<Object?>(destination)),
+                  now: now,
+                  isRequesting: state.requestingIds.contains(meeting.id),
+                  onRequestParticipation: () =>
+                      unawaited(_confirmParticipation(context, meeting)),
                 );
               },
             ),
           ),
         ];
     }
+  }
+
+  Future<void> _confirmParticipation(
+    BuildContext context,
+    CalendarMeetingEntity meeting,
+  ) async {
+    final cubit = context.read<CalendarCubit>();
+    final confirmed = await MeetingParticipationDialog.show(
+      context,
+      groupNumber: meeting.group.number,
+    );
+    if (confirmed == true) await cubit.requestParticipation(meeting.id);
   }
 
   String _emptyMessage(BuildContext context) {

@@ -130,4 +130,78 @@ void main() {
       );
     });
   }
+
+  group('requestParticipation', () {
+    const meetingId = 'd2b8c1c4-7f0a-4b3e-9a51-1f2e3d4c5b6a';
+
+    void stubRequest(Result<SupabaseResponse<void>, SupabaseFailure> result) {
+      when(
+        () => service.invokeFunction<void>(
+          functionName: any(named: 'functionName'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async => result);
+    }
+
+    FunctionSupabaseFailure backendError(int status, String error) =>
+        FunctionSupabaseFailure(
+          message: error,
+          code: '$status',
+          kind: SupabaseFailureKind.fromStatusCode(status),
+        );
+
+    test('POSTs the meeting_id to request-meeting-participation', () async {
+      stubRequest(const Success(SupabaseResponse(statusCode: 201)));
+
+      final result = await repository.requestParticipation(meetingId);
+
+      expect(result, isA<Success<void, CalendarFailure>>());
+      verify(
+        () => service.invokeFunction<void>(
+          functionName: 'request-meeting-participation',
+          body: {'meeting_id': meetingId},
+        ),
+      ).called(1);
+    });
+
+    final failures = <SupabaseFailure, CalendarFailure>{
+      const FunctionSupabaseFailure(
+        message: 'offline',
+        kind: SupabaseFailureKind.network,
+      ): const CalendarNetworkFailure(),
+      backendError(401, 'Unauthorized'): const CalendarSessionExpiredFailure(),
+      backendError(403, 'inactive account'): const CalendarForbiddenFailure(),
+      backendError(403, 'meeting not available'):
+          const CalendarMeetingUnavailableFailure(),
+      backendError(404, 'meeting not found'):
+          const CalendarMeetingNotFoundFailure(),
+      backendError(404, 'User profile not found'):
+          const CalendarGuestRequestFailure(),
+      backendError(409, 'already requested'):
+          const CalendarGuestAlreadyRequestedFailure(),
+      backendError(409, 'already a member'):
+          const CalendarGuestAlreadyMemberFailure(),
+      backendError(409, 'recently rejected'):
+          const CalendarGuestRecentlyRejectedFailure(),
+      backendError(409, 'meeting not open'):
+          const CalendarMeetingNotOpenFailure(),
+      backendError(409, 'meeting has no reviewer'):
+          const CalendarMeetingNoReviewerFailure(),
+      backendError(400, 'missing/invalid "meeting_id"'):
+          const CalendarGuestRequestFailure(),
+      backendError(500, 'Unable to request meeting participation'):
+          const CalendarGuestRequestFailure(),
+    };
+    for (final MapEntry(key: failure, value: expected) in failures.entries) {
+      test('maps ${failure.code ?? failure.kind.name} "${failure.message}" '
+          'to ${expected.runtimeType}', () async {
+        stubRequest(Failure(failure));
+
+        expect(
+          await repository.requestParticipation(meetingId),
+          Failure<void, CalendarFailure>(expected),
+        );
+      });
+    }
+  });
 }
