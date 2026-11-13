@@ -65,7 +65,7 @@ void main() {
       );
     });
 
-    test('an approved join request opens the member group details', () {
+    test('an approved join request opens the public group page', () {
       expect(
         NotificationRoutePaths.destinationFor(
           _notification(
@@ -73,7 +73,7 @@ void main() {
             type: NotificationType.groupJoinApproved,
           ),
         ),
-        '${GroupRoutePaths.groupDetails}?group_id=g1',
+        GroupDiscoveryRoutePaths.publicGroupFor('g1'),
       );
     });
 

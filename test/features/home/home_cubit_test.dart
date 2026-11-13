@@ -68,10 +68,7 @@ void main() {
       act: (cubit) => cubit.loadGroups(),
       expect: () => [
         const HomeState(status: HomeStatus.loading),
-        const HomeState(
-          status: HomeStatus.error,
-          error: GroupListFailure(),
-        ),
+        const HomeState(status: HomeStatus.error, error: GroupListFailure()),
       ],
     );
 
@@ -103,5 +100,71 @@ void main() {
         const HomeState(),
       ],
     );
+
+    group('refreshGroups', () {
+      const loaded = HomeState(
+        status: HomeStatus.loaded,
+        groups: [testGroup1],
+        expandedGroupIds: {'1'},
+      );
+
+      blocTest<HomeCubit, HomeState>(
+        'updates the groups without going through loading',
+        build: () {
+          when(() => repository.getMyGroups()).thenAnswer(
+            (_) async => Success([
+              testGroup1.copyWith(participantsCount: 33),
+              testGroup27,
+            ]),
+          );
+          return build();
+        },
+        seed: () => loaded,
+        act: (cubit) => cubit.refreshGroups(),
+        expect: () => [
+          HomeState(
+            status: HomeStatus.loaded,
+            groups: [testGroup1.copyWith(participantsCount: 33), testGroup27],
+            expandedGroupIds: const {'1'},
+          ),
+        ],
+      );
+
+      blocTest<HomeCubit, HomeState>(
+        'drops the expansion of a group that left the list',
+        build: () {
+          when(
+            () => repository.getMyGroups(),
+          ).thenAnswer((_) async => const Success([testGroup27]));
+          return build();
+        },
+        seed: () => loaded,
+        act: (cubit) => cubit.refreshGroups(),
+        expect: () => [
+          const HomeState(status: HomeStatus.loaded, groups: [testGroup27]),
+        ],
+      );
+
+      blocTest<HomeCubit, HomeState>(
+        'keeps what is on screen when the refresh fails',
+        build: () {
+          when(
+            () => repository.getMyGroups(),
+          ).thenAnswer((_) async => const Failure(GroupNetworkFailure()));
+          return build();
+        },
+        seed: () => loaded,
+        act: (cubit) => cubit.refreshGroups(),
+        expect: () => <HomeState>[],
+      );
+
+      blocTest<HomeCubit, HomeState>(
+        'does nothing before the first load',
+        build: build,
+        act: (cubit) => cubit.refreshGroups(),
+        expect: () => <HomeState>[],
+        verify: (_) => verifyNever(() => repository.getMyGroups()),
+      );
+    });
   });
 }

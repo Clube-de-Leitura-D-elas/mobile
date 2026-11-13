@@ -8,11 +8,15 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit({required this.groupRepository}) : super(const HomeState());
 
+  // Só a leitura mais recente vale: um load e um refresh podem se cruzar.
+  int _latestRead = 0;
+
   Future<void> loadGroups() async {
     emit(state.copyWith(status: HomeStatus.loading));
 
+    final read = ++_latestRead;
     final result = await groupRepository.getMyGroups();
-    if (isClosed) return;
+    if (isClosed || read != _latestRead) return;
 
     switch (result) {
       case Failure(:final failure):
@@ -29,6 +33,35 @@ class HomeCubit extends Cubit<HomeState> {
             expandedGroupIds: expandedGroupIds,
           ),
         );
+    }
+  }
+
+  /// Atualiza os grupos sem passar pelo carregamento (ex.: ao voltar de outra
+  /// tela, onde a leitora pode ter entrado num grupo ou aprovado alguém); se
+  /// falhar, fica o que já está na tela.
+  Future<void> refreshGroups() async {
+    if (state.status != HomeStatus.loaded) return;
+    final read = ++_latestRead;
+    final result = await groupRepository.getMyGroups();
+    if (isClosed || read != _latestRead) return;
+
+    if (result case Success(:final data)) {
+      final knownIds = state.groups.map((group) => group.id).toSet();
+      final currentIds = data.map((group) => group.id).toSet();
+      emit(
+        state.copyWith(
+          groups: data,
+          expandedGroupIds: {
+            ...state.expandedGroupIds.where(currentIds.contains),
+            ...data
+                .where(
+                  (group) =>
+                      !knownIds.contains(group.id) && group.nextMeeting != null,
+                )
+                .map((group) => group.id),
+          },
+        ),
+      );
     }
   }
 
