@@ -39,8 +39,10 @@ import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mobile/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
@@ -99,7 +101,12 @@ void main() {
       );
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
+      expect(
+        serviceLocator<ProfileRemoteDataSource>(),
+        isA<ProfileRemoteDataSourceImpl>(),
+      );
       expect(serviceLocator<ProfileRepository>(), isA<ProfileRepositoryImpl>());
+      expect(serviceLocator<ProfileSummaryCubit>(), isA<ProfileSummaryCubit>());
       expect(serviceLocator<GroupDetailsCubit>(), isA<GroupDetailsCubit>());
       expect(serviceLocator<EventHistoryCubit>(), isA<EventHistoryCubit>());
       expect(serviceLocator<MeetingDetailsCubit>(), isA<MeetingDetailsCubit>());

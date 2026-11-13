@@ -404,18 +404,6 @@ abstract class AppLocalizations {
   /// **'Meu Perfil'**
   String get profileTitle;
 
-  /// Tempo no clube, abaixo do nome no perfil, quando é menos de um ano
-  ///
-  /// In pt, this message translates to:
-  /// **'{count, plural, =0{Chegou ao clube este mês} =1{1 mês no clube} other{{count} meses no clube}}'**
-  String profileClubTimeMonths(int count);
-
-  /// Tempo no clube, abaixo do nome no perfil, a partir de um ano
-  ///
-  /// In pt, this message translates to:
-  /// **'{count, plural, =1{1 ano no clube} other{{count} anos no clube}}'**
-  String profileClubTimeYears(int count);
-
   /// Rótulo de acessibilidade do avatar que abre o modal de edição da foto
   ///
   /// In pt, this message translates to:
@@ -2179,6 +2167,72 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Atualizamos a lista: confira as participantes e confirme de novo.'**
   String get raffleListRefreshedHint;
+
+  /// Quantidade de livros marcados como lidos, abaixo do nome no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{0 livros lidos} =1{1 livro lido} other{{count} livros lidos}}'**
+  String profileBooksReadCount(int count);
+
+  /// Quantidade de grupos ativos da leitora, abaixo do nome no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{0 grupos} =1{1 grupo} other{{count} grupos}}'**
+  String profileGroupsCount(int count);
+
+  /// Título da seção de grupos no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Meus grupos'**
+  String get profileMyGroupsTitle;
+
+  /// Rótulo de acessibilidade da foto de um grupo no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String profileGroupLabel(int number);
+
+  /// Rótulo de acessibilidade da seta que rola o carrossel de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver mais grupos'**
+  String get profileMoreGroupsButtonLabel;
+
+  /// Texto da seção de grupos do perfil quando a leitora não tem grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo.'**
+  String get profileNoGroups;
+
+  /// Título da seção de livros avaliados no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livros avaliados'**
+  String get profileReviewedBooksTitle;
+
+  /// Texto da seção de livros avaliados quando não há avaliações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não avaliou nenhum livro.'**
+  String get profileNoReviewedBooks;
+
+  /// Link para a lista completa de livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todos os livros'**
+  String get profileSeeAllBooks;
+
+  /// Rótulo de acessibilidade do carregamento das seções do perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando seus grupos e livros'**
+  String get profileSummaryLoading;
+
+  /// Erro ao carregar livros lidos, grupos e avaliações do perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar seus grupos e livros.'**
+  String get profileSummaryLoadError;
 }
 
 class _AppLocalizationsDelegate

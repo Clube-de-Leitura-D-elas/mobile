@@ -4,14 +4,20 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mobile/features/profile/data/models/set_profile_photo_model.dart';
 import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
 import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
-  ProfileRepositoryImpl({required this.supabaseService});
+  ProfileRepositoryImpl({
+    required this.supabaseService,
+    required this.remoteDataSource,
+  });
 
   final SupabaseService supabaseService;
+  final ProfileRemoteDataSource remoteDataSource;
 
   static const _rejectedCodes = {'400', '404', '422'};
 
@@ -47,13 +53,35 @@ class ProfileRepositoryImpl implements ProfileRepository {
     }
   }
 
+  @override
+  Future<Result<ProfileSummaryEntity, ProfileFailure>>
+  getProfileSummary() async {
+    final result = await remoteDataSource.getMyProfileSummary();
+
+    switch (result) {
+      case Failure(:final failure):
+        debugPrint('[ProfileSummary] ${failure.message} (${failure.code})');
+        return Failure(
+          _connectionFailure(failure) ?? const ProfileSummaryLoadFailure(),
+        );
+      case Success(:final data):
+        if (data == null) return const Failure(ProfileSummaryLoadFailure());
+        return Success(data.toDomain());
+    }
+  }
+
+  /// Rede e sessão valem para qualquer chamada do perfil.
+  ProfileFailure? _connectionFailure(SupabaseFailure failure) {
+    return switch (failure.kind) {
+      SupabaseFailureKind.network => const ProfileNetworkFailure(),
+      SupabaseFailureKind.unauthorized => const ProfileSessionExpiredFailure(),
+      _ => null,
+    };
+  }
+
   ProfileFailure _mapFailure(SupabaseFailure failure) {
-    if (failure.kind == SupabaseFailureKind.network) {
-      return const ProfileNetworkFailure();
-    }
-    if (failure.kind == SupabaseFailureKind.unauthorized) {
-      return const ProfileSessionExpiredFailure();
-    }
+    final connection = _connectionFailure(failure);
+    if (connection != null) return connection;
     final code = failure.code;
     if (code == '413') return const ProfilePhotoTooLargeFailure();
     if (_rejectedCodes.contains(code)) {

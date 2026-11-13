@@ -6,6 +6,7 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 
@@ -35,7 +36,10 @@ abstract class QuickAccessRoutes {
           path: pathFor(item),
           pageBuilder: (context, state) {
             final Widget pageChild = switch (item) {
-              QuickAccessItem.profile => const ProfilePage(),
+              QuickAccessItem.profile => BlocProvider(
+                create: (_) => serviceLocator<ProfileSummaryCubit>()..load(),
+                child: const ProfilePage(),
+              ),
               QuickAccessItem.search => BlocProvider(
                 create: (_) => serviceLocator<BookSearchCubit>()..load(),
                 child: const BookSearchPage(),

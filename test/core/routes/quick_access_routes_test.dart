@@ -13,6 +13,9 @@ import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/l10n/app_localizations.dart';
@@ -24,6 +27,26 @@ class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
 
 class MockBookRepository extends Mock implements BookRepository {}
+
+class MockProfileRepository extends Mock implements ProfileRepository {}
+
+MockProfileRepository _registerProfileSummary() {
+  final repository = MockProfileRepository();
+  when(() => repository.getProfileSummary()).thenAnswer(
+    (_) async => const Success(ProfileSummaryEntity(booksReadCount: 0)),
+  );
+  serviceLocator.allowReassignment = true;
+  serviceLocator.registerFactory<ProfileSummaryCubit>(
+    () => ProfileSummaryCubit(repository: repository),
+  );
+  return repository;
+}
+
+void _unregisterProfileSummary() {
+  if (serviceLocator.isRegistered<ProfileSummaryCubit>()) {
+    serviceLocator.unregister<ProfileSummaryCubit>();
+  }
+}
 
 void _registerBookSearch() {
   final repository = MockBookRepository();
@@ -122,6 +145,8 @@ void main() {
       (tester) async {
         _registerBookSearch();
         addTearDown(_unregisterBookSearch);
+        final profileRepository = _registerProfileSummary();
+        addTearDown(_unregisterProfileSummary);
 
         final router = GoRouter(
           initialLocation: '/search',
@@ -156,6 +181,8 @@ void main() {
 
         expect(find.byType(ProfilePage), findsOneWidget);
         expect(find.byType(BookSearchPage), findsNothing);
+        // A aba do perfil já abre carregando livros lidos, grupos e avaliações.
+        verify(() => profileRepository.getProfileSummary()).called(1);
 
         router.go('/calendar');
         await tester.pumpAndSettle();

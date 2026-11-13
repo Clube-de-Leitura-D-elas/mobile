@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/routes/app_route_observer.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
@@ -12,6 +13,10 @@ import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
+import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_state.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_screen.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
@@ -25,11 +30,15 @@ class MockSessionCubit extends MockCubit<SessionState>
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 
+class MockProfileSummaryCubit extends MockCubit<ProfileSummaryState>
+    implements ProfileSummaryCubit {}
+
 class MockSupabaseService extends Mock implements SupabaseService {}
 
 void main() {
   late MockGoRouter mockGoRouter;
   late MockSessionCubit sessionCubit;
+  late MockProfileSummaryCubit summaryCubit;
 
   const user = UserEntity(
     name: 'Roberta',
@@ -62,6 +71,10 @@ void main() {
     when(
       () => sessionCubit.state,
     ).thenReturn(const AuthenticatedSession(user: user, profile: profile));
+    summaryCubit = MockProfileSummaryCubit();
+    when(() => summaryCubit.state).thenReturn(
+      const ProfileSummaryLoaded(ProfileSummaryEntity(booksReadCount: 0)),
+    );
   });
 
   Widget buildSubject() {
@@ -73,8 +86,11 @@ void main() {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt'),
-      home: BlocProvider<SessionCubit>.value(
-        value: sessionCubit,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<SessionCubit>.value(value: sessionCubit),
+          BlocProvider<ProfileSummaryCubit>.value(value: summaryCubit),
+        ],
         child: InheritedGoRouter(
           goRouter: mockGoRouter,
           child: const ProfilePage(),
@@ -96,6 +112,23 @@ void main() {
       expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
     },
   );
+
+  testWidgets('Repassa o resumo à tela e tenta de novo pelo cubit', (
+    tester,
+  ) async {
+    when(() => summaryCubit.load()).thenAnswer((_) async {});
+    when(
+      () => summaryCubit.state,
+    ).thenReturn(const ProfileSummaryError(ProfileNetworkFailure()));
+
+    await tester.pumpWidget(buildSubject());
+
+    final screen = tester.widget<ProfileScreen>(find.byType(ProfileScreen));
+    expect(screen.summary, const ProfileSummaryError(ProfileNetworkFailure()));
+
+    await tester.tap(find.text('Tentar novamente'));
+    verify(() => summaryCubit.load()).called(1);
+  });
 
   testWidgets('Deve passar o perfil da sessão para a ProfileScreen', (
     tester,
@@ -152,8 +185,11 @@ void main() {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt'),
-      home: BlocProvider<SessionCubit>.value(
-        value: realCubit,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<SessionCubit>.value(value: realCubit),
+          BlocProvider<ProfileSummaryCubit>.value(value: summaryCubit),
+        ],
         child: InheritedGoRouter(
           goRouter: mockGoRouter,
           child: const ProfilePage(),
@@ -162,9 +198,9 @@ void main() {
     );
 
     await tester.pumpWidget(page());
-    tester
-        .widget<ProfileHeader>(find.byType(ProfileHeader))
-        .onPhotoChanged!('https://example.com/nova.jpg');
+    tester.widget<ProfileHeader>(find.byType(ProfileHeader)).onPhotoChanged!(
+      'https://example.com/nova.jpg',
+    );
     await tester.pump();
 
     await tester.pumpWidget(const SizedBox.shrink());
@@ -259,4 +295,48 @@ void main() {
       verify(() => mockGoRouter.go('/search')).called(1);
     },
   );
+
+  testWidgets('Recarrega o resumo ao voltar de uma tela aberta pelo perfil', (
+    tester,
+  ) async {
+    when(() => summaryCubit.refresh()).thenAnswer((_) async {});
+    final router = GoRouter(
+      observers: [appRouteObserver],
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) => MultiBlocProvider(
+            providers: [
+              BlocProvider<SessionCubit>.value(value: sessionCubit),
+              BlocProvider<ProfileSummaryCubit>.value(value: summaryCubit),
+            ],
+            child: const ProfilePage(),
+          ),
+        ),
+        GoRoute(path: '/livro', builder: (_, _) => const Text('livro')),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt'),
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+    verifyNever(() => summaryCubit.refresh());
+
+    router.push('/livro');
+    await tester.pumpAndSettle();
+    router.pop();
+    await tester.pumpAndSettle();
+
+    verify(() => summaryCubit.refresh()).called(1);
+  });
 }

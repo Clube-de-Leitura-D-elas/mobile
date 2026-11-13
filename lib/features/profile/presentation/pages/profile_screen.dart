@@ -1,22 +1,41 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
+import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_state.dart';
 import 'package:mobile/features/profile/presentation/widgets/logout_confirm_dialog.dart';
+import 'package:mobile/features/profile/presentation/widgets/profile_groups_carousel.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
+import 'package:mobile/features/profile/presentation/widgets/profile_reviewed_books.dart';
 
 class ProfileScreen extends StatelessWidget {
   final UserProfileEntity? profile;
 
-  const ProfileScreen({super.key, this.profile});
+  /// Livros lidos, grupos e avaliações, que vêm de outra chamada.
+  final ProfileSummaryState summary;
+  final VoidCallback? onRetry;
+
+  const ProfileScreen({
+    super.key,
+    this.profile,
+    this.summary = const ProfileSummaryLoading(),
+    this.onRetry,
+  });
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
     final l10n = context.l10n;
     final name = profile?.name ?? '';
+    final summary = this.summary;
+    final loaded = summary is ProfileSummaryLoaded ? summary.summary : null;
 
     return ListView(
       padding: EdgeInsets.all(spacing.s16),
@@ -25,11 +44,162 @@ class ProfileScreen extends StatelessWidget {
         SizedBox(height: spacing.s16),
         ProfileHeader(
           name: name.isEmpty ? l10n.defaultUserName : name,
-          joinedAt: profile?.createdAt,
+          booksReadCount: loaded?.booksReadCount,
+          groupsCount: loaded?.groups.length,
           photoUrl: profile?.photoUrl,
           onPhotoChanged: context.read<SessionCubit>().updateProfilePhoto,
         ),
+        SizedBox(height: spacing.s24),
+        switch (summary) {
+          ProfileSummaryLoading() => const _SummaryLoading(),
+          ProfileSummaryError(:final failure) => _SummaryError(
+            failure: failure,
+            onRetry: onRetry,
+          ),
+          ProfileSummaryLoaded(:final summary) => _SummarySections(
+            summary: summary,
+          ),
+        },
       ],
+    );
+  }
+}
+
+class _SummarySections extends StatelessWidget {
+  const _SummarySections({required this.summary});
+
+  final ProfileSummaryEntity summary;
+
+  void _openGroup(BuildContext context, String groupId) => context.push(
+    Uri(
+      path: GroupRoutes.groupDetails,
+      queryParameters: {'group_id': groupId},
+    ).toString(),
+  );
+
+  void _openBook(BuildContext context, String bookId) =>
+      context.push(BookRoutePaths.detailsFor(bookId));
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.spacing;
+    final l10n = context.l10n;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SectionTitle(l10n.profileMyGroupsTitle),
+        SizedBox(height: spacing.s16),
+        if (summary.groups.isEmpty)
+          _EmptyText(l10n.profileNoGroups)
+        else
+          ProfileGroupsCarousel(
+            groups: summary.groups,
+            onGroupTap: (groupId) => _openGroup(context, groupId),
+          ),
+        SizedBox(height: spacing.s24),
+        Divider(color: context.colors.borderDefault, height: 1),
+        SizedBox(height: spacing.s24),
+        _SectionTitle(l10n.profileReviewedBooksTitle),
+        SizedBox(height: spacing.s16),
+        if (summary.reviewedBooks.isEmpty)
+          _EmptyText(l10n.profileNoReviewedBooks)
+        else ...[
+          ProfileReviewedBooks(
+            books: summary.reviewedBooks,
+            onBookTap: (bookId) => _openBook(context, bookId),
+          ),
+          SizedBox(height: spacing.s16),
+          Divider(color: context.colors.borderDefault, height: 1),
+          // TODO(CLU-294): abrir a lista completa de livros avaliados
+          // (get-my-reviewed-books).
+          AppButton.ghost(
+            label: l10n.profileSeeAllBooks,
+            size: AppButtonSize.lg,
+            onPressed: null,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      header: true,
+      child: Text(
+        text,
+        style: context.typography.headingH3.copyWith(
+          color: context.colors.textMuted,
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyText extends StatelessWidget {
+  const _EmptyText(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: context.typography.bodyDefault.copyWith(
+        color: context.colors.textMuted,
+      ),
+    );
+  }
+}
+
+class _SummaryLoading extends StatelessWidget {
+  const _SummaryLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(context.spacing.s24),
+      child: Center(
+        child: Semantics(
+          label: context.l10n.profileSummaryLoading,
+          child: CircularProgressIndicator(color: context.colors.actionPrimary),
+        ),
+      ),
+    );
+  }
+}
+
+class _SummaryError extends StatelessWidget {
+  const _SummaryError({required this.failure, required this.onRetry});
+
+  final ProfileFailure failure;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final sessionExpired = failure is ProfileSessionExpiredFailure;
+    final message = switch (failure) {
+      ProfileNetworkFailure() => l10n.errorNoConnection,
+      ProfileSessionExpiredFailure() => l10n.errorSessionExpired,
+      _ => l10n.profileSummaryLoadError,
+    };
+
+    // Sessão expirada não se resolve tentando de novo: a saída é sair da conta.
+    return AppErrorState(
+      message: message,
+      onRetry: sessionExpired ? null : onRetry,
+      secondaryLabel: sessionExpired ? l10n.logoutTooltip : null,
+      onSecondary: sessionExpired
+          ? () => context.read<SessionCubit>().logOut()
+          : null,
     );
   }
 }
