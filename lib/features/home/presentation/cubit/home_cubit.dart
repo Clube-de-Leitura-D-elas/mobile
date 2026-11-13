@@ -38,25 +38,33 @@ class HomeCubit extends Cubit<HomeState> {
 
   /// Atualiza os grupos sem passar pelo carregamento (ex.: ao voltar de outra
   /// tela, onde a leitora pode ter entrado num grupo ou aprovado alguém); se
-  /// falhar, fica o que já está na tela.
+  /// falhar, fica o que já está na tela (o load e o sino tratam sessão expirada).
   Future<void> refreshGroups() async {
+    // Com erro na tela, voltar tenta de novo (como o load fazia antes).
+    if (state.status == HomeStatus.error) return loadGroups();
     if (state.status != HomeStatus.loaded) return;
     final read = ++_latestRead;
     final result = await groupRepository.getMyGroups();
     if (isClosed || read != _latestRead) return;
 
     if (result case Success(:final data)) {
-      final knownIds = state.groups.map((group) => group.id).toSet();
+      final previousMeetingIds = {
+        for (final group in state.groups) group.id: group.nextMeeting?.id,
+      };
       final currentIds = data.map((group) => group.id).toSet();
       emit(
         state.copyWith(
           groups: data,
           expandedGroupIds: {
             ...state.expandedGroupIds.where(currentIds.contains),
+            // Grupo novo ou com encontro novo abre expandido, como no load.
             ...data
                 .where(
                   (group) =>
-                      !knownIds.contains(group.id) && group.nextMeeting != null,
+                      group.nextMeeting != null &&
+                      (!previousMeetingIds.containsKey(group.id) ||
+                          previousMeetingIds[group.id] !=
+                              group.nextMeeting!.id),
                 )
                 .map((group) => group.id),
           },
