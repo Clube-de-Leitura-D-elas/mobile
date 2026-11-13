@@ -67,6 +67,12 @@ abstract class QuickAccessRoutes {
   ];
 }
 
+/// `extra` de um `go` que pede para a aba reler o conteúdo. Ir para a aba já
+/// aberta mantém a tela e o cubit; cada instância nova é um pedido novo.
+final class RefreshTabRequest {
+  RefreshTabRequest();
+}
+
 extension QuickAccessNavigation on BuildContext {
   void goToQuickAccessTab(int index, {required int currentIndex}) {
     if (index == currentIndex) return;

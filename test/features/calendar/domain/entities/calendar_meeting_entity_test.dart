@@ -27,6 +27,18 @@ void main() {
       expect(blocked.canRequestParticipationAt(now), isFalse);
     });
 
+    test('an unknown guest status never offers the request', () {
+      final meeting = calendarMeeting(
+        'm',
+        day: DateTime(2026, 8, 20),
+        membership: CalendarMembershipStatus.none,
+        guestStatus: CalendarGuestStatus.unknown,
+        canRequestParticipation: true,
+      );
+
+      expect(meeting.canRequestParticipationAt(now), isFalse);
+    });
+
     test('a meeting that started or closed since the load no longer takes '
         'requests, even when the backend allowed it', () {
       final started = calendarMeeting(

@@ -29,18 +29,20 @@ class CalendarPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.colors.bgDefault,
       body: SafeArea(
-        child: BlocConsumer<CalendarCubit, CalendarState>(
-          listenWhen: (previous, current) =>
-              !previous.hasParticipationFeedback &&
-              current.hasParticipationFeedback,
-          listener: (context, state) {
-            showMeetingParticipationFeedback(
-              context,
-              failure: state.participationFailure,
-            );
-            context.read<CalendarCubit>().clearParticipationFeedback();
-          },
-          builder: (context, state) => _CalendarContent(state: state),
+        child: _RefreshOnRequest(
+          child: BlocConsumer<CalendarCubit, CalendarState>(
+            listenWhen: (previous, current) =>
+                !previous.hasParticipationFeedback &&
+                current.hasParticipationFeedback,
+            listener: (context, state) {
+              showMeetingParticipationFeedback(
+                context,
+                failure: state.participationFailure,
+              );
+              context.read<CalendarCubit>().clearParticipationFeedback();
+            },
+            builder: (context, state) => _CalendarContent(state: state),
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
@@ -52,6 +54,37 @@ class CalendarPage extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Relê o mês quando uma navegação pede (`RefreshTabRequest`), como a
+/// notificação de aprovação que abre a aba já aberta.
+class _RefreshOnRequest extends StatefulWidget {
+  final Widget child;
+
+  const _RefreshOnRequest({required this.child});
+
+  @override
+  State<_RefreshOnRequest> createState() => _RefreshOnRequestState();
+}
+
+class _RefreshOnRequestState extends State<_RefreshOnRequest> {
+  bool _started = false;
+  Object? _lastExtra;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final extra = GoRouterState.of(context).extra;
+    // Ao abrir, a carga inicial do cubit já basta.
+    final isNewRequest =
+        _started && extra is RefreshTabRequest && !identical(extra, _lastExtra);
+    _started = true;
+    _lastExtra = extra;
+    if (isNewRequest) unawaited(context.read<CalendarCubit>().refresh());
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class _CalendarContent extends StatelessWidget {

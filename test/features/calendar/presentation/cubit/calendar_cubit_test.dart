@@ -402,8 +402,7 @@ void main() {
     });
 
     blocTest<CalendarCubit, CalendarState>(
-      'ignores a meeting the backend blocks, one already requested and one '
-      'that already started',
+      'ignores a meeting the backend blocks and one already requested',
       build: buildCubit,
       seed: () => loaded.copyWith(
         meetings: [
@@ -415,22 +414,92 @@ void main() {
             membership: CalendarMembershipStatus.none,
           ),
           requested,
-          calendarMeeting(
-            'old',
-            day: DateTime(2026, 8, 10),
-            membership: CalendarMembershipStatus.none,
-            canRequestParticipation: true,
-          ),
         ],
       ),
       act: (cubit) async {
         await cubit.requestParticipation('blocked');
         await cubit.requestParticipation('guest');
-        await cubit.requestParticipation('old');
       },
       expect: () => <CalendarState>[],
       verify: (_) {
         verifyNever(() => repository.requestParticipation(any()));
+      },
+    );
+
+    // Começou com o modal aberto: a leitora confirmou e precisa saber.
+    test('a meeting that started before the confirmation reports it as not '
+        'open, without sending', () async {
+      var clock = now;
+      final cubit = CalendarCubit(repository: repository, now: () => clock)
+        ..emit(loaded);
+      addTearDown(cubit.close);
+
+      clock = guest.date.add(const Duration(minutes: 1));
+      await cubit.requestParticipation('guest');
+
+      verifyNever(() => repository.requestParticipation(any()));
+      expect(
+        cubit.state.participationFailure,
+        const CalendarMeetingNotOpenFailure(),
+      );
+      expect(cubit.state.requestingIds, isEmpty);
+    });
+
+    test('an approval loaded while the request is pending is kept', () async {
+      final answer = Completer<Result<void, CalendarFailure>>();
+      when(
+        () => repository.requestParticipation(any()),
+      ).thenAnswer((_) => answer.future);
+      final accepted = calendarMeeting(
+        'guest',
+        day: DateTime(2026, 8, 20),
+        groupNumber: 9,
+        membership: CalendarMembershipStatus.none,
+        guestStatus: CalendarGuestStatus.accepted,
+      );
+      stubMonth(august, Success([past, accepted]));
+      final cubit = buildCubit()..emit(loaded);
+      addTearDown(cubit.close);
+
+      final request = cubit.requestParticipation('guest');
+      await cubit.refresh();
+      expect(
+        cubit.state.upcoming.single.guestStatus,
+        CalendarGuestStatus.accepted,
+      );
+      answer.complete(const Success(null));
+      await request;
+
+      expect(
+        cubit.state.upcoming.single.guestStatus,
+        CalendarGuestStatus.accepted,
+      );
+      expect(cubit.state.participationRequested, isTrue);
+    });
+
+    blocTest<CalendarCubit, CalendarState>(
+      'refresh reloads the month without the skeleton',
+      setUp: () => stubMonth(august, Success([past, requested])),
+      build: buildCubit,
+      seed: () => loaded,
+      act: (cubit) => cubit.refresh(),
+      expect: () => [
+        loaded.copyWith(meetings: [past, requested], upcoming: [requested]),
+      ],
+    );
+
+    blocTest<CalendarCubit, CalendarState>(
+      'refresh leaves a month that is still loading alone',
+      build: buildCubit,
+      act: (cubit) => cubit.refresh(),
+      expect: () => <CalendarState>[],
+      verify: (_) {
+        verifyNever(
+          () => repository.getMeetings(
+            from: any(named: 'from'),
+            to: any(named: 'to'),
+          ),
+        );
       },
     );
 

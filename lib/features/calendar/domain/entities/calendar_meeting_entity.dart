@@ -66,7 +66,9 @@ class CalendarMeetingEntity extends Equatable {
   /// registrada, recusa recente); o horário é conferido de novo porque o
   /// encontro pode começar com a tela aberta.
   bool canRequestParticipationAt(DateTime now) =>
-      canRequestParticipation && isOpenAt(now);
+      canRequestParticipation &&
+      guestStatus != CalendarGuestStatus.unknown &&
+      isOpenAt(now);
 
   /// Depois de um pedido aceito: aguardando, sem nova ação.
   CalendarMeetingEntity asRequested() {

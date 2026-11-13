@@ -36,6 +36,9 @@ class CalendarCubit extends Cubit<CalendarState> {
 
   Future<void> load() => _load(state.month);
 
+  /// Relê o mês em tela sem trocar a lista pelo carregamento.
+  Future<void> refresh() => _refresh();
+
   Future<void> showPreviousMonth() => _load(state.month.previous);
 
   Future<void> showNextMonth() => _load(state.month.next);
@@ -65,10 +68,17 @@ class CalendarCubit extends Cubit<CalendarState> {
     // Fora da lista (recarga em andamento) o pedido segue: a leitora já
     // confirmou e o backend valida tudo de novo.
     final meeting = _find(meetingId);
-    if ((meeting != null && !meeting.canRequestParticipationAt(_now())) ||
-        state.requestingIds.contains(meetingId)) {
+    if (state.requestingIds.contains(meetingId)) return;
+    if (meeting != null && !meeting.isOpenAt(_now())) {
+      // Começou com o modal aberto: avisa em vez de sumir com o pedido.
+      emit(
+        state.copyWith(
+          participationFailure: const CalendarMeetingNotOpenFailure(),
+        ),
+      );
       return;
     }
+    if (meeting != null && !meeting.canRequestParticipationAt(_now())) return;
 
     emit(
       state.copyWith(
@@ -143,7 +153,7 @@ class CalendarCubit extends Cubit<CalendarState> {
   CalendarState _asRequested(String meetingId) {
     List<CalendarMeetingEntity> update(List<CalendarMeetingEntity> list) => [
       for (final meeting in list)
-        meeting.id == meetingId ? meeting.asRequested() : meeting,
+        meeting.id == meetingId ? _withLocalStatus(meeting) : meeting,
     ];
     return state.copyWith(
       meetings: update(state.meetings),
@@ -164,6 +174,12 @@ class CalendarCubit extends Cubit<CalendarState> {
   ) {
     final requestedAt = _requestedAtVersion[meeting.id];
     if (requestedAt == null || requestedAt <= loadVersion) return meeting;
+    return _withLocalStatus(meeting);
+  }
+
+  /// Um status mais novo vindo do backend (aceito, por exemplo) vence o
+  /// "aguardando" local.
+  static CalendarMeetingEntity _withLocalStatus(CalendarMeetingEntity meeting) {
     final status = meeting.guestStatus;
     if (status != null && status != CalendarGuestStatus.rejected) {
       return meeting;

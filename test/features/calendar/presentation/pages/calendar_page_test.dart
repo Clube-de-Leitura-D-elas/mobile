@@ -850,16 +850,63 @@ void main() {
         (_) async => const Failure(CalendarGuestAlreadyRequestedFailure()),
       );
       await pumpWith(tester, [guestMeeting()]);
-      stubMonth(
-        august,
-        Success([guestMeeting(guestStatus: CalendarGuestStatus.requested)]),
-      );
+      final reload =
+          Completer<Result<List<CalendarMeetingEntity>, CalendarFailure>>();
+      when(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+        ),
+      ).thenAnswer((_) => reload.future);
 
       await confirmRequest(tester);
       await tester.pump();
 
+      // Durante a recarga o card continua na tela, ocupado.
+      expect(find.byType(CalendarListSkeleton), findsNothing);
+      expect(
+        tester.widget<AppButton>(inTile(find.byType(AppButton))).isLoading,
+        isTrue,
+      );
+
+      reload.complete(
+        Success([guestMeeting(guestStatus: CalendarGuestStatus.requested)]),
+      );
+      await tester.pump();
+      await tester.pump();
+
       expect(find.byType(CalendarListSkeleton), findsNothing);
       expect(inTile(find.text('Aguardando aprovação')), findsOneWidget);
+      verify(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+        ),
+      ).called(2);
+    });
+
+    testWidgets('going to the open calendar tab with a refresh request '
+        'reloads the month in place', (tester) async {
+      await pumpWith(tester, [
+        guestMeeting(guestStatus: CalendarGuestStatus.requested),
+      ]);
+      final router = GoRouter.of(tester.element(find.byType(CalendarPage)));
+      stubMonth(
+        august,
+        Success([guestMeeting(guestStatus: CalendarGuestStatus.accepted)]),
+      );
+
+      // Sem pedido (ex.: toque na aba): nada muda.
+      router.go(QuickAccessRoutes.calendar);
+      await tester.pumpAndSettle();
+      expect(inTile(find.text('Aguardando aprovação')), findsOneWidget);
+
+      router.go(QuickAccessRoutes.calendar, extra: RefreshTabRequest());
+      await tester.pump();
+      expect(find.byType(CalendarListSkeleton), findsNothing);
+      await tester.pumpAndSettle();
+
+      expect(inTile(find.text('Participação confirmada')), findsOneWidget);
       verify(
         () => repository.getMeetings(
           from: august.firstVisibleDay,

@@ -146,10 +146,11 @@ class NotificationNavigationService {
 }
 
 /// Aba (como o calendário) é trocada com `go`, como faz a barra inferior;
-/// `push` empilharia uma segunda instância dela. O resto é empilhado.
+/// `push` empilharia uma segunda instância dela. O resto é empilhado. A aba
+/// é avisada para reler o conteúdo, que a notificação acabou de mudar.
 void openNotificationRoute(GoRouter router, String route) {
   if (QuickAccessRoutes.isTabPath(route)) {
-    router.go(route);
+    router.go(route, extra: RefreshTabRequest());
   } else {
     unawaited(router.push<Object?>(route));
   }
