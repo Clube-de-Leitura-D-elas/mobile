@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/routes/app_route_observer.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
@@ -13,7 +14,7 @@ import 'package:mobile/features/home/presentation/widgets/home_groups_list.dart'
 import 'package:mobile/features/home/presentation/widgets/home_header.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notification_bell.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final UserEntity? user;
   final UserProfileEntity? profile;
   final ValueChanged<int>? onNavigationItemSelected;
@@ -24,6 +25,33 @@ class HomeScreen extends StatelessWidget {
     this.profile,
     this.onNavigationItemSelected,
   });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) {
+      appRouteObserver
+        ..unsubscribe(this)
+        ..subscribe(this, route);
+    }
+  }
+
+  // Ao voltar de qualquer tela (detalhe do grupo, notificações, pedidos de
+  // entrada, tarefas), os grupos e as contagens podem ter mudado.
+  @override
+  void didPopNext() => context.read<HomeCubit>().refreshGroups();
+
+  @override
+  void dispose() {
+    appRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +65,7 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: QuickAccessItem.home.index,
         onItemSelected:
-            onNavigationItemSelected ??
+            widget.onNavigationItemSelected ??
             (index) => context.goToQuickAccessTab(
               index,
               currentIndex: QuickAccessItem.home.index,
@@ -87,9 +115,8 @@ class _HomeContent extends StatelessWidget {
     );
   }
 
-  Future<void> _openPendingTasks(BuildContext context) async {
-    final cubit = context.read<HomeCubit>();
-    await context.push<Object?>(HomeRoutes.pendingTasks);
-    if (!cubit.isClosed) await cubit.loadGroups();
+  // Ao voltar, a home se atualiza pelo `didPopNext`.
+  void _openPendingTasks(BuildContext context) {
+    context.push<Object?>(HomeRoutes.pendingTasks);
   }
 }

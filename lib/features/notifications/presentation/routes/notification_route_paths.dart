@@ -18,8 +18,12 @@ abstract final class NotificationRoutePaths {
     }
 
     final groupId = notification.groupId;
+    // Aprovação e recusa vão para a tela pública, que mostra o vínculo atual:
+    // quem saiu do grupo depois de aprovada levaria "sem permissão" no detalhe
+    // de membro.
     if (groupId != null &&
-        notification.type == NotificationType.groupJoinRejected) {
+        (notification.type == NotificationType.groupJoinApproved ||
+            notification.type == NotificationType.groupJoinRejected)) {
       return GroupDiscoveryRoutePaths.publicGroupFor(groupId);
     }
     if (groupId != null &&

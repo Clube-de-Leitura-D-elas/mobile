@@ -77,8 +77,10 @@ class NotificationNavigationService {
       }
     }
 
-    // Recusada, a leitora não é membro: o detalhe de membro recusaria.
-    if (data['type'] == 'GROUP_JOIN_REJECTED' &&
+    // Recusada (ou aprovada e depois fora do grupo), o detalhe de membro
+    // recusaria; a tela pública mostra o vínculo atual.
+    if ((data['type'] == 'GROUP_JOIN_REJECTED' ||
+            data['type'] == 'GROUP_JOIN_APPROVED') &&
         groupId != null &&
         groupId.trim().isNotEmpty) {
       return GroupDiscoveryRoutePaths.publicGroupFor(groupId.trim());

@@ -77,12 +77,12 @@ void main() {
       expect(route, isNull);
     });
 
-    test('a GROUP_JOIN_APPROVED push opens the member group details', () {
+    test('a GROUP_JOIN_APPROVED push opens the public group page', () {
       final route = NotificationNavigationService.parseRouteFromData({
         'type': 'GROUP_JOIN_APPROVED',
         'group_id': 'group-456',
       });
-      expect(route, '${GroupRoutePaths.groupDetails}?group_id=group-456');
+      expect(route, GroupDiscoveryRoutePaths.publicGroupFor('group-456'));
     });
 
     test('returns null when data is empty or invalid', () {
