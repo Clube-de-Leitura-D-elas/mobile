@@ -93,8 +93,7 @@ class EditProfilePhotoCubit extends Cubit<EditProfilePhotoState> {
           const EditProfilePhotoSessionExpiredNotice(),
         ProfilePhotoTooLargeFailure() => const EditProfilePhotoTooLargeNotice(),
         ProfilePhotoRejectedFailure() => const EditProfilePhotoRejectedNotice(),
-        // A falha do resumo não vem do envio da foto; cai na genérica.
-        ProfilePhotoUploadFailure() || ProfileSummaryLoadFailure() =>
+        ProfilePhotoUploadFailure() =>
           const EditProfilePhotoUploadFailedNotice(),
       };
 }

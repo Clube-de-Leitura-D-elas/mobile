@@ -47,19 +47,10 @@ class _ProfileGroupsCarouselState extends State<ProfileGroupsCarousel> {
     return false;
   }
 
-  // 12 + 24 + 12: a largura que a seta ocupa ao lado da lista.
-  double get _arrowWidth => context.spacing.s12 * 2 + context.spacing.s24;
-
   void _updateArrow() {
     if (!mounted || !_controller.hasClients) return;
-    final position = _controller.position;
-    // Com a seta na tela, a lista perde a largura dela. Se os grupos cabem na
-    // largura toda do carrossel, a seta sai em vez de cortar o último grupo.
-    final fullWidth =
-        position.viewportDimension + (_canScrollForward ? _arrowWidth : 0);
-    final contentWidth = position.maxScrollExtent + position.viewportDimension;
-    final canScrollForward =
-        contentWidth > fullWidth && position.extentAfter > 0;
+    // A seta fica sobre a lista, então a largura da lista não muda com ela.
+    final canScrollForward = _controller.position.extentAfter > 0;
     if (canScrollForward != _canScrollForward) {
       setState(() => _canScrollForward = canScrollForward);
     }
@@ -85,9 +76,9 @@ class _ProfileGroupsCarouselState extends State<ProfileGroupsCarousel> {
 
     return SizedBox(
       height: ProfileGroupsCarousel.avatarDiameter,
-      child: Row(
+      child: Stack(
         children: [
-          Expanded(
+          Positioned.fill(
             child: NotificationListener<ScrollMetricsNotification>(
               onNotification: _onScrollMetrics,
               child: ListView.separated(
@@ -121,22 +112,34 @@ class _ProfileGroupsCarouselState extends State<ProfileGroupsCarousel> {
             ),
           ),
           if (_canScrollForward)
-            Semantics(
-              container: true,
-              button: true,
-              label: l10n.profileMoreGroupsButtonLabel,
-              onTap: _scrollForward,
-              child: InkWell(
-                excludeFromSemantics: true,
-                onTap: _scrollForward,
-                customBorder: const CircleBorder(),
-                // 12 + 24 + 12: alvo de toque de 48.
-                child: Padding(
-                  padding: EdgeInsets.all(spacing.s12),
-                  child: Icon(
-                    Icons.chevron_right,
-                    size: spacing.s24,
-                    color: colors.textMuted,
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: Semantics(
+                  container: true,
+                  button: true,
+                  label: l10n.profileMoreGroupsButtonLabel,
+                  onTap: _scrollForward,
+                  // Fundo da tela para a seta não sumir sobre as fotos.
+                  child: Material(
+                    color: colors.bgDefault,
+                    shape: const CircleBorder(),
+                    child: InkWell(
+                      excludeFromSemantics: true,
+                      onTap: _scrollForward,
+                      customBorder: const CircleBorder(),
+                      // 12 + 24 + 12: alvo de toque de 48.
+                      child: Padding(
+                        padding: EdgeInsets.all(spacing.s12),
+                        child: Icon(
+                          Icons.chevron_right,
+                          size: spacing.s24,
+                          color: colors.textMuted,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

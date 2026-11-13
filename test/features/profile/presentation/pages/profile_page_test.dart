@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:mobile/core/routes/app_route_observer.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
@@ -13,8 +12,9 @@ import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
-import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/profile/presentation/cubit/profile_summary_state.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
@@ -119,12 +119,15 @@ void main() {
     when(() => summaryCubit.load()).thenAnswer((_) async {});
     when(
       () => summaryCubit.state,
-    ).thenReturn(const ProfileSummaryError(ProfileNetworkFailure()));
+    ).thenReturn(const ProfileSummaryError(ProfileSummaryNetworkFailure()));
 
     await tester.pumpWidget(buildSubject());
 
     final screen = tester.widget<ProfileScreen>(find.byType(ProfileScreen));
-    expect(screen.summary, const ProfileSummaryError(ProfileNetworkFailure()));
+    expect(
+      screen.summary,
+      const ProfileSummaryError(ProfileSummaryNetworkFailure()),
+    );
 
     await tester.tap(find.text('Tentar novamente'));
     verify(() => summaryCubit.load()).called(1);
@@ -296,12 +299,18 @@ void main() {
     },
   );
 
-  testWidgets('Recarrega o resumo ao voltar de uma tela aberta pelo perfil', (
-    tester,
-  ) async {
+  testWidgets('Recarrega o resumo ao voltar de um grupo aberto pelo perfil, '
+      'mas não ao fechar um diálogo', (tester) async {
     when(() => summaryCubit.refresh()).thenAnswer((_) async {});
+    when(() => summaryCubit.state).thenReturn(
+      const ProfileSummaryLoaded(
+        ProfileSummaryEntity(
+          booksReadCount: 0,
+          groups: [ProfileGroupEntity(id: 'g-1', number: 1)],
+        ),
+      ),
+    );
     final router = GoRouter(
-      observers: [appRouteObserver],
       routes: [
         GoRoute(
           path: '/',
@@ -313,7 +322,10 @@ void main() {
             child: const ProfilePage(),
           ),
         ),
-        GoRoute(path: '/livro', builder: (_, _) => const Text('livro')),
+        GoRoute(
+          path: GroupRoutes.groupDetails,
+          builder: (_, _) => const Text('grupo'),
+        ),
       ],
     );
     addTearDown(router.dispose);
@@ -330,13 +342,26 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+
+    // Abrir e cancelar o diálogo de sair não recarrega o resumo.
+    await tester.tap(
+      find.ancestor(
+        of: find.byWidgetPredicate(
+          (widget) => widget is AppIcon && widget.icon == AppIcons.leave,
+        ),
+        matching: find.byType(InkWell),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancelar'));
+    await tester.pumpAndSettle();
     verifyNever(() => summaryCubit.refresh());
 
-    final pushed = router.push('/livro');
+    await tester.tap(find.byKey(const ValueKey('profile-group-g-1')));
     await tester.pumpAndSettle();
+    expect(find.text('grupo'), findsOneWidget);
     router.pop();
     await tester.pumpAndSettle();
-    await pushed;
 
     verify(() => summaryCubit.refresh()).called(1);
   });

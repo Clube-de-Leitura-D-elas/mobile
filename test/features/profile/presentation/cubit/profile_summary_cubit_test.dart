@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
-import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
 import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
 import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
@@ -44,8 +44,8 @@ void main() {
   blocTest<ProfileSummaryCubit, ProfileSummaryState>(
     'mostra o erro e carrega de novo na nova tentativa',
     setUp: () {
-      final answers = <Result<ProfileSummaryEntity, ProfileFailure>>[
-        const Failure(ProfileNetworkFailure()),
+      final answers = <Result<ProfileSummaryEntity, ProfileSummaryFailure>>[
+        const Failure(ProfileSummaryNetworkFailure()),
         const Success(summary),
       ];
       when(
@@ -59,7 +59,7 @@ void main() {
     },
     expect: () => [
       const ProfileSummaryLoading(),
-      const ProfileSummaryError(ProfileNetworkFailure()),
+      const ProfileSummaryError(ProfileSummaryNetworkFailure()),
       const ProfileSummaryLoading(),
       const ProfileSummaryLoaded(summary),
     ],
@@ -83,7 +83,7 @@ void main() {
       'se falhar, mantém o resumo que já estava na tela',
       setUp: () => when(
         () => repository.getProfileSummary(),
-      ).thenAnswer((_) async => const Failure(ProfileNetworkFailure())),
+      ).thenAnswer((_) async => const Failure(ProfileSummaryNetworkFailure())),
       build: build,
       seed: () => const ProfileSummaryLoaded(summary),
       act: (cubit) => cubit.refresh(),
@@ -96,7 +96,7 @@ void main() {
         () => repository.getProfileSummary(),
       ).thenAnswer((_) async => const Success(summary)),
       build: build,
-      seed: () => const ProfileSummaryError(ProfileNetworkFailure()),
+      seed: () => const ProfileSummaryError(ProfileSummaryNetworkFailure()),
       act: (cubit) => cubit.refresh(),
       expect: () => [
         const ProfileSummaryLoading(),
@@ -107,11 +107,12 @@ void main() {
     blocTest<ProfileSummaryCubit, ProfileSummaryState>(
       'descarta a resposta de uma atualização ultrapassada por uma carga',
       setUp: () {
-        final slow = Completer<Result<ProfileSummaryEntity, ProfileFailure>>();
+        final slow =
+            Completer<Result<ProfileSummaryEntity, ProfileSummaryFailure>>();
         final answers = [
           slow.future,
           Future.value(
-            const Success<ProfileSummaryEntity, ProfileFailure>(updated),
+            const Success<ProfileSummaryEntity, ProfileSummaryFailure>(updated),
           ),
         ];
         when(
@@ -141,7 +142,8 @@ void main() {
     );
 
     test('não emite depois de fechado', () async {
-      final pending = Completer<Result<ProfileSummaryEntity, ProfileFailure>>();
+      final pending =
+          Completer<Result<ProfileSummaryEntity, ProfileSummaryFailure>>();
       when(
         () => repository.getProfileSummary(),
       ).thenAnswer((_) => pending.future);

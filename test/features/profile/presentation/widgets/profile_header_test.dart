@@ -91,16 +91,26 @@ void main() {
     ) async {
       await pumpHeader(tester, booksReadCount: 5, groupsCount: 2);
 
-      for (final icon in tester.widgetList<AppIcon>(find.byType(AppIcon))) {
-        expect(
-          find.ancestor(
-            of: find.byWidget(icon),
-            matching: find.byType(ExcludeSemantics),
-          ),
-          findsWidgets,
-        );
+      final icons = find.byType(AppIcon);
+      expect(icons, findsNWidgets(2));
+      for (final icon in tester.elementList(icons)) {
+        // O pai direto do ícone é o ExcludeSemantics do contador.
+        Widget? parent;
+        icon.visitAncestorElements((element) {
+          parent = element.widget;
+          return false;
+        });
+        expect(parent, isA<ExcludeSemantics>());
       }
-      expect(find.bySemanticsLabel(RegExp('5 livros lidos')), findsOneWidget);
+      // Na árvore de semântica, cada contador é só o texto.
+      expect(
+        tester.getSemantics(find.text('5 livros lidos')),
+        isSemantics(label: '5 livros lidos'),
+      );
+      expect(
+        tester.getSemantics(find.text('2 grupos')),
+        isSemantics(label: '2 grupos'),
+      );
     });
 
     testWidgets('o avatar fica fora da leitura de tela', (tester) async {

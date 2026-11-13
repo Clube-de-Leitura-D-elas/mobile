@@ -5,9 +5,10 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
-import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
 import 'package:mobile/features/profile/presentation/cubit/profile_summary_state.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_screen.dart';
@@ -317,7 +318,9 @@ void main() {
       (tester) async {
         await tester.pumpWidget(
           buildSubject(
-            summary: const ProfileSummaryError(ProfileSessionExpiredFailure()),
+            summary: const ProfileSummaryError(
+              ProfileSummarySessionExpiredFailure(),
+            ),
             onRetry: () => fail('tentar de novo não resolve sessão expirada'),
           ),
         );
@@ -338,7 +341,7 @@ void main() {
     testWidgets('explica a falta de conexão', (tester) async {
       await tester.pumpWidget(
         buildSubject(
-          summary: const ProfileSummaryError(ProfileNetworkFailure()),
+          summary: const ProfileSummaryError(ProfileSummaryNetworkFailure()),
         ),
       );
 
@@ -394,13 +397,19 @@ void main() {
       expect(seeAll.onPressed, isNull);
     });
 
-    Future<GoRouter> pumpWithRouter(WidgetTester tester) async {
+    Future<GoRouter> pumpWithRouter(
+      WidgetTester tester, {
+      VoidCallback? onReturn,
+    }) async {
       final router = GoRouter(
         routes: [
           GoRoute(
             path: '/',
-            builder: (_, _) => const Scaffold(
-              body: ProfileScreen(summary: ProfileSummaryLoaded(summary)),
+            builder: (_, _) => Scaffold(
+              body: ProfileScreen(
+                summary: const ProfileSummaryLoaded(summary),
+                onReturn: onReturn,
+              ),
             ),
           ),
           GoRoute(
@@ -409,7 +418,7 @@ void main() {
                 Text('grupo ${state.uri.queryParameters['group_id']}'),
           ),
           GoRoute(
-            path: '/books/:bookId',
+            path: BookRoutePaths.details,
             builder: (_, state) =>
                 Text('livro ${state.pathParameters['bookId']}'),
           ),
@@ -444,13 +453,21 @@ void main() {
       expect(find.text('grupo g-2'), findsOneWidget);
     });
 
-    testWidgets('tocar num livro abre o detalhe do livro', (tester) async {
-      await pumpWithRouter(tester);
+    testWidgets('tocar num livro abre o detalhe e avisa ao voltar', (
+      tester,
+    ) async {
+      var returns = 0;
+      final router = await pumpWithRouter(tester, onReturn: () => returns++);
 
       await tester.tap(find.byKey(const ValueKey('profile-book-b-1')));
       await tester.pumpAndSettle();
 
       expect(find.text('livro b-1'), findsOneWidget);
+      expect(returns, 0);
+
+      router.pop();
+      await tester.pumpAndSettle();
+      expect(returns, 1);
     });
   });
 }

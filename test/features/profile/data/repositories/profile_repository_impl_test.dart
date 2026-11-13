@@ -11,6 +11,7 @@ import 'package:mobile/features/profile/data/models/profile_summary_model.dart';
 import 'package:mobile/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
@@ -226,7 +227,7 @@ void main() {
 
       expect(
         await repository.getProfileSummary(),
-        const Success<ProfileSummaryEntity, ProfileFailure>(
+        const Success<ProfileSummaryEntity, ProfileSummaryFailure>(
           ProfileSummaryEntity(
             booksReadCount: 5,
             groups: [ProfileGroupEntity(id: 'g-1', number: 1)],
@@ -247,15 +248,16 @@ void main() {
 
       expect(
         await repository.getProfileSummary(),
-        const Failure<ProfileSummaryEntity, ProfileFailure>(
+        const Failure<ProfileSummaryEntity, ProfileSummaryFailure>(
           ProfileSummaryLoadFailure(),
         ),
       );
     });
 
-    final cases = <SupabaseFailureKind, ProfileFailure>{
-      SupabaseFailureKind.network: const ProfileNetworkFailure(),
-      SupabaseFailureKind.unauthorized: const ProfileSessionExpiredFailure(),
+    final cases = <SupabaseFailureKind, ProfileSummaryFailure>{
+      SupabaseFailureKind.network: const ProfileSummaryNetworkFailure(),
+      SupabaseFailureKind.unauthorized:
+          const ProfileSummarySessionExpiredFailure(),
       SupabaseFailureKind.server: const ProfileSummaryLoadFailure(),
       SupabaseFailureKind.notFound: const ProfileSummaryLoadFailure(),
     };
@@ -265,7 +267,7 @@ void main() {
 
         expect(
           await repository.getProfileSummary(),
-          Failure<ProfileSummaryEntity, ProfileFailure>(expected),
+          Failure<ProfileSummaryEntity, ProfileSummaryFailure>(expected),
         );
       });
     }

@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:mobile/core/routes/app_route_observer.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -10,34 +9,8 @@ import 'package:mobile/features/profile/presentation/cubit/profile_summary_state
 
 import 'profile_screen.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
-
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> with RouteAware {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final route = ModalRoute.of(context);
-    if (route != null) {
-      appRouteObserver
-        ..unsubscribe(this)
-        ..subscribe(this, route);
-    }
-  }
-
-  /// Ao voltar de um livro ou grupo, os contadores podem ter mudado.
-  @override
-  void didPopNext() => context.read<ProfileSummaryCubit>().refresh();
-
-  @override
-  void dispose() {
-    appRouteObserver.unsubscribe(this);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +30,9 @@ class _ProfilePageState extends State<ProfilePage> with RouteAware {
                       : null,
                   summary: summary,
                   onRetry: context.read<ProfileSummaryCubit>().load,
+                  // Ao voltar de um livro ou grupo, os contadores podem ter
+                  // mudado.
+                  onReturn: context.read<ProfileSummaryCubit>().refresh,
                 ),
               ),
         ),

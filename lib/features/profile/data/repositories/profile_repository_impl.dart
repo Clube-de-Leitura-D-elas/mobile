@@ -8,6 +8,7 @@ import 'package:mobile/features/profile/data/datasources/profile_remote_data_sou
 import 'package:mobile/features/profile/data/models/set_profile_photo_model.dart';
 import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
@@ -54,34 +55,32 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Result<ProfileSummaryEntity, ProfileFailure>>
+  Future<Result<ProfileSummaryEntity, ProfileSummaryFailure>>
   getProfileSummary() async {
     final result = await remoteDataSource.getMyProfileSummary();
 
     switch (result) {
       case Failure(:final failure):
         debugPrint('[ProfileSummary] ${failure.message} (${failure.code})');
-        return Failure(
-          _connectionFailure(failure) ?? const ProfileSummaryLoadFailure(),
-        );
+        return Failure(switch (failure.kind) {
+          SupabaseFailureKind.network => const ProfileSummaryNetworkFailure(),
+          SupabaseFailureKind.unauthorized =>
+            const ProfileSummarySessionExpiredFailure(),
+          _ => const ProfileSummaryLoadFailure(),
+        });
       case Success(:final data):
         if (data == null) return const Failure(ProfileSummaryLoadFailure());
         return Success(data.toDomain());
     }
   }
 
-  /// Rede e sessão valem para qualquer chamada do perfil.
-  ProfileFailure? _connectionFailure(SupabaseFailure failure) {
-    return switch (failure.kind) {
-      SupabaseFailureKind.network => const ProfileNetworkFailure(),
-      SupabaseFailureKind.unauthorized => const ProfileSessionExpiredFailure(),
-      _ => null,
-    };
-  }
-
   ProfileFailure _mapFailure(SupabaseFailure failure) {
-    final connection = _connectionFailure(failure);
-    if (connection != null) return connection;
+    if (failure.kind == SupabaseFailureKind.network) {
+      return const ProfileNetworkFailure();
+    }
+    if (failure.kind == SupabaseFailureKind.unauthorized) {
+      return const ProfileSessionExpiredFailure();
+    }
     final code = failure.code;
     if (code == '413') return const ProfilePhotoTooLargeFailure();
     if (_rejectedCodes.contains(code)) {

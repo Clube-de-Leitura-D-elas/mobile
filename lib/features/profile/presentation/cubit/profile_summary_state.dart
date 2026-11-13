@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
 
 sealed class ProfileSummaryState extends Equatable {
@@ -25,7 +25,7 @@ class ProfileSummaryLoaded extends ProfileSummaryState {
 class ProfileSummaryError extends ProfileSummaryState {
   const ProfileSummaryError(this.failure);
 
-  final ProfileFailure failure;
+  final ProfileSummaryFailure failure;
 
   @override
   List<Object?> get props => [failure];

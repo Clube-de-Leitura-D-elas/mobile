@@ -127,4 +127,22 @@ void main() {
     await tester.pump();
     expect(moreGroups(), findsOneWidget);
   });
+
+  testWidgets('a seta fica sobre a lista, sem mudar a largura dela', (
+    tester,
+  ) async {
+    await pumpCarousel(tester, groups: groups(6));
+    await tester.pump();
+    expect(moreGroups(), findsOneWidget);
+    final withArrow = tester.getSize(find.byType(Scrollable)).width;
+
+    final scrollable = tester.state<ScrollableState>(find.byType(Scrollable));
+    scrollable.position.jumpTo(scrollable.position.maxScrollExtent);
+    await tester.pump();
+    await tester.pump();
+
+    expect(moreGroups(), findsNothing);
+    expect(tester.getSize(find.byType(Scrollable)).width, withArrow);
+    expect(withArrow, 360);
+  });
 }

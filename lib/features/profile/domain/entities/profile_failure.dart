@@ -26,8 +26,3 @@ class ProfilePhotoRejectedFailure extends ProfileFailure {
 class ProfilePhotoTooLargeFailure extends ProfileFailure {
   const ProfilePhotoTooLargeFailure();
 }
-
-/// Falha genérica ao carregar livros lidos, grupos e avaliações do perfil.
-class ProfileSummaryLoadFailure extends ProfileFailure {
-  const ProfileSummaryLoadFailure();
-}

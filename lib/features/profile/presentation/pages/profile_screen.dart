@@ -7,7 +7,7 @@ import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
-import 'package:mobile/features/profile/domain/entities/profile_failure.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
 import 'package:mobile/features/profile/presentation/cubit/profile_summary_state.dart';
 import 'package:mobile/features/profile/presentation/widgets/logout_confirm_dialog.dart';
@@ -22,11 +22,16 @@ class ProfileScreen extends StatelessWidget {
   final ProfileSummaryState summary;
   final VoidCallback? onRetry;
 
+  /// Chamado ao voltar de um grupo ou livro aberto pelo perfil, que pode ter
+  /// mudado os contadores. Fechar um diálogo não conta.
+  final VoidCallback? onReturn;
+
   const ProfileScreen({
     super.key,
     this.profile,
     this.summary = const ProfileSummaryLoading(),
     this.onRetry,
+    this.onReturn,
   });
 
   @override
@@ -58,6 +63,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           ProfileSummaryLoaded(:final summary) => _SummarySections(
             summary: summary,
+            onReturn: onReturn,
           ),
         },
       ],
@@ -66,19 +72,25 @@ class ProfileScreen extends StatelessWidget {
 }
 
 class _SummarySections extends StatelessWidget {
-  const _SummarySections({required this.summary});
+  const _SummarySections({required this.summary, this.onReturn});
 
   final ProfileSummaryEntity summary;
+  final VoidCallback? onReturn;
 
-  void _openGroup(BuildContext context, String groupId) => context.push(
-    Uri(
-      path: GroupRoutes.groupDetails,
-      queryParameters: {'group_id': groupId},
-    ).toString(),
-  );
+  Future<void> _openGroup(BuildContext context, String groupId) async {
+    await context.push<Object?>(
+      Uri(
+        path: GroupRoutes.groupDetails,
+        queryParameters: {'group_id': groupId},
+      ).toString(),
+    );
+    onReturn?.call();
+  }
 
-  void _openBook(BuildContext context, String bookId) =>
-      context.push(BookRoutePaths.detailsFor(bookId));
+  Future<void> _openBook(BuildContext context, String bookId) async {
+    await context.push<Object?>(BookRoutePaths.detailsFor(bookId));
+    onReturn?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,17 +191,17 @@ class _SummaryLoading extends StatelessWidget {
 class _SummaryError extends StatelessWidget {
   const _SummaryError({required this.failure, required this.onRetry});
 
-  final ProfileFailure failure;
+  final ProfileSummaryFailure failure;
   final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final sessionExpired = failure is ProfileSessionExpiredFailure;
+    final sessionExpired = failure is ProfileSummarySessionExpiredFailure;
     final message = switch (failure) {
-      ProfileNetworkFailure() => l10n.errorNoConnection,
-      ProfileSessionExpiredFailure() => l10n.errorSessionExpired,
-      _ => l10n.profileSummaryLoadError,
+      ProfileSummaryNetworkFailure() => l10n.errorNoConnection,
+      ProfileSummarySessionExpiredFailure() => l10n.errorSessionExpired,
+      ProfileSummaryLoadFailure() => l10n.profileSummaryLoadError,
     };
 
     // Sessão expirada não se resolve tentando de novo: a saída é sair da conta.
