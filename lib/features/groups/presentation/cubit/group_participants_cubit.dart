@@ -6,6 +6,8 @@ import 'package:mobile/features/groups/presentation/cubit/group_participants_sta
 class GroupParticipantsCubit extends Cubit<GroupParticipantsState> {
   final GroupParticipantsRepository participantsRepository;
   String? _groupId;
+  // Só a leitura mais recente vale: um load lento não sobrescreve o refresh.
+  int _latestRead = 0;
 
   GroupParticipantsCubit({required this.participantsRepository})
     : super(const GroupParticipantsLoading());
@@ -14,8 +16,9 @@ class GroupParticipantsCubit extends Cubit<GroupParticipantsState> {
     _groupId = groupId;
     emit(const GroupParticipantsLoading());
 
+    final read = ++_latestRead;
     final result = await participantsRepository.getParticipants(groupId);
-    if (isClosed) return;
+    if (isClosed || read != _latestRead) return;
 
     switch (result) {
       case Failure(:final failure):
@@ -40,8 +43,9 @@ class GroupParticipantsCubit extends Cubit<GroupParticipantsState> {
   Future<void> refresh() async {
     final groupId = _groupId;
     if (groupId == null) return;
+    final read = ++_latestRead;
     final result = await participantsRepository.getParticipants(groupId);
-    if (isClosed) return;
+    if (isClosed || read != _latestRead) return;
 
     if (result case Success(:final data)) {
       emit(

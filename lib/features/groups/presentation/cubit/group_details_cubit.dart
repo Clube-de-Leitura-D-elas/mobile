@@ -10,6 +10,8 @@ class GroupDetailsCubit extends Cubit<GroupDetailsState> {
     : super(const GroupDetailsLoading());
 
   String _groupId = '';
+  // Só a leitura mais recente vale: um load lento não sobrescreve o refresh.
+  int _latestRead = 0;
 
   Future<void> retry() => load(_groupId);
 
@@ -17,9 +19,10 @@ class GroupDetailsCubit extends Cubit<GroupDetailsState> {
     _groupId = groupId;
     emit(const GroupDetailsLoading());
 
+    final read = ++_latestRead;
     final result = await groupRepository.getGroupDetails(groupId);
 
-    if (isClosed) return;
+    if (isClosed || read != _latestRead) return;
 
     switch (result) {
       case Success(:final data):
@@ -33,8 +36,9 @@ class GroupDetailsCubit extends Cubit<GroupDetailsState> {
   /// que já está na tela.
   Future<void> refresh() async {
     if (state is! GroupDetailsLoaded) return;
+    final read = ++_latestRead;
     final result = await groupRepository.getGroupDetails(_groupId);
-    if (isClosed) return;
+    if (isClosed || read != _latestRead) return;
 
     if (result case Success(:final data)) emit(GroupDetailsLoaded(data));
   }

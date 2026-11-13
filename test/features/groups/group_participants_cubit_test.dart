@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -121,6 +123,26 @@ void main() {
   );
 
   group('refresh', () {
+    test('a slow initial load does not overwrite a newer refresh', () async {
+      final initial =
+          Completer<Result<List<GroupParticipantEntity>, GroupFailure>>();
+      var calls = 0;
+      when(() => repository.getParticipants('g1')).thenAnswer(
+        (_) => calls++ == 0
+            ? initial.future
+            : Future.value(const Success([coordinator, member])),
+      );
+      final cubit = build();
+      addTearDown(cubit.close);
+
+      final loading = cubit.load('g1');
+      await cubit.refresh();
+      initial.complete(const Success([coordinator]));
+      await loading;
+
+      expect(cubit.state, const GroupParticipantsLoaded([coordinator, member]));
+    });
+
     blocTest<GroupParticipantsCubit, GroupParticipantsState>(
       'updates the list without going through loading',
       build: () {
