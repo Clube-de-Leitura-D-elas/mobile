@@ -74,14 +74,8 @@ void main() {
     }
   });
 
-  testWidgets('marking a found book as read shows it as read', (tester) async {
-    when(
-      () => repository.setReadingStatus(
-        bookId: 'book-1',
-        status: BookReadingStatus.read,
-      ),
-    ).thenAnswer((_) async => const Success(BookReadingStatus.read));
-
+  // Abre a busca e procura "harry", que traz o livro de teste.
+  Future<void> pumpSearch(WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
@@ -101,6 +95,16 @@ void main() {
     await tester.enterText(find.byType(EditableText), 'harry');
     await tester.pump(const Duration(milliseconds: 300));
     await tester.pumpAndSettle();
+  }
+
+  testWidgets('marking a found book as read shows it as read', (tester) async {
+    when(
+      () => repository.setReadingStatus(
+        bookId: 'book-1',
+        status: BookReadingStatus.read,
+      ),
+    ).thenAnswer((_) async => const Success(BookReadingStatus.read));
+    await pumpSearch(tester);
 
     await tester.tap(find.text('Marcar como lido'));
     await tester.pumpAndSettle();
@@ -112,26 +116,7 @@ void main() {
   testWidgets('shows the status error toast again after the flag is cleared', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.light,
-        locale: const Locale('pt'),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          ...GlobalMaterialLocalizations.delegates,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider(
-          create: (_) => serviceLocator<BookSearchCubit>()..load(),
-          child: const BookSearchPage(),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    await tester.enterText(find.byType(EditableText), 'harry');
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.pumpAndSettle();
+    await pumpSearch(tester);
 
     await tester.tap(find.text('Marcar como lido'));
     await tester.pump();
