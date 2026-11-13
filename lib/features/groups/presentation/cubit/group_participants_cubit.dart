@@ -39,7 +39,8 @@ class GroupParticipantsCubit extends Cubit<GroupParticipantsState> {
   }
 
   /// Atualiza a lista sem passar pelo carregamento; se falhar, fica o que já
-  /// está na tela.
+  /// está na tela. Se ainda não havia lista (o load inicial foi invalidado por
+  /// este refresh), a falha vira erro para a tela não ficar presa carregando.
   Future<void> refresh() async {
     final groupId = _groupId;
     if (groupId == null) return;
@@ -47,12 +48,17 @@ class GroupParticipantsCubit extends Cubit<GroupParticipantsState> {
     final result = await participantsRepository.getParticipants(groupId);
     if (isClosed || read != _latestRead) return;
 
-    if (result case Success(:final data)) {
-      emit(
-        data.isEmpty
-            ? const GroupParticipantsEmpty()
-            : GroupParticipantsLoaded(data),
-      );
+    switch (result) {
+      case Success(:final data):
+        emit(
+          data.isEmpty
+              ? const GroupParticipantsEmpty()
+              : GroupParticipantsLoaded(data),
+        );
+      case Failure(:final failure) when state is GroupParticipantsLoading:
+        emit(GroupParticipantsError(failure.message));
+      case Failure():
+        return;
     }
   }
 }

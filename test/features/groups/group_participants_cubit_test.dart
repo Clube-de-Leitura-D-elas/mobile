@@ -123,6 +123,26 @@ void main() {
   );
 
   group('refresh', () {
+    test('a failed refresh during the initial load ends in error', () async {
+      final initial =
+          Completer<Result<List<GroupParticipantEntity>, GroupFailure>>();
+      var calls = 0;
+      when(() => repository.getParticipants('g1')).thenAnswer(
+        (_) => calls++ == 0
+            ? initial.future
+            : Future.value(const Failure(GroupNetworkFailure())),
+      );
+      final cubit = build();
+      addTearDown(cubit.close);
+
+      final loading = cubit.load('g1');
+      await cubit.refresh();
+      initial.complete(const Success([coordinator]));
+      await loading;
+
+      expect(cubit.state, isA<GroupParticipantsError>());
+    });
+
     test('a slow initial load does not overwrite a newer refresh', () async {
       final initial =
           Completer<Result<List<GroupParticipantEntity>, GroupFailure>>();
