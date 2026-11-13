@@ -144,6 +144,9 @@ void main() {
       ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
 
       await cubit.load('meeting-1');
+      // A tela mostra o que recebe em `marked`, mas quem envia é o cubit:
+      // os dois precisam ter a mesma seleção.
+      cubit.toggle('u-1');
       await pumpScreen(tester, marked: {'u-1'});
 
       final buttonFinder = find.byType(AppButton);
@@ -155,9 +158,11 @@ void main() {
       await tester.tap(buttonFinder);
       await tester.pump();
 
-      // Com alguém marcado, envia direto, sem o modal.
+      // Com alguém marcado, envia direto, sem o modal, só quem foi marcado.
       expect(find.byType(EmptyPresenceConfirmDialog), findsNothing);
-      verify(() => repository.setMeetingPresence('meeting-1', any())).called(1);
+      verify(
+        () => repository.setMeetingPresence('meeting-1', ['u-1']),
+      ).called(1);
     });
 
     testWidgets('sem ninguém marcado, pede confirmação antes de enviar', (
