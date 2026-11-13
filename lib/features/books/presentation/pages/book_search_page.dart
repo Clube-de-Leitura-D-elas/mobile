@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
@@ -6,6 +7,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_state.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_screen.dart';
+import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
 
 class BookSearchPage extends StatelessWidget {
   const BookSearchPage({super.key});
@@ -21,7 +23,7 @@ class BookSearchPage extends StatelessWidget {
           listener: (context, state) {
             AppToast.show(
               context,
-              message: context.l10n.bookSearchStatusError,
+              message: context.l10n.bookReadingStatusError,
               type: AppToastType.error,
             );
             context.read<BookSearchCubit>().clearStatusError();
@@ -34,6 +36,10 @@ class BookSearchPage extends StatelessWidget {
               onRetry: cubit.retry,
               onLoadMore: cubit.loadMore,
               onStatusTap: cubit.toggleStatus,
+              onBookTap: (bookId) => context.push(
+                BookRoutePaths.detailsFor(bookId),
+                extra: cubit.statusSyncFor(bookId),
+              ),
             );
           },
         ),

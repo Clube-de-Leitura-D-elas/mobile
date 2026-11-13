@@ -8,23 +8,36 @@ import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/domain/usecases/sync_fcm_token_use_case.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionCubit extends Cubit<SessionState> {
   final AuthRepository authRepository;
   final SupabaseService supabaseService;
+  final SyncFcmTokenUseCase? syncFcmTokenUseCase;
+  final NotificationRepository? notificationRepository;
 
   StreamSubscription<AuthState>? _authStateSubscription;
+  StreamSubscription<String>? _tokenRefreshSubscription;
+  Future<void>? _ongoingTokenSync;
 
-  SessionCubit({required this.authRepository, required this.supabaseService})
-    : super(const LoadingSession()) {
+  SessionCubit({
+    required this.authRepository,
+    required this.supabaseService,
+    this.syncFcmTokenUseCase,
+    this.notificationRepository,
+  }) : super(const LoadingSession()) {
     _listenToAuthState();
     _checkCurrentSession();
   }
 
   void _checkCurrentSession() {
     final user = supabaseService.currentUser;
-    debugPrint('[SessionCubit] Initial currentUser check: ${user?.id}');
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Initial currentUser check: ${user?.id}');
+    }
     if (user == null) {
       emit(const GuestSession());
       return;
@@ -35,12 +48,19 @@ class SessionCubit extends Cubit<SessionState> {
 
   void _listenToAuthState() {
     _authStateSubscription = supabaseService.authStateChanges.listen((data) {
-      debugPrint(
-        '[SessionCubit] AuthState change event: ${data.event}, user: ${data.session?.user.id}',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          '[SessionCubit] AuthState change event: ${data.event}, user: ${data.session?.user.id}',
+        );
+      }
 
       if (data.event == AuthChangeEvent.signedOut) {
-        debugPrint('[SessionCubit] User signed out -> emitting GuestSession');
+        if (kDebugMode) {
+          debugPrint('[SessionCubit] User signed out -> emitting GuestSession');
+        }
+        unawaited(_tokenRefreshSubscription?.cancel());
+        _tokenRefreshSubscription = null;
+        unawaited(notificationRepository?.clearDeviceToken());
         emit(const GuestSession());
         return;
       }
@@ -57,13 +77,17 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> authenticate() async {
-    debugPrint('[SessionCubit] Triggering Google Sign-In authentication');
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Triggering Google Sign-In authentication');
+    }
     emit(const LoadingSession());
 
     final result = await authRepository.signIn();
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Sign-In failed: $failure');
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] Sign-In failed: $failure');
+      }
       if (failure is! GoogleSignInCanceledFailure) {
         emit(
           SessionError(failure: failure, operation: SessionOperation.signIn),
@@ -75,9 +99,11 @@ class SessionCubit extends Cubit<SessionState> {
 
     final userEntity = result.unwrap();
     final currentUser = supabaseService.currentUser;
-    debugPrint(
-      '[SessionCubit] Google Sign-In success for user: ${currentUser?.id}',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Google Sign-In success for user: ${currentUser?.id}',
+      );
+    }
     if (currentUser == null) {
       emit(const GuestSession());
       return;
@@ -90,9 +116,9 @@ class SessionCubit extends Cubit<SessionState> {
     required String email,
     required String password,
   }) async {
-    debugPrint(
-      '[SessionCubit] Triggering Email+Password authentication for email: $email',
-    );
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Triggering Email+Password authentication');
+    }
     emit(const LoadingSession());
 
     final result = await authRepository.signInWithEmailAndPassword(
@@ -101,7 +127,9 @@ class SessionCubit extends Cubit<SessionState> {
     );
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Email Sign-In failed: $failure');
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] Email Sign-In failed: $failure');
+      }
       emit(SessionError(failure: failure, operation: SessionOperation.signIn));
       emit(const GuestSession());
       return;
@@ -109,9 +137,11 @@ class SessionCubit extends Cubit<SessionState> {
 
     final userEntity = result.unwrap();
     final currentUser = supabaseService.currentUser;
-    debugPrint(
-      '[SessionCubit] Email Sign-In success for user: ${currentUser?.id}',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Email Sign-In success for user: ${currentUser?.id}',
+      );
+    }
     if (currentUser == null) {
       emit(const GuestSession());
       return;
@@ -124,9 +154,9 @@ class SessionCubit extends Cubit<SessionState> {
     required String email,
     required String password,
   }) async {
-    debugPrint(
-      '[SessionCubit] Triggering Email+Password sign up for email: $email',
-    );
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Triggering Email+Password sign up');
+    }
     emit(const LoadingSession());
 
     final result = await authRepository.signUpWithEmailAndPassword(
@@ -135,16 +165,20 @@ class SessionCubit extends Cubit<SessionState> {
     );
 
     if (result case Failure(:final failure)) {
-      debugPrint('[SessionCubit] Email Sign-Up failed: $failure');
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] Email Sign-Up failed: $failure');
+      }
       emit(SessionError(failure: failure, operation: SessionOperation.signUp));
       emit(const GuestSession());
       return Failure(failure);
     }
 
     final currentUser = supabaseService.currentUser;
-    debugPrint(
-      '[SessionCubit] Email Sign-Up success for user: ${currentUser?.id}',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Email Sign-Up success for user: ${currentUser?.id}',
+      );
+    }
 
     // Reset session state to GuestSession so user returns to LoginScreen and completes email verification/login
     emit(const GuestSession());
@@ -152,13 +186,17 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> checkUserProfile(String userId, [UserEntity? userEntity]) async {
-    debugPrint('[SessionCubit] Checking user profile for userId: $userId');
+    if (kDebugMode) {
+      debugPrint('[SessionCubit] Checking user profile for userId: $userId');
+    }
     emit(const LoadingSession());
 
     final profileResult = await authRepository.getUserProfile(userId);
 
     if (profileResult case Failure(:final failure)) {
-      debugPrint('[SessionCubit] getUserProfile failure: $failure');
+      if (kDebugMode) {
+        debugPrint('[SessionCubit] getUserProfile failure: $failure');
+      }
       emit(
         SessionProfileUnavailable(
           userId: userId,
@@ -171,9 +209,11 @@ class SessionCubit extends Cubit<SessionState> {
 
     final data = profileResult.unwrap();
     if (data == null) {
-      debugPrint(
-        '[SessionCubit] Profile is null -> emitting NeedsClaimSession for userId: $userId',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          '[SessionCubit] Profile is null -> emitting NeedsClaimSession for userId: $userId',
+        );
+      }
       emit(NeedsClaimSession(userId: userId, user: userEntity));
       return;
     }
@@ -191,10 +231,41 @@ class SessionCubit extends Cubit<SessionState> {
           cityZone: (id: '', name: '', acronym: ''),
         );
 
-    debugPrint(
-      '[SessionCubit] Profile found! Emitting AuthenticatedSession for ${user.name}',
-    );
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Profile found! Emitting AuthenticatedSession for userId: $userId',
+      );
+    }
     emit(AuthenticatedSession(user: user, profile: data));
+    _triggerFcmTokenSync();
+  }
+
+  void _triggerFcmTokenSync() {
+    final syncFuture = syncFcmTokenUseCase?.execute();
+    if (syncFuture != null) {
+      _ongoingTokenSync = syncFuture
+          .then((result) {
+            if (kDebugMode) {
+              debugPrint('[SessionCubit] FCM Token sync completed: $result');
+            }
+          })
+          .catchError((Object error) {
+            if (kDebugMode) {
+              debugPrint(
+                '[SessionCubit] Error executing FCM Token sync: $error',
+              );
+            }
+          });
+    }
+
+    if (_tokenRefreshSubscription == null && notificationRepository != null) {
+      _tokenRefreshSubscription = notificationRepository!.onTokenRefresh.listen(
+        (_) {
+          debugPrint('[SessionCubit] FCM Token refreshed, re-syncing...');
+          unawaited(syncFcmTokenUseCase?.execute());
+        },
+      );
+    }
   }
 
   Future<void> retryProfile() async {
@@ -227,10 +298,44 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> logOut() async {
-    debugPrint('[SessionCubit] Logging out user and clearing Supabase session');
+    if (kDebugMode) {
+      debugPrint(
+        '[SessionCubit] Logging out user and clearing Supabase/Google session',
+      );
+    }
+    unawaited(_tokenRefreshSubscription?.cancel());
+    _tokenRefreshSubscription = null;
     emit(const LoadingSession());
-    await supabaseService.signOut();
-    emit(const GuestSession());
+
+    final pendingSync = _ongoingTokenSync;
+    _ongoingTokenSync = null;
+    if (pendingSync != null) {
+      await pendingSync.timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {},
+      );
+    }
+
+    final repository = notificationRepository;
+    if (repository != null) {
+      final clearResult =
+          await Future<Result<void, NotificationFailure>>.value(
+            repository.clearDeviceToken(),
+          ).timeout(
+            const Duration(seconds: 3),
+            onTimeout: () => const Failure(FcmTokenSyncFailure()),
+          );
+      if (clearResult case Failure(:final failure)) {
+        if (kDebugMode) {
+          debugPrint('[SessionCubit] Failed to clear FCM token: $failure');
+        }
+      }
+    }
+
+    await authRepository.logOut();
+    if (!isClosed) {
+      emit(const GuestSession());
+    }
   }
 
   void reset() {
@@ -240,6 +345,7 @@ class SessionCubit extends Cubit<SessionState> {
   @override
   Future<void> close() {
     _authStateSubscription?.cancel();
+    _tokenRefreshSubscription?.cancel();
     return super.close();
   }
 }

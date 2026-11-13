@@ -27,6 +27,7 @@ class BookSearchScreen extends StatelessWidget {
     required this.onRetry,
     required this.onLoadMore,
     required this.onStatusTap,
+    required this.onBookTap,
   });
 
   final BookSearchState state;
@@ -34,6 +35,7 @@ class BookSearchScreen extends StatelessWidget {
   final VoidCallback onRetry;
   final VoidCallback onLoadMore;
   final ValueChanged<String> onStatusTap;
+  final ValueChanged<String> onBookTap;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +67,7 @@ class BookSearchScreen extends StatelessWidget {
               onRetry: onRetry,
               onLoadMore: onLoadMore,
               onStatusTap: onStatusTap,
+              onBookTap: onBookTap,
             ),
           ),
         ],
@@ -79,12 +82,14 @@ class _BookSearchBody extends StatelessWidget {
     required this.onRetry,
     required this.onLoadMore,
     required this.onStatusTap,
+    required this.onBookTap,
   });
 
   final BookSearchState state;
   final VoidCallback onRetry;
   final VoidCallback onLoadMore;
   final ValueChanged<String> onStatusTap;
+  final ValueChanged<String> onBookTap;
 
   static const _loadMoreExtent = 400.0;
 
@@ -148,10 +153,13 @@ class _BookSearchBody extends StatelessWidget {
                   crossAxisSpacing: spacing.s16,
                   childAspectRatio: 0.55,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => _PopularCell(book: state.books[index]),
-                  childCount: state.books.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final book = state.books[index];
+                  return _PopularCell(
+                    book: book,
+                    onTap: () => onBookTap(book.id),
+                  );
+                }, childCount: state.books.length),
               ),
             ),
           ] else
@@ -176,6 +184,7 @@ class _BookSearchBody extends StatelessWidget {
                       isStatusLoading: state.updatingStatusIds.contains(
                         book.id,
                       ),
+                      onTap: () => onBookTap(book.id),
                       onStatusTap: () => onStatusTap(book.id),
                     ),
                   );
@@ -194,30 +203,40 @@ class _BookSearchBody extends StatelessWidget {
 }
 
 class _PopularCell extends StatelessWidget {
-  const _PopularCell({required this.book});
+  const _PopularCell({required this.book, required this.onTap});
 
   final BookSummary book;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
+      button: true,
       label: book.title,
-      child: ExcludeSemantics(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AppBookCover(imageUrl: book.coverUrl, size: AppBookCoverSize.grid),
-            const Gap8(),
-            Text(
-              book.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: context.typography.labelTag.copyWith(
-                color: context.colors.textDefault,
+      onTap: onTap,
+      child: InkWell(
+        excludeFromSemantics: true,
+        onTap: onTap,
+        child: ExcludeSemantics(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppBookCover(
+                imageUrl: book.coverUrl,
+                size: AppBookCoverSize.grid,
               ),
-            ),
-          ],
+              const Gap8(),
+              Text(
+                book.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: context.typography.labelTag.copyWith(
+                  color: context.colors.textDefault,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

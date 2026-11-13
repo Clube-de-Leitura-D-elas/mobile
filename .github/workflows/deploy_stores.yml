@@ -36,7 +36,7 @@ on:
     types: [published]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   # ==========================================
@@ -44,6 +44,8 @@ jobs:
   # ==========================================
   prepare-version:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       new_version: ${{ steps.bump.outputs.new_version }}
       build_number: ${{ steps.bump.outputs.build_number }}
@@ -64,14 +66,18 @@ jobs:
 
       - name: Incrementar Versão no pubspec.yaml
         id: bump
+        env:
+          BUMP_TYPE: ${{ github.event.inputs.bump_type || 'build_number' }}
         run: |
-          BUMP_TYPE="${{ github.event.inputs.bump_type || 'build_number' }}"
           python3 .github/scripts/bump_version.py "$BUMP_TYPE"
 
       - name: Commit e Push da Nova Versão
         id: push
+        env:
+          NEW_VER: ${{ steps.bump.outputs.new_version }}
+          TARGET_COMMITISH: ${{ github.event.release.target_commitish }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch || 'develop' }}
         run: |
-          NEW_VER="${{ steps.bump.outputs.new_version }}"
           if git diff --quiet pubspec.yaml; then
             echo "Nenhuma alteração de versão necessária."
             echo "git_commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -84,9 +90,9 @@ jobs:
           git commit -m "chore(release): bump version to $NEW_VER [skip ci]"
           git tag "v$NEW_VER"
 
-          TARGET_BRANCH="${{ github.event.release.target_commitish || github.ref_name }}"
+          TARGET_BRANCH="${TARGET_COMMITISH:-$GITHUB_REF_NAME}"
           if [[ "$TARGET_BRANCH" =~ ^v[0-9] ]]; then
-            TARGET_BRANCH="${{ github.event.repository.default_branch || 'develop' }}"
+            TARGET_BRANCH="$DEFAULT_BRANCH"
           fi
 
           echo "Enviando commit e tags para a branch $TARGET_BRANCH..."
@@ -117,7 +123,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.47.9'
+          flutter-version: '3.50.0'
           cache: true
 
       - name: Configurar Ruby + Bundler (Fastlane)
@@ -128,11 +134,17 @@ jobs:
           bundler-cache: true
 
       - name: Criar arquivo .env
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
         run: |
-          if [ -n "${{ secrets.ENV_FILE }}" ]; then
-            echo "${{ secrets.ENV_FILE }}" > .env
-          elif [ ! -f .env ]; then
-            cp .env.example .env || touch .env
+          if [ -z "$ENV_FILE_CONTENT" ]; then
+            echo "::error::Secret ENV_FILE não configurada ou vazia."
+            exit 1
+          fi
+          printf '%s\n' "$ENV_FILE_CONTENT" > .env
+          if ! grep -Eq '^SUPABASE_URL=.+$' .env || ! grep -Eq '^SUPABASE_PUBLISHABLE_KEY=.+$' .env; then
+            echo "::error::SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY são obrigatórios no ENV_FILE."
+            exit 1
           fi
 
       - name: Decodificar Upload Keystore e criar key.properties
@@ -142,16 +154,16 @@ jobs:
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > ${{ runner.temp }}/upload-keystore.jks
+          echo "$KEYSTORE_BASE64" | base64 --decode > "${RUNNER_TEMP}/upload-keystore.jks"
           cat <<EOF > android/key.properties
           storePassword=$KEYSTORE_PASSWORD
           keyPassword=$KEY_PASSWORD
           keyAlias=${KEY_ALIAS:-upload}
-          storeFile=${{ runner.temp }}/upload-keystore.jks
+          storeFile=${RUNNER_TEMP}/upload-keystore.jks
           EOF
 
       - name: Instalar Dependências Flutter
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
 
       - name: Gerar Arquivos de Localização (ARB / l10n)
         run: flutter gen-l10n
@@ -163,12 +175,13 @@ jobs:
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
         run: |
-          echo "$PLAY_STORE_CONFIG_JSON" > android/fastlane/play-store-credentials.json
+          printf '%s\n' "$PLAY_STORE_CONFIG_JSON" > android/fastlane/play-store-credentials.json
 
       - name: Publicar no Google Play via Fastlane
         working-directory: android
+        env:
+          TRACK: ${{ github.event.inputs.android_track || 'internal' }}
         run: |
-          TRACK="${{ github.event.inputs.android_track || 'internal' }}"
           bundle exec fastlane "$TRACK"
 
   # ==========================================
@@ -189,7 +202,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.47.9'
+          flutter-version: '3.50.0'
           cache: true
 
       - name: Configurar Ruby + Bundler (Fastlane)
@@ -200,38 +213,45 @@ jobs:
           bundler-cache: true
 
       - name: Criar arquivo .env
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
         run: |
-          if [ -n "${{ secrets.ENV_FILE }}" ]; then
-            echo "${{ secrets.ENV_FILE }}" > .env
-          elif [ ! -f .env ]; then
-            cp .env.example .env || touch .env
+          if [ -z "$ENV_FILE_CONTENT" ]; then
+            echo "::error::Secret ENV_FILE não configurada ou vazia."
+            exit 1
+          fi
+          printf '%s\n' "$ENV_FILE_CONTENT" > .env
+          if ! grep -Eq '^SUPABASE_URL=.+$' .env || ! grep -Eq '^SUPABASE_PUBLISHABLE_KEY=.+$' .env; then
+            echo "::error::SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY são obrigatórios no ENV_FILE."
+            exit 1
           fi
 
       - name: Instalar Certificado de Distribuição Apple no Keychain
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
           P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
-          KEYCHAIN_PASSWORD: "temp-ci-keychain-pass"
         run: |
-          CERT_PATH=${{ runner.temp }}/build_certificate.p12
-          KEYCHAIN_PATH=${{ runner.temp }}/app-signing.keychain-db
+          CERT_PATH="${RUNNER_TEMP}/build_certificate.p12"
+          KEYCHAIN_PATH="${RUNNER_TEMP}/app-signing.keychain-db"
+          KEYCHAIN_PASSWORD=$(openssl rand -hex 24)
 
-          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode > $CERT_PATH
+          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode > "$CERT_PATH"
 
-          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
-          security import $CERT_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-          security list-keychain -d user -s $KEYCHAIN_PATH $(security list-keychains -d user | tr -d '"')
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH || true
+          security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" || true
+          rm -f "$CERT_PATH"
 
       - name: Instalar Dependências Flutter e Preparar iOS
         run: |
           flutter config --no-enable-swift-package-manager
-          flutter pub get
+          flutter pub get --enforce-lockfile
           flutter gen-l10n
-          cd ios && pod install --repo-update
+          cd ios && pod install
 
       - name: Compilar e Publicar no TestFlight via Fastlane
         working-directory: ios

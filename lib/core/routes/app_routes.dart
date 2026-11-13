@@ -9,9 +9,11 @@ import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
+import 'package:mobile/features/books/presentation/routes/book_routes.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_routes.dart';
+import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
@@ -35,6 +37,7 @@ class GoRouterRefreshStream extends ChangeNotifier {
 abstract class AppRoutes {
   static GoRouter createRouter(SessionCubit sessionCubit) {
     return GoRouter(
+      navigatorKey: NotificationNavigationService.navigatorKey,
       initialLocation: SplashRoutes.splash,
       refreshListenable: GoRouterRefreshStream(sessionCubit.stream),
       observers: [appRouteObserver],
@@ -44,6 +47,7 @@ abstract class AppRoutes {
         ...OnboardingRoutes.routes,
         ...HomeRoutes.routes,
         ...GroupRoutes.routes,
+        ...BookRoutes.routes,
         ...NotificationRoutes.routes,
         ...RaffleRoutes.routes,
         ...QuickAccessRoutes.routes,

@@ -246,10 +246,14 @@ class _MeetingPhotoViewerState extends State<MeetingPhotoViewer> {
           uri,
           mode: launcher.LaunchMode.externalApplication,
         );
-    final uri = Uri.tryParse(_photo.url);
+    final uri = Uri.tryParse(_photo.url.trim());
     var opened = false;
     try {
-      opened = uri != null && await launch(uri);
+      opened =
+          uri != null &&
+          uri.isScheme('https') &&
+          uri.host.isNotEmpty &&
+          await launch(uri);
     } catch (_) {
       opened = false;
     }

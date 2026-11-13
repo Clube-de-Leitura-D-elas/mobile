@@ -96,6 +96,33 @@ void main() {
     );
 
     testWidgets(
+      'given non-whatsapp https host, when button tapped, then blocks launch and shows error snackbar',
+      (tester) async {
+        var launched = false;
+        await tester.pumpWidget(
+          buildSubject(
+            GroupActions(
+              whatsappUrl: 'https://evil.example.com/phishing',
+              onOpenWhatsApp: (_) async {
+                launched = true;
+                return true;
+              },
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Abrir Whatsapp'));
+        await tester.pumpAndSettle();
+
+        expect(launched, isFalse);
+        expect(
+          find.text('Não foi possível abrir o link do WhatsApp.'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
       'given launch failure (returns false), when button tapped, then shows error snackbar',
       (tester) async {
         await tester.pumpWidget(

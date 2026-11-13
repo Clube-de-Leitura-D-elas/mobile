@@ -282,6 +282,19 @@ void main() {
       verify(() => mockGoogleSignIn.signOut()).called(1);
     });
 
+    test('logOut still calls GoogleSignIn.signOut even if GoogleSignIn throws', () async {
+      when(() => mockSupabaseService.signOut())
+          .thenAnswer((_) async => const Success(null));
+      when(() => mockGoogleSignIn.signOut())
+          .thenThrow(Exception('Google signOut failed'));
+
+      final result = await repository.logOut();
+
+      expect(result, isA<Success<void, UserFailure>>());
+      verify(() => mockSupabaseService.signOut()).called(1);
+      verify(() => mockGoogleSignIn.signOut()).called(1);
+    });
+
     test('getUserProfile calls get-user-profile edge function and returns profile', () async {
       when(
         () => mockSupabaseService.invokeFunction<UserProfileEntity?>(

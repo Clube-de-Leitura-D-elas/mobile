@@ -11,6 +11,7 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
@@ -116,6 +117,9 @@ void main() {
       );
       expect(serviceLocator<PlaceSearchCubit>(), isA<PlaceSearchCubit>());
       expect(serviceLocator<ClaimTokenCubit>(), isA<ClaimTokenCubit>());
+      expect(serviceLocator<BookRepository>(), isA<BookRepositoryImpl>());
+      expect(serviceLocator<BookDetailsCubit>(), isA<BookDetailsCubit>());
+      expect(serviceLocator<BookSearchCubit>(), isA<BookSearchCubit>());
       expect(
         serviceLocator<NotificationRepository>(),
         isA<NotificationRepositoryImpl>(),
@@ -125,8 +129,6 @@ void main() {
         isA<NotificationBadgeCubit>(),
       );
       expect(serviceLocator<NotificationsCubit>(), isA<NotificationsCubit>());
-      expect(serviceLocator<BookRepository>(), isA<BookRepositoryImpl>());
-      expect(serviceLocator<BookSearchCubit>(), isA<BookSearchCubit>());
       expect(
         serviceLocator<OnboardingReviewCubit>(),
         isA<OnboardingReviewCubit>(),

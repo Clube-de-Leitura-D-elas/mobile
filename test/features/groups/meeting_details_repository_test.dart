@@ -109,4 +109,24 @@ void main() {
       ),
     );
   });
+
+  test('encodes meetingId query parameter in getMeetingDetails', () async {
+    when(
+      () => mockSupabaseService.invokeFunction<MeetingDetailsModel>(
+        functionName: 'get-meeting-details?meeting_id=meeting+1%26x%3D2',
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer(
+      (_) async => const Failure(FunctionSupabaseFailure(message: 'boom')),
+    );
+
+    await repository.getMeetingDetails('meeting 1&x=2');
+
+    verify(
+      () => mockSupabaseService.invokeFunction<MeetingDetailsModel>(
+        functionName: 'get-meeting-details?meeting_id=meeting+1%26x%3D2',
+        decoder: any(named: 'decoder'),
+      ),
+    ).called(1);
+  });
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
@@ -6,10 +8,15 @@ import 'package:mobile/features/notifications/domain/repository/notification_rep
 class NotificationBadgeCubit extends Cubit<int> {
   final NotificationRepository repository;
 
+  StreamSubscription<Map<String, dynamic>>? _foregroundSubscription;
   int _nextRefreshId = 0;
   int _lastAppliedRefreshId = 0;
 
-  NotificationBadgeCubit({required this.repository}) : super(0);
+  NotificationBadgeCubit({required this.repository}) : super(0) {
+    _foregroundSubscription = repository.onForegroundMessage?.listen(
+      (_) => refresh(),
+    );
+  }
 
   Future<void> refresh() async {
     final refreshId = ++_nextRefreshId;
@@ -24,5 +31,11 @@ class NotificationBadgeCubit extends Cubit<int> {
       _lastAppliedRefreshId = refreshId;
       emit(data.unreadCount);
     }
+  }
+
+  @override
+  Future<void> close() {
+    _foregroundSubscription?.cancel();
+    return super.close();
   }
 }

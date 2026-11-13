@@ -16,6 +16,8 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
+import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 import 'package:mobile/firebase_options.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -51,7 +53,7 @@ Future<void> mainAsync({
         url: environment.supabaseUrl,
         publishableKey: environment.supabaseAnonKey,
       );
-    } else {
+    } else if (kDebugMode) {
       debugPrint(
         'Supabase não configurado. Defina SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY no .env.',
       );
@@ -62,9 +64,14 @@ Future<void> mainAsync({
     );
 
     DependenciesContainer();
+    await NotificationNavigationService.setupInteractions(
+      serviceLocator<NotificationRepository>(),
+    );
     runApp(const MainApp());
   } catch (error, stackTrace) {
-    debugPrint('Erro durante a inicialização do app: $error\n$stackTrace');
+    if (kDebugMode) {
+      debugPrint('Erro durante a inicialização do app: $error\n$stackTrace');
+    }
     runApp(const StartupErrorApp());
   } finally {
     FlutterNativeSplash.remove();
