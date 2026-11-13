@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
+import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_entity.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_type.dart';
@@ -52,19 +53,29 @@ void main() {
       );
     });
 
-    for (final type in [
-      NotificationType.groupJoinRequested,
-      NotificationType.groupJoinApproved,
-    ]) {
-      test('${type.name} opens the member group details', () {
-        expect(
-          NotificationRoutePaths.destinationFor(
-            _notification(groupId: 'g1', type: type),
+    test('a join request opens the coordinator join requests list', () {
+      expect(
+        NotificationRoutePaths.destinationFor(
+          _notification(
+            groupId: 'g1',
+            type: NotificationType.groupJoinRequested,
           ),
-          '${GroupRoutePaths.groupDetails}?group_id=g1',
-        );
-      });
-    }
+        ),
+        '${GroupJoinRequestsRoutePaths.joinRequests}?group_id=g1',
+      );
+    });
+
+    test('an approved join request opens the member group details', () {
+      expect(
+        NotificationRoutePaths.destinationFor(
+          _notification(
+            groupId: 'g1',
+            type: NotificationType.groupJoinApproved,
+          ),
+        ),
+        '${GroupRoutePaths.groupDetails}?group_id=g1',
+      );
+    });
 
     test('returns null without a destination', () {
       expect(NotificationRoutePaths.destinationFor(_notification()), isNull);

@@ -87,4 +87,54 @@ void main() {
       expect(states, [const GroupDetailsLoading()]);
     });
   });
+
+  group('refresh', () {
+    const updated = GroupDetailsEntity(
+      name: '45',
+      genres: ['Ficção', 'Aventura'],
+      participantCount: 35,
+      city: 'Porto Alegre',
+      stateCode: 'RS',
+    );
+
+    blocTest<GroupDetailsCubit, GroupDetailsState>(
+      'updates the group without going through loading',
+      build: () {
+        var calls = 0;
+        when(
+          () => mockRepository.getGroupDetails('group-1'),
+        ).thenAnswer((_) async => Success(calls++ == 0 ? testGroup : updated));
+        return GroupDetailsCubit(groupRepository: mockRepository);
+      },
+      act: (cubit) async {
+        await cubit.load('group-1');
+        await cubit.refresh();
+      },
+      skip: 2,
+      expect: () => [const GroupDetailsLoaded(updated)],
+    );
+
+    blocTest<GroupDetailsCubit, GroupDetailsState>(
+      'keeps the group when the refresh fails',
+      build: () {
+        var calls = 0;
+        when(() => mockRepository.getGroupDetails('group-1')).thenAnswer(
+          (_) async => calls++ == 0
+              ? const Success(testGroup)
+              : const Failure(GroupNetworkFailure()),
+        );
+        return GroupDetailsCubit(groupRepository: mockRepository);
+      },
+      act: (cubit) async {
+        await cubit.load('group-1');
+        await cubit.refresh();
+      },
+      skip: 2,
+      expect: () => <GroupDetailsState>[],
+      verify: (cubit) {
+        expect(cubit.state, const GroupDetailsLoaded(testGroup));
+        verify(() => mockRepository.getGroupDetails('group-1')).called(2);
+      },
+    );
+  });
 }

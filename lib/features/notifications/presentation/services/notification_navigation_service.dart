@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
+import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 
@@ -81,6 +82,12 @@ class NotificationNavigationService {
         groupId != null &&
         groupId.trim().isNotEmpty) {
       return GroupDiscoveryRoutePaths.publicGroupFor(groupId.trim());
+    }
+
+    if (data['type'] == 'GROUP_JOIN_REQUESTED' &&
+        groupId != null &&
+        groupId.trim().isNotEmpty) {
+      return GroupJoinRequestsRoutePaths.joinRequestsFor(groupId.trim());
     }
 
     if (screen == GroupRoutePaths.groupDetails ||

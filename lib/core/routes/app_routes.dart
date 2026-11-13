@@ -11,6 +11,7 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/routes/auth_routes.dart';
 import 'package:mobile/features/books/presentation/routes/book_routes.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_routes.dart';
+import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_routes.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_routes.dart';
@@ -49,6 +50,7 @@ abstract class AppRoutes {
         ...HomeRoutes.routes,
         ...GroupRoutes.routes,
         ...GroupDiscoveryRoutes.routes,
+        ...GroupJoinRequestsRoutes.routes,
         ...BookRoutes.routes,
         ...NotificationRoutes.routes,
         ...RaffleRoutes.routes,

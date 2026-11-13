@@ -1538,6 +1538,100 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupSearchSeeDetailsSemantic(int number) {
     return 'Ver detalhes do Grupo $number';
   }
+
+  @override
+  String groupJoinRequestsAccess(int count) {
+    return 'Pedidos de entrada ($count)';
+  }
+
+  @override
+  String get groupJoinRequestsTitle => 'Pedidos de entrada';
+
+  @override
+  String get groupJoinRequestsLoading => 'Carregando pedidos de entrada';
+
+  @override
+  String get groupJoinRequestsEmpty => 'Nenhum pedido de entrada';
+
+  @override
+  String get groupJoinRequestsLoadError =>
+      'Não foi possível carregar os pedidos de entrada.';
+
+  @override
+  String get groupJoinRequestsNotCoordinator =>
+      'Só a coordenação do grupo pode ver os pedidos de entrada.';
+
+  @override
+  String get groupJoinRequestsGroupUnavailable =>
+      'Este grupo não está disponível.';
+
+  @override
+  String groupJoinRequestsRequestedAt(DateTime date, DateTime time) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return 'Pedido em $dateString às $timeString';
+  }
+
+  @override
+  String get groupJoinRequestsApprove => 'Aceitar';
+
+  @override
+  String get groupJoinRequestsReject => 'Recusar';
+
+  @override
+  String get groupJoinRequestsApproveDialogTitle => 'Aceitar pedido?';
+
+  @override
+  String groupJoinRequestsApproveDialogMessage(String name) {
+    return '$name vai passar a fazer parte do grupo.';
+  }
+
+  @override
+  String get groupJoinRequestsRejectDialogTitle => 'Recusar pedido?';
+
+  @override
+  String groupJoinRequestsRejectDialogMessage(String name) {
+    return '$name não vai entrar no grupo agora, mas poderá pedir de novo.';
+  }
+
+  @override
+  String get groupJoinRequestsDialogCancel => 'Cancelar';
+
+  @override
+  String get groupJoinRequestsApproved =>
+      'Pedido aceito! A leitora já faz parte do grupo.';
+
+  @override
+  String get groupJoinRequestsRejected => 'Pedido recusado.';
+
+  @override
+  String get groupJoinRequestsAlreadyReviewed =>
+      'Este pedido já foi respondido.';
+
+  @override
+  String get groupJoinRequestsNotFound =>
+      'Este pedido não está mais disponível.';
+
+  @override
+  String get groupJoinRequestsNoLongerValid =>
+      'Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.';
+
+  @override
+  String get groupJoinRequestsReviewError =>
+      'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String groupJoinRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de $name';
+  }
+
+  @override
+  String groupJoinRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de $name';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2705,5 +2799,99 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String groupSearchSeeDetailsSemantic(int number) {
     return 'Ver detalhes do Grupo $number';
+  }
+
+  @override
+  String groupJoinRequestsAccess(int count) {
+    return 'Pedidos de entrada ($count)';
+  }
+
+  @override
+  String get groupJoinRequestsTitle => 'Pedidos de entrada';
+
+  @override
+  String get groupJoinRequestsLoading => 'Carregando pedidos de entrada';
+
+  @override
+  String get groupJoinRequestsEmpty => 'Nenhum pedido de entrada';
+
+  @override
+  String get groupJoinRequestsLoadError =>
+      'Não foi possível carregar os pedidos de entrada.';
+
+  @override
+  String get groupJoinRequestsNotCoordinator =>
+      'Só a coordenação do grupo pode ver os pedidos de entrada.';
+
+  @override
+  String get groupJoinRequestsGroupUnavailable =>
+      'Este grupo não está disponível.';
+
+  @override
+  String groupJoinRequestsRequestedAt(DateTime date, DateTime time) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return 'Pedido em $dateString às $timeString';
+  }
+
+  @override
+  String get groupJoinRequestsApprove => 'Aceitar';
+
+  @override
+  String get groupJoinRequestsReject => 'Recusar';
+
+  @override
+  String get groupJoinRequestsApproveDialogTitle => 'Aceitar pedido?';
+
+  @override
+  String groupJoinRequestsApproveDialogMessage(String name) {
+    return '$name vai passar a fazer parte do grupo.';
+  }
+
+  @override
+  String get groupJoinRequestsRejectDialogTitle => 'Recusar pedido?';
+
+  @override
+  String groupJoinRequestsRejectDialogMessage(String name) {
+    return '$name não vai entrar no grupo agora, mas poderá pedir de novo.';
+  }
+
+  @override
+  String get groupJoinRequestsDialogCancel => 'Cancelar';
+
+  @override
+  String get groupJoinRequestsApproved =>
+      'Pedido aceito! A leitora já faz parte do grupo.';
+
+  @override
+  String get groupJoinRequestsRejected => 'Pedido recusado.';
+
+  @override
+  String get groupJoinRequestsAlreadyReviewed =>
+      'Este pedido já foi respondido.';
+
+  @override
+  String get groupJoinRequestsNotFound =>
+      'Este pedido não está mais disponível.';
+
+  @override
+  String get groupJoinRequestsNoLongerValid =>
+      'Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.';
+
+  @override
+  String get groupJoinRequestsReviewError =>
+      'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String groupJoinRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de $name';
+  }
+
+  @override
+  String groupJoinRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de $name';
   }
 }

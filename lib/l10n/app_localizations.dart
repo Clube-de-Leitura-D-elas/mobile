@@ -2587,6 +2587,144 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ver detalhes do Grupo {number}'**
   String groupSearchSeeDetailsSemantic(int number);
+
+  /// Botão no detalhe do grupo, só para a coordenadora, com a quantidade de pedidos pendentes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedidos de entrada ({count})'**
+  String groupJoinRequestsAccess(int count);
+
+  /// Título da tela de pedidos de entrada do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedidos de entrada'**
+  String get groupJoinRequestsTitle;
+
+  /// Rótulo de acessibilidade do carregamento da lista de pedidos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando pedidos de entrada'**
+  String get groupJoinRequestsLoading;
+
+  /// Lista de pedidos de entrada vazia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum pedido de entrada'**
+  String get groupJoinRequestsEmpty;
+
+  /// Erro genérico ao carregar os pedidos de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os pedidos de entrada.'**
+  String get groupJoinRequestsLoadError;
+
+  /// A leitora não é coordenadora do grupo (HTTP 403).
+  ///
+  /// In pt, this message translates to:
+  /// **'Só a coordenação do grupo pode ver os pedidos de entrada.'**
+  String get groupJoinRequestsNotCoordinator;
+
+  /// Link para os pedidos sem um grupo válido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo não está disponível.'**
+  String get groupJoinRequestsGroupUnavailable;
+
+  /// Data e hora do pedido de entrada, no fuso de São Paulo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido em {date} às {time}'**
+  String groupJoinRequestsRequestedAt(DateTime date, DateTime time);
+
+  /// Botão que aceita o pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar'**
+  String get groupJoinRequestsApprove;
+
+  /// Botão que recusa o pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar'**
+  String get groupJoinRequestsReject;
+
+  /// Título da confirmação de aceite do pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar pedido?'**
+  String get groupJoinRequestsApproveDialogTitle;
+
+  /// Texto da confirmação de aceite do pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} vai passar a fazer parte do grupo.'**
+  String groupJoinRequestsApproveDialogMessage(String name);
+
+  /// Título da confirmação de recusa do pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar pedido?'**
+  String get groupJoinRequestsRejectDialogTitle;
+
+  /// Texto da confirmação de recusa do pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} não vai entrar no grupo agora, mas poderá pedir de novo.'**
+  String groupJoinRequestsRejectDialogMessage(String name);
+
+  /// Botão que fecha a confirmação sem decidir o pedido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get groupJoinRequestsDialogCancel;
+
+  /// Aviso depois de aceitar um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido aceito! A leitora já faz parte do grupo.'**
+  String get groupJoinRequestsApproved;
+
+  /// Aviso depois de recusar um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido recusado.'**
+  String get groupJoinRequestsRejected;
+
+  /// O pedido já foi decidido, por exemplo por outra coordenadora (HTTP 409); ele sai da lista.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido já foi respondido.'**
+  String get groupJoinRequestsAlreadyReviewed;
+
+  /// O pedido não existe mais (HTTP 404); ele sai da lista.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido não está mais disponível.'**
+  String get groupJoinRequestsNotFound;
+
+  /// Aceite recusado porque o grupo ou a conta da leitora foi inativado (HTTP 409); a lista recarrega.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.'**
+  String get groupJoinRequestsNoLongerValid;
+
+  /// Erro genérico ao aceitar ou recusar um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível responder ao pedido. Tente novamente.'**
+  String get groupJoinRequestsReviewError;
+
+  /// Rótulo de acessibilidade do botão Aceitar de um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar pedido de {name}'**
+  String groupJoinRequestsApproveSemantics(String name);
+
+  /// Rótulo de acessibilidade do botão Recusar de um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar pedido de {name}'**
+  String groupJoinRequestsRejectSemantics(String name);
 }
 
 class _AppLocalizationsDelegate
