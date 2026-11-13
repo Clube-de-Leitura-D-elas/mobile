@@ -69,6 +69,7 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
             page: nextPage,
             genres: data.genres,
             isLoadingMore: false,
+            reachedEnd: _isLastPage(data.items.length),
           ),
         );
     }
@@ -96,20 +97,27 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
 
     switch (result) {
       case Success():
+        // O item pode ter mudado durante o pedido (releitura ao voltar).
+        final current = _find(groupId);
         emit(
           state.copyWith(
-            items: _replace(
-              group.copyWith(membershipStatus: GroupMembershipStatus.requested),
-            ),
+            items: current == null
+                ? null
+                : _replace(
+                    current.copyWith(
+                      membershipStatus: GroupMembershipStatus.requested,
+                    ),
+                  ),
             requestingIds: _without(groupId),
             joinRequested: true,
           ),
         );
       case Failure(failure: final GroupUnavailableFailure failure):
+        final stillListed = _find(groupId) != null;
         emit(
           state.copyWith(
-            items: _remove(groupId),
-            total: state.total - 1,
+            items: stillListed ? _remove(groupId) : null,
+            total: stillListed ? state.total - 1 : null,
             requestingIds: _without(groupId),
             joinFailure: failure,
           ),
@@ -196,11 +204,15 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
             total: data.total,
             page: 1,
             genres: data.genres,
+            reachedEnd: _isLastPage(data.items.length),
             requestingIds: state.requestingIds,
           ),
         );
     }
   }
+
+  static bool _isLastPage(int received) =>
+      received < GroupDiscoveryRepository.pageSize;
 
   DiscoveryGroupEntity? _find(String groupId) {
     for (final item in state.items) {

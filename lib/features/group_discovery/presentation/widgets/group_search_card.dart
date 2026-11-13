@@ -43,34 +43,41 @@ class GroupSearchCard extends StatelessWidget {
               ),
             ),
             SizedBox(width: spacing.s12),
+            // Nome, participantes e cidade lidos juntos; o link e o botão
+            // ficam fora para continuarem acionáveis.
             Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.groupDetailsNumberLabel(group.number),
-                      style: typography.headingH3.copyWith(
-                        color: colors.textDefault,
+              child: MergeSemantics(
+                child: LayoutBuilder(
+                  builder: (context, constraints) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Semantics(
+                        header: true,
+                        child: Text(
+                          l10n.groupDetailsNumberLabel(group.number),
+                          style: typography.headingH3.copyWith(
+                            color: colors.textDefault,
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: spacing.s4),
-                    GroupMetadata(
-                      icon: AppIcons.group,
-                      label: l10n.groupParticipantsCount(
-                        group.participantCount,
-                      ),
-                      maxWidth: constraints.maxWidth,
-                    ),
-                    if (cityState != null) ...[
                       SizedBox(height: spacing.s4),
                       GroupMetadata(
-                        icon: AppIcons.location,
-                        label: cityState,
+                        icon: AppIcons.group,
+                        label: l10n.groupParticipantsCount(
+                          group.participantCount,
+                        ),
                         maxWidth: constraints.maxWidth,
                       ),
+                      if (cityState != null) ...[
+                        SizedBox(height: spacing.s4),
+                        GroupMetadata(
+                          icon: AppIcons.location,
+                          label: cityState,
+                          maxWidth: constraints.maxWidth,
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -83,7 +90,6 @@ class GroupSearchCard extends StatelessWidget {
           status: group.membershipStatus,
           isRequesting: isRequesting,
           onRequestJoin: onRequestJoin,
-          buttonSize: AppButtonSize.md,
         ),
       ],
     );
@@ -109,7 +115,7 @@ class _SeeDetailsLink extends StatelessWidget {
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(context.spacing.s8),
+        borderRadius: BorderRadius.circular(AppCard.borderRadius),
         child: ConstrainedBox(
           constraints: const BoxConstraints(
             minHeight: _minTouchSize,

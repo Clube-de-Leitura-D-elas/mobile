@@ -1,12 +1,15 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_genre_entity.dart';
 
 class GroupSearchFilters extends Equatable {
-  final String? genreId;
+  /// O gênero inteiro, não só o id: o modal mostra o nome mesmo antes de a
+  /// lista de gêneros carregar.
+  final GroupGenreEntity? genre;
   final int? minParticipants;
   final int? maxParticipants;
 
   const GroupSearchFilters({
-    this.genreId,
+    this.genre,
     this.minParticipants,
     this.maxParticipants,
   });
@@ -14,8 +17,8 @@ class GroupSearchFilters extends Equatable {
   static const empty = GroupSearchFilters();
 
   bool get isEmpty =>
-      genreId == null && minParticipants == null && maxParticipants == null;
+      genre == null && minParticipants == null && maxParticipants == null;
 
   @override
-  List<Object?> get props => [genreId, minParticipants, maxParticipants];
+  List<Object?> get props => [genre, minParticipants, maxParticipants];
 }

@@ -8,6 +8,7 @@ import 'package:mobile/features/group_discovery/data/repositories/group_discover
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
 import 'package:mobile/features/group_discovery/data/models/group_search_page_model.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_genre_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_page_entity.dart';
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
@@ -87,7 +88,7 @@ void main() {
         page: 3,
         search: ' clube ',
         filters: const GroupSearchFilters(
-          genreId: 'genre-1',
+          genre: GroupGenreEntity(id: 'genre-1', name: 'Ficção'),
           minParticipants: 10,
           maxParticipants: 20,
         ),

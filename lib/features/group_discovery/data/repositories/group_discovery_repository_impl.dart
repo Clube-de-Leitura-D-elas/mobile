@@ -29,7 +29,7 @@ class GroupDiscoveryRepositoryImpl implements GroupDiscoveryRepository {
     final query = trimmed.length > _maxSearchLength
         ? trimmed.substring(0, _maxSearchLength)
         : trimmed;
-    final genreId = filters.genreId;
+    final genreId = filters.genre?.id;
     final minParticipants = filters.minParticipants;
     final maxParticipants = filters.maxParticipants;
     final result = await supabaseService.invokeFunction<GroupSearchPageModel>(

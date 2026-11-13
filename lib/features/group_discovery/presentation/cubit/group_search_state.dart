@@ -17,6 +17,11 @@ class GroupSearchState extends Equatable {
   final bool isLoadingMore;
   final bool loadMoreFailed;
 
+  /// A última página veio vazia ou incompleta. Encerra a lista mesmo que
+  /// [total] diga que falta: inclusões e remoções entre páginas deslocam o
+  /// offset e o total deixa de bater com o que foi carregado.
+  final bool reachedEnd;
+
   /// Por que a primeira página não carregou, quando [status] é `error`.
   final GroupDiscoveryFailure? failure;
 
@@ -38,13 +43,14 @@ class GroupSearchState extends Equatable {
     this.genres = const [],
     this.isLoadingMore = false,
     this.loadMoreFailed = false,
+    this.reachedEnd = false,
     this.failure,
     this.requestingIds = const {},
     this.joinRequested = false,
     this.joinFailure,
   });
 
-  bool get hasMore => items.length < total;
+  bool get hasMore => !reachedEnd && items.length < total;
 
   bool get isFiltered => query.isNotEmpty || !filters.isEmpty;
 
@@ -57,6 +63,7 @@ class GroupSearchState extends Equatable {
     List<GroupGenreEntity>? genres,
     bool? isLoadingMore,
     bool? loadMoreFailed,
+    bool? reachedEnd,
     Set<String>? requestingIds,
     bool? joinRequested,
     GroupDiscoveryFailure? joinFailure,
@@ -72,6 +79,7 @@ class GroupSearchState extends Equatable {
       genres: genres ?? this.genres,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       loadMoreFailed: loadMoreFailed ?? this.loadMoreFailed,
+      reachedEnd: reachedEnd ?? this.reachedEnd,
       failure: failure,
       requestingIds: requestingIds ?? this.requestingIds,
       joinRequested: joinRequested ?? this.joinRequested,
@@ -90,6 +98,7 @@ class GroupSearchState extends Equatable {
     genres,
     isLoadingMore,
     loadMoreFailed,
+    reachedEnd,
     failure,
     requestingIds,
     joinRequested,

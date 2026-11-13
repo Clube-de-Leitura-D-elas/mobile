@@ -129,6 +129,11 @@ void main() {
     );
   }
 
+  List<DiscoveryGroupEntity> fullPage(int first) => [
+    for (var i = 0; i < GroupDiscoveryRepository.pageSize; i++)
+      searchGroup(first + i),
+  ];
+
   Finder cardOf(int number) => find.byKey(ValueKey(searchGroupId(number)));
 
   Finder inCard(int number, Finder matching) =>
@@ -254,6 +259,57 @@ void main() {
       expect(inCard(1, find.text('Solicitar entrada')), findsOneWidget);
     });
 
+    testWidgets('card and confirmation buttons have a 48 touch target', (
+      tester,
+    ) async {
+      stubSearch(
+        pageOf([
+          searchGroup(1),
+          searchGroup(2, membership: GroupMembershipStatus.rejected),
+        ]),
+      );
+
+      await pumpView(tester);
+      await tester.pumpAndSettle();
+
+      for (final label in ['Solicitar entrada', 'Pedir novamente']) {
+        expect(
+          tester.getSize(find.widgetWithText(AppButton, label)).height,
+          greaterThanOrEqualTo(48),
+        );
+      }
+
+      await tester.tap(find.text('Solicitar entrada'));
+      await tester.pumpAndSettle();
+      for (final label in ['Cancelar', 'Solicitar']) {
+        expect(
+          tester.getSize(find.widgetWithText(AppButton, label)).height,
+          greaterThanOrEqualTo(48),
+        );
+      }
+    });
+
+    testWidgets('reads name, participants and city as one header', (
+      tester,
+    ) async {
+      stubSearch(pageOf([searchGroup(1)]));
+
+      await pumpView(tester);
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.getSemantics(find.text('Grupo 1')),
+        isSemantics(
+          isHeader: true,
+          label: 'Grupo 1\n31 participantes\nPorto Alegre, RS',
+        ),
+      );
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Ver detalhes do Grupo 1')),
+        isSemantics(isButton: true),
+      );
+    });
+
     testWidgets('cancelling the confirmation does not ask', (tester) async {
       stubSearch(pageOf([searchGroup(1)]));
 
@@ -285,7 +341,7 @@ void main() {
 
     testWidgets('applies the filters chosen in the modal', (tester) async {
       const chosen = GroupSearchFilters(
-        genreId: 'g-2',
+        genre: GroupGenreEntity(id: 'g-2', name: 'Aventura'),
         minParticipants: 10,
         maxParticipants: 20,
       );
@@ -398,36 +454,89 @@ void main() {
       expect(find.text('Limpar filtros'), findsNothing);
     });
 
-    testWidgets('loads the next page and shows the end of the list', (
+    testWidgets('asks each next page once and stops at the end', (
       tester,
     ) async {
-      stubSearch(pageOf([searchGroup(1)], total: 2));
-      stubSearch(pageOf([searchGroup(2)], total: 2), page: 2);
+      // O total promete mais do que vem: a página incompleta encerra.
+      stubSearch(pageOf(fullPage(1), total: 100));
+      stubSearch(pageOf(fullPage(21), total: 100), page: 2);
+      stubSearch(pageOf([searchGroup(41)], total: 100), page: 3);
 
       await pumpView(tester);
       await tester.pumpAndSettle();
+      await tester.dragUntilVisible(
+        find.text('Você chegou ao fim da lista.'),
+        find.byType(ListView),
+        const Offset(0, -600),
+      );
+      await tester.pumpAndSettle();
 
-      expect(find.byType(GroupSearchCard), findsNWidgets(2));
-      expect(find.text('Você chegou ao fim da lista.'), findsOneWidget);
+      expect(cardOf(41), findsOneWidget);
+      for (final page in [1, 2, 3]) {
+        verify(
+          () => repository.searchGroups(
+            page: page,
+            search: '',
+            filters: GroupSearchFilters.empty,
+          ),
+        ).called(1);
+      }
+      verifyNever(
+        () => repository.searchGroups(
+          page: 4,
+          search: any(named: 'search'),
+          filters: any(named: 'filters'),
+        ),
+      );
+    });
+
+    testWidgets('an empty next page ends the list despite the total', (
+      tester,
+    ) async {
+      stubSearch(pageOf(fullPage(1), total: 100));
+      stubSearch(pageOf([], total: 100), page: 2);
+
+      await pumpView(tester);
+      await tester.pumpAndSettle();
+      await tester.dragUntilVisible(
+        find.text('Você chegou ao fim da lista.'),
+        find.byType(ListView),
+        const Offset(0, -600),
+      );
+      await tester.pumpAndSettle();
+
+      verifyNever(
+        () => repository.searchGroups(
+          page: 3,
+          search: any(named: 'search'),
+          filters: any(named: 'filters'),
+        ),
+      );
     });
 
     testWidgets('retries a failed next page', (tester) async {
-      stubSearch(pageOf([searchGroup(1)], total: 2));
+      stubSearch(pageOf(fullPage(1), total: 21));
       stubSearch(const Failure(GroupDiscoveryNetworkFailure()), page: 2);
 
       await pumpView(tester);
       await tester.pumpAndSettle();
-
-      expect(
+      await tester.dragUntilVisible(
         find.text('Não foi possível carregar mais grupos.'),
-        findsOneWidget,
+        find.byType(ListView),
+        const Offset(0, -600),
       );
+      await tester.pumpAndSettle();
 
-      stubSearch(pageOf([searchGroup(2)], total: 2), page: 2);
+      stubSearch(pageOf([searchGroup(21)], total: 21), page: 2);
       await tester.tap(find.text('Tentar novamente'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(GroupSearchCard), findsNWidgets(2));
+      await tester.dragUntilVisible(
+        find.text('Você chegou ao fim da lista.'),
+        find.byType(ListView),
+        const Offset(0, -600),
+      );
+      expect(cardOf(21), findsOneWidget);
     });
 
     testWidgets('shows the error and retries', (tester) async {

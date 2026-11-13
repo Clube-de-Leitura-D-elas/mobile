@@ -38,20 +38,21 @@ class _GroupSearchFiltersDialogState extends State<GroupSearchFiltersDialog> {
   // O backend aceita até 4 dígitos.
   static const int _maxDigits = 4;
 
-  late GroupGenreEntity? _genre = _initialGenre();
+  late GroupGenreEntity? _genre = widget.initial.genre;
+
+  /// O gênero aplicado entra nas opções mesmo se a lista de gêneros não
+  /// carregou, para o filtro não sumir calado ao reaplicar.
+  late final List<GroupGenreEntity?> _options = [
+    null,
+    ...widget.genres,
+    if (_genre != null && !widget.genres.contains(_genre)) _genre,
+  ];
   late final TextEditingController _min = TextEditingController(
     text: widget.initial.minParticipants?.toString() ?? '',
   );
   late final TextEditingController _max = TextEditingController(
     text: widget.initial.maxParticipants?.toString() ?? '',
   );
-
-  GroupGenreEntity? _initialGenre() {
-    for (final genre in widget.genres) {
-      if (genre.id == widget.initial.genreId) return genre;
-    }
-    return null;
-  }
 
   int? get _minValue => int.tryParse(_min.text);
   int? get _maxValue => int.tryParse(_max.text);
@@ -84,15 +85,17 @@ class _GroupSearchFiltersDialogState extends State<GroupSearchFiltersDialog> {
       actions: [
         AppButton.secondary(
           label: l10n.groupSearchFiltersClear,
+          size: AppButtonSize.lg,
           onPressed: () => navigator.pop(GroupSearchFilters.empty),
         ),
         AppButton.primary(
           label: l10n.groupSearchFiltersApply,
+          size: AppButtonSize.lg,
           onPressed: _hasRangeError
               ? null
               : () => navigator.pop(
                   GroupSearchFilters(
-                    genreId: _genre?.id,
+                    genre: _genre,
                     minParticipants: _minValue,
                     maxParticipants: _maxValue,
                   ),
@@ -105,7 +108,7 @@ class _GroupSearchFiltersDialogState extends State<GroupSearchFiltersDialog> {
           AppDropdown<GroupGenreEntity?>(
             label: l10n.groupSearchFilterGenre,
             hintText: l10n.groupSearchFilterGenreAll,
-            items: [null, ...widget.genres],
+            items: _options,
             value: _genre,
             itemLabelBuilder: (genre) =>
                 genre?.name ?? l10n.groupSearchFilterGenreAll,

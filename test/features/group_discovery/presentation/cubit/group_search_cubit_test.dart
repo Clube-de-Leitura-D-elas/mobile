@@ -23,7 +23,10 @@ void main() {
   late MockGroupDiscoveryRepository repository;
 
   const genres = [GroupGenreEntity(id: 'g-1', name: 'Ficção')];
-  const filters = GroupSearchFilters(genreId: 'g-1', minParticipants: 10);
+  const filters = GroupSearchFilters(
+    genre: GroupGenreEntity(id: 'g-1', name: 'Ficção'),
+    minParticipants: 10,
+  );
   final g1 = searchGroup(1);
   final g2 = searchGroup(2);
   final g3 = searchGroup(3);
@@ -49,13 +52,21 @@ void main() {
     List<DiscoveryGroupEntity> items, {
     int total = 3,
     int page = 1,
+    bool reachedEnd = false,
   }) => GroupSearchState(
     status: GroupSearchStatus.loaded,
     items: items,
     total: total,
     page: page,
     genres: genres,
+    reachedEnd: reachedEnd,
   );
+
+  /// Página cheia: grupos [first] a [first] + 19.
+  List<DiscoveryGroupEntity> fullPage(int first) => [
+    for (var i = 0; i < GroupDiscoveryRepository.pageSize; i++)
+      searchGroup(first + i),
+  ];
 
   setUpAll(() {
     registerFallbackValue(GroupSearchFilters.empty);
@@ -70,26 +81,71 @@ void main() {
   group('load and pages', () {
     blocTest<GroupSearchCubit, GroupSearchState>(
       'loads the first page with the genre options',
-      setUp: () => stubPage(1, [g1, g2]),
+      setUp: () => stubPage(1, fullPage(1), total: 45),
       build: buildCubit,
       act: (cubit) => cubit.load(),
       expect: () => [
         const GroupSearchState(),
-        loadedWith([g1, g2]),
+        loadedWith(fullPage(1), total: 45),
       ],
+      verify: (cubit) => expect(cubit.state.hasMore, isTrue),
+    );
+
+    blocTest<GroupSearchCubit, GroupSearchState>(
+      'ends the list when the first page is not full',
+      setUp: () => stubPage(1, [g1, g2]),
+      build: buildCubit,
+      act: (cubit) => cubit.load(),
+      verify: (cubit) {
+        expect(cubit.state.reachedEnd, isTrue);
+        expect(cubit.state.hasMore, isFalse);
+      },
     );
 
     blocTest<GroupSearchCubit, GroupSearchState>(
       'appends the next page without repeating a group',
-      setUp: () => stubPage(2, [g2, g3]),
+      setUp: () => stubPage(2, [...fullPage(20)], total: 45),
       build: buildCubit,
-      seed: () => loadedWith([g1, g2]),
+      seed: () => loadedWith(fullPage(1), total: 45),
       act: (cubit) => cubit.loadMore(),
-      expect: () => [
-        loadedWith([g1, g2]).copyWith(isLoadingMore: true),
-        loadedWith([g1, g2, g3], page: 2),
-      ],
-      verify: (cubit) => expect(cubit.state.hasMore, isFalse),
+      verify: (cubit) {
+        expect(cubit.state.items, [...fullPage(1), ...fullPage(21).take(19)]);
+        expect(cubit.state.page, 2);
+        expect(cubit.state.hasMore, isTrue);
+      },
+    );
+
+    blocTest<GroupSearchCubit, GroupSearchState>(
+      'ends the list on an empty page even when the total says otherwise',
+      setUp: () => stubPage(2, [], total: 45),
+      build: buildCubit,
+      seed: () => loadedWith(fullPage(1), total: 45),
+      act: (cubit) => cubit.loadMore(),
+      verify: (cubit) {
+        expect(cubit.state.items, hasLength(20));
+        expect(cubit.state.hasMore, isFalse);
+      },
+    );
+
+    blocTest<GroupSearchCubit, GroupSearchState>(
+      'ends the list on a page made only of repeated groups',
+      setUp: () => stubPage(2, [g1, g2], total: 45),
+      build: buildCubit,
+      seed: () => loadedWith(fullPage(1), total: 45),
+      act: (cubit) async {
+        await cubit.loadMore();
+        await cubit.loadMore();
+      },
+      verify: (cubit) {
+        expect(cubit.state.hasMore, isFalse);
+        verify(
+          () => repository.searchGroups(
+            page: any(named: 'page'),
+            search: any(named: 'search'),
+            filters: any(named: 'filters'),
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<GroupSearchCubit, GroupSearchState>(
@@ -127,7 +183,7 @@ void main() {
         loadedWith([g1, g2]).copyWith(isLoadingMore: true),
         loadedWith([g1, g2]).copyWith(loadMoreFailed: true),
         loadedWith([g1, g2]).copyWith(isLoadingMore: true),
-        loadedWith([g1, g2, g3], page: 2),
+        loadedWith([g1, g2, g3], page: 2, reachedEnd: true),
       ],
     );
 
@@ -156,9 +212,36 @@ void main() {
           failure: GroupDiscoveryInactiveAccountFailure(),
         ),
         const GroupSearchState(),
-        loadedWith([g1]),
+        loadedWith([g1], reachedEnd: true),
       ],
     );
+
+    test('drops an old next page once a new search starts', () async {
+      final slowPage =
+          Completer<Result<GroupSearchPageEntity, GroupDiscoveryFailure>>();
+      when(
+        () => repository.searchGroups(
+          page: 2,
+          search: '',
+          filters: GroupSearchFilters.empty,
+        ),
+      ).thenAnswer((_) => slowPage.future);
+      stubPage(1, [g3], total: 1, search: 'três');
+      final cubit = buildCubit()..emit(loadedWith(fullPage(1), total: 45));
+      addTearDown(cubit.close);
+
+      final oldPage = cubit.loadMore();
+      await cubit.search('três');
+      slowPage.complete(
+        Success(
+          GroupSearchPageEntity(items: fullPage(21), total: 45, genres: genres),
+        ),
+      );
+      await oldPage;
+
+      expect(cubit.state.query, 'três');
+      expect(cubit.state.items, [g3]);
+    });
   });
 
   group('search and filters', () {
@@ -177,6 +260,7 @@ void main() {
           total: 1,
           page: 1,
           genres: genres,
+          reachedEnd: true,
         ),
       ],
     );

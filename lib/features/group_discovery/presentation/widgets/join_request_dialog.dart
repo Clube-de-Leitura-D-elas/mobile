@@ -27,10 +27,12 @@ class JoinRequestDialog extends StatelessWidget {
       actions: [
         AppButton.secondary(
           label: l10n.publicGroupJoinDialogCancel,
+          size: AppButtonSize.lg,
           onPressed: () => navigator.pop(false),
         ),
         AppButton.primary(
           label: l10n.publicGroupJoinDialogConfirm,
+          size: AppButtonSize.lg,
           onPressed: () => navigator.pop(true),
         ),
       ],
