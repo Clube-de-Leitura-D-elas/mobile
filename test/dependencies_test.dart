@@ -13,6 +13,13 @@ import 'package:mobile/features/books/data/repositories/book_repository_impl.dar
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
+import 'package:mobile/features/calendar/data/repositories/calendar_repository_impl.dart';
+import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
+import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
+import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
+import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/public_group_cubit.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
@@ -127,6 +134,17 @@ void main() {
       expect(serviceLocator<BookRepository>(), isA<BookRepositoryImpl>());
       expect(serviceLocator<BookDetailsCubit>(), isA<BookDetailsCubit>());
       expect(serviceLocator<BookSearchCubit>(), isA<BookSearchCubit>());
+      expect(
+        serviceLocator<CalendarRepository>(),
+        isA<CalendarRepositoryImpl>(),
+      );
+      expect(serviceLocator<CalendarCubit>(), isA<CalendarCubit>());
+      expect(
+        serviceLocator<GroupDiscoveryRepository>(),
+        isA<GroupDiscoveryRepositoryImpl>(),
+      );
+      expect(serviceLocator<PublicGroupCubit>(), isA<PublicGroupCubit>());
+      expect(serviceLocator<GroupSearchCubit>(), isA<GroupSearchCubit>());
       expect(
         serviceLocator<NotificationRepository>(),
         isA<NotificationRepositoryImpl>(),

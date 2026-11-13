@@ -13,11 +13,20 @@ import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
+import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
+import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
+import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_search_page_entity.dart';
+import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
+import 'package:mobile/features/group_discovery/presentation/pages/group_search_view.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
 import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
 import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
+import 'package:mobile/features/quick_access/presentation/pages/search_page.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -48,6 +57,11 @@ void _unregisterProfileSummary() {
   }
 }
 
+class MockGroupDiscoveryRepository extends Mock
+    implements GroupDiscoveryRepository {}
+
+class MockCalendarRepository extends Mock implements CalendarRepository {}
+
 void _registerBookSearch() {
   final repository = MockBookRepository();
   when(
@@ -67,6 +81,29 @@ void _registerBookSearch() {
   );
 }
 
+void _registerGroupSearch() {
+  final repository = MockGroupDiscoveryRepository();
+  when(
+    () => repository.searchGroups(
+      page: any(named: 'page'),
+      search: any(named: 'search'),
+      filters: any(named: 'filters'),
+    ),
+  ).thenAnswer(
+    (_) async =>
+        const Success(GroupSearchPageEntity(items: [], total: 0, genres: [])),
+  );
+  serviceLocator.registerFactory<GroupSearchCubit>(
+    () => GroupSearchCubit(repository: repository),
+  );
+}
+
+void _unregisterGroupSearch() {
+  if (serviceLocator.isRegistered<GroupSearchCubit>()) {
+    serviceLocator.unregister<GroupSearchCubit>();
+  }
+}
+
 void _unregisterBookSearch() {
   if (serviceLocator.isRegistered<BookSearchCubit>()) {
     serviceLocator.unregister<BookSearchCubit>();
@@ -76,7 +113,30 @@ void _unregisterBookSearch() {
   }
 }
 
+void _registerCalendar() {
+  final repository = MockCalendarRepository();
+  when(
+    () => repository.getMeetings(
+      from: any(named: 'from'),
+      to: any(named: 'to'),
+    ),
+  ).thenAnswer((_) async => const Success([]));
+  serviceLocator.registerFactory<CalendarCubit>(
+    () => CalendarCubit(repository: repository),
+  );
+}
+
+void _unregisterCalendar() {
+  if (serviceLocator.isRegistered<CalendarCubit>()) {
+    serviceLocator.unregister<CalendarCubit>();
+  }
+}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(GroupSearchFilters.empty);
+  });
+
   group('QuickAccessRoutes', () {
     test('maps every item to its corresponding path', () {
       expect(QuickAccessItem.values.map(QuickAccessRoutes.pathFor).toList(), [
@@ -117,13 +177,13 @@ void main() {
     });
 
     testWidgets(
-      'renders a placeholder with the selected tab for non-profile routes',
+      'renders a placeholder with the selected tab for tabs without a screen',
       (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             theme: AppTheme.light,
             home: const QuickAccessPlaceholderScreen(
-              item: QuickAccessItem.calendar,
+              item: QuickAccessItem.plus,
             ),
           ),
         );
@@ -136,17 +196,24 @@ void main() {
           find.byType(BottomNavigationBarWidget),
         );
 
-        expect(navigationBar.currentIndex, QuickAccessItem.calendar.index);
+        expect(navigationBar.currentIndex, QuickAccessItem.plus.index);
       },
     );
 
     testWidgets(
-      'renders the book search on /search and ProfilePage on /profile',
+      'renders the book search, the profile, the calendar and the add '
+      'placeholder on their tabs',
       (tester) async {
+        final allowReassignment = serviceLocator.allowReassignment;
+        addTearDown(() => serviceLocator.allowReassignment = allowReassignment);
         _registerBookSearch();
         addTearDown(_unregisterBookSearch);
         final profileRepository = _registerProfileSummary();
         addTearDown(_unregisterProfileSummary);
+        _registerCalendar();
+        addTearDown(_unregisterCalendar);
+        _registerGroupSearch();
+        addTearDown(_unregisterGroupSearch);
 
         final router = GoRouter(
           initialLocation: '/search',
@@ -173,8 +240,14 @@ void main() {
         );
         await tester.pumpAndSettle();
 
+        expect(find.byType(SearchPage), findsOneWidget);
         expect(find.byType(BookSearchPage), findsOneWidget);
         expect(find.byType(ProfilePage), findsNothing);
+
+        await tester.tap(find.text('Grupos'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(GroupSearchView), findsOneWidget);
 
         router.go('/profile');
         await tester.pumpAndSettle();
@@ -187,8 +260,14 @@ void main() {
         router.go('/calendar');
         await tester.pumpAndSettle();
 
+        expect(find.byType(CalendarPage), findsOneWidget);
+        expect(find.byType(QuickAccessPlaceholderScreen), findsNothing);
+
+        router.go('/add');
+        await tester.pumpAndSettle();
+
         expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
-        expect(find.byType(BookSearchPage), findsNothing);
+        expect(find.byType(CalendarPage), findsNothing);
       },
     );
   });

@@ -1236,6 +1236,381 @@ class AppLocalizationsPt extends AppLocalizations {
       'Atualizamos a lista: confira as participantes e confirme de novo.';
 
   @override
+  String calendarMonthName(DateTime month) {
+    final intl.DateFormat monthDateFormat = intl.DateFormat.LLLL(localeName);
+    final String monthString = monthDateFormat.format(month);
+
+    return '$monthString';
+  }
+
+  @override
+  String calendarMonthSemantic(DateTime month) {
+    final intl.DateFormat monthDateFormat = intl.DateFormat.yMMMM(localeName);
+    final String monthString = monthDateFormat.format(month);
+
+    return '$monthString';
+  }
+
+  @override
+  String get calendarPreviousMonth => 'Mês anterior';
+
+  @override
+  String get calendarNextMonth => 'Próximo mês';
+
+  @override
+  String calendarWeekdayShort(String weekday) {
+    String _temp0 = intl.Intl.selectLogic(weekday, {
+      'sunday': 'Dom',
+      'monday': 'Seg',
+      'tuesday': 'Ter',
+      'wednesday': 'Qua',
+      'thursday': 'Qui',
+      'friday': 'Sex',
+      'saturday': 'Sáb',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String calendarDaySemantic(DateTime day, int count) {
+    final intl.DateFormat dayDateFormat = intl.DateFormat.MMMMd(localeName);
+    final String dayString = dayDateFormat.format(day);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count encontros',
+      one: '1 encontro',
+      zero: 'sem encontros',
+    );
+    return '$dayString, $_temp0';
+  }
+
+  @override
+  String get calendarToday => 'Hoje';
+
+  @override
+  String get calendarFilterAll => 'Todos';
+
+  @override
+  String calendarFilterUpcoming(int count) {
+    return 'Próximos eventos ($count)';
+  }
+
+  @override
+  String get calendarFilterPast => 'Eventos passados';
+
+  @override
+  String calendarSelectedDayTitle(DateTime day) {
+    final intl.DateFormat dayDateFormat = intl.DateFormat.MMMMEEEEd(localeName);
+    final String dayString = dayDateFormat.format(day);
+
+    return '$dayString';
+  }
+
+  @override
+  String get calendarClearSelectedDay => 'Limpar dia selecionado';
+
+  @override
+  String calendarMeetingTitle(int number) {
+    return 'Encontro Grupo $number';
+  }
+
+  @override
+  String calendarMeetingTitleWithDate(DateTime date, int number) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString - Encontro Grupo $number';
+  }
+
+  @override
+  String calendarMeetingTime(DateTime time) {
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return '$timeString';
+  }
+
+  @override
+  String calendarParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String calendarMeetingHost(String name) {
+    return '$name (Anfitriã)';
+  }
+
+  @override
+  String get calendarLoading => 'Carregando encontros';
+
+  @override
+  String get calendarLoadError => 'Não foi possível carregar o calendário.';
+
+  @override
+  String get calendarEmptyMonth => 'Nenhum encontro neste mês.';
+
+  @override
+  String get calendarEmptyUpcoming => 'Nenhum próximo encontro neste mês.';
+
+  @override
+  String get calendarEmptyPast => 'Nenhum encontro passado neste mês.';
+
+  @override
+  String get calendarEmptyDay => 'Nenhum encontro neste dia.';
+
+  @override
+  String calendarMonthTitle(String month, int year) {
+    return '$month $year';
+  }
+
+  @override
+  String get calendarMeetingDraftTag => 'Rascunho';
+
+  @override
+  String get publicGroupTitle => 'Detalhes do grupo';
+
+  @override
+  String get publicGroupLoading => 'Carregando grupo';
+
+  @override
+  String get publicGroupLoadError => 'Não foi possível carregar o grupo.';
+
+  @override
+  String get publicGroupUnavailable => 'Este grupo não está disponível.';
+
+  @override
+  String get publicGroupRequestJoin => 'Solicitar entrada';
+
+  @override
+  String get publicGroupRequestAgain => 'Pedir novamente';
+
+  @override
+  String get publicGroupStatusRequested => 'Aguardando aprovação';
+
+  @override
+  String get publicGroupStatusRejected => 'Solicitação recusada';
+
+  @override
+  String get publicGroupStatusPending => 'Aguardando criação de conta';
+
+  @override
+  String get publicGroupStatusMember => 'Você já faz parte deste grupo';
+
+  @override
+  String get publicGroupOpenMemberDetails => 'Ver grupo';
+
+  @override
+  String get publicGroupJoinDialogTitle => 'Solicitar entrada?';
+
+  @override
+  String publicGroupJoinDialogMessage(int number) {
+    return 'A coordenação do Grupo $number vai analisar o seu pedido.';
+  }
+
+  @override
+  String get publicGroupJoinDialogCancel => 'Cancelar';
+
+  @override
+  String get publicGroupJoinDialogConfirm => 'Solicitar';
+
+  @override
+  String get publicGroupJoinSuccess =>
+      'Pedido enviado! Agora é só aguardar a aprovação.';
+
+  @override
+  String get publicGroupJoinAlreadyRequested =>
+      'Você já pediu entrada ou já faz parte deste grupo.';
+
+  @override
+  String get publicGroupJoinNoCoordinator =>
+      'Este grupo ainda não aceita pedidos de entrada.';
+
+  @override
+  String get publicGroupJoinError =>
+      'Não foi possível enviar o pedido. Tente novamente.';
+
+  @override
+  String get searchTabBooks => 'Livros';
+
+  @override
+  String get searchTabGroups => 'Grupos';
+
+  @override
+  String get groupSearchTitle => 'Encontre seu grupo ideal';
+
+  @override
+  String get groupSearchHint => 'Buscar grupo';
+
+  @override
+  String get groupSearchFiltersButton => 'Filtros';
+
+  @override
+  String get groupSearchFiltersActive => 'Filtros aplicados';
+
+  @override
+  String get groupSearchFilterGenre => 'Gênero';
+
+  @override
+  String get groupSearchFilterGenreAll => 'Todos os gêneros';
+
+  @override
+  String get groupSearchFilterMin => 'Mínimo de participantes';
+
+  @override
+  String get groupSearchFilterMinHint => 'Ex.: 10';
+
+  @override
+  String get groupSearchFilterMax => 'Máximo de participantes';
+
+  @override
+  String get groupSearchFilterMaxHint => 'Ex.: 20';
+
+  @override
+  String get groupSearchFilterRangeError =>
+      'O mínimo não pode ser maior que o máximo.';
+
+  @override
+  String get groupSearchFiltersApply => 'Aplicar filtros';
+
+  @override
+  String get groupSearchFiltersClear => 'Limpar filtros';
+
+  @override
+  String get groupSearchLoading => 'Carregando grupos';
+
+  @override
+  String get groupSearchLoadingMore => 'Carregando mais grupos';
+
+  @override
+  String get groupSearchLoadError => 'Não foi possível carregar os grupos.';
+
+  @override
+  String get groupSearchLoadMoreError =>
+      'Não foi possível carregar mais grupos.';
+
+  @override
+  String get groupSearchEmpty => 'Ainda não há grupos na sua cidade.';
+
+  @override
+  String get groupSearchEmptyFiltered =>
+      'Nenhum grupo encontrado. Tente outra busca ou mude os filtros.';
+
+  @override
+  String get groupSearchEnd => 'Você chegou ao fim da lista.';
+
+  @override
+  String get groupSearchSeeDetails => 'Ver detalhes';
+
+  @override
+  String groupSearchSeeDetailsSemantic(int number) {
+    return 'Ver detalhes do Grupo $number';
+  }
+
+  @override
+  String groupJoinRequestsAccess(int count) {
+    return 'Pedidos de entrada ($count)';
+  }
+
+  @override
+  String get groupJoinRequestsTitle => 'Pedidos de entrada';
+
+  @override
+  String get groupJoinRequestsLoading => 'Carregando pedidos de entrada';
+
+  @override
+  String get groupJoinRequestsEmpty => 'Nenhum pedido de entrada';
+
+  @override
+  String get groupJoinRequestsLoadError =>
+      'Não foi possível carregar os pedidos de entrada.';
+
+  @override
+  String get groupJoinRequestsNotCoordinator =>
+      'Só a coordenação do grupo pode ver os pedidos de entrada.';
+
+  @override
+  String get groupJoinRequestsGroupUnavailable =>
+      'Este grupo não está disponível.';
+
+  @override
+  String groupJoinRequestsRequestedAt(DateTime date, DateTime time) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return 'Pedido em $dateString às $timeString';
+  }
+
+  @override
+  String get groupJoinRequestsApprove => 'Aceitar';
+
+  @override
+  String get groupJoinRequestsReject => 'Recusar';
+
+  @override
+  String get groupJoinRequestsApproveDialogTitle => 'Aceitar pedido?';
+
+  @override
+  String groupJoinRequestsApproveDialogMessage(String name) {
+    return '$name vai passar a fazer parte do grupo.';
+  }
+
+  @override
+  String get groupJoinRequestsRejectDialogTitle => 'Recusar pedido?';
+
+  @override
+  String groupJoinRequestsRejectDialogMessage(String name) {
+    return '$name não vai entrar no grupo agora, mas poderá pedir de novo.';
+  }
+
+  @override
+  String get groupJoinRequestsDialogCancel => 'Cancelar';
+
+  @override
+  String get groupJoinRequestsApproved =>
+      'Pedido aceito! A leitora já faz parte do grupo.';
+
+  @override
+  String get groupJoinRequestsRejected => 'Pedido recusado.';
+
+  @override
+  String get groupJoinRequestsAlreadyReviewed =>
+      'Este pedido já foi respondido.';
+
+  @override
+  String get groupJoinRequestsNotFound =>
+      'Este pedido não está mais disponível.';
+
+  @override
+  String get groupJoinRequestsNoLongerValid =>
+      'Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.';
+
+  @override
+  String get groupJoinRequestsReviewError =>
+      'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String groupJoinRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de $name';
+  }
+
+  @override
+  String groupJoinRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de $name';
+  }
+
+  @override
   String profileBooksReadCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -2152,6 +2527,381 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get bookReadingStatusError =>
       'Não foi possível atualizar o status de leitura.';
+
+  @override
+  String calendarMonthName(DateTime month) {
+    final intl.DateFormat monthDateFormat = intl.DateFormat.LLLL(localeName);
+    final String monthString = monthDateFormat.format(month);
+
+    return '$monthString';
+  }
+
+  @override
+  String calendarMonthSemantic(DateTime month) {
+    final intl.DateFormat monthDateFormat = intl.DateFormat.yMMMM(localeName);
+    final String monthString = monthDateFormat.format(month);
+
+    return '$monthString';
+  }
+
+  @override
+  String get calendarPreviousMonth => 'Mês anterior';
+
+  @override
+  String get calendarNextMonth => 'Próximo mês';
+
+  @override
+  String calendarWeekdayShort(String weekday) {
+    String _temp0 = intl.Intl.selectLogic(weekday, {
+      'sunday': 'Dom',
+      'monday': 'Seg',
+      'tuesday': 'Ter',
+      'wednesday': 'Qua',
+      'thursday': 'Qui',
+      'friday': 'Sex',
+      'saturday': 'Sáb',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String calendarDaySemantic(DateTime day, int count) {
+    final intl.DateFormat dayDateFormat = intl.DateFormat.MMMMd(localeName);
+    final String dayString = dayDateFormat.format(day);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count encontros',
+      one: '1 encontro',
+      zero: 'sem encontros',
+    );
+    return '$dayString, $_temp0';
+  }
+
+  @override
+  String get calendarToday => 'Hoje';
+
+  @override
+  String get calendarFilterAll => 'Todos';
+
+  @override
+  String calendarFilterUpcoming(int count) {
+    return 'Próximos eventos ($count)';
+  }
+
+  @override
+  String get calendarFilterPast => 'Eventos passados';
+
+  @override
+  String calendarSelectedDayTitle(DateTime day) {
+    final intl.DateFormat dayDateFormat = intl.DateFormat.MMMMEEEEd(localeName);
+    final String dayString = dayDateFormat.format(day);
+
+    return '$dayString';
+  }
+
+  @override
+  String get calendarClearSelectedDay => 'Limpar dia selecionado';
+
+  @override
+  String calendarMeetingTitle(int number) {
+    return 'Encontro Grupo $number';
+  }
+
+  @override
+  String calendarMeetingTitleWithDate(DateTime date, int number) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString - Encontro Grupo $number';
+  }
+
+  @override
+  String calendarMeetingTime(DateTime time) {
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return '$timeString';
+  }
+
+  @override
+  String calendarParticipantsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participantes',
+      one: '1 participante',
+      zero: 'Nenhum participante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String calendarMeetingHost(String name) {
+    return '$name (Anfitriã)';
+  }
+
+  @override
+  String get calendarLoading => 'Carregando encontros';
+
+  @override
+  String get calendarLoadError => 'Não foi possível carregar o calendário.';
+
+  @override
+  String get calendarEmptyMonth => 'Nenhum encontro neste mês.';
+
+  @override
+  String get calendarEmptyUpcoming => 'Nenhum próximo encontro neste mês.';
+
+  @override
+  String get calendarEmptyPast => 'Nenhum encontro passado neste mês.';
+
+  @override
+  String get calendarEmptyDay => 'Nenhum encontro neste dia.';
+
+  @override
+  String calendarMonthTitle(String month, int year) {
+    return '$month $year';
+  }
+
+  @override
+  String get calendarMeetingDraftTag => 'Rascunho';
+
+  @override
+  String get publicGroupTitle => 'Detalhes do grupo';
+
+  @override
+  String get publicGroupLoading => 'Carregando grupo';
+
+  @override
+  String get publicGroupLoadError => 'Não foi possível carregar o grupo.';
+
+  @override
+  String get publicGroupUnavailable => 'Este grupo não está disponível.';
+
+  @override
+  String get publicGroupRequestJoin => 'Solicitar entrada';
+
+  @override
+  String get publicGroupRequestAgain => 'Pedir novamente';
+
+  @override
+  String get publicGroupStatusRequested => 'Aguardando aprovação';
+
+  @override
+  String get publicGroupStatusRejected => 'Solicitação recusada';
+
+  @override
+  String get publicGroupStatusPending => 'Aguardando criação de conta';
+
+  @override
+  String get publicGroupStatusMember => 'Você já faz parte deste grupo';
+
+  @override
+  String get publicGroupOpenMemberDetails => 'Ver grupo';
+
+  @override
+  String get publicGroupJoinDialogTitle => 'Solicitar entrada?';
+
+  @override
+  String publicGroupJoinDialogMessage(int number) {
+    return 'A coordenação do Grupo $number vai analisar o seu pedido.';
+  }
+
+  @override
+  String get publicGroupJoinDialogCancel => 'Cancelar';
+
+  @override
+  String get publicGroupJoinDialogConfirm => 'Solicitar';
+
+  @override
+  String get publicGroupJoinSuccess =>
+      'Pedido enviado! Agora é só aguardar a aprovação.';
+
+  @override
+  String get publicGroupJoinAlreadyRequested =>
+      'Você já pediu entrada ou já faz parte deste grupo.';
+
+  @override
+  String get publicGroupJoinNoCoordinator =>
+      'Este grupo ainda não aceita pedidos de entrada.';
+
+  @override
+  String get publicGroupJoinError =>
+      'Não foi possível enviar o pedido. Tente novamente.';
+
+  @override
+  String get searchTabBooks => 'Livros';
+
+  @override
+  String get searchTabGroups => 'Grupos';
+
+  @override
+  String get groupSearchTitle => 'Encontre seu grupo ideal';
+
+  @override
+  String get groupSearchHint => 'Buscar grupo';
+
+  @override
+  String get groupSearchFiltersButton => 'Filtros';
+
+  @override
+  String get groupSearchFiltersActive => 'Filtros aplicados';
+
+  @override
+  String get groupSearchFilterGenre => 'Gênero';
+
+  @override
+  String get groupSearchFilterGenreAll => 'Todos os gêneros';
+
+  @override
+  String get groupSearchFilterMin => 'Mínimo de participantes';
+
+  @override
+  String get groupSearchFilterMinHint => 'Ex.: 10';
+
+  @override
+  String get groupSearchFilterMax => 'Máximo de participantes';
+
+  @override
+  String get groupSearchFilterMaxHint => 'Ex.: 20';
+
+  @override
+  String get groupSearchFilterRangeError =>
+      'O mínimo não pode ser maior que o máximo.';
+
+  @override
+  String get groupSearchFiltersApply => 'Aplicar filtros';
+
+  @override
+  String get groupSearchFiltersClear => 'Limpar filtros';
+
+  @override
+  String get groupSearchLoading => 'Carregando grupos';
+
+  @override
+  String get groupSearchLoadingMore => 'Carregando mais grupos';
+
+  @override
+  String get groupSearchLoadError => 'Não foi possível carregar os grupos.';
+
+  @override
+  String get groupSearchLoadMoreError =>
+      'Não foi possível carregar mais grupos.';
+
+  @override
+  String get groupSearchEmpty => 'Ainda não há grupos na sua cidade.';
+
+  @override
+  String get groupSearchEmptyFiltered =>
+      'Nenhum grupo encontrado. Tente outra busca ou mude os filtros.';
+
+  @override
+  String get groupSearchEnd => 'Você chegou ao fim da lista.';
+
+  @override
+  String get groupSearchSeeDetails => 'Ver detalhes';
+
+  @override
+  String groupSearchSeeDetailsSemantic(int number) {
+    return 'Ver detalhes do Grupo $number';
+  }
+
+  @override
+  String groupJoinRequestsAccess(int count) {
+    return 'Pedidos de entrada ($count)';
+  }
+
+  @override
+  String get groupJoinRequestsTitle => 'Pedidos de entrada';
+
+  @override
+  String get groupJoinRequestsLoading => 'Carregando pedidos de entrada';
+
+  @override
+  String get groupJoinRequestsEmpty => 'Nenhum pedido de entrada';
+
+  @override
+  String get groupJoinRequestsLoadError =>
+      'Não foi possível carregar os pedidos de entrada.';
+
+  @override
+  String get groupJoinRequestsNotCoordinator =>
+      'Só a coordenação do grupo pode ver os pedidos de entrada.';
+
+  @override
+  String get groupJoinRequestsGroupUnavailable =>
+      'Este grupo não está disponível.';
+
+  @override
+  String groupJoinRequestsRequestedAt(DateTime date, DateTime time) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return 'Pedido em $dateString às $timeString';
+  }
+
+  @override
+  String get groupJoinRequestsApprove => 'Aceitar';
+
+  @override
+  String get groupJoinRequestsReject => 'Recusar';
+
+  @override
+  String get groupJoinRequestsApproveDialogTitle => 'Aceitar pedido?';
+
+  @override
+  String groupJoinRequestsApproveDialogMessage(String name) {
+    return '$name vai passar a fazer parte do grupo.';
+  }
+
+  @override
+  String get groupJoinRequestsRejectDialogTitle => 'Recusar pedido?';
+
+  @override
+  String groupJoinRequestsRejectDialogMessage(String name) {
+    return '$name não vai entrar no grupo agora, mas poderá pedir de novo.';
+  }
+
+  @override
+  String get groupJoinRequestsDialogCancel => 'Cancelar';
+
+  @override
+  String get groupJoinRequestsApproved =>
+      'Pedido aceito! A leitora já faz parte do grupo.';
+
+  @override
+  String get groupJoinRequestsRejected => 'Pedido recusado.';
+
+  @override
+  String get groupJoinRequestsAlreadyReviewed =>
+      'Este pedido já foi respondido.';
+
+  @override
+  String get groupJoinRequestsNotFound =>
+      'Este pedido não está mais disponível.';
+
+  @override
+  String get groupJoinRequestsNoLongerValid =>
+      'Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.';
+
+  @override
+  String get groupJoinRequestsReviewError =>
+      'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String groupJoinRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de $name';
+  }
+
+  @override
+  String groupJoinRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de $name';
+  }
 
   @override
   String profileBooksReadCount(int count) {

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
+import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 
@@ -44,8 +46,9 @@ class NotificationNavigationService {
     NotificationRepository repository,
     Map<String, dynamic> data,
   ) {
-    final notificationId =
-        (data['notification_id'] ?? data['id'])?.toString().trim();
+    final notificationId = (data['notification_id'] ?? data['id'])
+        ?.toString()
+        .trim();
     if (notificationId != null && notificationId.isNotEmpty) {
       unawaited(repository.markAsRead(notificationId));
     }
@@ -72,6 +75,19 @@ class NotificationNavigationService {
           queryParameters: {'meeting_id': meetingId.trim()},
         ).toString();
       }
+    }
+
+    // Recusada, a leitora não é membro: o detalhe de membro recusaria.
+    if (data['type'] == 'GROUP_JOIN_REJECTED' &&
+        groupId != null &&
+        groupId.trim().isNotEmpty) {
+      return GroupDiscoveryRoutePaths.publicGroupFor(groupId.trim());
+    }
+
+    if (data['type'] == 'GROUP_JOIN_REQUESTED' &&
+        groupId != null &&
+        groupId.trim().isNotEmpty) {
+      return GroupJoinRequestsRoutePaths.joinRequestsFor(groupId.trim());
     }
 
     if (screen == GroupRoutePaths.groupDetails ||
