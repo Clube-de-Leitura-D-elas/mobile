@@ -136,12 +136,10 @@ class CalendarCubit extends Cubit<CalendarState> {
     _ => false,
   };
 
-  /// Relê o mês sem trocar a lista pelo carregamento. Se outra carga está em
-  /// andamento (troca de mês), ela já traz o status atual.
-  Future<void> _refresh() async {
-    if (state.status != CalendarStatus.loaded) return;
-    await _load(state.month, silent: true);
-  }
+  /// Relê o mês sem trocar a lista pelo carregamento. Uma carga em andamento
+  /// pode ter começado antes da mudança: esta a substitui, e a resposta
+  /// dela é descartada.
+  Future<void> _refresh() => _load(state.month, silent: true);
 
   CalendarMeetingEntity? _find(String meetingId) {
     for (final meeting in state.meetings) {
@@ -192,7 +190,8 @@ class CalendarCubit extends Cubit<CalendarState> {
   /// sucesso ou erro; trocar de mês limpa.
   ///
   /// [silent] mantém a lista na tela até a resposta chegar, e uma falha
-  /// mantém o que já está nela.
+  /// mantém o que já está nela; sem lista na tela (a carga que ela
+  /// substituiu), a falha aparece como em qualquer carga.
   Future<void> _load(CalendarMonth month, {bool silent = false}) async {
     final request = ++_latestRequest;
     final loadVersion = _participationVersion;
@@ -218,7 +217,7 @@ class CalendarCubit extends Cubit<CalendarState> {
     if (isClosed || request != _latestRequest) return;
 
     switch (result) {
-      case Failure() when silent:
+      case Failure() when silent && state.status == CalendarStatus.loaded:
         return;
       case Failure(:final failure):
         emit(
