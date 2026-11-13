@@ -130,7 +130,7 @@ class NotificationNavigationService {
     } else {
       final context = navigatorKey.currentContext;
       if (context != null) {
-        GoRouter.of(context).push(route);
+        openNotificationRoute(GoRouter.of(context), route);
       } else {
         pendingRoute = route;
       }
@@ -142,5 +142,15 @@ class NotificationNavigationService {
     final route = pendingRoute;
     pendingRoute = null;
     return route;
+  }
+}
+
+/// Aba (como o calendário) é trocada com `go`, como faz a barra inferior;
+/// `push` empilharia uma segunda instância dela. O resto é empilhado.
+void openNotificationRoute(GoRouter router, String route) {
+  if (QuickAccessRoutes.isTabPath(route)) {
+    router.go(route);
+  } else {
+    unawaited(router.push<Object?>(route));
   }
 }

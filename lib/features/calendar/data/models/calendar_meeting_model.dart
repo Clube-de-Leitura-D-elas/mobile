@@ -15,6 +15,7 @@ class CalendarMeetingModel {
   final String? hostName;
   final CalendarGroupModel group;
   final CalendarGuestStatus? guestStatus;
+  final bool canRequestParticipation;
 
   const CalendarMeetingModel({
     required this.id,
@@ -27,6 +28,7 @@ class CalendarMeetingModel {
     this.neighborhood,
     this.hostName,
     this.guestStatus,
+    this.canRequestParticipation = false,
   });
 
   factory CalendarMeetingModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,8 @@ class CalendarMeetingModel {
       hostName: json['host_name'] as String?,
       group: CalendarGroupModel.fromJson(json['group'] as Map<String, dynamic>),
       guestStatus: _parseGuestStatus(json['guest_status']),
+      // Ausente (backend antigo) não oferece o pedido.
+      canRequestParticipation: json['can_request_participation'] == true,
     );
   }
 
@@ -104,6 +108,7 @@ class CalendarMeetingModel {
       hostName: hostName,
       group: group.toDomain(),
       guestStatus: guestStatus,
+      canRequestParticipation: canRequestParticipation,
     );
   }
 }

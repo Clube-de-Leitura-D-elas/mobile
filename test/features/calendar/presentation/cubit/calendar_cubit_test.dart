@@ -334,8 +334,9 @@ void main() {
       day: DateTime(2026, 8, 20),
       groupNumber: 9,
       membership: CalendarMembershipStatus.none,
+      canRequestParticipation: true,
     );
-    final requested = guest.copyWithGuestStatus(CalendarGuestStatus.requested);
+    final requested = guest.asRequested();
     final loaded = CalendarState(
       month: august,
       today: today,
@@ -343,6 +344,15 @@ void main() {
       meetings: [past, guest],
       upcoming: [guest],
       past: [past],
+    );
+
+    final rejectedGuest = calendarMeeting(
+      'guest',
+      day: DateTime(2026, 8, 20),
+      groupNumber: 9,
+      membership: CalendarMembershipStatus.none,
+      guestStatus: CalendarGuestStatus.rejected,
+      canRequestParticipation: true,
     );
 
     void stubRequest(Result<void, CalendarFailure> result) {
@@ -392,25 +402,31 @@ void main() {
     });
 
     blocTest<CalendarCubit, CalendarState>(
-      'ignores a member meeting, a past one and one already requested',
+      'ignores a meeting the backend blocks, one already requested and one '
+      'that already started',
       build: buildCubit,
       seed: () => loaded.copyWith(
         meetings: [
           past,
-          upcoming,
+          // Sem vínculo visível, mas o backend não deixa (ex.: ex-membro).
+          calendarMeeting(
+            'blocked',
+            day: DateTime(2026, 8, 20),
+            membership: CalendarMembershipStatus.none,
+          ),
           requested,
           calendarMeeting(
             'old',
             day: DateTime(2026, 8, 10),
             membership: CalendarMembershipStatus.none,
+            canRequestParticipation: true,
           ),
         ],
       ),
       act: (cubit) async {
-        await cubit.requestParticipation('upcoming');
+        await cubit.requestParticipation('blocked');
         await cubit.requestParticipation('guest');
         await cubit.requestParticipation('old');
-        await cubit.requestParticipation('missing');
       },
       expect: () => <CalendarState>[],
       verify: (_) {
@@ -423,11 +439,8 @@ void main() {
       setUp: () => stubRequest(const Success(null)),
       build: buildCubit,
       seed: () => loaded.copyWith(
-        meetings: [
-          past,
-          guest.copyWithGuestStatus(CalendarGuestStatus.rejected),
-        ],
-        upcoming: [guest.copyWithGuestStatus(CalendarGuestStatus.rejected)],
+        meetings: [past, rejectedGuest],
+        upcoming: [rejectedGuest],
       ),
       act: (cubit) => cubit.requestParticipation('guest'),
       verify: (cubit) {
@@ -535,9 +548,12 @@ void main() {
       addTearDown(cubit.close);
 
       final reload = cubit.load();
-      // Durante a carga a lista some; o pedido vem do card ainda na tela.
-      cubit.emit(loaded.copyWith());
+      // A lista some durante a carga, mas a leitora já confirmou no modal:
+      // o pedido segue mesmo sem o encontro na lista.
+      expect(cubit.state.meetings, isEmpty);
       await cubit.requestParticipation('guest');
+      verify(() => repository.requestParticipation('guest')).called(1);
+      expect(cubit.state.participationRequested, isTrue);
       staleMonth.complete(Success([past, guest]));
       await reload;
 
@@ -570,5 +586,72 @@ void main() {
         expect(cubit.state.requestingIds, {'guest'});
       },
     );
+
+    test('a stale answer while another month loads skips the reload and '
+        'frees the card', () async {
+      final answer = Completer<Result<void, CalendarFailure>>();
+      when(
+        () => repository.requestParticipation(any()),
+      ).thenAnswer((_) => answer.future);
+      final september =
+          Completer<Result<List<CalendarMeetingEntity>, CalendarFailure>>();
+      when(
+        () => repository.getMeetings(
+          from: const CalendarMonth(2026, 9).firstVisibleDay,
+          to: const CalendarMonth(2026, 9).lastVisibleDay,
+        ),
+      ).thenAnswer((_) => september.future);
+      final cubit = buildCubit()..emit(loaded);
+      addTearDown(cubit.close);
+
+      final request = cubit.requestParticipation('guest');
+      final navigation = cubit.showNextMonth();
+      expect(cubit.state.status, CalendarStatus.loading);
+      answer.complete(const Failure(CalendarGuestAlreadyRequestedFailure()));
+      await request;
+
+      expect(cubit.state.requestingIds, isEmpty);
+      expect(
+        cubit.state.participationFailure,
+        const CalendarGuestAlreadyRequestedFailure(),
+      );
+      verifyNever(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+        ),
+      );
+      september.complete(const Success([]));
+      await navigation;
+      expect(cubit.state.month, const CalendarMonth(2026, 9));
+    });
+
+    test('a month change during the silent reload drops its answer and '
+        'frees the card', () async {
+      stubRequest(const Failure(CalendarGuestAlreadyRequestedFailure()));
+      final refresh =
+          Completer<Result<List<CalendarMeetingEntity>, CalendarFailure>>();
+      when(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+        ),
+      ).thenAnswer((_) => refresh.future);
+      stubMonth(september, const Success([]));
+      final cubit = buildCubit()..emit(loaded);
+      addTearDown(cubit.close);
+
+      final request = cubit.requestParticipation('guest');
+      await Future<void>.delayed(Duration.zero);
+      expect(cubit.state.requestingIds, {'guest'});
+      await cubit.showNextMonth();
+      refresh.complete(Success([past, requested]));
+      await request;
+
+      expect(cubit.state.month, september);
+      expect(cubit.state.status, CalendarStatus.loaded);
+      expect(cubit.state.meetings, isEmpty);
+      expect(cubit.state.requestingIds, isEmpty);
+    });
   });
 }

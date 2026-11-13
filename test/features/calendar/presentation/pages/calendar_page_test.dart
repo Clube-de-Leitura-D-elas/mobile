@@ -24,6 +24,7 @@ import 'package:mobile/features/calendar/presentation/widgets/calendar_list_skel
 import 'package:mobile/features/calendar/presentation/widgets/calendar_meeting_tile.dart';
 import 'package:mobile/features/calendar/presentation/widgets/calendar_month_grid.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
+import 'package:mobile/features/group_discovery/presentation/widgets/membership_status_indicator.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -549,6 +550,8 @@ void main() {
       CalendarGuestStatus? guestStatus,
       DateTime? day,
       CalendarMeetingStatus status = CalendarMeetingStatus.scheduled,
+      // Como o backend: sem pedido ou recusado (fora das 24 h) pode pedir.
+      bool? canRequest,
     }) => calendarMeeting(
       'guest',
       day: day ?? DateTime(2026, 8, 20),
@@ -560,6 +563,9 @@ void main() {
       neighborhood: 'Moinhos',
       hostName: 'Ana',
       guestStatus: guestStatus,
+      canRequestParticipation:
+          canRequest ??
+          (guestStatus == null || guestStatus == CalendarGuestStatus.rejected),
     );
 
     Finder inTile(Finder matching) =>
@@ -648,6 +654,50 @@ void main() {
       expect(inTile(find.byType(AppButton)), findsNothing);
     });
 
+    testWidgets('confirmed participation stays on a meeting in progress or '
+        'already over', (tester) async {
+      await pumpWith(tester, [
+        calendarMeeting(
+          'in-progress',
+          day: DateTime(2026, 8, 21),
+          status: CalendarMeetingStatus.inProgress,
+          membership: CalendarMembershipStatus.none,
+          guestStatus: CalendarGuestStatus.accepted,
+        ),
+        calendarMeeting(
+          'over',
+          day: DateTime(2026, 8, 11),
+          status: CalendarMeetingStatus.concluded,
+          membership: CalendarMembershipStatus.none,
+          guestStatus: CalendarGuestStatus.accepted,
+        ),
+      ]);
+
+      for (final id in ['in-progress', 'over']) {
+        expect(
+          find.descendant(
+            of: tileOf(id),
+            matching: find.text('Participação confirmada'),
+          ),
+          findsOneWidget,
+          reason: id,
+        );
+      }
+    });
+
+    testWidgets('a guest rejected less than 24 hours ago sees the refusal '
+        'without asking again', (tester) async {
+      await pumpWith(tester, [
+        guestMeeting(
+          guestStatus: CalendarGuestStatus.rejected,
+          canRequest: false,
+        ),
+      ]);
+
+      expect(inTile(find.text('Pedido recusado')), findsOneWidget);
+      expect(inTile(find.byType(AppButton)), findsNothing);
+    });
+
     testWidgets('a rejected guest can ask again', (tester) async {
       when(
         () => repository.requestParticipation('guest'),
@@ -667,20 +717,28 @@ void main() {
       expect(inTile(find.text('Aguardando aprovação')), findsOneWidget);
     });
 
-    testWidgets('hides the request on a past, started or unknown-status '
-        'meeting, and from a reader with a join request', (tester) async {
+    testWidgets('hides the request and stale statuses when the backend '
+        'blocks it or the meeting is no longer open', (tester) async {
       await pumpWith(tester, [
+        // Ex-membro (vínculo INACTIVE chega como null) ou convidada antiga.
         calendarMeeting(
-          'join-requested',
+          'blocked',
           day: DateTime(2026, 8, 23),
-          membership: CalendarMembershipStatus.requested,
+          membership: CalendarMembershipStatus.none,
         ),
         guestMeeting(day: DateTime(2026, 8, 10)),
+        calendarMeeting(
+          'past-requested',
+          day: DateTime(2026, 8, 12),
+          membership: CalendarMembershipStatus.none,
+          guestStatus: CalendarGuestStatus.requested,
+        ),
         calendarMeeting(
           'in-progress',
           day: DateTime(2026, 8, 21),
           status: CalendarMeetingStatus.inProgress,
           membership: CalendarMembershipStatus.none,
+          guestStatus: CalendarGuestStatus.rejected,
         ),
         calendarMeeting(
           'unknown',
@@ -688,17 +746,11 @@ void main() {
           membership: CalendarMembershipStatus.none,
           guestStatus: CalendarGuestStatus.unknown,
         ),
-        calendarMeeting(
-          'past-accepted',
-          day: DateTime(2026, 8, 11),
-          membership: CalendarMembershipStatus.none,
-          guestStatus: CalendarGuestStatus.accepted,
-        ),
       ]);
 
       expect(find.byType(CalendarMeetingTile), findsNWidgets(5));
-      expect(find.text('Solicitar participação'), findsNothing);
-      expect(find.text('Participação confirmada'), findsNothing);
+      expect(find.byType(AppButton), findsNothing);
+      expect(find.byType(MembershipStatusIndicator), findsNothing);
     });
 
     testWidgets('asks for confirmation; cancelling sends nothing', (
@@ -760,7 +812,7 @@ void main() {
       const CalendarForbiddenFailure():
           'Você não tem permissão para fazer isso.',
       const CalendarGuestRecentlyRejectedFailure():
-          'Você poderá pedir de novo amanhã.',
+          'Você poderá pedir de novo 24 horas depois da recusa.',
       const CalendarMeetingNoReviewerFailure():
           'Este encontro ainda não tem quem analise pedidos.',
       const CalendarGuestRequestFailure():

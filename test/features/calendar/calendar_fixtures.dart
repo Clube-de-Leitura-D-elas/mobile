@@ -23,6 +23,7 @@ CalendarMeetingEntity calendarMeeting(
   String? neighborhood,
   String? hostName,
   CalendarGuestStatus? guestStatus,
+  bool canRequestParticipation = false,
 }) {
   // Convidada aceita recebe local e anfitriã como membro.
   final isMember =
@@ -37,6 +38,7 @@ CalendarMeetingEntity calendarMeeting(
     neighborhood: neighborhood,
     hostName: isMember ? hostName : null,
     guestStatus: guestStatus,
+    canRequestParticipation: canRequestParticipation,
     group: CalendarGroupEntity(
       id: 'group-$id',
       number: groupNumber,

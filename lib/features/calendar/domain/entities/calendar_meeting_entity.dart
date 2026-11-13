@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_group_entity.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_guest_status.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_status.dart';
-import 'package:mobile/features/calendar/domain/entities/calendar_membership_status.dart';
 
 class CalendarMeetingEntity extends Equatable {
   final String id;
@@ -25,6 +24,10 @@ class CalendarMeetingEntity extends Equatable {
   /// Pedido de participação da leitora; sempre `null` para membro.
   final CalendarGuestStatus? guestStatus;
 
+  /// Vem do backend: o card oferece "Solicitar participação" (ou "Pedir
+  /// novamente") só quando é `true`.
+  final bool canRequestParticipation;
+
   const CalendarMeetingEntity({
     required this.id,
     required this.date,
@@ -36,6 +39,7 @@ class CalendarMeetingEntity extends Equatable {
     this.neighborhood,
     this.hostName,
     this.guestStatus,
+    this.canRequestParticipation = false,
   });
 
   /// Nome do local para membro; para não-membro o backend só manda o bairro.
@@ -53,20 +57,19 @@ class CalendarMeetingEntity extends Equatable {
   bool isUpcomingAt(DateTime now) =>
       status == CalendarMeetingStatus.inProgress || !date.isBefore(now);
 
-  /// Encontro agendado e futuro de grupo com o qual a leitora não tem
-  /// vínculo: o card mostra o pedido de participação. O backend recusa quem
-  /// tem qualquer vínculo ou pedido de entrada no grupo, e encontro em
-  /// andamento (diferente de [isUpcomingAt]).
-  bool acceptsGuestRequestAt(DateTime now) =>
-      group.membershipStatus == CalendarMembershipStatus.none &&
-      status == CalendarMeetingStatus.scheduled &&
-      date.isAfter(now);
+  /// Agendado e ainda não começou: só nele um pedido pendente ou recusado
+  /// faz sentido no card.
+  bool isOpenAt(DateTime now) =>
+      status == CalendarMeetingStatus.scheduled && date.isAfter(now);
 
+  /// O backend decide quem pode pedir (vínculo com o grupo, presença já
+  /// registrada, recusa recente); o horário é conferido de novo porque o
+  /// encontro pode começar com a tela aberta.
   bool canRequestParticipationAt(DateTime now) =>
-      acceptsGuestRequestAt(now) &&
-      (guestStatus == null || guestStatus == CalendarGuestStatus.rejected);
+      canRequestParticipation && isOpenAt(now);
 
-  CalendarMeetingEntity copyWithGuestStatus(CalendarGuestStatus guestStatus) {
+  /// Depois de um pedido aceito: aguardando, sem nova ação.
+  CalendarMeetingEntity asRequested() {
     return CalendarMeetingEntity(
       id: id,
       date: date,
@@ -77,7 +80,7 @@ class CalendarMeetingEntity extends Equatable {
       locationAddress: locationAddress,
       neighborhood: neighborhood,
       hostName: hostName,
-      guestStatus: guestStatus,
+      guestStatus: CalendarGuestStatus.requested,
     );
   }
 
@@ -93,5 +96,6 @@ class CalendarMeetingEntity extends Equatable {
     hostName,
     group,
     guestStatus,
+    canRequestParticipation,
   ];
 }

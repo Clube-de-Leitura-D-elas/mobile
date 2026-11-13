@@ -25,7 +25,8 @@ void showMeetingParticipationFeedback(
     type:
         failure is CalendarGuestAlreadyRequestedFailure ||
             failure is CalendarGuestAlreadyMemberFailure ||
-            failure is CalendarGuestRecentlyRejectedFailure
+            failure is CalendarGuestRecentlyRejectedFailure ||
+            failure is CalendarMeetingNoReviewerFailure
         ? AppToastType.info
         : AppToastType.error,
   );

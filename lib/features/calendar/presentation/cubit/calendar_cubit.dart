@@ -62,9 +62,10 @@ class CalendarCubit extends Cubit<CalendarState> {
 
   Future<void> requestParticipation(String meetingId) async {
     if (isClosed) return;
+    // Fora da lista (recarga em andamento) o pedido segue: a leitora já
+    // confirmou e o backend valida tudo de novo.
     final meeting = _find(meetingId);
-    if (meeting == null ||
-        !meeting.canRequestParticipationAt(_now()) ||
+    if ((meeting != null && !meeting.canRequestParticipationAt(_now())) ||
         state.requestingIds.contains(meetingId)) {
       return;
     }
@@ -84,7 +85,7 @@ class CalendarCubit extends Cubit<CalendarState> {
       case Success():
         _requestedAtVersion[meetingId] = ++_participationVersion;
         emit(
-          _withGuestStatus(meetingId, CalendarGuestStatus.requested).copyWith(
+          _asRequested(meetingId).copyWith(
             requestingIds: _without(meetingId),
             participationRequested: true,
           ),
@@ -139,10 +140,10 @@ class CalendarCubit extends Cubit<CalendarState> {
     return null;
   }
 
-  CalendarState _withGuestStatus(String meetingId, CalendarGuestStatus status) {
+  CalendarState _asRequested(String meetingId) {
     List<CalendarMeetingEntity> update(List<CalendarMeetingEntity> list) => [
       for (final meeting in list)
-        meeting.id == meetingId ? meeting.copyWithGuestStatus(status) : meeting,
+        meeting.id == meetingId ? meeting.asRequested() : meeting,
     ];
     return state.copyWith(
       meetings: update(state.meetings),
@@ -163,8 +164,11 @@ class CalendarCubit extends Cubit<CalendarState> {
   ) {
     final requestedAt = _requestedAtVersion[meeting.id];
     if (requestedAt == null || requestedAt <= loadVersion) return meeting;
-    if (!meeting.canRequestParticipationAt(_now())) return meeting;
-    return meeting.copyWithGuestStatus(CalendarGuestStatus.requested);
+    final status = meeting.guestStatus;
+    if (status != null && status != CalendarGuestStatus.rejected) {
+      return meeting;
+    }
+    return meeting.asRequested();
   }
 
   /// O dia selecionado sobrevive à recarga do mesmo mês (inclusive ao

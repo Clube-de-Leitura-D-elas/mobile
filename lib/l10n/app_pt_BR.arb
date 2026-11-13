@@ -355,7 +355,7 @@
   "calendarGuestRequestSuccess": "Pedido enviado! Agora é só aguardar a aprovação.",
   "calendarGuestAlreadyRequested": "Você já pediu para participar deste encontro.",
   "calendarGuestAlreadyMember": "Você já tem um vínculo ou pedido com este grupo.",
-  "calendarGuestRecentlyRejected": "Você poderá pedir de novo amanhã.",
+  "calendarGuestRecentlyRejected": "Você poderá pedir de novo 24 horas depois da recusa.",
   "calendarGuestMeetingNotOpen": "Este encontro não está mais aberto a pedidos.",
   "calendarGuestNoReviewer": "Este encontro ainda não tem quem analise pedidos.",
   "calendarGuestMeetingUnavailable": "Este encontro não está disponível para você.",

@@ -190,6 +190,19 @@ void main() {
       });
     }
 
+    test('reads can_request_participation; a missing field does not offer '
+        'the request', () {
+      bool canRequest(Object? value) => CalendarMeetingModel.fromJson({
+        ..._nonMemberJson(),
+        'can_request_participation': ?value,
+      }).toDomain().canRequestParticipation;
+
+      expect(canRequest(true), isTrue);
+      expect(canRequest(false), isFalse);
+      expect(canRequest(null), isFalse);
+      expect(canRequest('true'), isFalse);
+    });
+
     test('reads the meetings list of the response body', () {
       final models = CalendarMeetingModel.listFromJson({
         'meetings': [_memberJson(), _nonMemberJson()],

@@ -48,9 +48,16 @@ class CalendarMeetingTile extends StatelessWidget {
     final host = hostName == null ? null : l10n.calendarMeetingHost(hostName);
     final draft = meeting.isDraft ? l10n.calendarMeetingDraftTag : null;
 
-    final guestStatus = meeting.acceptsGuestRequestAt(now)
-        ? meeting.guestStatus
-        : CalendarGuestStatus.unknown;
+    // Aceita vale até depois do encontro; pendente e recusado só enquanto
+    // ele está aberto.
+    final shownStatus = switch (meeting.guestStatus) {
+      CalendarGuestStatus.accepted => CalendarGuestStatus.accepted,
+      final status?
+          when status != CalendarGuestStatus.unknown && meeting.isOpenAt(now) =>
+        status,
+      _ => null,
+    };
+    final canRequest = meeting.canRequestParticipationAt(now);
 
     final info = Row(
       children: [
@@ -103,10 +110,11 @@ class CalendarMeetingTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ExcludeSemantics(child: info),
-            if (guestStatus != CalendarGuestStatus.unknown) ...[
+            if (shownStatus != null || canRequest) ...[
               SizedBox(height: spacing.s12),
               _GuestParticipation(
-                status: guestStatus,
+                status: shownStatus,
+                canRequest: canRequest,
                 isRequesting: isRequesting,
                 onRequest: onRequestParticipation,
               ),
@@ -120,13 +128,15 @@ class CalendarMeetingTile extends StatelessWidget {
 
 /// Pedido de participação num encontro de outro grupo: situação e ação.
 class _GuestParticipation extends StatelessWidget {
-  /// `null` é encontro sem pedido.
+  /// Situação a mostrar; `null` não mostra nenhuma.
   final CalendarGuestStatus? status;
+  final bool canRequest;
   final bool isRequesting;
   final VoidCallback onRequest;
 
   const _GuestParticipation({
     required this.status,
+    required this.canRequest,
     required this.isRequesting,
     required this.onRequest,
   });
@@ -153,11 +163,11 @@ class _GuestParticipation extends StatelessWidget {
       null || CalendarGuestStatus.unknown => (null, colors.textMuted),
     };
 
-    final String? actionLabel = switch (status) {
-      null => l10n.calendarGuestRequest,
-      CalendarGuestStatus.rejected => l10n.calendarGuestRequestAgain,
-      _ => null,
-    };
+    final String? actionLabel = !canRequest
+        ? null
+        : status == CalendarGuestStatus.rejected
+        ? l10n.calendarGuestRequestAgain
+        : l10n.calendarGuestRequest;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -165,7 +175,7 @@ class _GuestParticipation extends StatelessWidget {
       children: [
         if (label != null)
           MembershipStatusIndicator(label: label, color: color),
-        if (label != null && actionLabel != null) SizedBox(height: spacing.s12),
+        if (label != null && actionLabel != null) SizedBox(height: spacing.s16),
         if (actionLabel != null)
           // Com o botão ocupado o toque cairia no card e abriria o grupo.
           GestureDetector(

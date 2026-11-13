@@ -2195,7 +2195,7 @@
   "@calendarGuestAlreadyMember": {
     "description": "Aviso quando a leitora pede participação num encontro de um grupo com o qual já tem vínculo ou pedido de entrada."
   },
-  "calendarGuestRecentlyRejected": "Você poderá pedir de novo amanhã.",
+  "calendarGuestRecentlyRejected": "Você poderá pedir de novo 24 horas depois da recusa.",
   "@calendarGuestRecentlyRejected": {
     "description": "Aviso quando a leitora pede de novo menos de 24 horas depois de ter o pedido de participação recusado."
   },

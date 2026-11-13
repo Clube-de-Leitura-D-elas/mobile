@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
@@ -97,6 +99,27 @@ void main() {
       });
     }
 
+    // Mesma convenção dos GROUP_JOIN_*: `route` explícita do emissor vence
+    // tudo; o tipo vence `screen` e `meeting_id`, porque a convidada não
+    // abre o detalhe de membro.
+    test('an explicit route wins over a MEETING_GUEST_* type', () {
+      final route = NotificationNavigationService.parseRouteFromData({
+        'type': 'MEETING_GUEST_APPROVED',
+        'route': '/group-details?group_id=g1',
+        'meeting_id': 'meeting-789',
+      });
+      expect(route, '/group-details?group_id=g1');
+    });
+
+    test('a MEETING_GUEST_* type wins over a meeting details screen', () {
+      final route = NotificationNavigationService.parseRouteFromData({
+        'type': 'MEETING_GUEST_REJECTED',
+        'screen': 'meeting-details',
+        'meeting_id': 'meeting-789',
+      });
+      expect(route, QuickAccessRoutes.calendar);
+    });
+
     test('returns null when data is empty or invalid', () {
       final route = NotificationNavigationService.parseRouteFromData({});
       expect(route, isNull);
@@ -150,5 +173,41 @@ void main() {
         verify(() => repository.markAsRead('notif-1')).called(1);
       },
     );
+  });
+
+  group('openNotificationRoute', () {
+    Future<GoRouter> pumpRouter(WidgetTester tester) async {
+      final router = GoRouter(
+        initialLocation: '/start',
+        routes: [
+          for (final path in ['/start', QuickAccessRoutes.calendar, '/other'])
+            GoRoute(path: path, builder: (_, _) => Text('page $path')),
+        ],
+      );
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      return router;
+    }
+
+    testWidgets('switches to a tab instead of stacking a second one', (
+      tester,
+    ) async {
+      final router = await pumpRouter(tester);
+
+      openNotificationRoute(router, QuickAccessRoutes.calendar);
+      await tester.pumpAndSettle();
+
+      expect(find.text('page ${QuickAccessRoutes.calendar}'), findsOneWidget);
+      expect(router.canPop(), isFalse);
+    });
+
+    testWidgets('stacks any other destination', (tester) async {
+      final router = await pumpRouter(tester);
+
+      openNotificationRoute(router, '/other');
+      await tester.pumpAndSettle();
+
+      expect(find.text('page /other'), findsOneWidget);
+      expect(router.canPop(), isTrue);
+    });
   });
 }

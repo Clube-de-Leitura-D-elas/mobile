@@ -10,108 +10,70 @@ void main() {
   final now = DateTime.utc(2026, 8, 14, 15);
 
   group('guest participation', () {
-    test('a scheduled future meeting of another group accepts a request', () {
-      final meeting = calendarMeeting(
+    test('follows can_request_participation from the backend', () {
+      final allowed = calendarMeeting(
+        'm',
+        day: DateTime(2026, 8, 20),
+        membership: CalendarMembershipStatus.none,
+        canRequestParticipation: true,
+      );
+      final blocked = calendarMeeting(
         'm',
         day: DateTime(2026, 8, 20),
         membership: CalendarMembershipStatus.none,
       );
 
-      expect(meeting.acceptsGuestRequestAt(now), isTrue);
-      expect(meeting.canRequestParticipationAt(now), isTrue);
+      expect(allowed.canRequestParticipationAt(now), isTrue);
+      expect(blocked.canRequestParticipationAt(now), isFalse);
     });
 
-    for (final membership in [
-      CalendarMembershipStatus.member,
-      CalendarMembershipStatus.requested,
-      CalendarMembershipStatus.rejected,
-      CalendarMembershipStatus.pending,
-    ]) {
-      test('a reader with a ${membership.name} link to the group never sees '
-          'the guest request', () {
-        final meeting = calendarMeeting(
-          'm',
-          day: DateTime(2026, 8, 20),
-          membership: membership,
-        );
-
-        expect(meeting.acceptsGuestRequestAt(now), isFalse);
-        expect(meeting.canRequestParticipationAt(now), isFalse);
-      });
-    }
-
-    test('a past, started or not scheduled meeting does not accept it', () {
-      final past = calendarMeeting(
-        'past',
+    test('a meeting that started or closed since the load no longer takes '
+        'requests, even when the backend allowed it', () {
+      final started = calendarMeeting(
+        'started',
         day: DateTime(2026, 8, 14),
         hour: 11,
-        membership: CalendarMembershipStatus.none,
+        canRequestParticipation: true,
       );
       final rightNow = calendarMeeting(
         'now',
         day: DateTime(2026, 8, 14),
         hour: 12,
-        membership: CalendarMembershipStatus.none,
+        canRequestParticipation: true,
       );
       final inProgress = calendarMeeting(
         'in-progress',
         day: DateTime(2026, 8, 20),
         status: CalendarMeetingStatus.inProgress,
-        membership: CalendarMembershipStatus.none,
-      );
-      final ended = calendarMeeting(
-        'ended',
-        day: DateTime(2026, 8, 20),
-        status: CalendarMeetingStatus.ended,
-        membership: CalendarMembershipStatus.none,
+        canRequestParticipation: true,
       );
 
-      for (final meeting in [past, rightNow, inProgress, ended]) {
-        expect(meeting.acceptsGuestRequestAt(now), isFalse, reason: meeting.id);
-      }
-    });
-
-    test('only "no request" and "rejected" can request again', () {
-      final expected = <CalendarGuestStatus?, bool>{
-        null: true,
-        CalendarGuestStatus.rejected: true,
-        CalendarGuestStatus.requested: false,
-        CalendarGuestStatus.accepted: false,
-        CalendarGuestStatus.unknown: false,
-      };
-      for (final MapEntry(key: status, value: canRequest) in expected.entries) {
-        final meeting = calendarMeeting(
-          'm',
-          day: DateTime(2026, 8, 20),
-          membership: CalendarMembershipStatus.none,
-          guestStatus: status,
-        );
+      for (final meeting in [started, rightNow, inProgress]) {
+        expect(meeting.isOpenAt(now), isFalse, reason: meeting.id);
         expect(
           meeting.canRequestParticipationAt(now),
-          canRequest,
-          reason: '$status',
+          isFalse,
+          reason: meeting.id,
         );
       }
     });
 
-    test('copyWithGuestStatus keeps the rest of the meeting', () {
+    test('asRequested waits for approval with no new action and keeps the '
+        'rest of the meeting', () {
       final meeting = calendarMeeting(
         'm',
         day: DateTime(2026, 8, 20),
         membership: CalendarMembershipStatus.none,
         neighborhood: 'Moinhos',
+        guestStatus: CalendarGuestStatus.rejected,
+        canRequestParticipation: true,
       );
 
-      final updated = meeting.copyWithGuestStatus(
-        CalendarGuestStatus.requested,
-      );
+      final updated = meeting.asRequested();
 
       expect(updated.guestStatus, CalendarGuestStatus.requested);
-      expect(updated, isNot(meeting), reason: 'guestStatus entra na igualdade');
-      expect(
-        updated.copyWithGuestStatus(CalendarGuestStatus.requested),
-        updated,
-      );
+      expect(updated.canRequestParticipationAt(now), isFalse);
+      expect(updated, isNot(meeting));
       expect(updated.neighborhood, 'Moinhos');
       expect(updated.group, meeting.group);
       expect(updated.date, meeting.date);

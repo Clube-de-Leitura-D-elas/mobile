@@ -2801,7 +2801,7 @@ abstract class AppLocalizations {
   /// Aviso quando a leitora pede de novo menos de 24 horas depois de ter o pedido de participação recusado.
   ///
   /// In pt, this message translates to:
-  /// **'Você poderá pedir de novo amanhã.'**
+  /// **'Você poderá pedir de novo 24 horas depois da recusa.'**
   String get calendarGuestRecentlyRejected;
 
   /// Aviso quando o encontro deixou de estar agendado ou já passou.

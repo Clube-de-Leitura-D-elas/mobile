@@ -1676,7 +1676,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get calendarGuestRecentlyRejected =>
-      'Você poderá pedir de novo amanhã.';
+      'Você poderá pedir de novo 24 horas depois da recusa.';
 
   @override
   String get calendarGuestMeetingNotOpen =>
@@ -3002,7 +3002,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get calendarGuestRecentlyRejected =>
-      'Você poderá pedir de novo amanhã.';
+      'Você poderá pedir de novo 24 horas depois da recusa.';
 
   @override
   String get calendarGuestMeetingNotOpen =>
