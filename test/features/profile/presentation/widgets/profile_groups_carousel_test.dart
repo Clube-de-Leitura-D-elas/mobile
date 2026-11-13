@@ -112,6 +112,16 @@ void main() {
     await tester.pump();
     expect(moreGroups(), findsNothing);
 
+    // De novo estreita (seta na tela), depois alarga só o bastante para os 6
+    // grupos (656 px) caberem na largura toda, mas não na que sobra ao lado da
+    // seta: ela tem de sair em vez de cortar o último grupo.
+    await pumpCarousel(tester, groups: groups(6));
+    await tester.pump();
+    expect(moreGroups(), findsOneWidget);
+    await pumpCarousel(tester, groups: groups(6), width: 680);
+    await tester.pump();
+    expect(moreGroups(), findsNothing);
+
     // E volta ao estreitar.
     await pumpCarousel(tester, groups: groups(6));
     await tester.pump();

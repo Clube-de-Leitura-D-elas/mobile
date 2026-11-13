@@ -47,9 +47,19 @@ class _ProfileGroupsCarouselState extends State<ProfileGroupsCarousel> {
     return false;
   }
 
+  // 12 + 24 + 12: a largura que a seta ocupa ao lado da lista.
+  double get _arrowWidth => context.spacing.s12 * 2 + context.spacing.s24;
+
   void _updateArrow() {
     if (!mounted || !_controller.hasClients) return;
-    final canScrollForward = _controller.position.extentAfter > 0;
+    final position = _controller.position;
+    // Com a seta na tela, a lista perde a largura dela. Se os grupos cabem na
+    // largura toda do carrossel, a seta sai em vez de cortar o último grupo.
+    final fullWidth =
+        position.viewportDimension + (_canScrollForward ? _arrowWidth : 0);
+    final contentWidth = position.maxScrollExtent + position.viewportDimension;
+    final canScrollForward =
+        contentWidth > fullWidth && position.extentAfter > 0;
     if (canScrollForward != _canScrollForward) {
       setState(() => _canScrollForward = canScrollForward);
     }

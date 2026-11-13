@@ -12,15 +12,26 @@ class ProfileSummaryModel {
     required this.reviewedBooks,
   });
 
+  /// A function sempre manda os três campos, mesmo vazios. Faltar um é
+  /// resposta quebrada: vira erro na tela, não "0 livros lidos".
   factory ProfileSummaryModel.fromJson(Map<String, dynamic> json) {
+    final booksReadCount = json['books_read_count'];
+    final groups = json['groups'];
+    final reviewedBooks = json['reviewed_books'];
+    if (booksReadCount is! num ||
+        groups is! List<dynamic> ||
+        reviewedBooks is! List<dynamic>) {
+      throw const FormatException('Invalid profile summary response.');
+    }
+
     return ProfileSummaryModel(
-      booksReadCount: (json['books_read_count'] as num?)?.toInt() ?? 0,
-      groups: (json['groups'] as List<dynamic>? ?? const [])
+      booksReadCount: booksReadCount.toInt(),
+      groups: groups
           .map(
             (item) => ProfileGroupModel.fromJson(item as Map<String, dynamic>),
           )
           .toList(),
-      reviewedBooks: (json['reviewed_books'] as List<dynamic>? ?? const [])
+      reviewedBooks: reviewedBooks
           .map(
             (item) =>
                 ProfileReviewedBookModel.fromJson(item as Map<String, dynamic>),

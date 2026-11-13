@@ -54,18 +54,34 @@ void main() {
     expect(model.toDomain(), const ProfileSummaryEntity(booksReadCount: 0));
   });
 
-  test('usa padrões quando faltam campos opcionais', () {
+  test('rejeita a resposta sem algum dos campos obrigatórios', () {
+    const complete = {
+      'books_read_count': 1,
+      'groups': <dynamic>[],
+      'reviewed_books': <dynamic>[],
+    };
+    for (final missing in complete.keys) {
+      final json = Map<String, dynamic>.of(complete)..remove(missing);
+
+      expect(
+        () => ProfileSummaryModel.fromJson(json),
+        throwsFormatException,
+        reason: missing,
+      );
+    }
+  });
+
+  test('usa padrões só nos campos opcionais de cada livro', () {
     final model = ProfileSummaryModel.fromJson({
+      'books_read_count': 0,
+      'groups': <dynamic>[],
       'reviewed_books': [
         {'book_id': 'b-1'},
       ],
     });
 
-    final summary = model.toDomain();
-    expect(summary.booksReadCount, 0);
-    expect(summary.groups, isEmpty);
     expect(
-      summary.reviewedBooks.single,
+      model.toDomain().reviewedBooks.single,
       const ProfileReviewedBookEntity(bookId: 'b-1', title: '', rating: 0),
     );
   });

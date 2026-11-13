@@ -332,10 +332,11 @@ void main() {
     await tester.pumpAndSettle();
     verifyNever(() => summaryCubit.refresh());
 
-    router.push('/livro');
+    final pushed = router.push('/livro');
     await tester.pumpAndSettle();
     router.pop();
     await tester.pumpAndSettle();
+    await pushed;
 
     verify(() => summaryCubit.refresh()).called(1);
   });
