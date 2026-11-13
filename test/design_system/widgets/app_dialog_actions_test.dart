@@ -205,6 +205,34 @@ void main() {
       expect(_rectOf(tester, 'Confirmar'), const Rect.fromLTWH(0, 0, 192, 40));
     });
 
+    testWidgets('a ação recortada sai da árvore de semântica', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              width: 360,
+              height: 40,
+              child: AppDialogActions(
+                actions: [
+                  AppButton.secondary(label: 'Cancelar', onPressed: () {}),
+                  AppButton.primary(label: 'Confirmar', onPressed: () {}),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      SemanticsNode nodeOf(String label) =>
+          tester.getSemantics(find.bySemanticsLabel(RegExp(label)));
+      expect(nodeOf('Confirmar').attached, isTrue);
+      expect(nodeOf('Cancelar').attached, isFalse);
+      semantics.dispose();
+    });
+
     testWidgets('com altura menor que o conteúdo, recorta as ações', (
       tester,
     ) async {

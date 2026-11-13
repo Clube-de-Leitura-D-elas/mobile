@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../tokens/spacing_tokens.dart';
+import 'package:mobile/design_system/tokens/spacing_tokens.dart';
 
 /// Rodapé de ações de um dialog.
 ///
