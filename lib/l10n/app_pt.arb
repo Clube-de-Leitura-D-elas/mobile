@@ -2141,5 +2141,136 @@
         "type": "String"
       }
     }
+  },
+  "meetingGuestRequestsAccess": "Pedidos de participação ({count})",
+  "@meetingGuestRequestsAccess": {
+    "description": "Botão no detalhe do encontro, só para a anfitriã ou a coordenação, com a quantidade de pedidos de participação pendentes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meetingGuestRequestsTitle": "Pedidos de participação",
+  "@meetingGuestRequestsTitle": {
+    "description": "Título da tela de pedidos de participação de um encontro."
+  },
+  "meetingGuestRequestsLoading": "Carregando pedidos de participação",
+  "@meetingGuestRequestsLoading": {
+    "description": "Rótulo de acessibilidade do carregamento da lista de pedidos de participação."
+  },
+  "meetingGuestRequestsEmpty": "Nenhum pedido de participação",
+  "@meetingGuestRequestsEmpty": {
+    "description": "Lista de pedidos de participação do encontro vazia."
+  },
+  "meetingGuestRequestsLoadError": "Não foi possível carregar os pedidos de participação.",
+  "@meetingGuestRequestsLoadError": {
+    "description": "Erro genérico ao carregar os pedidos de participação."
+  },
+  "meetingGuestRequestsNotReviewer": "Só a anfitriã do encontro ou a coordenação do grupo pode ver os pedidos de participação.",
+  "@meetingGuestRequestsNotReviewer": {
+    "description": "A leitora não é a anfitriã do encontro nem coordenadora do grupo (HTTP 403)."
+  },
+  "meetingGuestRequestsMeetingUnavailable": "Este encontro não está disponível.",
+  "@meetingGuestRequestsMeetingUnavailable": {
+    "description": "Link para os pedidos de participação sem um encontro válido."
+  },
+  "meetingGuestRequestsRequestedAt": "Pedido em {date} às {time}",
+  "@meetingGuestRequestsRequestedAt": {
+    "description": "Data e hora do pedido de participação, no fuso de São Paulo.",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "time": {
+        "type": "DateTime",
+        "format": "Hm"
+      }
+    }
+  },
+  "meetingGuestRequestsApprove": "Aceitar",
+  "@meetingGuestRequestsApprove": {
+    "description": "Botão que aceita o pedido de participação no encontro."
+  },
+  "meetingGuestRequestsReject": "Recusar",
+  "@meetingGuestRequestsReject": {
+    "description": "Botão que recusa o pedido de participação no encontro."
+  },
+  "meetingGuestRequestsApproveDialogTitle": "Aceitar pedido?",
+  "@meetingGuestRequestsApproveDialogTitle": {
+    "description": "Título da confirmação de aceite do pedido de participação."
+  },
+  "meetingGuestRequestsApproveDialogMessage": "{name} vai participar deste encontro como convidada.",
+  "@meetingGuestRequestsApproveDialogMessage": {
+    "description": "Texto da confirmação de aceite do pedido de participação.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingGuestRequestsRejectDialogTitle": "Recusar pedido?",
+  "@meetingGuestRequestsRejectDialogTitle": {
+    "description": "Título da confirmação de recusa do pedido de participação."
+  },
+  "meetingGuestRequestsRejectDialogMessage": "{name} não vai participar deste encontro, mas poderá pedir de novo.",
+  "@meetingGuestRequestsRejectDialogMessage": {
+    "description": "Texto da confirmação de recusa do pedido de participação.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingGuestRequestsDialogCancel": "Cancelar",
+  "@meetingGuestRequestsDialogCancel": {
+    "description": "Botão que fecha a confirmação sem decidir o pedido de participação."
+  },
+  "meetingGuestRequestsApproved": "Pedido aceito! A leitora foi confirmada no encontro.",
+  "@meetingGuestRequestsApproved": {
+    "description": "Aviso depois de aceitar um pedido de participação."
+  },
+  "meetingGuestRequestsRejected": "Pedido recusado.",
+  "@meetingGuestRequestsRejected": {
+    "description": "Aviso depois de recusar um pedido de participação."
+  },
+  "meetingGuestRequestsAlreadyReviewed": "Este pedido já foi respondido.",
+  "@meetingGuestRequestsAlreadyReviewed": {
+    "description": "O pedido de participação já foi decidido, por exemplo pela anfitriã ou outra coordenadora (HTTP 409); ele sai da lista."
+  },
+  "meetingGuestRequestsNotFound": "Este pedido não está mais disponível.",
+  "@meetingGuestRequestsNotFound": {
+    "description": "O pedido de participação não existe mais ou a leitora deixou de poder decidi-lo (HTTP 404); ele sai da lista."
+  },
+  "meetingGuestRequestsNoLongerValid": "Este pedido não pode mais ser aceito: o encontro foi encerrado, a conta da leitora foi desativada ou ela já faz parte do grupo.",
+  "@meetingGuestRequestsNoLongerValid": {
+    "description": "Decisão recusada porque o pedido deixou de valer (HTTP 409); a lista recarrega."
+  },
+  "meetingGuestRequestsReviewError": "Não foi possível responder ao pedido. Tente novamente.",
+  "@meetingGuestRequestsReviewError": {
+    "description": "Erro genérico ao aceitar ou recusar um pedido de participação."
+  },
+  "meetingGuestRequestsApproveSemantics": "Aceitar pedido de participação de {name}",
+  "@meetingGuestRequestsApproveSemantics": {
+    "description": "Rótulo de acessibilidade do botão Aceitar de um pedido de participação.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingGuestRequestsRejectSemantics": "Recusar pedido de participação de {name}",
+  "@meetingGuestRequestsRejectSemantics": {
+    "description": "Rótulo de acessibilidade do botão Recusar de um pedido de participação.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "meetingAttendanceGuestTag": "Convidada",
+  "@meetingAttendanceGuestTag": {
+    "description": "Tag na lista de presença do encontro para a leitora de fora do grupo que teve o pedido de participação aceito."
   }
 }

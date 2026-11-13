@@ -60,6 +60,33 @@ void main() {
       expect(entity.presenceStatus, isNull);
     });
 
+    test('lê is_guest da convidada aceita', () {
+      final model = MeetingAttendanceModel.fromJson({
+        'id': 'guest-1',
+        'name': 'Clara Dias',
+        'invitation_status': 'CONFIRMED',
+        'presence_status': null,
+        'is_guest': true,
+      });
+
+      expect(model.isGuest, isTrue);
+      expect(model.toDomain().isGuest, isTrue);
+    });
+
+    test('is_guest false ou ausente é membro do grupo', () {
+      expect(
+        MeetingAttendanceModel.fromJson({
+          'id': 'user-1',
+          'is_guest': false,
+        }).toDomain().isGuest,
+        isFalse,
+      );
+      expect(
+        MeetingAttendanceModel.fromJson({'id': 'user-1'}).toDomain().isGuest,
+        isFalse,
+      );
+    });
+
     test('prioriza os campos principais sobre os alternativos', () {
       final model = MeetingAttendanceModel.fromJson({
         'id': 'primary-id',

@@ -50,7 +50,21 @@ void main() {
         'https://example.com/photo.jpg',
         MeetingInvitationStatus.confirmed,
         MeetingPresenceStatus.present,
+        false,
       ]);
+    });
+
+    test('convidada e membro com os mesmos dados são diferentes', () {
+      const guest = MeetingAttendanceEntity(
+        id: 'user-1',
+        name: 'Ana Souza',
+        photoUrl: 'https://example.com/photo.jpg',
+        invitationStatus: MeetingInvitationStatus.confirmed,
+        presenceStatus: MeetingPresenceStatus.present,
+        isGuest: true,
+      );
+
+      expect(guest, isNot(participant1));
     });
   });
 }

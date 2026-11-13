@@ -40,6 +40,9 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mobile/features/meeting_guest_requests/data/repositories/meeting_guest_requests_repository_impl.dart';
+import 'package:mobile/features/meeting_guest_requests/domain/repository/meeting_guest_requests_repository.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_cubit.dart';
 import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
 import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
@@ -290,6 +293,19 @@ class DependenciesContainer {
     serviceLocator.registerFactory<GroupJoinRequestsCubit>(
       () => GroupJoinRequestsCubit(
         repository: serviceLocator<GroupJoinRequestsRepository>(),
+      ),
+    );
+
+    // --- Meeting Guest Requests Feature ---
+    serviceLocator.registerLazySingleton<MeetingGuestRequestsRepository>(
+      () => MeetingGuestRequestsRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<MeetingGuestRequestsCubit>(
+      () => MeetingGuestRequestsCubit(
+        repository: serviceLocator<MeetingGuestRequestsRepository>(),
       ),
     );
   }

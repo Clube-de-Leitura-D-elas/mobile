@@ -16,10 +16,15 @@ class MeetingDetailsScreen extends StatelessWidget {
     super.key,
     required this.meeting,
     this.canEdit = false,
+    this.guestRequestsAccess,
   });
 
   final MeetingDetailsEntity meeting;
   final bool canEdit;
+
+  /// Acesso da anfitriã e da coordenação aos pedidos de participação; cuida
+  /// da própria visibilidade.
+  final Widget? guestRequestsAccess;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +92,11 @@ class MeetingDetailsScreen extends StatelessWidget {
                 },
               ),
             ),
+            if (guestRequestsAccess case final access?)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: spacing.s24),
+                child: access,
+              ),
             SizedBox(height: spacing.s16),
             SizedBox(height: spacing.s16),
             Padding(

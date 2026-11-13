@@ -9,12 +9,16 @@ class MeetingAttendanceEntity extends Equatable {
   final MeetingInvitationStatus invitationStatus;
   final MeetingPresenceStatus? presenceStatus;
 
+  /// Leitora de fora do grupo com pedido de participação aceito.
+  final bool isGuest;
+
   const MeetingAttendanceEntity({
     required this.id,
     required this.name,
     this.photoUrl,
     required this.invitationStatus,
     required this.presenceStatus,
+    this.isGuest = false,
   });
 
   @override
@@ -24,5 +28,6 @@ class MeetingAttendanceEntity extends Equatable {
     photoUrl,
     invitationStatus,
     presenceStatus,
+    isGuest,
   ];
 }

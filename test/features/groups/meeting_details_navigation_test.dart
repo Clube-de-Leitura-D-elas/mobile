@@ -18,6 +18,9 @@ import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.da
 import 'package:mobile/features/groups/presentation/cubit/meeting_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_photos_cubit.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
+import 'package:mobile/features/meeting_guest_requests/domain/entities/meeting_guest_request_entity.dart';
+import 'package:mobile/features/meeting_guest_requests/domain/repository/meeting_guest_requests_repository.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_cubit.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -25,12 +28,20 @@ class MockGroupRepository extends Mock implements GroupRepository {}
 
 class MockPhotoPicker extends Mock implements PhotoPicker {}
 
+class MockMeetingGuestRequestsRepository extends Mock
+    implements MeetingGuestRequestsRepository {}
+
 void main() {
   late MockGroupRepository mockRepository;
+  late MockMeetingGuestRequestsRepository guestRequestsRepository;
 
   setUp(() {
     mockRepository = MockGroupRepository();
+    guestRequestsRepository = MockMeetingGuestRequestsRepository();
     serviceLocator.allowReassignment = true;
+    serviceLocator.registerFactory<MeetingGuestRequestsCubit>(
+      () => MeetingGuestRequestsCubit(repository: guestRequestsRepository),
+    );
     serviceLocator.registerFactory<EventHistoryCubit>(
       () => EventHistoryCubit(groupRepository: mockRepository),
     );
@@ -56,6 +67,7 @@ void main() {
     serviceLocator.unregister<EventHistoryCubit>();
     serviceLocator.unregister<MeetingDetailsCubit>();
     serviceLocator.unregister<MeetingPhotosCubit>();
+    serviceLocator.unregister<MeetingGuestRequestsCubit>();
   });
 
   Future<void> pumpRoute(WidgetTester tester, String location) async {
@@ -146,4 +158,32 @@ void main() {
       expect(find.text('Encontro 12'), findsNothing);
     },
   );
+
+  for (final route in [GroupRoutes.meetingDetails, GroupRoutes.meetingRecord]) {
+    testWidgets('$route checks the guest requests of the same meeting', (
+      tester,
+    ) async {
+      const meetingId = '55555555-5555-5555-5555-555555555555';
+      when(() => mockRepository.getMeetingDetails(meetingId)).thenAnswer(
+        (_) async => const Success(
+          MeetingDetailsEntity(
+            id: meetingId,
+            number: 3,
+            bookTitle: 'Dom Casmurro',
+            hostName: 'Beatriz Souza',
+          ),
+        ),
+      );
+      when(() => guestRequestsRepository.getRequests(meetingId)).thenAnswer(
+        (_) async => const Success([
+          MeetingGuestRequestEntity(id: 'r-1', userId: 'u-1', name: 'Ana'),
+        ]),
+      );
+
+      await pumpRoute(tester, '$route?meeting_id=$meetingId');
+
+      verify(() => guestRequestsRepository.getRequests(meetingId)).called(1);
+      expect(find.text('Pedidos de participação (1)'), findsOneWidget);
+    });
+  }
 }

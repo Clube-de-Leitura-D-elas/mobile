@@ -1632,6 +1632,104 @@ class AppLocalizationsPt extends AppLocalizations {
   String groupJoinRequestsRejectSemantics(String name) {
     return 'Recusar pedido de $name';
   }
+
+  @override
+  String meetingGuestRequestsAccess(int count) {
+    return 'Pedidos de participação ($count)';
+  }
+
+  @override
+  String get meetingGuestRequestsTitle => 'Pedidos de participação';
+
+  @override
+  String get meetingGuestRequestsLoading =>
+      'Carregando pedidos de participação';
+
+  @override
+  String get meetingGuestRequestsEmpty => 'Nenhum pedido de participação';
+
+  @override
+  String get meetingGuestRequestsLoadError =>
+      'Não foi possível carregar os pedidos de participação.';
+
+  @override
+  String get meetingGuestRequestsNotReviewer =>
+      'Só a anfitriã do encontro ou a coordenação do grupo pode ver os pedidos de participação.';
+
+  @override
+  String get meetingGuestRequestsMeetingUnavailable =>
+      'Este encontro não está disponível.';
+
+  @override
+  String meetingGuestRequestsRequestedAt(DateTime date, DateTime time) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return 'Pedido em $dateString às $timeString';
+  }
+
+  @override
+  String get meetingGuestRequestsApprove => 'Aceitar';
+
+  @override
+  String get meetingGuestRequestsReject => 'Recusar';
+
+  @override
+  String get meetingGuestRequestsApproveDialogTitle => 'Aceitar pedido?';
+
+  @override
+  String meetingGuestRequestsApproveDialogMessage(String name) {
+    return '$name vai participar deste encontro como convidada.';
+  }
+
+  @override
+  String get meetingGuestRequestsRejectDialogTitle => 'Recusar pedido?';
+
+  @override
+  String meetingGuestRequestsRejectDialogMessage(String name) {
+    return '$name não vai participar deste encontro, mas poderá pedir de novo.';
+  }
+
+  @override
+  String get meetingGuestRequestsDialogCancel => 'Cancelar';
+
+  @override
+  String get meetingGuestRequestsApproved =>
+      'Pedido aceito! A leitora foi confirmada no encontro.';
+
+  @override
+  String get meetingGuestRequestsRejected => 'Pedido recusado.';
+
+  @override
+  String get meetingGuestRequestsAlreadyReviewed =>
+      'Este pedido já foi respondido.';
+
+  @override
+  String get meetingGuestRequestsNotFound =>
+      'Este pedido não está mais disponível.';
+
+  @override
+  String get meetingGuestRequestsNoLongerValid =>
+      'Este pedido não pode mais ser aceito: o encontro foi encerrado, a conta da leitora foi desativada ou ela já faz parte do grupo.';
+
+  @override
+  String get meetingGuestRequestsReviewError =>
+      'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String meetingGuestRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de participação de $name';
+  }
+
+  @override
+  String meetingGuestRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de participação de $name';
+  }
+
+  @override
+  String get meetingAttendanceGuestTag => 'Convidada';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2894,4 +2992,102 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String groupJoinRequestsRejectSemantics(String name) {
     return 'Recusar pedido de $name';
   }
+
+  @override
+  String meetingGuestRequestsAccess(int count) {
+    return 'Pedidos de participação ($count)';
+  }
+
+  @override
+  String get meetingGuestRequestsTitle => 'Pedidos de participação';
+
+  @override
+  String get meetingGuestRequestsLoading =>
+      'Carregando pedidos de participação';
+
+  @override
+  String get meetingGuestRequestsEmpty => 'Nenhum pedido de participação';
+
+  @override
+  String get meetingGuestRequestsLoadError =>
+      'Não foi possível carregar os pedidos de participação.';
+
+  @override
+  String get meetingGuestRequestsNotReviewer =>
+      'Só a anfitriã do encontro ou a coordenação do grupo pode ver os pedidos de participação.';
+
+  @override
+  String get meetingGuestRequestsMeetingUnavailable =>
+      'Este encontro não está disponível.';
+
+  @override
+  String meetingGuestRequestsRequestedAt(DateTime date, DateTime time) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+    final intl.DateFormat timeDateFormat = intl.DateFormat.Hm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return 'Pedido em $dateString às $timeString';
+  }
+
+  @override
+  String get meetingGuestRequestsApprove => 'Aceitar';
+
+  @override
+  String get meetingGuestRequestsReject => 'Recusar';
+
+  @override
+  String get meetingGuestRequestsApproveDialogTitle => 'Aceitar pedido?';
+
+  @override
+  String meetingGuestRequestsApproveDialogMessage(String name) {
+    return '$name vai participar deste encontro como convidada.';
+  }
+
+  @override
+  String get meetingGuestRequestsRejectDialogTitle => 'Recusar pedido?';
+
+  @override
+  String meetingGuestRequestsRejectDialogMessage(String name) {
+    return '$name não vai participar deste encontro, mas poderá pedir de novo.';
+  }
+
+  @override
+  String get meetingGuestRequestsDialogCancel => 'Cancelar';
+
+  @override
+  String get meetingGuestRequestsApproved =>
+      'Pedido aceito! A leitora foi confirmada no encontro.';
+
+  @override
+  String get meetingGuestRequestsRejected => 'Pedido recusado.';
+
+  @override
+  String get meetingGuestRequestsAlreadyReviewed =>
+      'Este pedido já foi respondido.';
+
+  @override
+  String get meetingGuestRequestsNotFound =>
+      'Este pedido não está mais disponível.';
+
+  @override
+  String get meetingGuestRequestsNoLongerValid =>
+      'Este pedido não pode mais ser aceito: o encontro foi encerrado, a conta da leitora foi desativada ou ela já faz parte do grupo.';
+
+  @override
+  String get meetingGuestRequestsReviewError =>
+      'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String meetingGuestRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de participação de $name';
+  }
+
+  @override
+  String meetingGuestRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de participação de $name';
+  }
+
+  @override
+  String get meetingAttendanceGuestTag => 'Convidada';
 }

@@ -83,6 +83,7 @@ class MeetingPresenceCubit extends Cubit<MeetingPresenceState> {
                 presenceStatus: current.marked.contains(a.id)
                     ? MeetingPresenceStatus.present
                     : MeetingPresenceStatus.absent,
+                isGuest: a.isGuest,
               ),
           ], confirmed: true),
         );

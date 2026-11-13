@@ -8,6 +8,7 @@ class MeetingAttendanceModel {
   final String? photoUrl;
   final String invitationStatus;
   final String? presenceStatus;
+  final bool isGuest;
 
   const MeetingAttendanceModel({
     required this.id,
@@ -15,6 +16,7 @@ class MeetingAttendanceModel {
     this.photoUrl,
     required this.invitationStatus,
     this.presenceStatus,
+    this.isGuest = false,
   });
 
   factory MeetingAttendanceModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class MeetingAttendanceModel {
       photoUrl: json['photo_url'] as String? ?? json['foto'] as String?,
       invitationStatus: json['invitation_status'] as String? ?? 'PENDING',
       presenceStatus: json['presence_status'] as String?,
+      isGuest: json['is_guest'] as bool? ?? false,
     );
   }
 
@@ -58,6 +61,7 @@ class MeetingAttendanceModel {
         'ABSENT' => MeetingPresenceStatus.absent,
         _ => null,
       },
+      isGuest: isGuest,
     );
   }
 }

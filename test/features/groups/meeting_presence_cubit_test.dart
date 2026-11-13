@@ -17,11 +17,13 @@ MeetingAttendanceEntity _attendee(
   String id,
   String name, {
   MeetingPresenceStatus? presenceStatus,
+  bool isGuest = false,
 }) => MeetingAttendanceEntity(
   id: id,
   name: name,
   invitationStatus: MeetingInvitationStatus.confirmed,
   presenceStatus: presenceStatus,
+  isGuest: isGuest,
 );
 
 void main() {
@@ -339,6 +341,31 @@ void main() {
           (a) => a.presenceStatus == MeetingPresenceStatus.absent,
         ),
         isTrue,
+      );
+    });
+
+    test('a convidada entra na marcação e continua convidada', () async {
+      stubAttendance([
+        _attendee('u-1', 'Ana'),
+        _attendee('g-1', 'Clara', isGuest: true),
+      ]);
+      await cubit.load(meetingId);
+      when(
+        () => repository.setMeetingPresence(meetingId, any()),
+      ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
+
+      await cubit.confirm();
+
+      verify(
+        () => repository.setMeetingPresence(
+          meetingId,
+          any(that: unorderedEquals(['u-1', 'g-1'])),
+        ),
+      ).called(1);
+      final closed = cubit.state as MeetingPresenceClosed;
+      expect(
+        {for (final a in closed.attendees) a.id: a.isGuest},
+        {'u-1': false, 'g-1': true},
       );
     });
 

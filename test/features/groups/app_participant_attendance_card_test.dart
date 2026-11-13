@@ -6,11 +6,18 @@ import 'package:mobile/features/groups/domain/entities/meeting_invitation_status
 import 'package:mobile/features/groups/domain/entities/meeting_presence_status.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_attendance_card.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 
 void main() {
   Widget createWidget(MeetingAttendanceEntity participant) {
     return MaterialApp(
       theme: AppTheme.light,
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       home: Scaffold(
         body: AppParticipantAttendanceCard(participant: participant),
       ),
@@ -35,6 +42,24 @@ void main() {
       expect(find.byType(AppParticipantAvatar), findsOneWidget);
       expect(find.text('Confirmada'), findsOneWidget);
       expect(find.text('Presente'), findsOneWidget);
+      expect(find.text('Convidada'), findsNothing);
+    });
+
+    testWidgets('marca a convidada aceita com a tag Convidada', (tester) async {
+      await tester.pumpWidget(
+        createWidget(
+          const MeetingAttendanceEntity(
+            id: 'guest-1',
+            name: 'Clara Dias',
+            invitationStatus: MeetingInvitationStatus.confirmed,
+            presenceStatus: null,
+            isGuest: true,
+          ),
+        ),
+      );
+
+      expect(find.widgetWithText(AppTag, 'Convidada'), findsOneWidget);
+      expect(find.text('Confirmada'), findsOneWidget);
     });
 
     testWidgets('exibe status de convite recusado e presença ausente', (
