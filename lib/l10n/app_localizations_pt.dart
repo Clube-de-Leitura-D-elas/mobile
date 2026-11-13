@@ -1532,7 +1532,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get groupJoinRequestsAlreadyReviewed =>
-      'Outra coordenadora já respondeu a este pedido.';
+      'Este pedido já foi respondido.';
 
   @override
   String get groupJoinRequestsNotFound =>
@@ -1545,6 +1545,16 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get groupJoinRequestsReviewError =>
       'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String groupJoinRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de $name';
+  }
+
+  @override
+  String groupJoinRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de $name';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2707,7 +2717,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get groupJoinRequestsAlreadyReviewed =>
-      'Outra coordenadora já respondeu a este pedido.';
+      'Este pedido já foi respondido.';
 
   @override
   String get groupJoinRequestsNotFound =>
@@ -2720,4 +2730,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get groupJoinRequestsReviewError =>
       'Não foi possível responder ao pedido. Tente novamente.';
+
+  @override
+  String groupJoinRequestsApproveSemantics(String name) {
+    return 'Aceitar pedido de $name';
+  }
+
+  @override
+  String groupJoinRequestsRejectSemantics(String name) {
+    return 'Recusar pedido de $name';
+  }
 }

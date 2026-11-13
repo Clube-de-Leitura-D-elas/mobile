@@ -88,8 +88,6 @@ class GroupJoinRequestsPage extends StatelessWidget {
   ) => switch (failure) {
     GroupJoinRequestsNetworkFailure() => l10n.errorNoConnection,
     GroupJoinRequestsSessionExpiredFailure() => l10n.errorSessionExpired,
-    GroupJoinRequestsNotCoordinatorFailure() =>
-      l10n.groupJoinRequestsNotCoordinator,
     _ => l10n.groupJoinRequestsReviewError,
   };
 }
@@ -158,14 +156,12 @@ class _JoinRequestsEmpty extends StatelessWidget {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(context.spacing.s24),
-        child: Semantics(
-          liveRegion: true,
-          child: Text(
-            context.l10n.groupJoinRequestsEmpty,
-            textAlign: TextAlign.center,
-            style: context.typography.bodyDefault.copyWith(
-              color: context.colors.textMuted,
-            ),
+        // Sem liveRegion: depois da última decisão o AppToast já é anunciado.
+        child: Text(
+          context.l10n.groupJoinRequestsEmpty,
+          textAlign: TextAlign.center,
+          style: context.typography.bodyDefault.copyWith(
+            color: context.colors.textMuted,
           ),
         ),
       ),

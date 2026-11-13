@@ -2546,10 +2546,10 @@ abstract class AppLocalizations {
   /// **'Pedido recusado.'**
   String get groupJoinRequestsRejected;
 
-  /// O pedido já foi decidido por outra coordenadora (HTTP 409); ele sai da lista.
+  /// O pedido já foi decidido, por exemplo por outra coordenadora (HTTP 409); ele sai da lista.
   ///
   /// In pt, this message translates to:
-  /// **'Outra coordenadora já respondeu a este pedido.'**
+  /// **'Este pedido já foi respondido.'**
   String get groupJoinRequestsAlreadyReviewed;
 
   /// O pedido não existe mais (HTTP 404); ele sai da lista.
@@ -2569,6 +2569,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível responder ao pedido. Tente novamente.'**
   String get groupJoinRequestsReviewError;
+
+  /// Rótulo de acessibilidade do botão Aceitar de um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar pedido de {name}'**
+  String groupJoinRequestsApproveSemantics(String name);
+
+  /// Rótulo de acessibilidade do botão Recusar de um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar pedido de {name}'**
+  String groupJoinRequestsRejectSemantics(String name);
 }
 
 class _AppLocalizationsDelegate

@@ -28,4 +28,14 @@ class GroupDetailsCubit extends Cubit<GroupDetailsState> {
         emit(GroupDetailsError(failure));
     }
   }
+
+  /// Atualiza os dados sem trocar a tela por carregamento; se falhar, fica o
+  /// que já está na tela.
+  Future<void> refresh() async {
+    if (state is! GroupDetailsLoaded) return;
+    final result = await groupRepository.getGroupDetails(_groupId);
+    if (isClosed) return;
+
+    if (result case Success(:final data)) emit(GroupDetailsLoaded(data));
+  }
 }

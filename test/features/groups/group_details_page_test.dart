@@ -518,8 +518,12 @@ void main() {
     ).thenAnswer((_) async => const Success([]));
   }
 
-  Future<GoRouter> pumpDetails(WidgetTester tester) async {
+  Future<GoRouter> pumpDetails(
+    WidgetTester tester, {
+    void Function()? afterStubs,
+  }) async {
     stubDetails();
+    afterStubs?.call();
     tester.view.physicalSize = const Size(800, 2400);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -655,11 +659,92 @@ void main() {
         findsOneWidget,
       );
 
+      // A aprovação muda a contagem do grupo e a lista de participantes.
+      when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+        (_) async => const Success(
+          GroupDetailsEntity(
+            name: '45',
+            genres: ['Ficção', 'Aventura'],
+            participantCount: 35,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+          ),
+        ),
+      );
+      when(
+        () => mockParticipantsRepository.getParticipants(joinGroupId),
+      ).thenAnswer(
+        (_) async => const Success([
+          GroupParticipantEntity(id: 'user-a', name: 'Leitora a'),
+        ]),
+      );
+
       router.pop();
       await tester.pumpAndSettle();
 
       expect(find.text('Pedidos de entrada (1)'), findsOneWidget);
+      expect(find.text('35 participantes'), findsOneWidget);
+      expect(find.text('Leitora a'), findsOneWidget);
       verify(() => joinRequestsRepository.getRequests(joinGroupId)).called(2);
+      verify(() => mockRepository.getGroupDetails(joinGroupId)).called(2);
+      verify(
+        () => mockParticipantsRepository.getParticipants(joinGroupId),
+      ).called(2);
+    },
+  );
+
+  testWidgets('join requests access: a double tap opens the list only once', (
+    tester,
+  ) async {
+    when(
+      () => joinRequestsRepository.getRequests(joinGroupId),
+    ).thenAnswer((_) async => Success([request('a')]));
+
+    final router = await pumpDetails(tester);
+    await tester.tap(find.text('Pedidos de entrada (1)'));
+    await tester.tap(find.text('Pedidos de entrada (1)'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
+    router.pop();
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('pedidos:'), findsNothing);
+    expect(find.text('Grupo 45'), findsOneWidget);
+    verify(() => joinRequestsRepository.getRequests(joinGroupId)).called(2);
+  });
+
+  testWidgets(
+    'join requests access: retrying the group also checks the requests again',
+    (tester) async {
+      var detailsCalls = 0;
+      var requestCalls = 0;
+
+      await pumpDetails(
+        tester,
+        afterStubs: () {
+          when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+            (_) async => detailsCalls++ == 0
+                ? const Failure(GroupNetworkFailure())
+                : const Success(group),
+          );
+          when(
+            () => joinRequestsRepository.getRequests(joinGroupId),
+          ).thenAnswer(
+            (_) async => requestCalls++ == 0
+                ? const Failure(GroupJoinRequestsNetworkFailure())
+                : Success([request('a')]),
+          );
+        },
+      );
+
+      expect(find.text('Tentar novamente'), findsOneWidget);
+
+      await tester.tap(find.text('Tentar novamente'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Grupo 45'), findsOneWidget);
+      expect(find.text('Pedidos de entrada (1)'), findsOneWidget);
+      expect(requestCalls, 2);
     },
   );
 }

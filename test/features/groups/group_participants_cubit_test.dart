@@ -119,4 +119,53 @@ void main() {
     act: (cubit) => cubit.retry(),
     expect: () => <GroupParticipantsState>[],
   );
+
+  group('refresh', () {
+    blocTest<GroupParticipantsCubit, GroupParticipantsState>(
+      'updates the list without going through loading',
+      build: () {
+        var calls = 0;
+        when(() => repository.getParticipants('g1')).thenAnswer(
+          (_) async =>
+              Success(calls++ == 0 ? [coordinator] : [coordinator, member]),
+        );
+        return build();
+      },
+      act: (cubit) async {
+        await cubit.load('g1');
+        await cubit.refresh();
+      },
+      skip: 2,
+      expect: () => [
+        const GroupParticipantsLoaded([coordinator, member]),
+      ],
+    );
+
+    blocTest<GroupParticipantsCubit, GroupParticipantsState>(
+      'keeps the list when the refresh fails',
+      build: () {
+        var calls = 0;
+        when(() => repository.getParticipants('g1')).thenAnswer(
+          (_) async => calls++ == 0
+              ? const Success([coordinator])
+              : const Failure(GroupNetworkFailure()),
+        );
+        return build();
+      },
+      act: (cubit) async {
+        await cubit.load('g1');
+        await cubit.refresh();
+      },
+      skip: 2,
+      expect: () => <GroupParticipantsState>[],
+    );
+
+    blocTest<GroupParticipantsCubit, GroupParticipantsState>(
+      'does nothing before the first load',
+      build: build,
+      act: (cubit) => cubit.refresh(),
+      expect: () => <GroupParticipantsState>[],
+      verify: (_) => verifyNever(() => repository.getParticipants(any())),
+    );
+  });
 }

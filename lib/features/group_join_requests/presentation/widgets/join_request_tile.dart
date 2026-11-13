@@ -84,25 +84,58 @@ class JoinRequestTile extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: AppButton.secondary(
-                label: l10n.groupJoinRequestsReject,
-                size: AppButtonSize.lg,
-                isLoading: reviewing == JoinRequestDecision.reject,
-                onPressed: enabled ? onReject : null,
+              child: _ActionSemantics(
+                label: l10n.groupJoinRequestsRejectSemantics(request.name),
+                onTap: enabled ? onReject : null,
+                child: AppButton.secondary(
+                  label: l10n.groupJoinRequestsReject,
+                  size: AppButtonSize.lg,
+                  isLoading: reviewing == JoinRequestDecision.reject,
+                  onPressed: enabled ? onReject : null,
+                ),
               ),
             ),
             SizedBox(width: spacing.s8),
             Expanded(
-              child: AppButton.primary(
-                label: l10n.groupJoinRequestsApprove,
-                size: AppButtonSize.lg,
-                isLoading: reviewing == JoinRequestDecision.approve,
-                onPressed: enabled ? onApprove : null,
+              child: _ActionSemantics(
+                label: l10n.groupJoinRequestsApproveSemantics(request.name),
+                onTap: enabled ? onApprove : null,
+                child: AppButton.primary(
+                  label: l10n.groupJoinRequestsApprove,
+                  size: AppButtonSize.lg,
+                  isLoading: reviewing == JoinRequestDecision.approve,
+                  onPressed: enabled ? onApprove : null,
+                ),
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+}
+
+/// Dá ao botão o nome da leitora: "Aceitar" sozinho se repete em cada pedido.
+class _ActionSemantics extends StatelessWidget {
+  final String label;
+  final VoidCallback? onTap;
+  final Widget child;
+
+  const _ActionSemantics({
+    required this.label,
+    required this.onTap,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      enabled: onTap != null,
+      label: label,
+      onTap: onTap,
+      excludeSemantics: true,
+      child: child,
     );
   }
 }

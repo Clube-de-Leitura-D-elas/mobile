@@ -163,6 +163,51 @@ void main() {
       );
     });
 
+    testWidgets('the actions name the reader for screen readers', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      stubRequests(Success([anaRequest, biaRequest]));
+
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+
+      for (final label in [
+        'Aceitar pedido de Ana Souza',
+        'Recusar pedido de Ana Souza',
+        'Aceitar pedido de Bia Lima',
+        'Recusar pedido de Bia Lima',
+      ]) {
+        expect(
+          tester.getSemantics(find.bySemanticsLabel(label)),
+          isSemantics(
+            label: label,
+            isButton: true,
+            hasEnabledState: true,
+            isEnabled: true,
+            hasTapAction: true,
+          ),
+        );
+      }
+      expect(find.bySemanticsLabel('Aceitar'), findsNothing);
+      semantics.dispose();
+    });
+
+    testWidgets('the semantic action opens the confirmation', (tester) async {
+      final semantics = tester.ensureSemantics();
+      stubRequests(Success([anaRequest]));
+
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+      tester.semantics.tap(
+        find.semantics.byLabel('Recusar pedido de Ana Souza'),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Recusar pedido?'), findsOneWidget);
+      semantics.dispose();
+    });
+
     testWidgets('the actions have a 48px touch target', (tester) async {
       stubRequests(Success([anaRequest]));
 
@@ -270,6 +315,32 @@ void main() {
 
   group('review', () {
     setUp(() => stubRequests(Success([anaRequest, biaRequest])));
+
+    testWidgets('the confirmation buttons have a 48px touch target', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+
+      for (final action in ['Aceitar', 'Recusar']) {
+        await tester.tap(find.text(action).first);
+        await tester.pumpAndSettle();
+        final dialog = find.byType(ReviewJoinRequestDialog);
+        final buttons = find.descendant(
+          of: dialog,
+          matching: find.byType(AppButton),
+        );
+        expect(buttons, findsNWidgets(2));
+        for (final button in buttons.evaluate()) {
+          expect(
+            tester.getSize(find.byWidget(button.widget)).height,
+            greaterThanOrEqualTo(48),
+          );
+        }
+        await tester.tap(find.text('Cancelar'));
+        await tester.pumpAndSettle();
+      }
+    });
 
     testWidgets('cancelling the confirmation does not decide', (tester) async {
       await pumpPage(tester);
@@ -381,10 +452,7 @@ void main() {
       await decide(tester, 'Aceitar');
 
       expect(find.text('Ana Souza'), findsNothing);
-      expect(
-        find.text('Outra coordenadora já respondeu a este pedido.'),
-        findsOneWidget,
-      );
+      expect(find.text('Este pedido já foi respondido.'), findsOneWidget);
     });
 
     testWidgets('a request no longer valid warns and reloads the list', (

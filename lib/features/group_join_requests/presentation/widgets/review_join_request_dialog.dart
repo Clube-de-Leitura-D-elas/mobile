@@ -40,16 +40,19 @@ class ReviewJoinRequestDialog extends StatelessWidget {
       actions: [
         AppButton.secondary(
           label: l10n.groupJoinRequestsDialogCancel,
+          size: AppButtonSize.lg,
           onPressed: () => navigator.pop(false),
         ),
         if (isApprove)
           AppButton.primary(
             label: l10n.groupJoinRequestsApprove,
+            size: AppButtonSize.lg,
             onPressed: () => navigator.pop(true),
           )
         else
           AppButton.danger(
             label: l10n.groupJoinRequestsReject,
+            size: AppButtonSize.lg,
             onPressed: () => navigator.pop(true),
           ),
       ],

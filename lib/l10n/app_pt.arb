@@ -2007,9 +2007,9 @@
   "@groupJoinRequestsRejected": {
     "description": "Aviso depois de recusar um pedido de entrada."
   },
-  "groupJoinRequestsAlreadyReviewed": "Outra coordenadora já respondeu a este pedido.",
+  "groupJoinRequestsAlreadyReviewed": "Este pedido já foi respondido.",
   "@groupJoinRequestsAlreadyReviewed": {
-    "description": "O pedido já foi decidido por outra coordenadora (HTTP 409); ele sai da lista."
+    "description": "O pedido já foi decidido, por exemplo por outra coordenadora (HTTP 409); ele sai da lista."
   },
   "groupJoinRequestsNotFound": "Este pedido não está mais disponível.",
   "@groupJoinRequestsNotFound": {
@@ -2022,5 +2022,23 @@
   "groupJoinRequestsReviewError": "Não foi possível responder ao pedido. Tente novamente.",
   "@groupJoinRequestsReviewError": {
     "description": "Erro genérico ao aceitar ou recusar um pedido de entrada."
+  },
+  "groupJoinRequestsApproveSemantics": "Aceitar pedido de {name}",
+  "@groupJoinRequestsApproveSemantics": {
+    "description": "Rótulo de acessibilidade do botão Aceitar de um pedido de entrada.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupJoinRequestsRejectSemantics": "Recusar pedido de {name}",
+  "@groupJoinRequestsRejectSemantics": {
+    "description": "Rótulo de acessibilidade do botão Recusar de um pedido de entrada.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

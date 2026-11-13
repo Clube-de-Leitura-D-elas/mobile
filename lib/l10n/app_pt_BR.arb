@@ -313,8 +313,10 @@
   "groupJoinRequestsDialogCancel": "Cancelar",
   "groupJoinRequestsApproved": "Pedido aceito! A leitora já faz parte do grupo.",
   "groupJoinRequestsRejected": "Pedido recusado.",
-  "groupJoinRequestsAlreadyReviewed": "Outra coordenadora já respondeu a este pedido.",
+  "groupJoinRequestsAlreadyReviewed": "Este pedido já foi respondido.",
   "groupJoinRequestsNotFound": "Este pedido não está mais disponível.",
   "groupJoinRequestsNoLongerValid": "Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.",
-  "groupJoinRequestsReviewError": "Não foi possível responder ao pedido. Tente novamente."
+  "groupJoinRequestsReviewError": "Não foi possível responder ao pedido. Tente novamente.",
+  "groupJoinRequestsApproveSemantics": "Aceitar pedido de {name}",
+  "groupJoinRequestsRejectSemantics": "Recusar pedido de {name}"
 }

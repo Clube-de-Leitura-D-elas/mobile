@@ -34,4 +34,21 @@ class GroupParticipantsCubit extends Cubit<GroupParticipantsState> {
     if (groupId == null) return;
     await load(groupId);
   }
+
+  /// Atualiza a lista sem passar pelo carregamento; se falhar, fica o que já
+  /// está na tela.
+  Future<void> refresh() async {
+    final groupId = _groupId;
+    if (groupId == null) return;
+    final result = await participantsRepository.getParticipants(groupId);
+    if (isClosed) return;
+
+    if (result case Success(:final data)) {
+      emit(
+        data.isEmpty
+            ? const GroupParticipantsEmpty()
+            : GroupParticipantsLoaded(data),
+      );
+    }
+  }
 }
