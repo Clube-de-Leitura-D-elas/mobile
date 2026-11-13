@@ -989,9 +989,9 @@
   "@rafflePreparationSubtitle": {
     "description": "Subtítulo de instrução da tela de preparação do sorteio"
   },
-  "raffleTableHeaderName": "Nome",
+  "raffleTableHeaderName": "Participante",
   "@raffleTableHeaderName": {
-    "description": "Rótulo do cabeçalho de nome na tabela de participantes"
+    "description": "Rótulo do cabeçalho da coluna de participante (foto e nome) na tabela do sorteio"
   },
   "raffleTableHeaderInclude": "Incluir no sorteio",
   "@raffleTableHeaderInclude": {

@@ -734,7 +734,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get rafflePreparationSubtitle => 'Selecione as participantes';
 
   @override
-  String get raffleTableHeaderName => 'Nome';
+  String get raffleTableHeaderName => 'Participante';
 
   @override
   String get raffleTableHeaderInclude => 'Incluir no sorteio';
@@ -2416,7 +2416,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get rafflePreparationSubtitle => 'Selecione as participantes';
 
   @override
-  String get raffleTableHeaderName => 'Nome';
+  String get raffleTableHeaderName => 'Participante';
 
   @override
   String get raffleTableHeaderInclude => 'Incluir no sorteio';

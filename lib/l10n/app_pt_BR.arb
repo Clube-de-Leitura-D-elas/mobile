@@ -200,7 +200,7 @@
   "@@Raffles": "--- Raffles ---",
   "rafflePreparationTitle": "Realizar sorteio",
   "rafflePreparationSubtitle": "Selecione as participantes",
-  "raffleTableHeaderName": "Nome",
+  "raffleTableHeaderName": "Participante",
   "raffleTableHeaderInclude": "Incluir no sorteio",
   "raffleConfirmDialogTitle": "Confirmar sorteio",
   "raffleConfirmDialogMessage": "Você deseja mesmo confirmar o sorteio?",

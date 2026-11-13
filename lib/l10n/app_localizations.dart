@@ -1322,10 +1322,10 @@ abstract class AppLocalizations {
   /// **'Selecione as participantes'**
   String get rafflePreparationSubtitle;
 
-  /// Rótulo do cabeçalho de nome na tabela de participantes
+  /// Rótulo do cabeçalho da coluna de participante (foto e nome) na tabela do sorteio
   ///
   /// In pt, this message translates to:
-  /// **'Nome'**
+  /// **'Participante'**
   String get raffleTableHeaderName;
 
   /// Rótulo do cabeçalho de seleção/presença na tabela de participantes
