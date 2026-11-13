@@ -7,6 +7,7 @@ import 'package:mobile/features/calendar/data/models/calendar_meeting_model.dart
 import 'package:mobile/features/calendar/data/repositories/calendar_repository_impl.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_failure.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -85,6 +86,34 @@ void main() {
     });
     expect(decoded.single.id, 'm1');
   });
+
+  for (final (scope, cityId) in [
+    (CityScope.all, 'all'),
+    (const CityScope.only('city-1'), 'city-1'),
+  ]) {
+    test('sends cityId=$cityId for $scope', () async {
+      stub(const Success(SupabaseResponse(data: [])));
+
+      await repository.getMeetings(
+        from: DateTime(2026, 7, 26),
+        to: DateTime(2026, 9, 5),
+        city: scope,
+      );
+
+      verify(
+        () => service.invokeFunction<List<CalendarMeetingModel>>(
+          functionName: 'get-city-calendar',
+          method: HttpMethod.get,
+          queryParameters: {
+            'from': '2026-07-26',
+            'to': '2026-09-05',
+            'cityId': cityId,
+          },
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
+    });
+  }
 
   test('returns the meetings as entities', () async {
     stub(

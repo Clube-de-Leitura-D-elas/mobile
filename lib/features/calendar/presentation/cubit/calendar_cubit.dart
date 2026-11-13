@@ -7,10 +7,15 @@ import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity
 import 'package:mobile/features/calendar/domain/entities/calendar_month.dart';
 import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_state.dart';
+import 'package:mobile/features/cities/domain/entities/discovery_city_entity.dart';
+import 'package:mobile/features/cities/domain/repository/discovery_cities_repository.dart';
 
 class CalendarCubit extends Cubit<CalendarState> {
   final CalendarRepository repository;
+  final DiscoveryCitiesRepository citiesRepository;
   final DateTime Function() _now;
+
+  Future<void>? _citiesLoad;
 
   /// Só a resposta da requisição mais recente é aplicada.
   int _latestRequest = 0;
@@ -22,6 +27,7 @@ class CalendarCubit extends Cubit<CalendarState> {
 
   CalendarCubit({
     required this.repository,
+    required this.citiesRepository,
     DateTime Function() now = DateTime.now,
   }) : _now = now,
        super(
@@ -34,7 +40,20 @@ class CalendarCubit extends Cubit<CalendarState> {
   /// Instante atual, o mesmo relógio usado para separar próximos e passados.
   DateTime get now => _now();
 
-  Future<void> load() => _load(state.month);
+  /// Carrega o mês e, enquanto não vieram, as cidades do filtro. Sem
+  /// `cityId` o mês já vem da cidade da leitora, o padrão do filtro, então as
+  /// duas cargas correm juntas.
+  Future<void> load() async {
+    final cities = state.citiesAvailable ? null : _citiesLoad ??= _loadCities();
+    await Future.wait([_load(state.month), ?cities]);
+  }
+
+  /// `null` é "Todas as cidades".
+  Future<void> selectCity(DiscoveryCityEntity? city) async {
+    if (!state.citiesAvailable || city == state.selectedCity) return;
+    emit(state.copyWith(selectedCity: city, clearSelectedCity: city == null));
+    await _load(state.month);
+  }
 
   /// Relê o mês em tela sem trocar a lista pelo carregamento.
   Future<void> refresh() => _refresh();
@@ -136,6 +155,25 @@ class CalendarCubit extends Cubit<CalendarState> {
     _ => false,
   };
 
+  /// Sem a cidade da leitora na lista o filtro diria uma cidade diferente da
+  /// carregada: a tela segue sem ele.
+  Future<void> _loadCities() async {
+    final result = await citiesRepository.getCities();
+    _citiesLoad = null;
+    if (isClosed) return;
+    if (result case Success(:final data)) {
+      final readerCity = data.readerCity;
+      if (readerCity == null) return;
+      emit(
+        state.copyWith(
+          citiesAvailable: true,
+          cities: data.cities,
+          selectedCity: readerCity,
+        ),
+      );
+    }
+  }
+
   /// Relê o mês sem trocar a lista pelo carregamento. Uma carga em andamento
   /// pode ter começado antes da mudança: esta a substitui, e a resposta
   /// dela é descartada.
@@ -206,6 +244,9 @@ class CalendarCubit extends Cubit<CalendarState> {
           requestingIds: state.requestingIds,
           participationRequested: state.participationRequested,
           participationFailure: state.participationFailure,
+          citiesAvailable: state.citiesAvailable,
+          cities: state.cities,
+          selectedCity: state.selectedCity,
         ),
       );
     }
@@ -213,6 +254,7 @@ class CalendarCubit extends Cubit<CalendarState> {
     final result = await repository.getMeetings(
       from: month.firstVisibleDay,
       to: month.lastVisibleDay,
+      city: state.cityScope,
     );
     if (isClosed || request != _latestRequest) return;
 
@@ -231,6 +273,9 @@ class CalendarCubit extends Cubit<CalendarState> {
             requestingIds: state.requestingIds,
             participationRequested: state.participationRequested,
             participationFailure: state.participationFailure,
+            citiesAvailable: state.citiesAvailable,
+            cities: state.cities,
+            selectedCity: state.selectedCity,
           ),
         );
       case Success(:final data):
@@ -259,6 +304,9 @@ class CalendarCubit extends Cubit<CalendarState> {
             requestingIds: state.requestingIds,
             participationRequested: state.participationRequested,
             participationFailure: state.participationFailure,
+            citiesAvailable: state.citiesAvailable,
+            cities: state.cities,
+            selectedCity: state.selectedCity,
           ),
         );
     }

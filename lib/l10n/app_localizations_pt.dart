@@ -1346,6 +1346,11 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String calendarMeetingPlaceWithCity(String place, String city) {
+    return '$place, $city';
+  }
+
+  @override
   String calendarMeetingHost(String name) {
     return '$name (Anfitriã)';
   }
@@ -1458,10 +1463,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get groupSearchFiltersActive => 'Filtros aplicados';
 
   @override
-  String get groupSearchFilterGenre => 'Gênero';
+  String get cityFilterLabel => 'Cidade';
 
   @override
-  String get groupSearchFilterGenreAll => 'Todos os gêneros';
+  String get cityFilterAll => 'Todas as cidades';
+
+  @override
+  String cityFilterOption(String name, String uf) {
+    return '$name, $uf';
+  }
 
   @override
   String get groupSearchFilterMin => 'Mínimo de participantes';
@@ -1499,7 +1509,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível carregar mais grupos.';
 
   @override
-  String get groupSearchEmpty => 'Ainda não há grupos na sua cidade.';
+  String get groupSearchEmpty => 'Ainda não há grupos ativos.';
 
   @override
   String get groupSearchEmptyFiltered =>
@@ -2837,6 +2847,11 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String calendarMeetingPlaceWithCity(String place, String city) {
+    return '$place, $city';
+  }
+
+  @override
   String calendarMeetingHost(String name) {
     return '$name (Anfitriã)';
   }
@@ -2949,10 +2964,15 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get groupSearchFiltersActive => 'Filtros aplicados';
 
   @override
-  String get groupSearchFilterGenre => 'Gênero';
+  String get cityFilterLabel => 'Cidade';
 
   @override
-  String get groupSearchFilterGenreAll => 'Todos os gêneros';
+  String get cityFilterAll => 'Todas as cidades';
+
+  @override
+  String cityFilterOption(String name, String uf) {
+    return '$name, $uf';
+  }
 
   @override
   String get groupSearchFilterMin => 'Mínimo de participantes';
@@ -2990,7 +3010,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Não foi possível carregar mais grupos.';
 
   @override
-  String get groupSearchEmpty => 'Ainda não há grupos na sua cidade.';
+  String get groupSearchEmpty => 'Ainda não há grupos ativos.';
 
   @override
   String get groupSearchEmptyFiltered =>

@@ -9,9 +9,9 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
-import 'package:mobile/features/group_discovery/domain/entities/group_genre_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_membership_status.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_page_entity.dart';
@@ -23,9 +23,11 @@ import 'package:mobile/features/group_discovery/presentation/widgets/group_searc
 import 'package:mobile/features/group_discovery/presentation/widgets/group_search_filters_dialog.dart';
 import 'package:mobile/features/group_discovery/presentation/widgets/group_search_skeleton.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/cities/presentation/widgets/city_filter_dropdown.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../cities/cities_fixtures.dart';
 import '../../group_discovery_fixtures.dart';
 
 class MockGroupDiscoveryRepository extends Mock
@@ -37,11 +39,7 @@ class MockSessionCubit extends MockCubit<SessionState>
 void main() {
   late MockGroupDiscoveryRepository repository;
   late MockSessionCubit sessionCubit;
-
-  const genres = [
-    GroupGenreEntity(id: 'g-1', name: 'Ficção'),
-    GroupGenreEntity(id: 'g-2', name: 'Aventura'),
-  ];
+  late MockDiscoveryCitiesRepository citiesRepository;
 
   setUpAll(() {
     registerFallbackValue(GroupSearchFilters.empty);
@@ -49,6 +47,8 @@ void main() {
 
   setUp(() {
     repository = MockGroupDiscoveryRepository();
+    citiesRepository = MockDiscoveryCitiesRepository();
+    stubCities(citiesRepository);
     sessionCubit = MockSessionCubit();
     when(() => sessionCubit.state).thenReturn(const GuestSession());
     when(() => sessionCubit.logOut()).thenAnswer((_) async {});
@@ -61,10 +61,15 @@ void main() {
     int page = 1,
     String search = '',
     GroupSearchFilters filters = GroupSearchFilters.empty,
+    CityScope? city = CityScope.all,
   }) {
     when(
-      () =>
-          repository.searchGroups(page: page, search: search, filters: filters),
+      () => repository.searchGroups(
+        page: page,
+        search: search,
+        filters: filters,
+        city: city,
+      ),
     ).thenAnswer((_) async => result);
   }
 
@@ -72,11 +77,7 @@ void main() {
     List<DiscoveryGroupEntity> items, {
     int? total,
   }) => Success(
-    GroupSearchPageEntity(
-      items: items,
-      total: total ?? items.length,
-      genres: genres,
-    ),
+    GroupSearchPageEntity(items: items, total: total ?? items.length),
   );
 
   Future<void> pumpView(WidgetTester tester) async {
@@ -91,7 +92,10 @@ void main() {
           path: '/busca',
           builder: (_, _) => Scaffold(
             body: BlocProvider(
-              create: (_) => GroupSearchCubit(repository: repository)..load(),
+              create: (_) => GroupSearchCubit(
+                repository: repository,
+                citiesRepository: citiesRepository,
+              )..load(),
               child: const GroupSearchView(),
             ),
           ),
@@ -341,12 +345,16 @@ void main() {
 
     testWidgets('applies the filters chosen in the modal', (tester) async {
       const chosen = GroupSearchFilters(
-        genre: GroupGenreEntity(id: 'g-2', name: 'Aventura'),
+        city: saoPaulo,
         minParticipants: 10,
         maxParticipants: 20,
       );
       stubSearch(pageOf([searchGroup(1), searchGroup(2)]));
-      stubSearch(pageOf([searchGroup(2)]), filters: chosen);
+      stubSearch(
+        pageOf([searchGroup(2)]),
+        filters: chosen,
+        city: CityScope.only(saoPaulo.id),
+      );
 
       await pumpView(tester);
       await tester.pumpAndSettle();
@@ -354,9 +362,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(GroupSearchFiltersDialog), findsOneWidget);
-      await tester.tap(find.text('Todos os gêneros'));
+      await tester.tap(find.text('Todas as cidades'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Aventura').last);
+      await tester.tap(find.text('São Paulo, SP').last);
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(EditableText).at(1), '10');
       await tester.enterText(find.byType(EditableText).at(2), '20');
@@ -365,7 +373,12 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(
-        () => repository.searchGroups(page: 1, search: '', filters: chosen),
+        () => repository.searchGroups(
+          page: 1,
+          search: '',
+          filters: chosen,
+          city: CityScope.only(saoPaulo.id),
+        ),
       ).called(1);
       expect(find.byType(GroupSearchCard), findsOneWidget);
       expect(
@@ -434,6 +447,7 @@ void main() {
           page: 1,
           search: '',
           filters: GroupSearchFilters.empty,
+          city: CityScope.all,
         ),
       ).thenAnswer((_) => pending.future);
 
@@ -444,13 +458,13 @@ void main() {
       expect(find.bySemanticsLabel('Carregando grupos'), findsOneWidget);
     });
 
-    testWidgets('shows the empty city message', (tester) async {
+    testWidgets('shows the empty message', (tester) async {
       stubSearch(pageOf([]));
 
       await pumpView(tester);
       await tester.pumpAndSettle();
 
-      expect(find.text('Ainda não há grupos na sua cidade.'), findsOneWidget);
+      expect(find.text('Ainda não há grupos ativos.'), findsOneWidget);
       expect(find.text('Limpar filtros'), findsNothing);
     });
 
@@ -478,6 +492,7 @@ void main() {
             page: page,
             search: '',
             filters: GroupSearchFilters.empty,
+            city: CityScope.all,
           ),
         ).called(1);
       }
@@ -486,6 +501,7 @@ void main() {
           page: 4,
           search: any(named: 'search'),
           filters: any(named: 'filters'),
+          city: any(named: 'city'),
         ),
       );
     });
@@ -510,6 +526,7 @@ void main() {
           page: 3,
           search: any(named: 'search'),
           filters: any(named: 'filters'),
+          city: any(named: 'city'),
         ),
       );
     });
@@ -575,6 +592,59 @@ void main() {
       await tester.tap(find.text('Sair'));
 
       verify(() => sessionCubit.logOut()).called(1);
+    });
+  });
+
+  group('city filter', () {
+    Finder cityDropdown() => find.byType(CityFilterDropdown);
+
+    testWidgets('opens on every city, with groups from other cities and '
+        'their join button', (tester) async {
+      stubSearch(
+        pageOf([searchGroup(1), searchGroup(2, cityState: 'São Paulo, SP')]),
+      );
+
+      await pumpView(tester);
+      await tester.pumpAndSettle();
+
+      expect(inCard(2, find.text('São Paulo, SP')), findsOneWidget);
+      expect(inCard(2, find.text('Solicitar entrada')), findsOneWidget);
+      expect(
+        tester.getSemantics(find.byTooltip('Filtros')),
+        isNot(isSemantics(value: 'Filtros aplicados')),
+      );
+
+      await tester.tap(find.byTooltip('Filtros'));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: cityDropdown(),
+          matching: find.text('Todas as cidades'),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('without the city list the search goes without cityId and '
+        'the modal has no city filter', (tester) async {
+      stubCitiesFailure(citiesRepository);
+      stubSearch(pageOf([searchGroup(1)]), city: null);
+
+      await pumpView(tester);
+      await tester.pumpAndSettle();
+
+      expect(cardOf(1), findsOneWidget);
+      verify(
+        () => repository.searchGroups(
+          page: 1,
+          search: '',
+          filters: GroupSearchFilters.empty,
+        ),
+      ).called(1);
+
+      await tester.tap(find.byTooltip('Filtros'));
+      await tester.pumpAndSettle();
+      expect(cityDropdown(), findsNothing);
     });
   });
 }

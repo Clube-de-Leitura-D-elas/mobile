@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
-import 'package:mobile/features/group_discovery/domain/entities/group_genre_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_membership_status.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_page_entity.dart';
@@ -14,6 +14,7 @@ import 'package:mobile/features/group_discovery/presentation/cubit/group_search_
 import 'package:mobile/features/group_discovery/presentation/cubit/group_search_state.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../cities/cities_fixtures.dart';
 import '../../group_discovery_fixtures.dart';
 
 class MockGroupDiscoveryRepository extends Mock
@@ -21,12 +22,9 @@ class MockGroupDiscoveryRepository extends Mock
 
 void main() {
   late MockGroupDiscoveryRepository repository;
+  late MockDiscoveryCitiesRepository citiesRepository;
 
-  const genres = [GroupGenreEntity(id: 'g-1', name: 'Ficção')];
-  const filters = GroupSearchFilters(
-    genre: GroupGenreEntity(id: 'g-1', name: 'Ficção'),
-    minParticipants: 10,
-  );
+  const filters = GroupSearchFilters(minParticipants: 10);
   final g1 = searchGroup(1);
   final g2 = searchGroup(2);
   final g3 = searchGroup(3);
@@ -42,9 +40,7 @@ void main() {
       () =>
           repository.searchGroups(page: page, search: search, filters: filters),
     ).thenAnswer(
-      (_) async => Success(
-        GroupSearchPageEntity(items: items, total: total, genres: genres),
-      ),
+      (_) async => Success(GroupSearchPageEntity(items: items, total: total)),
     );
   }
 
@@ -58,7 +54,6 @@ void main() {
     items: items,
     total: total,
     page: page,
-    genres: genres,
     reachedEnd: reachedEnd,
   );
 
@@ -74,13 +69,19 @@ void main() {
 
   setUp(() {
     repository = MockGroupDiscoveryRepository();
+    citiesRepository = MockDiscoveryCitiesRepository();
+    // Sem a lista de cidades, a busca de antes do filtro.
+    stubCitiesFailure(citiesRepository);
   });
 
-  GroupSearchCubit buildCubit() => GroupSearchCubit(repository: repository);
+  GroupSearchCubit buildCubit() => GroupSearchCubit(
+    repository: repository,
+    citiesRepository: citiesRepository,
+  );
 
   group('load and pages', () {
     blocTest<GroupSearchCubit, GroupSearchState>(
-      'loads the first page with the genre options',
+      'loads the first page',
       setUp: () => stubPage(1, fullPage(1), total: 45),
       build: buildCubit,
       act: (cubit) => cubit.load(),
@@ -233,9 +234,7 @@ void main() {
       final oldPage = cubit.loadMore();
       await cubit.search('três');
       slowPage.complete(
-        Success(
-          GroupSearchPageEntity(items: fullPage(21), total: 45, genres: genres),
-        ),
+        Success(GroupSearchPageEntity(items: fullPage(21), total: 45)),
       );
       await oldPage;
 
@@ -246,20 +245,19 @@ void main() {
 
   group('search and filters', () {
     blocTest<GroupSearchCubit, GroupSearchState>(
-      'searches the trimmed text from the first page, keeping the genres',
+      'searches the trimmed text from the first page',
       setUp: () => stubPage(1, [g2], total: 1, search: 'dois'),
       build: buildCubit,
       seed: () => loadedWith([g1, g2]),
       act: (cubit) => cubit.search('  dois '),
       expect: () => [
-        const GroupSearchState(query: 'dois', genres: genres),
+        const GroupSearchState(query: 'dois'),
         GroupSearchState(
           status: GroupSearchStatus.loaded,
           query: 'dois',
           items: [g2],
           total: 1,
           page: 1,
-          genres: genres,
           reachedEnd: true,
         ),
       ],
@@ -284,7 +282,6 @@ void main() {
         items: [g1],
         total: 1,
         page: 1,
-        genres: genres,
       ),
       act: (cubit) => cubit.applyFilters(filters),
       verify: (cubit) {
@@ -310,9 +307,7 @@ void main() {
 
       final first = cubit.search('um');
       await cubit.search('dois');
-      slow.complete(
-        const Success(GroupSearchPageEntity(items: [], total: 0, genres: [])),
-      );
+      slow.complete(const Success(GroupSearchPageEntity(items: [], total: 0)));
       await first;
 
       expect(cubit.state.query, 'dois');
@@ -517,5 +512,145 @@ void main() {
       act: (cubit) => cubit.refreshGroup(g2.id),
       expect: () => <GroupSearchState>[],
     );
+  });
+
+  group('city filter', () {
+    void stubCityPage(
+      CityScope? city,
+      List<DiscoveryGroupEntity> items, {
+      String search = '',
+      GroupSearchFilters filters = GroupSearchFilters.empty,
+      int page = 1,
+    }) {
+      when(
+        () => repository.searchGroups(
+          page: page,
+          search: search,
+          filters: filters,
+          city: city,
+        ),
+      ).thenAnswer(
+        (_) async => Success(GroupSearchPageEntity(items: items, total: 45)),
+      );
+    }
+
+    test('waits for the cities and searches every city by default', () async {
+      stubCities(citiesRepository);
+      stubCityPage(CityScope.all, [g1]);
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      await cubit.load();
+
+      expect(cubit.state.citiesAvailable, isTrue);
+      expect(cubit.state.cities, const [portoAlegre, saoPaulo]);
+      expect(cubit.state.filters.city, isNull);
+      expect(cubit.state.isFiltered, isFalse);
+      expect(cubit.state.items, [g1]);
+      verify(
+        () => repository.searchGroups(
+          page: 1,
+          search: '',
+          filters: GroupSearchFilters.empty,
+          city: CityScope.all,
+        ),
+      ).called(1);
+      verifyNever(
+        () => repository.searchGroups(
+          page: any(named: 'page'),
+          search: any(named: 'search'),
+          filters: any(named: 'filters'),
+        ),
+      );
+    });
+
+    test('a search typed while the cities load also waits for them', () async {
+      final cities = Completer<void>();
+      when(citiesRepository.getCities).thenAnswer((_) async {
+        await cities.future;
+        return Success(discoveryCities);
+      });
+      stubCityPage(CityScope.all, [g1]);
+      stubCityPage(CityScope.all, [g2], search: 'dois');
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      final load = cubit.load();
+      final search = cubit.search('dois');
+      cities.complete();
+      await Future.wait([load, search]);
+
+      expect(cubit.state.query, 'dois');
+      expect(cubit.state.items, [g2]);
+      verify(
+        () => repository.searchGroups(
+          page: 1,
+          search: 'dois',
+          filters: GroupSearchFilters.empty,
+          city: CityScope.all,
+        ),
+      ).called(1);
+    });
+
+    test('a chosen city goes as its cityId, on the next pages too', () async {
+      stubCities(citiesRepository);
+      stubCityPage(CityScope.all, fullPage(1));
+      const inSaoPaulo = GroupSearchFilters(city: saoPaulo);
+      final scope = CityScope.only(saoPaulo.id);
+      stubCityPage(scope, fullPage(1), filters: inSaoPaulo);
+      stubCityPage(scope, fullPage(21), filters: inSaoPaulo, page: 2);
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+      await cubit.load();
+
+      await cubit.applyFilters(inSaoPaulo);
+      await cubit.loadMore();
+
+      expect(cubit.state.filters, inSaoPaulo);
+      expect(cubit.state.isFiltered, isTrue);
+      expect(cubit.state.page, 2);
+      verify(
+        () => repository.searchGroups(
+          page: 2,
+          search: '',
+          filters: inSaoPaulo,
+          city: scope,
+        ),
+      ).called(1);
+    });
+
+    test('without the city list the search sends no cityId; only load() tries '
+        'the list again', () async {
+      stubPage(1, [g1]);
+      stubPage(1, [g2], search: 'dois');
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      await cubit.load();
+      expect(cubit.state.citiesAvailable, isFalse);
+      expect(cubit.state.cityScope, isNull);
+      expect(cubit.state.items, [g1]);
+
+      await cubit.search('dois');
+      verify(citiesRepository.getCities).called(1);
+
+      stubCities(citiesRepository);
+      stubCityPage(CityScope.all, [g2], search: 'dois');
+      await cubit.load();
+      verify(citiesRepository.getCities).called(1);
+      expect(cubit.state.citiesAvailable, isTrue);
+    });
+
+    test('loads the cities only once', () async {
+      stubCities(citiesRepository);
+      stubCityPage(CityScope.all, [g1]);
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      await cubit.load();
+      await cubit.load();
+
+      verify(citiesRepository.getCities).called(1);
+    });
   });
 }

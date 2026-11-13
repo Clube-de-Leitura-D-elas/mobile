@@ -3,12 +3,12 @@ import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
 import 'package:mobile/features/group_discovery/data/models/discovery_group_model.dart';
 import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
 import 'package:mobile/features/group_discovery/data/models/group_search_page_model.dart';
-import 'package:mobile/features/group_discovery/domain/entities/group_genre_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_page_entity.dart';
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
@@ -53,7 +53,7 @@ void main() {
       ).thenAnswer((_) async => result);
     }
 
-    const emptyPage = GroupSearchPageModel(items: [], total: 0, genres: []);
+    const emptyPage = GroupSearchPageModel(items: [], total: 0);
 
     test('asks only for the page when there is no search or filter', () async {
       stub(const Success(SupabaseResponse(data: emptyPage)));
@@ -81,17 +81,17 @@ void main() {
       expect(decoded.total, 1);
     });
 
-    test('sends the search and every filter', () async {
+    test('sends the search, the city and every filter', () async {
       stub(const Success(SupabaseResponse(data: emptyPage)));
 
       await repository.searchGroups(
         page: 3,
         search: ' clube ',
         filters: const GroupSearchFilters(
-          genre: GroupGenreEntity(id: 'genre-1', name: 'Ficção'),
           minParticipants: 10,
           maxParticipants: 20,
         ),
+        city: const CityScope.only('city-1'),
       );
 
       verify(
@@ -102,9 +102,28 @@ void main() {
             'page': '3',
             'pageSize': '${GroupDiscoveryRepository.pageSize}',
             'search': 'clube',
-            'genreId': 'genre-1',
+            'cityId': 'city-1',
             'minParticipants': '10',
             'maxParticipants': '20',
+          },
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
+    });
+
+    test('asks for every city with cityId=all', () async {
+      stub(const Success(SupabaseResponse(data: emptyPage)));
+
+      await repository.searchGroups(page: 1, city: CityScope.all);
+
+      verify(
+        () => service.invokeFunction<GroupSearchPageModel>(
+          functionName: 'get-city-groups',
+          method: HttpMethod.get,
+          queryParameters: {
+            'page': '1',
+            'pageSize': '${GroupDiscoveryRepository.pageSize}',
+            'cityId': 'all',
           },
           decoder: any(named: 'decoder'),
         ),
@@ -136,9 +155,6 @@ void main() {
             data: GroupSearchPageModel.fromJson({
               'items': [discoveryGroupJson()],
               'total': 1,
-              'genres': [
-                {'id': 'g-1', 'name': 'Ficção'},
-              ],
             }),
           ),
         ),
@@ -147,7 +163,7 @@ void main() {
       final page = (await repository.searchGroups(page: 1)).unwrap();
 
       expect(page.items.single.id, groupId);
-      expect(page.genres.single.name, 'Ficção');
+      expect(page.total, 1);
     });
 
     test('maps the failures', () async {

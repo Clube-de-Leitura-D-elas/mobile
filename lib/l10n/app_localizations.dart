@@ -2264,6 +2264,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
   String calendarParticipantsCount(int count);
 
+  /// Local do encontro seguido da cidade do grupo, quando o calendário mostra mais de uma cidade.
+  ///
+  /// In pt, this message translates to:
+  /// **'{place}, {city}'**
+  String calendarMeetingPlaceWithCity(String place, String city);
+
   /// Anfitriã do encontro no calendário; só aparece para quem é membro do grupo.
   ///
   /// In pt, this message translates to:
@@ -2336,7 +2342,7 @@ abstract class AppLocalizations {
   /// **'Não foi possível carregar o grupo.'**
   String get publicGroupLoadError;
 
-  /// Grupo inexistente, inativo ou de outra cidade.
+  /// Grupo inexistente ou inativo.
   ///
   /// In pt, this message translates to:
   /// **'Este grupo não está disponível.'**
@@ -2438,7 +2444,7 @@ abstract class AppLocalizations {
   /// **'Livros'**
   String get searchTabBooks;
 
-  /// Aba da busca com os grupos da cidade.
+  /// Aba da busca com os grupos.
   ///
   /// In pt, this message translates to:
   /// **'Grupos'**
@@ -2468,17 +2474,23 @@ abstract class AppLocalizations {
   /// **'Filtros aplicados'**
   String get groupSearchFiltersActive;
 
-  /// Rótulo do filtro de gênero da busca de grupos.
+  /// Rótulo do filtro de cidade do calendário e da busca de grupos.
   ///
   /// In pt, this message translates to:
-  /// **'Gênero'**
-  String get groupSearchFilterGenre;
+  /// **'Cidade'**
+  String get cityFilterLabel;
 
-  /// Opção do filtro de gênero que não filtra.
+  /// Opção do filtro de cidade que mostra grupos e encontros de todas as cidades.
   ///
   /// In pt, this message translates to:
-  /// **'Todos os gêneros'**
-  String get groupSearchFilterGenreAll;
+  /// **'Todas as cidades'**
+  String get cityFilterAll;
+
+  /// Cidade numa opção do filtro de cidade.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name}, {uf}'**
+  String cityFilterOption(String name, String uf);
 
   /// Rótulo do filtro de mínimo de participantes.
   ///
@@ -2549,7 +2561,7 @@ abstract class AppLocalizations {
   /// Lista de grupos vazia, sem busca nem filtro.
   ///
   /// In pt, this message translates to:
-  /// **'Ainda não há grupos na sua cidade.'**
+  /// **'Ainda não há grupos ativos.'**
   String get groupSearchEmpty;
 
   /// Lista de grupos vazia com busca ou filtro.
@@ -3050,7 +3062,7 @@ abstract class AppLocalizations {
   /// **'Este encontro ainda não tem quem analise pedidos.'**
   String get calendarGuestNoReviewer;
 
-  /// Aviso quando o encontro é de outra cidade.
+  /// Aviso quando o backend recusa o encontro (HTTP 403 "meeting not available"), que só o backend anterior ao filtro de cidade devolve.
   ///
   /// In pt, this message translates to:
   /// **'Este encontro não está disponível para você.'**

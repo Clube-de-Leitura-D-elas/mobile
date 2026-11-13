@@ -26,9 +26,12 @@ import 'package:mobile/features/calendar/presentation/widgets/calendar_month_gri
 import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
 import 'package:mobile/features/group_discovery/presentation/widgets/membership_status_indicator.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/cities/presentation/widgets/city_filter_dropdown.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../cities/cities_fixtures.dart';
 import '../../calendar_fixtures.dart';
 
 class MockCalendarRepository extends Mock implements CalendarRepository {}
@@ -38,6 +41,7 @@ class MockSessionCubit extends MockCubit<SessionState>
 
 void main() {
   late MockCalendarRepository repository;
+  late MockDiscoveryCitiesRepository citiesRepository;
   late MockSessionCubit sessionCubit;
 
   // 12h de 14/08 em São Paulo.
@@ -87,6 +91,9 @@ void main() {
 
   setUp(() {
     repository = MockCalendarRepository();
+    citiesRepository = MockDiscoveryCitiesRepository();
+    // Sem a lista de cidades, a tela de antes do filtro.
+    stubCitiesFailure(citiesRepository);
     sessionCubit = MockSessionCubit();
     when(() => sessionCubit.state).thenReturn(const GuestSession());
     when(() => sessionCubit.logOut()).thenAnswer((_) async {});
@@ -108,8 +115,11 @@ void main() {
         GoRoute(
           path: QuickAccessRoutes.calendar,
           builder: (_, _) => BlocProvider(
-            create: (_) =>
-                CalendarCubit(repository: repository, now: () => now)..load(),
+            create: (_) => CalendarCubit(
+              repository: repository,
+              citiesRepository: citiesRepository,
+              now: () => now,
+            )..load(),
             child: const CalendarPage(),
           ),
         ),
@@ -928,6 +938,119 @@ void main() {
         findsOneWidget,
       );
       verifyNever(() => repository.requestParticipation(any()));
+    });
+  });
+
+  group('city filter', () {
+    final saoPauloMeeting = calendarMeeting(
+      'sp',
+      day: DateTime(2026, 8, 21),
+      groupNumber: 3,
+      membership: CalendarMembershipStatus.none,
+      cityState: 'São Paulo, SP',
+      neighborhood: 'Pinheiros',
+      canRequestParticipation: true,
+    );
+
+    Finder cityDropdown() => find.byType(CityFilterDropdown);
+
+    testWidgets('without the city list there is no filter', (tester) async {
+      stubMonth(august, Success([memberMeeting]));
+
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+
+      expect(cityDropdown(), findsNothing);
+      expect(find.text('Livraria Cultura'), findsOneWidget);
+    });
+
+    testWidgets('opens on the reader city, without the city on the cards', (
+      tester,
+    ) async {
+      stubCities(citiesRepository);
+      stubMonth(august, Success([memberMeeting]));
+
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+
+      expect(cityDropdown(), findsOneWidget);
+      expect(
+        find.descendant(
+          of: cityDropdown(),
+          matching: find.text('Porto Alegre, RS'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Livraria Cultura'), findsOneWidget);
+      expect(find.textContaining('Livraria Cultura,'), findsNothing);
+    });
+
+    testWidgets('"Todas as cidades" reloads the month and shows the city of '
+        'each group, keeping the participation request', (tester) async {
+      stubCities(citiesRepository);
+      stubMonth(august, Success([memberMeeting]));
+      when(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+          city: CityScope.all,
+        ),
+      ).thenAnswer((_) async => Success([memberMeeting, saoPauloMeeting]));
+
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+      await tester.tap(cityDropdown());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Todas as cidades').last);
+      await tester.pumpAndSettle();
+
+      verify(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+          city: CityScope.all,
+        ),
+      ).called(1);
+      expect(
+        find.descendant(
+          of: cityDropdown(),
+          matching: find.text('Todas as cidades'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Livraria Cultura, Porto Alegre, RS'), findsOneWidget);
+      expect(find.text('Pinheiros, São Paulo, SP'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: tileOf('sp'),
+          matching: find.text('Solicitar participação'),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('another city reloads the month with its id', (tester) async {
+      stubCities(citiesRepository);
+      stubMonth(august, Success([memberMeeting]));
+      when(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+          city: CityScope.only(saoPaulo.id),
+        ),
+      ).thenAnswer((_) async => Success([saoPauloMeeting]));
+
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+      await tester.tap(cityDropdown());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('São Paulo, SP').last);
+      await tester.pumpAndSettle();
+
+      expect(tileOf('sp'), findsOneWidget);
+      expect(tileOf('member'), findsNothing);
+      // Uma cidade só: o card mostra o bairro, sem repetir a cidade.
+      expect(find.text('Pinheiros'), findsOneWidget);
     });
   });
 }

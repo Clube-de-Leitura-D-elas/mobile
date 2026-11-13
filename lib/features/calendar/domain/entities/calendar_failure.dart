@@ -52,7 +52,8 @@ class CalendarMeetingNoReviewerFailure extends CalendarFailure {
   const CalendarMeetingNoReviewerFailure();
 }
 
-/// Encontro de outra cidade (HTTP 403 "meeting not available").
+/// HTTP 403 "meeting not available": só o backend anterior ao filtro de
+/// cidade recusava encontro de outra cidade.
 class CalendarMeetingUnavailableFailure extends CalendarFailure {
   const CalendarMeetingUnavailableFailure();
 }

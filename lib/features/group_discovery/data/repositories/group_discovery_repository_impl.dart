@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/cities/data/city_scope_query.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
 import 'package:mobile/features/group_discovery/data/models/discovery_group_model.dart';
 import 'package:mobile/features/group_discovery/data/models/group_search_page_model.dart';
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
@@ -23,24 +25,25 @@ class GroupDiscoveryRepositoryImpl implements GroupDiscoveryRepository {
     required int page,
     String search = '',
     GroupSearchFilters filters = GroupSearchFilters.empty,
+    CityScope? city,
   }) async {
     // O backend recusa busca com mais de 100 caracteres.
     final trimmed = search.trim();
     final query = trimmed.length > _maxSearchLength
         ? trimmed.substring(0, _maxSearchLength)
         : trimmed;
-    final genreId = filters.genre?.id;
+    final cityId = cityIdQueryValue(city);
     final minParticipants = filters.minParticipants;
     final maxParticipants = filters.maxParticipants;
     final result = await supabaseService.invokeFunction<GroupSearchPageModel>(
       functionName: 'get-city-groups',
       method: HttpMethod.get,
-      // Filtro vazio fica fora da query: o backend recusa `genreId=""`.
+      // Filtro vazio fica fora da query: o backend recusa valor vazio.
       queryParameters: {
         'page': '$page',
         'pageSize': '${GroupDiscoveryRepository.pageSize}',
         if (query.isNotEmpty) 'search': query,
-        'genreId': ?genreId,
+        'cityId': ?cityId,
         if (minParticipants != null) 'minParticipants': '$minParticipants',
         if (maxParticipants != null) 'maxParticipants': '$maxParticipants',
       },
@@ -81,8 +84,8 @@ class GroupDiscoveryRepositoryImpl implements GroupDiscoveryRepository {
       case Success(:final data):
         final models = data.data;
         if (models == null) return const Failure(GroupDiscoveryServerFailure());
-        // Grupo inexistente, inativo ou de outra cidade não vem na lista; um
-        // backend sem o filtro `groupId` traria outros grupos.
+        // Grupo inexistente ou inativo não vem na lista; um backend sem o
+        // filtro `groupId` traria outros grupos.
         for (final model in models) {
           if (model.id.toLowerCase() == groupId.toLowerCase()) {
             return Success(model.toDomain());
