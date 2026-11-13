@@ -262,6 +262,29 @@ void main() {
         expect(tester.takeException(), isNull);
         expect(tester.getSize(find.widgetWithText(AppButton, 'Sair')), const Size(64.0 + 2 * 32, 40));
         expect(tester.getSize(find.widgetWithText(AppButton, 'Sim')).height, 40.0);
+
+        final box = tester.renderObject<RenderBox>(find.widgetWithText(AppButton, 'Sair'));
+        expect(box.getMinIntrinsicWidth(double.infinity), 64.0 + 2 * 32);
+        expect(box.getMaxIntrinsicWidth(double.infinity), 64.0 + 2 * 32);
+      });
+
+      testWidgets('ao trocar o tamanho, o padding e a altura acompanham', (tester) async {
+        Future<void> pump(AppButtonSize size) => tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: Row(
+                children: [AppButton.primary(label: 'Sair', size: size, onPressed: () {})],
+              ),
+            ),
+          ),
+        );
+
+        await pump(AppButtonSize.sm);
+        expect(tester.getSize(find.byType(AppButton)).height, 32.0);
+
+        await pump(AppButtonSize.md);
+        expect(tester.getSize(find.byType(AppButton)), const Size(64.0 + 2 * 32, 40));
       });
 
       testWidgets('a altura intrínseca não fica menor que a do layout com largura frouxa', (tester) async {

@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'gap.dart';
 
@@ -97,16 +98,11 @@ class AppButton extends StatelessWidget {
 
   static const double _borderWidth = 1.0;
 
-  static const double _tightWidthHorizontalPadding = 16.0;
-
-  EdgeInsets get _tightWidthPadding {
-    if (_padding.left <= _tightWidthHorizontalPadding) {
+  EdgeInsets _tightWidthPadding(double horizontal) {
+    if (_padding.left <= horizontal) {
       return _padding;
     }
-    return _padding.copyWith(
-      left: _tightWidthHorizontalPadding,
-      right: _tightWidthHorizontalPadding,
-    );
+    return _padding.copyWith(left: horizontal, right: horizontal);
   }
 
   EdgeInsets get _padding {
@@ -216,7 +212,10 @@ class AppButton extends StatelessWidget {
             onTap: _isEnabled ? onPressed : null,
             child: _ButtonPadding(
               padding: _withoutBorder(_padding, border),
-              tightWidthPadding: _withoutBorder(_tightWidthPadding, border),
+              tightWidthPadding: _withoutBorder(
+                _tightWidthPadding(context.spacing.s16),
+                border,
+              ),
               child: DefaultTextStyle(
                 style: textStyle.copyWith(color: foregroundColor),
                 child: IconTheme(
