@@ -11,9 +11,9 @@ import 'package:mobile/features/group_discovery/domain/entities/group_discovery_
 import 'package:mobile/features/group_discovery/presentation/cubit/public_group_cubit.dart';
 import 'package:mobile/features/group_discovery/presentation/cubit/public_group_state.dart';
 import 'package:mobile/features/group_discovery/presentation/widgets/join_request_dialog.dart';
+import 'package:mobile/features/group_discovery/presentation/widgets/join_request_feedback.dart';
 import 'package:mobile/features/group_discovery/presentation/widgets/public_group_content.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
-import 'package:mobile/l10n/app_localizations.dart';
 
 class PublicGroupPage extends StatelessWidget {
   const PublicGroupPage({super.key});
@@ -66,39 +66,9 @@ class PublicGroupPage extends StatelessWidget {
   }
 
   void _showJoinFeedback(BuildContext context, PublicGroupState state) {
-    final l10n = context.l10n;
-    final failure = state.joinFailure;
-    if (failure == null) {
-      AppToast.show(
-        context,
-        message: l10n.publicGroupJoinSuccess,
-        type: AppToastType.success,
-      );
-    } else {
-      AppToast.show(
-        context,
-        message: _joinFailureMessage(l10n, failure),
-        type: failure is GroupJoinAlreadyRequestedFailure
-            ? AppToastType.info
-            : AppToastType.error,
-      );
-    }
+    showJoinRequestFeedback(context, failure: state.joinFailure);
     context.read<PublicGroupCubit>().clearJoinFeedback();
   }
-
-  static String _joinFailureMessage(
-    AppLocalizations l10n,
-    GroupDiscoveryFailure failure,
-  ) => switch (failure) {
-    GroupDiscoveryNetworkFailure() => l10n.errorNoConnection,
-    GroupDiscoverySessionExpiredFailure() => l10n.errorSessionExpired,
-    GroupDiscoveryInactiveAccountFailure() => l10n.errorForbidden,
-    GroupJoinAlreadyRequestedFailure() => l10n.publicGroupJoinAlreadyRequested,
-    GroupJoinNoCoordinatorFailure() => l10n.publicGroupJoinNoCoordinator,
-    // Indisponível não chega aqui: o cubit troca a tela pelo estado próprio.
-    GroupUnavailableFailure() ||
-    GroupDiscoveryServerFailure() => l10n.publicGroupJoinError,
-  };
 }
 
 /// Carregando, erro ou grupo indisponível.

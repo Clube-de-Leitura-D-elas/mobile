@@ -3,8 +3,11 @@ import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/group_discovery/data/models/discovery_group_model.dart';
+import 'package:mobile/features/group_discovery/data/models/group_search_page_model.dart';
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
+import 'package:mobile/features/group_discovery/domain/entities/group_search_page_entity.dart';
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -12,6 +15,48 @@ class GroupDiscoveryRepositoryImpl implements GroupDiscoveryRepository {
   GroupDiscoveryRepositoryImpl({required this.supabaseService});
 
   final SupabaseService supabaseService;
+
+  static const _maxSearchLength = 100;
+
+  @override
+  Future<Result<GroupSearchPageEntity, GroupDiscoveryFailure>> searchGroups({
+    required int page,
+    String search = '',
+    GroupSearchFilters filters = GroupSearchFilters.empty,
+  }) async {
+    // O backend recusa busca com mais de 100 caracteres.
+    final trimmed = search.trim();
+    final query = trimmed.length > _maxSearchLength
+        ? trimmed.substring(0, _maxSearchLength)
+        : trimmed;
+    final genreId = filters.genre?.id;
+    final minParticipants = filters.minParticipants;
+    final maxParticipants = filters.maxParticipants;
+    final result = await supabaseService.invokeFunction<GroupSearchPageModel>(
+      functionName: 'get-city-groups',
+      method: HttpMethod.get,
+      // Filtro vazio fica fora da query: o backend recusa `genreId=""`.
+      queryParameters: {
+        'page': '$page',
+        'pageSize': '${GroupDiscoveryRepository.pageSize}',
+        if (query.isNotEmpty) 'search': query,
+        'genreId': ?genreId,
+        if (minParticipants != null) 'minParticipants': '$minParticipants',
+        if (maxParticipants != null) 'maxParticipants': '$maxParticipants',
+      },
+      decoder: (data) =>
+          GroupSearchPageModel.fromJson(data as Map<String, dynamic>),
+    );
+
+    switch (result) {
+      case Failure(:final failure):
+        return Failure(_failureFrom(failure));
+      case Success(:final data):
+        final model = data.data;
+        if (model == null) return const Failure(GroupDiscoveryServerFailure());
+        return Success(model.toDomain());
+    }
+  }
 
   @override
   Future<Result<DiscoveryGroupEntity, GroupDiscoveryFailure>> getGroup(

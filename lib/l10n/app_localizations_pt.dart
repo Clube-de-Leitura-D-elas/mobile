@@ -1461,6 +1461,83 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get publicGroupJoinError =>
       'Não foi possível enviar o pedido. Tente novamente.';
+
+  @override
+  String get searchTabBooks => 'Livros';
+
+  @override
+  String get searchTabGroups => 'Grupos';
+
+  @override
+  String get groupSearchTitle => 'Encontre seu grupo ideal';
+
+  @override
+  String get groupSearchHint => 'Buscar grupo';
+
+  @override
+  String get groupSearchFiltersButton => 'Filtros';
+
+  @override
+  String get groupSearchFiltersActive => 'Filtros aplicados';
+
+  @override
+  String get groupSearchFilterGenre => 'Gênero';
+
+  @override
+  String get groupSearchFilterGenreAll => 'Todos os gêneros';
+
+  @override
+  String get groupSearchFilterMin => 'Mínimo de participantes';
+
+  @override
+  String get groupSearchFilterMinHint => 'Ex.: 10';
+
+  @override
+  String get groupSearchFilterMax => 'Máximo de participantes';
+
+  @override
+  String get groupSearchFilterMaxHint => 'Ex.: 20';
+
+  @override
+  String get groupSearchFilterRangeError =>
+      'O mínimo não pode ser maior que o máximo.';
+
+  @override
+  String get groupSearchFiltersApply => 'Aplicar filtros';
+
+  @override
+  String get groupSearchFiltersClear => 'Limpar filtros';
+
+  @override
+  String get groupSearchLoading => 'Carregando grupos';
+
+  @override
+  String get groupSearchLoadingMore => 'Carregando mais grupos';
+
+  @override
+  String get groupSearchLoadError => 'Não foi possível carregar os grupos.';
+
+  @override
+  String get groupSearchLoadMoreError =>
+      'Não foi possível carregar mais grupos.';
+
+  @override
+  String get groupSearchEmpty => 'Ainda não há grupos na sua cidade.';
+
+  @override
+  String get groupSearchEmptyFiltered =>
+      'Nenhum grupo encontrado. Tente outra busca ou mude os filtros.';
+
+  @override
+  String get groupSearchEnd => 'Você chegou ao fim da lista.';
+
+  @override
+  String get groupSearchSeeDetails => 'Ver detalhes';
+
+  @override
+  String groupSearchSeeDetailsSemantic(int number) {
+    return 'Ver detalhes do Grupo $number';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2552,4 +2629,81 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get publicGroupJoinError =>
       'Não foi possível enviar o pedido. Tente novamente.';
+
+  @override
+  String get searchTabBooks => 'Livros';
+
+  @override
+  String get searchTabGroups => 'Grupos';
+
+  @override
+  String get groupSearchTitle => 'Encontre seu grupo ideal';
+
+  @override
+  String get groupSearchHint => 'Buscar grupo';
+
+  @override
+  String get groupSearchFiltersButton => 'Filtros';
+
+  @override
+  String get groupSearchFiltersActive => 'Filtros aplicados';
+
+  @override
+  String get groupSearchFilterGenre => 'Gênero';
+
+  @override
+  String get groupSearchFilterGenreAll => 'Todos os gêneros';
+
+  @override
+  String get groupSearchFilterMin => 'Mínimo de participantes';
+
+  @override
+  String get groupSearchFilterMinHint => 'Ex.: 10';
+
+  @override
+  String get groupSearchFilterMax => 'Máximo de participantes';
+
+  @override
+  String get groupSearchFilterMaxHint => 'Ex.: 20';
+
+  @override
+  String get groupSearchFilterRangeError =>
+      'O mínimo não pode ser maior que o máximo.';
+
+  @override
+  String get groupSearchFiltersApply => 'Aplicar filtros';
+
+  @override
+  String get groupSearchFiltersClear => 'Limpar filtros';
+
+  @override
+  String get groupSearchLoading => 'Carregando grupos';
+
+  @override
+  String get groupSearchLoadingMore => 'Carregando mais grupos';
+
+  @override
+  String get groupSearchLoadError => 'Não foi possível carregar os grupos.';
+
+  @override
+  String get groupSearchLoadMoreError =>
+      'Não foi possível carregar mais grupos.';
+
+  @override
+  String get groupSearchEmpty => 'Ainda não há grupos na sua cidade.';
+
+  @override
+  String get groupSearchEmptyFiltered =>
+      'Nenhum grupo encontrado. Tente outra busca ou mude os filtros.';
+
+  @override
+  String get groupSearchEnd => 'Você chegou ao fim da lista.';
+
+  @override
+  String get groupSearchSeeDetails => 'Ver detalhes';
+
+  @override
+  String groupSearchSeeDetailsSemantic(int number) {
+    return 'Ver detalhes do Grupo $number';
+  }
 }
