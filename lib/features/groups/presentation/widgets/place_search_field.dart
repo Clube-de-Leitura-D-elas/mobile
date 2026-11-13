@@ -13,6 +13,7 @@ class PlaceSearchField extends StatelessWidget {
     required this.onSelected,
     required this.onEdited,
     this.validator,
+    this.isRequired = false,
   });
 
   final TextEditingController controller;
@@ -22,6 +23,8 @@ class PlaceSearchField extends StatelessWidget {
   final VoidCallback onEdited;
 
   final String? Function(String?)? validator;
+
+  final bool isRequired;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,7 @@ class PlaceSearchField extends StatelessWidget {
       children: [
         AppTextField(
           label: l10n.meetingEditLocationLabel,
+          isRequired: isRequired,
           controller: controller,
           hintText: l10n.meetingEditLocationHint,
           validator: validator,

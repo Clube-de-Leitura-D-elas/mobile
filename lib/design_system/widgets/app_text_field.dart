@@ -40,9 +40,11 @@ class AppTextField extends StatefulWidget {
     this.maxLines = 1,
     this.size = AppTextFieldSize.md,
     this.validator,
+    this.isRequired = false,
   });
 
   final String? label;
+  final bool isRequired;
   final String? hintText;
   final String? helperText;
   final String? errorText;
@@ -165,8 +167,17 @@ class _AppTextFieldState extends State<AppTextField> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (widget.label != null) ...[
-              Text(
-                widget.label!,
+              Text.rich(
+                TextSpan(
+                  text: widget.label!,
+                  children: [
+                    if (widget.isRequired)
+                      TextSpan(
+                        text: ' *',
+                        style: TextStyle(color: colors.feedbackError),
+                      ),
+                  ],
+                ),
                 style: typography.bodyDefaultEmphasis.copyWith(
                   color: colors.textDefault,
                 ),
