@@ -39,7 +39,9 @@ class GroupDiscoveryRepositoryImpl implements GroupDiscoveryRepository {
         // Grupo inexistente, inativo ou de outra cidade não vem na lista; um
         // backend sem o filtro `groupId` traria outros grupos.
         for (final model in models) {
-          if (model.id == groupId) return Success(model.toDomain());
+          if (model.id.toLowerCase() == groupId.toLowerCase()) {
+            return Success(model.toDomain());
+          }
         }
         return const Failure(GroupUnavailableFailure());
     }

@@ -113,6 +113,26 @@ void main() {
       },
     );
 
+    test('matches the group id regardless of letter case', () async {
+      const lowerId = 'abcdef12-3456-4789-8abc-def123456789';
+      stub(
+        Success(
+          SupabaseResponse(
+            data: [
+              DiscoveryGroupModel.fromJson({
+                ...discoveryGroupJson(),
+                'id': lowerId,
+              }),
+            ],
+          ),
+        ),
+      );
+
+      final result = await repository.getGroup(lowerId.toUpperCase());
+
+      expect(result.unwrap().id, lowerId);
+    });
+
     test('picks the requested group among others', () async {
       stub(
         Success(
