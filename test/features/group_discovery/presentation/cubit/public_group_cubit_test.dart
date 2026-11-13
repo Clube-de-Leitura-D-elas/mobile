@@ -165,10 +165,37 @@ void main() {
       build: buildCubit,
       seed: () => loaded,
       act: (cubit) => cubit.requestJoin(),
-      verify: (cubit) {
-        expect(cubit.state.isRequesting, isFalse);
-        expect(cubit.state.group, noneGroup);
+      expect: () => [
+        loaded.copyWith(isRequesting: true),
+        loaded.copyWith(
+          isRequesting: true,
+          joinFailure: const GroupJoinAlreadyRequestedFailure(),
+        ),
+        loaded.copyWith(joinFailure: const GroupJoinAlreadyRequestedFailure()),
+      ],
+    );
+
+    blocTest<PublicGroupCubit, PublicGroupState>(
+      'shows the unavailable state when the group is gone on that reload',
+      setUp: () {
+        when(() => repository.requestJoin(groupId)).thenAnswer(
+          (_) async => const Failure(GroupJoinAlreadyRequestedFailure()),
+        );
+        when(
+          () => repository.getGroup(groupId),
+        ).thenAnswer((_) async => const Failure(GroupUnavailableFailure()));
       },
+      build: buildCubit,
+      seed: () => loaded,
+      act: (cubit) => cubit.requestJoin(),
+      expect: () => [
+        loaded.copyWith(isRequesting: true),
+        loaded.copyWith(
+          isRequesting: true,
+          joinFailure: const GroupJoinAlreadyRequestedFailure(),
+        ),
+        const PublicGroupState(status: PublicGroupStatus.unavailable),
+      ],
     );
 
     test('a double tap sends a single request', () async {

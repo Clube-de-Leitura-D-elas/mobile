@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/uuid.dart';
 import 'package:mobile/core/tools/result.dart';
-import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_membership_status.dart';
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
@@ -83,19 +82,19 @@ class PublicGroupCubit extends Cubit<PublicGroupState> {
     emit(state.copyWith(joinRequested: false, clearJoinFailure: true));
   }
 
-  /// Atualiza o status do grupo sem trocar a tela por carregamento; se falhar,
-  /// fica o que já está na tela.
+  /// Atualiza o status do grupo sem trocar a tela por carregamento. Grupo que
+  /// ficou indisponível troca a tela; outra falha mantém o que já está nela.
   Future<void> _refreshGroup(String groupId) async {
     final result = await repository.getGroup(groupId);
     if (isClosed) return;
 
-    emit(
-      state.copyWith(
-        group: result is Success<DiscoveryGroupEntity, GroupDiscoveryFailure>
-            ? result.data
-            : null,
-        isRequesting: false,
-      ),
-    );
+    switch (result) {
+      case Failure(failure: GroupUnavailableFailure()):
+        emit(const PublicGroupState(status: PublicGroupStatus.unavailable));
+      case Success(:final data):
+        emit(state.copyWith(group: data, isRequesting: false));
+      case Failure():
+        emit(state.copyWith(isRequesting: false));
+    }
   }
 }

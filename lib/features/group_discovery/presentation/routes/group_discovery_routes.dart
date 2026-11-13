@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
@@ -17,6 +18,9 @@ abstract class GroupDiscoveryRoutes {
         return AppPageTransitions.createPushPage(
           state: state,
           child: BlocProvider(
+            // A pageKey não inclui a query: sem a chave, trocar de grupo na
+            // mesma rota reaproveitaria o cubit do grupo anterior.
+            key: ValueKey(groupId),
             create: (_) => serviceLocator<PublicGroupCubit>()..load(groupId),
             child: const PublicGroupPage(),
           ),
