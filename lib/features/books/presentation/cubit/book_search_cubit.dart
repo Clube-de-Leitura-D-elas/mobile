@@ -92,7 +92,7 @@ class BookSearchCubit extends Cubit<BookSearchState> {
 
     final result = await bookRepository.setReadingStatus(
       bookId: bookId,
-      status: nextListReadingStatus(current.myStatus),
+      status: nextReadingStatus(current.myStatus),
     );
     if (isClosed) {
       return;
