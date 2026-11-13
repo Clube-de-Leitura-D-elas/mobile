@@ -9,20 +9,17 @@ import 'package:mobile/features/group_discovery/presentation/cubit/group_search_
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
-import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/features/quick_access/presentation/pages/search_page.dart';
 
 abstract class QuickAccessRoutes {
   static const String home = '/home';
   static const String search = '/search';
-  static const String add = '/add';
   static const String calendar = '/calendar';
   static const String profile = '/profile';
 
   static String pathFor(QuickAccessItem item) => switch (item) {
     QuickAccessItem.home => home,
     QuickAccessItem.search => search,
-    QuickAccessItem.plus => add,
     QuickAccessItem.calendar => calendar,
     QuickAccessItem.profile => profile,
   };
@@ -30,41 +27,40 @@ abstract class QuickAccessRoutes {
   static bool isTabPath(String location) =>
       QuickAccessItem.values.any((item) => pathFor(item) == location);
 
-  /// Obs. abas ainda sem tela própria: só a nav bar, sem conteúdo.
+  /// A aba Início tem rota própria (HomeRoutes).
   static List<RouteBase> get routes => [
-    for (final item in QuickAccessItem.values)
-      if (item != QuickAccessItem.home)
-        GoRoute(
-          path: pathFor(item),
-          pageBuilder: (context, state) {
-            final Widget pageChild = switch (item) {
-              QuickAccessItem.profile => const ProfilePage(),
-              QuickAccessItem.search => MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (_) => serviceLocator<BookSearchCubit>()..load(),
-                  ),
-                  // Preguiçoso: só carrega quando a aba Grupos abre.
-                  BlocProvider(
-                    create: (_) => serviceLocator<GroupSearchCubit>()..load(),
-                  ),
-                ],
-                child: const SearchPage(),
-              ),
-              QuickAccessItem.calendar => BlocProvider(
-                create: (_) => serviceLocator<CalendarCubit>()..load(),
-                child: const CalendarPage(),
-              ),
-              _ => QuickAccessPlaceholderScreen(item: item),
-            };
-
-            return AppPageTransitions.createFadePage(
-              state: state,
-              child: pageChild,
-            );
-          },
-        ),
+    _tab(
+      QuickAccessItem.search,
+      () => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => serviceLocator<BookSearchCubit>()..load(),
+          ),
+          // Preguiçoso: só carrega quando a aba Grupos abre.
+          BlocProvider(
+            create: (_) => serviceLocator<GroupSearchCubit>()..load(),
+          ),
+        ],
+        child: const SearchPage(),
+      ),
+    ),
+    _tab(
+      QuickAccessItem.calendar,
+      () => BlocProvider(
+        create: (_) => serviceLocator<CalendarCubit>()..load(),
+        child: const CalendarPage(),
+      ),
+    ),
+    _tab(QuickAccessItem.profile, () => const ProfilePage()),
   ];
+
+  static GoRoute _tab(QuickAccessItem item, Widget Function() page) {
+    return GoRoute(
+      path: pathFor(item),
+      pageBuilder: (context, state) =>
+          AppPageTransitions.createFadePage(state: state, child: page()),
+    );
+  }
 }
 
 extension QuickAccessNavigation on BuildContext {

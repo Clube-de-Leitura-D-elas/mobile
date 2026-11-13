@@ -22,7 +22,6 @@ import 'package:mobile/features/group_discovery/domain/repository/group_discover
 import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
 import 'package:mobile/features/group_discovery/presentation/pages/group_search_view.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
-import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 import 'package:mobile/features/quick_access/presentation/pages/search_page.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -119,7 +118,6 @@ void main() {
       expect(QuickAccessItem.values.map(QuickAccessRoutes.pathFor).toList(), [
         '/home',
         '/search',
-        '/add',
         '/calendar',
         '/profile',
       ]);
@@ -144,42 +142,16 @@ void main() {
     test('does not register a duplicate home route', () {
       final routes = QuickAccessRoutes.routes;
 
-      expect(routes, hasLength(4));
+      expect(routes, hasLength(3));
       expect(routes.whereType<GoRoute>().map((route) => route.path), [
         '/search',
-        '/add',
         '/calendar',
         '/profile',
       ]);
     });
 
     testWidgets(
-      'renders a placeholder with the selected tab for tabs without a screen',
-      (tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: const QuickAccessPlaceholderScreen(
-              item: QuickAccessItem.plus,
-            ),
-          ),
-        );
-        await tester.pump();
-
-        expect(find.byType(Scaffold), findsOneWidget);
-        expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
-
-        final navigationBar = tester.widget<BottomNavigationBarWidget>(
-          find.byType(BottomNavigationBarWidget),
-        );
-
-        expect(navigationBar.currentIndex, QuickAccessItem.plus.index);
-      },
-    );
-
-    testWidgets(
-      'renders the book search, the profile, the calendar and the add '
-      'placeholder on their tabs',
+      'renders the book search, the profile and the calendar on their tabs',
       (tester) async {
         final allowReassignment = serviceLocator.allowReassignment;
         addTearDown(() => serviceLocator.allowReassignment = allowReassignment);
@@ -215,9 +187,18 @@ void main() {
         );
         await tester.pumpAndSettle();
 
+        // Cada aba marca o próprio item da barra (agora sem o "Adicionar").
+        void expectSelected(QuickAccessItem item) {
+          final bar = tester.widget<BottomNavigationBarWidget>(
+            find.byType(BottomNavigationBarWidget),
+          );
+          expect(bar.currentIndex, item.index);
+        }
+
         expect(find.byType(SearchPage), findsOneWidget);
         expect(find.byType(BookSearchPage), findsOneWidget);
         expect(find.byType(ProfilePage), findsNothing);
+        expectSelected(QuickAccessItem.search);
 
         await tester.tap(find.text('Grupos'));
         await tester.pumpAndSettle();
@@ -229,18 +210,29 @@ void main() {
 
         expect(find.byType(ProfilePage), findsOneWidget);
         expect(find.byType(BookSearchPage), findsNothing);
+        expectSelected(QuickAccessItem.profile);
 
         router.go('/calendar');
         await tester.pumpAndSettle();
 
         expect(find.byType(CalendarPage), findsOneWidget);
-        expect(find.byType(QuickAccessPlaceholderScreen), findsNothing);
+        expectSelected(QuickAccessItem.calendar);
 
-        router.go('/add');
+        // Tocar num item da barra abre a aba dele, pela ordem nova.
+        await tester.tap(find.bySemanticsLabel('Perfil'));
         await tester.pumpAndSettle();
+        expect(find.byType(ProfilePage), findsOneWidget);
+        expectSelected(QuickAccessItem.profile);
 
-        expect(find.byType(QuickAccessPlaceholderScreen), findsOneWidget);
-        expect(find.byType(CalendarPage), findsNothing);
+        await tester.tap(find.bySemanticsLabel('Calendário'));
+        await tester.pumpAndSettle();
+        expect(find.byType(CalendarPage), findsOneWidget);
+        expectSelected(QuickAccessItem.calendar);
+
+        await tester.tap(find.bySemanticsLabel('Busca'));
+        await tester.pumpAndSettle();
+        expect(find.byType(SearchPage), findsOneWidget);
+        expectSelected(QuickAccessItem.search);
       },
     );
   });
