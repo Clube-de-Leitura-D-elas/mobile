@@ -6,6 +6,8 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
+import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
+import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/quick_access/presentation/pages/quick_access_placeholder_screen.dart';
 
@@ -39,6 +41,10 @@ abstract class QuickAccessRoutes {
               QuickAccessItem.search => BlocProvider(
                 create: (_) => serviceLocator<BookSearchCubit>()..load(),
                 child: const BookSearchPage(),
+              ),
+              QuickAccessItem.calendar => BlocProvider(
+                create: (_) => serviceLocator<CalendarCubit>()..load(),
+                child: const CalendarPage(),
               ),
               _ => QuickAccessPlaceholderScreen(item: item),
             };

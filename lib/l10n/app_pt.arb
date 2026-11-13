@@ -1657,5 +1657,180 @@
   "raffleListRefreshedHint": "Atualizamos a lista: confira as participantes e confirme de novo.",
   "@raffleListRefreshedHint": {
     "description": "Depois do motivo, quando a preparação recarrega a lista sozinha."
+  },
+  "calendarMonthName": "{month}",
+  "@calendarMonthName": {
+    "description": "Nome do mês no cabeçalho do calendário; a tela põe a inicial maiúscula.",
+    "placeholders": {
+      "month": {
+        "type": "DateTime",
+        "format": "LLLL"
+      }
+    }
+  },
+  "calendarMonthSemantic": "{month}",
+  "@calendarMonthSemantic": {
+    "description": "Rótulo acessível do mês exibido (\"agosto de 2026\"); a tela põe a inicial maiúscula.",
+    "placeholders": {
+      "month": {
+        "type": "DateTime",
+        "format": "yMMMM"
+      }
+    }
+  },
+  "calendarPreviousMonth": "Mês anterior",
+  "@calendarPreviousMonth": {
+    "description": "Botão que mostra o mês anterior no calendário."
+  },
+  "calendarNextMonth": "Próximo mês",
+  "@calendarNextMonth": {
+    "description": "Botão que mostra o mês seguinte no calendário."
+  },
+  "calendarWeekdayShort": "{weekday, select, sunday{Dom} monday{Seg} tuesday{Ter} wednesday{Qua} thursday{Qui} friday{Sex} saturday{Sáb} other{}}",
+  "@calendarWeekdayShort": {
+    "description": "Abreviação do dia da semana no topo da grade do calendário.",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDaySemantic": "{day}, {count, plural, =0{sem encontros} =1{1 encontro} other{{count} encontros}}",
+  "@calendarDaySemantic": {
+    "description": "Rótulo acessível de um dia da grade com a quantidade de encontros.",
+    "placeholders": {
+      "day": {
+        "type": "DateTime",
+        "format": "MMMMd"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarToday": "Hoje",
+  "@calendarToday": {
+    "description": "Valor acessível do dia de hoje na grade do calendário."
+  },
+  "calendarFilterAll": "Todos",
+  "@calendarFilterAll": {
+    "description": "Filtro do calendário que mostra todos os encontros do mês."
+  },
+  "calendarFilterUpcoming": "Próximos eventos ({count})",
+  "@calendarFilterUpcoming": {
+    "description": "Filtro do calendário com os encontros futuros do mês e a quantidade deles.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarFilterPast": "Eventos passados",
+  "@calendarFilterPast": {
+    "description": "Filtro do calendário com os encontros do mês que já aconteceram."
+  },
+  "calendarSelectedDayTitle": "{day}",
+  "@calendarSelectedDayTitle": {
+    "description": "Título da lista quando um dia está selecionado (\"segunda-feira, 14 de agosto\"); a tela põe a inicial maiúscula.",
+    "placeholders": {
+      "day": {
+        "type": "DateTime",
+        "format": "MMMMEEEEd"
+      }
+    }
+  },
+  "calendarClearSelectedDay": "Limpar dia selecionado",
+  "@calendarClearSelectedDay": {
+    "description": "Botão que tira a seleção do dia e volta para a lista do mês."
+  },
+  "calendarMeetingTitle": "Encontro Grupo {number}",
+  "@calendarMeetingTitle": {
+    "description": "Título do encontro na lista do dia selecionado.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMeetingTitleWithDate": "{date} - Encontro Grupo {number}",
+  "@calendarMeetingTitleWithDate": {
+    "description": "Título do encontro na lista do mês, com a data.",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMeetingTime": "{time}",
+  "@calendarMeetingTime": {
+    "description": "Horário de início do encontro na lista do calendário.",
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "Hm"
+      }
+    }
+  },
+  "calendarParticipantsCount": "{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}",
+  "@calendarParticipantsCount": {
+    "description": "Quantidade de participantes do grupo do encontro no calendário.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMeetingHost": "{name} (Anfitriã)",
+  "@calendarMeetingHost": {
+    "description": "Anfitriã do encontro no calendário; só aparece para quem é membro do grupo.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarLoading": "Carregando encontros",
+  "@calendarLoading": {
+    "description": "Rótulo acessível do carregamento da lista de encontros do calendário."
+  },
+  "calendarLoadError": "Não foi possível carregar o calendário.",
+  "@calendarLoadError": {
+    "description": "Erro ao buscar os encontros do mês no calendário."
+  },
+  "calendarEmptyMonth": "Nenhum encontro neste mês.",
+  "@calendarEmptyMonth": {
+    "description": "Calendário sem encontros no mês exibido."
+  },
+  "calendarEmptyUpcoming": "Nenhum próximo encontro neste mês.",
+  "@calendarEmptyUpcoming": {
+    "description": "Calendário com o filtro de próximos eventos e nenhum encontro futuro no mês."
+  },
+  "calendarEmptyPast": "Nenhum encontro passado neste mês.",
+  "@calendarEmptyPast": {
+    "description": "Calendário com o filtro de eventos passados e nenhum encontro passado no mês."
+  },
+  "calendarEmptyDay": "Nenhum encontro neste dia.",
+  "@calendarEmptyDay": {
+    "description": "Dia selecionado no calendário sem encontros."
+  },
+  "calendarMonthTitle": "{month} {year}",
+  "@calendarMonthTitle": {
+    "description": "Título do mês no cabeçalho do calendário (\"Agosto 2026\"); month já vem com a inicial maiúscula.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMeetingDraftTag": "Rascunho",
+  "@calendarMeetingDraftTag": {
+    "description": "Tag do encontro ainda em rascunho (status CREATED), visível só para quem é membro do grupo."
   }
 }

@@ -2179,6 +2179,156 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Atualizamos a lista: confira as participantes e confirme de novo.'**
   String get raffleListRefreshedHint;
+
+  /// Nome do mês no cabeçalho do calendário; a tela põe a inicial maiúscula.
+  ///
+  /// In pt, this message translates to:
+  /// **'{month}'**
+  String calendarMonthName(DateTime month);
+
+  /// Rótulo acessível do mês exibido ("agosto de 2026"); a tela põe a inicial maiúscula.
+  ///
+  /// In pt, this message translates to:
+  /// **'{month}'**
+  String calendarMonthSemantic(DateTime month);
+
+  /// Botão que mostra o mês anterior no calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês anterior'**
+  String get calendarPreviousMonth;
+
+  /// Botão que mostra o mês seguinte no calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo mês'**
+  String get calendarNextMonth;
+
+  /// Abreviação do dia da semana no topo da grade do calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'{weekday, select, sunday{Dom} monday{Seg} tuesday{Ter} wednesday{Qua} thursday{Qui} friday{Sex} saturday{Sáb} other{}}'**
+  String calendarWeekdayShort(String weekday);
+
+  /// Rótulo acessível de um dia da grade com a quantidade de encontros.
+  ///
+  /// In pt, this message translates to:
+  /// **'{day}, {count, plural, =0{sem encontros} =1{1 encontro} other{{count} encontros}}'**
+  String calendarDaySemantic(DateTime day, int count);
+
+  /// Valor acessível do dia de hoje na grade do calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Hoje'**
+  String get calendarToday;
+
+  /// Filtro do calendário que mostra todos os encontros do mês.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get calendarFilterAll;
+
+  /// Filtro do calendário com os encontros futuros do mês e a quantidade deles.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximos eventos ({count})'**
+  String calendarFilterUpcoming(int count);
+
+  /// Filtro do calendário com os encontros do mês que já aconteceram.
+  ///
+  /// In pt, this message translates to:
+  /// **'Eventos passados'**
+  String get calendarFilterPast;
+
+  /// Título da lista quando um dia está selecionado ("segunda-feira, 14 de agosto"); a tela põe a inicial maiúscula.
+  ///
+  /// In pt, this message translates to:
+  /// **'{day}'**
+  String calendarSelectedDayTitle(DateTime day);
+
+  /// Botão que tira a seleção do dia e volta para a lista do mês.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar dia selecionado'**
+  String get calendarClearSelectedDay;
+
+  /// Título do encontro na lista do dia selecionado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro Grupo {number}'**
+  String calendarMeetingTitle(int number);
+
+  /// Título do encontro na lista do mês, com a data.
+  ///
+  /// In pt, this message translates to:
+  /// **'{date} - Encontro Grupo {number}'**
+  String calendarMeetingTitleWithDate(DateTime date, int number);
+
+  /// Horário de início do encontro na lista do calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'{time}'**
+  String calendarMeetingTime(DateTime time);
+
+  /// Quantidade de participantes do grupo do encontro no calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
+  String calendarParticipantsCount(int count);
+
+  /// Anfitriã do encontro no calendário; só aparece para quem é membro do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} (Anfitriã)'**
+  String calendarMeetingHost(String name);
+
+  /// Rótulo acessível do carregamento da lista de encontros do calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando encontros'**
+  String get calendarLoading;
+
+  /// Erro ao buscar os encontros do mês no calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o calendário.'**
+  String get calendarLoadError;
+
+  /// Calendário sem encontros no mês exibido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum encontro neste mês.'**
+  String get calendarEmptyMonth;
+
+  /// Calendário com o filtro de próximos eventos e nenhum encontro futuro no mês.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum próximo encontro neste mês.'**
+  String get calendarEmptyUpcoming;
+
+  /// Calendário com o filtro de eventos passados e nenhum encontro passado no mês.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum encontro passado neste mês.'**
+  String get calendarEmptyPast;
+
+  /// Dia selecionado no calendário sem encontros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum encontro neste dia.'**
+  String get calendarEmptyDay;
+
+  /// Título do mês no cabeçalho do calendário ("Agosto 2026"); month já vem com a inicial maiúscula.
+  ///
+  /// In pt, this message translates to:
+  /// **'{month} {year}'**
+  String calendarMonthTitle(String month, int year);
+
+  /// Tag do encontro ainda em rascunho (status CREATED), visível só para quem é membro do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rascunho'**
+  String get calendarMeetingDraftTag;
 }
 
 class _AppLocalizationsDelegate
