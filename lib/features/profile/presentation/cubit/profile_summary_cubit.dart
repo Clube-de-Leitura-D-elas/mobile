@@ -32,7 +32,8 @@ class ProfileSummaryCubit extends Cubit<ProfileSummaryState> {
 
     final requestId = ++_nextRequestId;
     final result = await repository.getProfileSummary();
-    if (isClosed) return;
+    // Uma carga mais nova, que começou depois desta, vale mais.
+    if (isClosed || requestId != _nextRequestId) return;
 
     if (result case Success(:final data)) {
       emit(ProfileSummaryLoaded(data));
