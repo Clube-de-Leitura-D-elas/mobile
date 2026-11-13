@@ -19,14 +19,16 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
+// Por padrão a participante não respondeu ao convite, e começa desmarcada.
 MeetingAttendanceEntity _attendee(
   String id,
   String name, {
   MeetingPresenceStatus? presenceStatus,
+  MeetingInvitationStatus invitationStatus = MeetingInvitationStatus.pending,
 }) => MeetingAttendanceEntity(
   id: id,
   name: name,
-  invitationStatus: MeetingInvitationStatus.confirmed,
+  invitationStatus: invitationStatus,
   presenceStatus: presenceStatus,
 );
 
@@ -112,21 +114,36 @@ void main() {
       );
     });
 
-    testWidgets('desmarcar um participante atualiza a tela', (tester) async {
-      stubAttendance([_attendee('u-1', 'Ana'), _attendee('u-2', 'Bruno')]);
+    testWidgets('abre marcando só quem confirmou e marcar atualiza a tela', (
+      tester,
+    ) async {
+      stubAttendance([
+        _attendee(
+          'u-1',
+          'Ana',
+          invitationStatus: MeetingInvitationStatus.declined,
+        ),
+        _attendee('u-2', 'Bruno'),
+        _attendee(
+          'u-3',
+          'Carla',
+          invitationStatus: MeetingInvitationStatus.confirmed,
+        ),
+      ]);
 
       await tester.pumpWidget(buildApp());
       await cubit.load(meetingId);
       await tester.pump();
 
+      MeetingPresenceScreen screen() => tester.widget<MeetingPresenceScreen>(
+        find.byType(MeetingPresenceScreen),
+      );
+      expect(screen().marked, {'u-3'});
+
       cubit.toggle('u-2');
       await tester.pump();
 
-      final screen = tester.widget<MeetingPresenceScreen>(
-        find.byType(MeetingPresenceScreen),
-      );
-
-      expect(screen.marked, {'u-1'});
+      expect(screen().marked, {'u-2', 'u-3'});
     });
 
     testWidgets('exibe a lista somente leitura no estado Closed', (
@@ -162,6 +179,8 @@ void main() {
 
       await tester.pumpWidget(buildApp());
       await cubit.load(meetingId);
+      await tester.pump();
+      cubit.toggle('u-1');
       await tester.pump();
 
       await tester.tap(find.byType(AppButton));
@@ -218,6 +237,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       await cubit.load(meetingId);
+      await tester.pump();
+      cubit.toggle('u-1');
       await tester.pump();
 
       await tester.tap(find.byType(AppButton));

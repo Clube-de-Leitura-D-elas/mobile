@@ -2725,6 +2725,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Recusar pedido de {name}'**
   String groupJoinRequestsRejectSemantics(String name);
+
+  /// Título do modal ao confirmar a lista de presença sem ninguém marcado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ninguém compareceu?'**
+  String get meetingPresenceEmptyConfirmTitle;
+
+  /// Explica que confirmar sem marcações registra falta para todas, sem volta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.'**
+  String get meetingPresenceEmptyConfirmMessage;
+
+  /// Botão que fecha o modal e volta para a lista de presença.
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get meetingPresenceEmptyConfirmCancel;
+
+  /// Botão que envia a lista de presença sem ninguém marcado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar mesmo assim'**
+  String get meetingPresenceEmptyConfirmConfirm;
 }
 
 class _AppLocalizationsDelegate
