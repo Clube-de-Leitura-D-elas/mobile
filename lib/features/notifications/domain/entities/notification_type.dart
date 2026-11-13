@@ -15,6 +15,10 @@ enum NotificationType {
   /// A leitora continua fora do grupo: o destino é a tela pública dele.
   groupJoinRejected,
 
+  /// Para a anfitriã e a coordenação: alguém de fora do grupo pediu para
+  /// participar de um encontro.
+  meetingGuestRequested,
+
   /// Tipo criado no backend depois desta versão do app.
   unknown,
 }

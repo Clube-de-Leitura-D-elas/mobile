@@ -164,18 +164,24 @@ class _RaffleHeader extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              context.l10n.raffleTableHeaderName,
-              style: typography.bodySmall.copyWith(
-                color: colors.textDefault,
-                fontWeight: FontWeight.w700,
+            Flexible(
+              child: Text(
+                context.l10n.raffleTableHeaderName,
+                style: typography.bodySmall.copyWith(
+                  color: colors.textDefault,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-            Text(
-              context.l10n.raffleTableHeaderInclude,
-              style: typography.bodySmall.copyWith(
-                color: colors.textDefault,
-                fontWeight: FontWeight.w700,
+            const Gap16(),
+            Flexible(
+              child: Text(
+                context.l10n.raffleTableHeaderInclude,
+                textAlign: TextAlign.end,
+                style: typography.bodySmall.copyWith(
+                  color: colors.textDefault,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

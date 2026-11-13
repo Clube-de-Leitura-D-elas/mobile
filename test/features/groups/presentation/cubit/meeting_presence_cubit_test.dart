@@ -18,12 +18,14 @@ MeetingAttendanceEntity _attendee(
   String id,
   String name, {
   MeetingPresenceStatus? presenceStatus,
+  bool isGuest = false,
   MeetingInvitationStatus invitationStatus = MeetingInvitationStatus.pending,
 }) => MeetingAttendanceEntity(
   id: id,
   name: name,
   invitationStatus: invitationStatus,
   presenceStatus: presenceStatus,
+  isGuest: isGuest,
 );
 
 void main() {
@@ -375,6 +377,37 @@ void main() {
           any(that: unorderedEquals(['u-1', 'u-2', 'u-3'])),
         ),
       ).called(1);
+    });
+
+    test('a convidada aceita começa marcada e continua convidada', () async {
+      stubAttendance([
+        _attendee('u-1', 'Ana'),
+        _attendee(
+          'g-1',
+          'Clara',
+          invitationStatus: MeetingInvitationStatus.confirmed,
+          isGuest: true,
+        ),
+      ]);
+      await cubit.load(meetingId);
+      expect((cubit.state as MeetingPresenceEditing).marked, {'g-1'});
+      when(
+        () => repository.setMeetingPresence(meetingId, any()),
+      ).thenAnswer((_) async => const Success<void, GroupFailure>(null));
+
+      await cubit.confirm();
+
+      verify(
+        () => repository.setMeetingPresence(
+          meetingId,
+          any(that: unorderedEquals(['g-1'])),
+        ),
+      ).called(1);
+      final closed = cubit.state as MeetingPresenceClosed;
+      expect(
+        {for (final a in closed.attendees) a.id: a.isGuest},
+        {'u-1': false, 'g-1': true},
+      );
     });
 
     test('mantém invitationStatus e photoUrl e grava a presença de cada '

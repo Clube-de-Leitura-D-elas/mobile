@@ -28,17 +28,30 @@ class PresenceAttendeeTile extends StatelessWidget {
       container: true,
       checked: isChecked,
       enabled: onChanged != null,
-      label: '${attendee.name}, $hint',
+      label: [
+        attendee.name,
+        if (attendee.isGuest) l10n.meetingAttendanceGuestTag,
+        hint,
+      ].join(', '),
       onTap: onChanged,
       child: ExcludeSemantics(
         child: ListTile(
           leading: AppParticipantAvatar(photoUrl: attendee.photoUrl),
           title: Text(attendee.name, style: context.typography.bodyDefault),
-          subtitle: Text(
-            hint,
-            style: context.typography.bodyDefault.copyWith(
-              color: context.colors.textMuted,
-            ),
+          subtitle: Wrap(
+            spacing: context.spacing.s8,
+            runSpacing: context.spacing.s4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (attendee.isGuest)
+                AppTag(label: l10n.meetingAttendanceGuestTag),
+              Text(
+                hint,
+                style: context.typography.bodyDefault.copyWith(
+                  color: context.colors.textMuted,
+                ),
+              ),
+            ],
           ),
           trailing: Checkbox(
             value: isChecked,
