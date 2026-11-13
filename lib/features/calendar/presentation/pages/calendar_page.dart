@@ -178,9 +178,7 @@ class _CalendarContent extends StatelessWidget {
                   key: ValueKey(meeting.id),
                   meeting: meeting,
                   showDate: state.selectedDay == null,
-                  onTap: destination == null
-                      ? null
-                      : () => unawaited(context.push<Object?>(destination)),
+                  onTap: () => unawaited(context.push<Object?>(destination)),
                 );
               },
             ),

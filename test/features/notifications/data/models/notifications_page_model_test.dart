@@ -52,6 +52,9 @@ void main() {
       'MEETING_SCHEDULE_PENDING': NotificationType.meetingSchedulePending,
       'MEETING_UPDATED': NotificationType.meetingUpdated,
       'DRAW_RESULT': NotificationType.drawResult,
+      'GROUP_JOIN_REQUESTED': NotificationType.groupJoinRequested,
+      'GROUP_JOIN_APPROVED': NotificationType.groupJoinApproved,
+      'GROUP_JOIN_REJECTED': NotificationType.groupJoinRejected,
     };
 
     backendTypes.forEach((value, type) {

@@ -11,15 +11,13 @@ class CalendarMeetingTile extends StatelessWidget {
   /// Na lista do mês o título leva a data; na do dia selecionado, não.
   final bool showDate;
 
-  /// `null` quando o encontro ainda não tem para onde levar: o card fica
-  /// sem seta e sem papel de botão.
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   const CalendarMeetingTile({
     super.key,
     required this.meeting,
     required this.showDate,
-    this.onTap,
+    required this.onTap,
   });
 
   @override
@@ -27,7 +25,6 @@ class CalendarMeetingTile extends StatelessWidget {
     final colors = context.colors;
     final spacing = context.spacing;
     final l10n = context.l10n;
-    final onTap = this.onTap;
     final hostName = meeting.hostName;
     final group = meeting.group;
 
@@ -41,7 +38,7 @@ class CalendarMeetingTile extends StatelessWidget {
     final draft = meeting.isDraft ? l10n.calendarMeetingDraftTag : null;
 
     return Semantics(
-      button: onTap != null,
+      button: true,
       label: [title, ?draft, time, participants, ?place, ?host].join(', '),
       onTap: onTap,
       excludeSemantics: true,
@@ -82,10 +79,8 @@ class CalendarMeetingTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (onTap != null) ...[
-              SizedBox(width: spacing.s8),
-              Icon(Icons.chevron_right, color: colors.textMuted),
-            ],
+            SizedBox(width: spacing.s8),
+            Icon(Icons.chevron_right, color: colors.textMuted),
           ],
         ),
       ),
