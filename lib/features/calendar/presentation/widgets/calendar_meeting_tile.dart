@@ -2,7 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity.dart';
-import 'package:mobile/features/calendar/domain/sao_paulo_time.dart';
+import 'package:mobile/core/tools/sao_paulo_time.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_info_row.dart';
 
 class CalendarMeetingTile extends StatelessWidget {

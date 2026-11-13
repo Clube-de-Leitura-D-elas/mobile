@@ -1913,5 +1913,114 @@
   "publicGroupJoinError": "Não foi possível enviar o pedido. Tente novamente.",
   "@publicGroupJoinError": {
     "description": "Erro genérico ao pedir entrada no grupo."
+  },
+  "groupJoinRequestsAccess": "Pedidos de entrada ({count})",
+  "@groupJoinRequestsAccess": {
+    "description": "Botão no detalhe do grupo, só para a coordenadora, com a quantidade de pedidos pendentes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupJoinRequestsTitle": "Pedidos de entrada",
+  "@groupJoinRequestsTitle": {
+    "description": "Título da tela de pedidos de entrada do grupo."
+  },
+  "groupJoinRequestsLoading": "Carregando pedidos de entrada",
+  "@groupJoinRequestsLoading": {
+    "description": "Rótulo de acessibilidade do carregamento da lista de pedidos."
+  },
+  "groupJoinRequestsEmpty": "Nenhum pedido de entrada",
+  "@groupJoinRequestsEmpty": {
+    "description": "Lista de pedidos de entrada vazia."
+  },
+  "groupJoinRequestsLoadError": "Não foi possível carregar os pedidos de entrada.",
+  "@groupJoinRequestsLoadError": {
+    "description": "Erro genérico ao carregar os pedidos de entrada."
+  },
+  "groupJoinRequestsNotCoordinator": "Só a coordenação do grupo pode ver os pedidos de entrada.",
+  "@groupJoinRequestsNotCoordinator": {
+    "description": "A leitora não é coordenadora do grupo (HTTP 403)."
+  },
+  "groupJoinRequestsGroupUnavailable": "Este grupo não está disponível.",
+  "@groupJoinRequestsGroupUnavailable": {
+    "description": "Link para os pedidos sem um grupo válido."
+  },
+  "groupJoinRequestsRequestedAt": "Pedido em {date} às {time}",
+  "@groupJoinRequestsRequestedAt": {
+    "description": "Data e hora do pedido de entrada, no fuso de São Paulo.",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "time": {
+        "type": "DateTime",
+        "format": "Hm"
+      }
+    }
+  },
+  "groupJoinRequestsApprove": "Aceitar",
+  "@groupJoinRequestsApprove": {
+    "description": "Botão que aceita o pedido de entrada."
+  },
+  "groupJoinRequestsReject": "Recusar",
+  "@groupJoinRequestsReject": {
+    "description": "Botão que recusa o pedido de entrada."
+  },
+  "groupJoinRequestsApproveDialogTitle": "Aceitar pedido?",
+  "@groupJoinRequestsApproveDialogTitle": {
+    "description": "Título da confirmação de aceite do pedido de entrada."
+  },
+  "groupJoinRequestsApproveDialogMessage": "{name} vai passar a fazer parte do grupo.",
+  "@groupJoinRequestsApproveDialogMessage": {
+    "description": "Texto da confirmação de aceite do pedido de entrada.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupJoinRequestsRejectDialogTitle": "Recusar pedido?",
+  "@groupJoinRequestsRejectDialogTitle": {
+    "description": "Título da confirmação de recusa do pedido de entrada."
+  },
+  "groupJoinRequestsRejectDialogMessage": "{name} não vai entrar no grupo agora, mas poderá pedir de novo.",
+  "@groupJoinRequestsRejectDialogMessage": {
+    "description": "Texto da confirmação de recusa do pedido de entrada.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupJoinRequestsDialogCancel": "Cancelar",
+  "@groupJoinRequestsDialogCancel": {
+    "description": "Botão que fecha a confirmação sem decidir o pedido."
+  },
+  "groupJoinRequestsApproved": "Pedido aceito! A leitora já faz parte do grupo.",
+  "@groupJoinRequestsApproved": {
+    "description": "Aviso depois de aceitar um pedido de entrada."
+  },
+  "groupJoinRequestsRejected": "Pedido recusado.",
+  "@groupJoinRequestsRejected": {
+    "description": "Aviso depois de recusar um pedido de entrada."
+  },
+  "groupJoinRequestsAlreadyReviewed": "Outra coordenadora já respondeu a este pedido.",
+  "@groupJoinRequestsAlreadyReviewed": {
+    "description": "O pedido já foi decidido por outra coordenadora (HTTP 409); ele sai da lista."
+  },
+  "groupJoinRequestsNotFound": "Este pedido não está mais disponível.",
+  "@groupJoinRequestsNotFound": {
+    "description": "O pedido não existe mais (HTTP 404); ele sai da lista."
+  },
+  "groupJoinRequestsNoLongerValid": "Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.",
+  "@groupJoinRequestsNoLongerValid": {
+    "description": "Aceite recusado porque o grupo ou a conta da leitora foi inativado (HTTP 409); a lista recarrega."
+  },
+  "groupJoinRequestsReviewError": "Não foi possível responder ao pedido. Tente novamente.",
+  "@groupJoinRequestsReviewError": {
+    "description": "Erro genérico ao aceitar ou recusar um pedido de entrada."
   }
 }

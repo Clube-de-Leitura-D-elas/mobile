@@ -22,6 +22,9 @@ import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart'
 import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
 import 'package:mobile/features/group_discovery/presentation/cubit/public_group_cubit.dart';
+import 'package:mobile/features/group_join_requests/data/repositories/group_join_requests_repository_impl.dart';
+import 'package:mobile/features/group_join_requests/domain/repository/group_join_requests_repository.dart';
+import 'package:mobile/features/group_join_requests/presentation/cubit/group_join_requests_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
@@ -268,6 +271,19 @@ class DependenciesContainer {
     serviceLocator.registerFactory<RaffleExecutionCubit>(
       () =>
           RaffleExecutionCubit(repository: serviceLocator<RaffleRepository>()),
+    );
+
+    // --- Group Join Requests Feature ---
+    serviceLocator.registerLazySingleton<GroupJoinRequestsRepository>(
+      () => GroupJoinRequestsRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<GroupJoinRequestsCubit>(
+      () => GroupJoinRequestsCubit(
+        repository: serviceLocator<GroupJoinRequestsRepository>(),
+      ),
     );
   }
 }
