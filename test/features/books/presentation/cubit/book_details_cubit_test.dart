@@ -21,6 +21,7 @@ BookReviewEntity _review(String id) => BookReviewEntity(
 
 BookDetailsEntity _details({
   BookReadingStatus? status,
+  MyBookReviewEntity? myReview,
   List<BookReviewEntity>? reviews,
   bool hasMore = false,
 }) => BookDetailsEntity(
@@ -32,6 +33,7 @@ BookDetailsEntity _details({
   ratingsCount: 2,
   ratingAverage: 4,
   myStatus: status,
+  myReview: myReview,
   reviews: reviews ?? [_review('r1')],
   hasMoreReviews: hasMore,
 );
@@ -253,6 +255,121 @@ void main() {
         () => repository.setReadingStatus(
           bookId: any(named: 'bookId'),
           status: any(named: 'status'),
+        ),
+      ),
+    );
+  });
+
+  group('upsertBookReview', () {
+    final review = MyBookReviewEntity(
+      rating: 5,
+      commentary: 'Muito bom',
+      evaluatedAt: DateTime.utc(2026, 11, 14),
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'saves, reloads the detail and marks the book as read',
+      setUp: () {
+        when(
+          () => repository.upsertBookReview(
+            bookId: 'b1',
+            rating: 5,
+            commentary: 'Muito bom',
+          ),
+        ).thenAnswer((_) async => const Success(null));
+        when(() => repository.getBookDetails(bookId: 'b1')).thenAnswer(
+          (_) async => Success(
+            _details(myReview: review, status: BookReadingStatus.read),
+          ),
+        );
+      },
+      seed: () => loaded(_details()),
+      build: build,
+      act: (cubit) =>
+          cubit.upsertBookReview(rating: 5, commentary: 'Muito bom'),
+      expect: () => [
+        loaded(_details()).copyWith(isSubmittingReview: true),
+        BookDetailsState(
+          status: BookDetailsStatus.loaded,
+          details: _details(myReview: review, status: BookReadingStatus.read),
+          reviews: _details(
+            myReview: review,
+            status: BookReadingStatus.read,
+          ).reviews,
+          reviewsPage: 1,
+          hasMoreReviews: false,
+          notice: BookDetailsNotice.reviewSaved,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'emits an error notice and keeps the detail when saving fails',
+      setUp: () => when(
+        () => repository.upsertBookReview(
+          bookId: 'b1',
+          rating: 3,
+          commentary: null,
+        ),
+      ).thenAnswer((_) async => const Failure(BookReviewFailure())),
+      seed: () => loaded(_details()),
+      build: build,
+      act: (cubit) => cubit.upsertBookReview(rating: 3, commentary: null),
+      expect: () => [
+        loaded(_details()).copyWith(isSubmittingReview: true),
+        loaded(_details()).copyWith(
+          isSubmittingReview: false,
+          notice: BookDetailsNotice.reviewFailed,
+        ),
+      ],
+      verify: (_) => verifyNever(() => repository.getBookDetails(bookId: 'b1')),
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'keeps the review modal open when refreshing after save fails',
+      setUp: () {
+        when(
+          () => repository.upsertBookReview(
+            bookId: 'b1',
+            rating: 4,
+            commentary: 'Comentário',
+          ),
+        ).thenAnswer((_) async => const Success(null));
+        when(
+          () => repository.getBookDetails(bookId: 'b1'),
+        ).thenAnswer((_) async => const Failure(BookDetailsLoadFailure()));
+      },
+      seed: () => loaded(_details()),
+      build: build,
+      act: (cubit) =>
+          cubit.upsertBookReview(rating: 4, commentary: 'Comentário'),
+      expect: () => [
+        loaded(_details()).copyWith(isSubmittingReview: true),
+        loaded(_details()).copyWith(
+          isSubmittingReview: false,
+          notice: BookDetailsNotice.reviewFailed,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'does not submit while another review is being submitted',
+      setUp: () => when(
+        () => repository.upsertBookReview(
+          bookId: any(named: 'bookId'),
+          rating: any(named: 'rating'),
+          commentary: any(named: 'commentary'),
+        ),
+      ).thenAnswer((_) async => const Success(null)),
+      seed: () => loaded(_details()).copyWith(isSubmittingReview: true),
+      build: build,
+      act: (cubit) => cubit.upsertBookReview(rating: 5, commentary: null),
+      expect: () => <BookDetailsState>[],
+      verify: (_) => verifyNever(
+        () => repository.upsertBookReview(
+          bookId: any(named: 'bookId'),
+          rating: any(named: 'rating'),
+          commentary: any(named: 'commentary'),
         ),
       ),
     );

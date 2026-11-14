@@ -108,6 +108,25 @@ class BookRepositoryImpl implements BookRepository {
     }
   }
 
+  @override
+  Future<Result<void, BookFailure>> upsertBookReview({
+    required String bookId,
+    required int rating,
+    required String? commentary,
+  }) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'upsert-book-review',
+      body: {'book_id': bookId, 'rating': rating, 'commentary': commentary},
+    );
+
+    switch (result) {
+      case Failure(:final failure):
+        return Failure(_failureFrom(failure, const BookReviewFailure()));
+      case Success():
+        return const Success(null);
+    }
+  }
+
   BookFailure _failureFrom(SupabaseFailure failure, BookFailure fallback) {
     debugPrint('[BookFailure] ${failure.message} (${failure.code})');
     return switch (failure.kind) {

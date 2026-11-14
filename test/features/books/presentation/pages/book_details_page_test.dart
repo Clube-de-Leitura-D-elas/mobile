@@ -157,15 +157,79 @@ void main() {
       expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
     });
 
-    testWidgets('keeps rate and recommend disabled until their tasks exist', (
-      tester,
-    ) async {
-      stubDetails(_details());
+    testWidgets(
+      'enables rate and keeps recommend disabled until its task exists',
+      (tester) async {
+        stubDetails(_details());
+
+        await pumpPage(tester);
+
+        expect(button(tester, 'Avaliar').onPressed, isNotNull);
+        expect(button(tester, 'Indicar').onPressed, isNull);
+      },
+    );
+
+    testWidgets('opens and saves a new review', (tester) async {
+      var detailsCalls = 0;
+      when(
+        () => repository.getBookDetails(bookId: 'b1', reviewsPage: 1),
+      ).thenAnswer((_) async {
+        detailsCalls++;
+        return Success(
+          _details(
+            status: detailsCalls == 1 ? null : BookReadingStatus.read,
+            myReview: detailsCalls == 1
+                ? null
+                : MyBookReviewEntity(
+                    rating: 5,
+                    commentary: 'Gostei muito',
+                    evaluatedAt: DateTime.utc(2026, 11, 13),
+                  ),
+          ),
+        );
+      });
+      when(
+        () => repository.upsertBookReview(
+          bookId: 'b1',
+          rating: 5,
+          commentary: 'Gostei muito',
+        ),
+      ).thenAnswer((_) async => const Success(null));
 
       await pumpPage(tester);
+      await tester.tap(find.text('Avaliar'));
+      await tester.pumpAndSettle();
 
-      expect(button(tester, 'Avaliar').onPressed, isNull);
-      expect(button(tester, 'Indicar').onPressed, isNull);
+      expect(find.text('Avaliar livro'), findsOneWidget);
+      expect(find.text('Sua nota'), findsOneWidget);
+      expect(find.text('Adicione seu comentário (opcional)'), findsOneWidget);
+      expect(find.widgetWithText(AppButton, 'Concluir'), findsOneWidget);
+
+      final dialogRatingFinder = find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(AppStarRating),
+      );
+      final rating = tester.widget<AppStarRating>(dialogRatingFinder);
+      expect(rating.emptyColor, AppColorTokens.light.textMuted);
+      expect(
+        tester.getCenter(dialogRatingFinder).dx,
+        closeTo(tester.getCenter(find.byType(Dialog)).dx, 0.1),
+      );
+
+      await tester.tap(find.bySemanticsLabel('5 de 5 estrelas'));
+      await tester.enterText(find.byType(TextField), 'Gostei muito');
+      await tester.tap(find.widgetWithText(AppButton, 'Concluir'));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => repository.upsertBookReview(
+          bookId: 'b1',
+          rating: 5,
+          commentary: 'Gostei muito',
+        ),
+      ).called(1);
+      expect(find.text('Avaliar livro'), findsNothing);
+      expect(find.text('Já lido'), findsOneWidget);
     });
 
     testWidgets('meets the 48px touch target on the actions', (tester) async {

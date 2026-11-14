@@ -56,6 +56,12 @@ class BookDetailsPage extends StatelessWidget {
           BookDetailsNotice.readingStatusFailed => context.showErrorToast(
             l10n.bookReadingStatusError,
           ),
+          BookDetailsNotice.reviewSaved => context.showSuccessToast(
+            l10n.bookReviewSuccess,
+          ),
+          BookDetailsNotice.reviewFailed => context.showErrorToast(
+            l10n.bookReviewError,
+          ),
           null => null,
         },
         builder: (context, state) {

@@ -31,6 +31,12 @@ class BookStatusFailure extends BookFailure {
   });
 }
 
+class BookReviewFailure extends BookFailure {
+  const BookReviewFailure({
+    super.message = 'Não foi possível salvar sua avaliação.',
+  });
+}
+
 /// Falha genérica ao abrir os detalhes. O texto vem do l10n, na apresentação.
 class BookDetailsLoadFailure extends BookFailure {
   const BookDetailsLoadFailure() : super(message: '');
