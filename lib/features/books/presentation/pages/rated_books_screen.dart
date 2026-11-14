@@ -86,6 +86,7 @@ class _RatedBooksScreenState extends State<RatedBooksScreen> {
           return switch (state) {
             RatedBooksInitial() || RatedBooksLoading() => Center(
               child: Semantics(
+                liveRegion: true,
                 label: l10n.ratedBooksLoading,
                 child: CircularProgressIndicator(color: colors.actionPrimary),
               ),
@@ -93,11 +94,14 @@ class _RatedBooksScreenState extends State<RatedBooksScreen> {
             RatedBooksEmpty() => Center(
               child: Padding(
                 padding: EdgeInsets.all(spacing.s24),
-                child: Text(
-                  l10n.noRatedBooksMessage,
-                  textAlign: TextAlign.center,
-                  style: typography.bodyDefault.copyWith(
-                    color: colors.textMuted,
+                child: Semantics(
+                  liveRegion: true,
+                  child: Text(
+                    l10n.noRatedBooksMessage,
+                    textAlign: TextAlign.center,
+                    style: typography.bodyDefault.copyWith(
+                      color: colors.textMuted,
+                    ),
                   ),
                 ),
               ),
@@ -147,8 +151,12 @@ class _RatedBooksScreenState extends State<RatedBooksScreen> {
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: spacing.s16),
                         child: Center(
-                          child: CircularProgressIndicator(
-                            color: colors.actionPrimary,
+                          child: Semantics(
+                            liveRegion: true,
+                            label: l10n.ratedBooksLoading,
+                            child: CircularProgressIndicator(
+                              color: colors.actionPrimary,
+                            ),
                           ),
                         ),
                       );

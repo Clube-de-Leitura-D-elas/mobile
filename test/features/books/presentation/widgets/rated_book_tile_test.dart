@@ -26,10 +26,7 @@ void main() {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('pt', 'BR'),
       home: Scaffold(
-        body: RatedBookTile(
-          book: book,
-          onTap: onTap,
-        ),
+        body: RatedBookTile(book: book, onTap: onTap),
       ),
     );
   }
@@ -46,8 +43,9 @@ void main() {
       expect(find.byType(AppStarRating), findsOneWidget);
       expect(find.text('Livro fantástico, adorei a leitura.'), findsOneWidget);
 
-      final ratingWidget =
-          tester.widget<AppStarRating>(find.byType(AppStarRating));
+      final ratingWidget = tester.widget<AppStarRating>(
+        find.byType(AppStarRating),
+      );
       expect(ratingWidget.size, AppStarRatingSize.sm);
       expect(ratingWidget.rating, 4.5);
     });

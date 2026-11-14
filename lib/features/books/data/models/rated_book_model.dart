@@ -38,12 +38,19 @@ class RatedBookModel {
           .map((item) => RatedBookModel.fromJson(item as Map<String, dynamic>))
           .toList();
     }
-    if (data is Map<String, dynamic> && data['books'] is List) {
-      return (data['books'] as List)
-          .map((item) => RatedBookModel.fromJson(item as Map<String, dynamic>))
-          .toList();
+    if (data is Map<String, dynamic>) {
+      final rawList = data['items'] ?? data['books'];
+      if (rawList is List) {
+        return rawList
+            .map(
+              (item) => RatedBookModel.fromJson(item as Map<String, dynamic>),
+            )
+            .toList();
+      }
     }
-    return const [];
+    throw FormatException(
+      'Formato de resposta inesperado para RatedBookModel: ${data.runtimeType}',
+    );
   }
 
   Map<String, dynamic> toJson() {

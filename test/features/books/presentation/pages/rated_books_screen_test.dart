@@ -51,21 +51,42 @@ void main() {
     testWidgets('shows loading indicator when state is RatedBooksLoading', (
       tester,
     ) async {
+      final semantics = tester.ensureSemantics();
       when(() => mockCubit.state).thenReturn(const RatedBooksLoading());
 
       await tester.pumpWidget(buildScreen());
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      final semanticsNode = tester.getSemantics(
+        find.byType(CircularProgressIndicator),
+      );
+      expect(
+        semanticsNode.getSemanticsData().flagsCollection.isLiveRegion,
+        isTrue,
+      );
+
+      semantics.dispose();
     });
 
     testWidgets('shows empty message when state is RatedBooksEmpty', (
       tester,
     ) async {
+      final semantics = tester.ensureSemantics();
       when(() => mockCubit.state).thenReturn(const RatedBooksEmpty());
 
       await tester.pumpWidget(buildScreen());
 
-      expect(find.text('Nenhum livro avaliado ainda.'), findsOneWidget);
+      final emptyTextFinder = find.text('Nenhum livro avaliado ainda.');
+      expect(emptyTextFinder, findsOneWidget);
+
+      final semanticsNode = tester.getSemantics(emptyTextFinder);
+      expect(
+        semanticsNode.getSemanticsData().flagsCollection.isLiveRegion,
+        isTrue,
+      );
+
+      semantics.dispose();
     });
 
     testWidgets(

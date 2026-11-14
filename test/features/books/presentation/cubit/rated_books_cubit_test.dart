@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -82,10 +84,7 @@ void main() {
         return RatedBooksCubit(bookRepository: mockRepository);
       },
       act: (cubit) => cubit.loadInitial(),
-      expect: () => [
-        const RatedBooksLoading(),
-        const RatedBooksEmpty(),
-      ],
+      expect: () => [const RatedBooksLoading(), const RatedBooksEmpty()],
     );
 
     blocTest<RatedBooksCubit, RatedBooksState>(
@@ -236,6 +235,58 @@ void main() {
       act: (cubit) => cubit.refresh(),
       expect: () => [
         const RatedBooksLoading(),
+        const RatedBooksLoaded(
+          books: [tBook],
+          hasMore: false,
+          isLoadingMore: false,
+          currentPage: 1,
+        ),
+      ],
+    );
+    blocTest<RatedBooksCubit, RatedBooksState>(
+      'discards stale loadMore response when refresh is triggered while loading',
+      build: () {
+        final page2Completer =
+            Completer<Result<List<RatedBook>, BookFailure>>();
+
+        when(
+          () => mockRepository.getRatedBooks(page: 2, limit: 10),
+        ).thenAnswer((_) => page2Completer.future);
+
+        when(
+          () => mockRepository.getRatedBooks(page: 1, limit: 10),
+        ).thenAnswer((_) async => const Success([tBook]));
+
+        final cubit = RatedBooksCubit(bookRepository: mockRepository);
+
+        // Dispara o loadMore (fica pendente no Completer) e logo em seguida faz refresh
+        Future<void>.delayed(Duration.zero, () async {
+          unawaited(cubit.loadMore());
+          await cubit.refresh();
+          // Só completa a página 2 antiga DEPOIS que o refresh já terminou
+          page2Completer.complete(Success(tBooksPage2));
+        });
+
+        return cubit;
+      },
+      seed: () => RatedBooksLoaded(
+        books: tBooksPage1,
+        hasMore: true,
+        isLoadingMore: false,
+        currentPage: 1,
+      ),
+      wait: const Duration(milliseconds: 50),
+      expect: () => [
+        // 1. loadMore inicia
+        RatedBooksLoaded(
+          books: tBooksPage1,
+          hasMore: true,
+          isLoadingMore: true,
+          currentPage: 1,
+        ),
+        // 2. refresh inicia e incrementa _generation
+        const RatedBooksLoading(),
+        // 3. refresh conclui com [tBook] (a resposta atrasada de tBooksPage2 é ignorada)
         const RatedBooksLoaded(
           books: [tBook],
           hasMore: false,
