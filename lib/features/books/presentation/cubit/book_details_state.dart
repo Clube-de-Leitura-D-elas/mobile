@@ -6,7 +6,7 @@ import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 enum BookDetailsStatus { loading, loaded, error, notFound }
 
 /// Aviso pontual para a tela mostrar como toast.
-enum BookDetailsNotice { readingStatusFailed }
+enum BookDetailsNotice { readingStatusFailed, reviewSaved, reviewFailed }
 
 class BookDetailsState extends Equatable {
   final BookDetailsStatus status;
@@ -20,6 +20,7 @@ class BookDetailsState extends Equatable {
   final bool isLoadingMoreReviews;
   final bool loadMoreReviewsFailed;
   final bool isUpdatingStatus;
+  final bool isSubmittingReview;
   final BookDetailsNotice? notice;
 
   const BookDetailsState({
@@ -32,6 +33,7 @@ class BookDetailsState extends Equatable {
     this.isLoadingMoreReviews = false,
     this.loadMoreReviewsFailed = false,
     this.isUpdatingStatus = false,
+    this.isSubmittingReview = false,
     this.notice,
   });
 
@@ -44,6 +46,7 @@ class BookDetailsState extends Equatable {
     bool? isLoadingMoreReviews,
     bool? loadMoreReviewsFailed,
     bool? isUpdatingStatus,
+    bool? isSubmittingReview,
     BookDetailsNotice? notice,
   }) {
     return BookDetailsState(
@@ -57,6 +60,7 @@ class BookDetailsState extends Equatable {
       loadMoreReviewsFailed:
           loadMoreReviewsFailed ?? this.loadMoreReviewsFailed,
       isUpdatingStatus: isUpdatingStatus ?? this.isUpdatingStatus,
+      isSubmittingReview: isSubmittingReview ?? this.isSubmittingReview,
       notice: notice,
     );
   }
@@ -72,6 +76,7 @@ class BookDetailsState extends Equatable {
     isLoadingMoreReviews,
     loadMoreReviewsFailed,
     isUpdatingStatus,
+    isSubmittingReview,
     notice,
   ];
 }

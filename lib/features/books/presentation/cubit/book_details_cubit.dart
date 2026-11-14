@@ -113,4 +113,58 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
         );
     }
   }
+
+  Future<bool> upsertBookReview({
+    required int rating,
+    required String? commentary,
+  }) async {
+    final details = state.details;
+    if (details == null || state.isSubmittingReview) return false;
+
+    emit(state.copyWith(isSubmittingReview: true));
+    final result = await repository.upsertBookReview(
+      bookId: details.id,
+      rating: rating,
+      commentary: commentary,
+    );
+    if (isClosed) return false;
+
+    switch (result) {
+      case Failure():
+        emit(
+          state.copyWith(
+            isSubmittingReview: false,
+            notice: BookDetailsNotice.reviewFailed,
+          ),
+        );
+        return false;
+      case Success():
+        final refreshed = await repository.getBookDetails(bookId: details.id);
+        if (isClosed) return false;
+        switch (refreshed) {
+          case Failure():
+            emit(
+              state.copyWith(
+                isSubmittingReview: false,
+                notice: BookDetailsNotice.reviewFailed,
+              ),
+            );
+            return false;
+          case Success(:final data):
+            emit(
+              BookDetailsState(
+                status: BookDetailsStatus.loaded,
+                details: data.withReadingStatus(
+                  data.myStatus ?? BookReadingStatus.read,
+                ),
+                reviews: data.reviews,
+                reviewsPage: 1,
+                hasMoreReviews: data.hasMoreReviews,
+                notice: BookDetailsNotice.reviewSaved,
+              ),
+            );
+            return true;
+        }
+    }
+  }
 }

@@ -23,4 +23,9 @@ abstract class BookRepository {
     required String bookId,
     required BookReadingStatus? status,
   });
+  Future<Result<void, BookFailure>> upsertBookReview({
+    required String bookId,
+    required int rating,
+    required String? commentary,
+  });
 }

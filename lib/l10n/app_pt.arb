@@ -1463,6 +1463,38 @@
   "@bookDetailEditReviewButton": {
     "description": "Botão que abre o modal para editar a avaliação já feita."
   },
+  "bookReviewDialogTitle": "Avaliar livro",
+  "@bookReviewDialogTitle": {
+    "description": "Título do modal de avaliação de livro."
+  },
+  "bookReviewRatingLabel": "Sua nota",
+  "@bookReviewRatingLabel": {
+    "description": "Rótulo da nota no modal de avaliação."
+  },
+  "bookReviewCommentLabel": "Adicione seu comentário (opcional)",
+  "@bookReviewCommentLabel": {
+    "description": "Rótulo do comentário opcional no modal de avaliação."
+  },
+  "bookReviewCommentHint": "Digite sua resposta",
+  "@bookReviewCommentHint": {
+    "description": "Placeholder do comentário no modal de avaliação."
+  },
+  "bookReviewCancel": "Cancelar",
+  "@bookReviewCancel": {
+    "description": "Botão para cancelar a avaliação."
+  },
+  "bookReviewSubmit": "Concluir",
+  "@bookReviewSubmit": {
+    "description": "Botão para salvar a avaliação."
+  },
+  "bookReviewSuccess": "Avaliação salva com sucesso.",
+  "@bookReviewSuccess": {
+    "description": "Toast exibido após salvar uma avaliação."
+  },
+  "bookReviewError": "Não foi possível salvar sua avaliação.",
+  "@bookReviewError": {
+    "description": "Toast exibido quando não é possível salvar uma avaliação."
+  },
   "bookDetailRecommendButton": "Indicar",
   "@bookDetailRecommendButton": {
     "description": "Botão para indicar o livro a um grupo."
