@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/domain/entities/rated_book.dart';
 import 'package:mobile/features/books/presentation/widgets/rated_book_tile.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 
 void main() {
   const tBook = RatedBook(
@@ -18,6 +19,12 @@ void main() {
   Widget buildWidget(RatedBook book, {VoidCallback? onTap}) {
     return MaterialApp(
       theme: AppTheme.light,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('pt', 'BR'),
       home: Scaffold(
         body: RatedBookTile(
           book: book,

@@ -11,7 +11,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class MockSupabaseService extends Mock implements SupabaseService {}
 
 class TestSupabaseFailure extends SupabaseFailure {
-  const TestSupabaseFailure(String message) : super(message: message);
+  const TestSupabaseFailure(
+    String message, {
+    super.kind = SupabaseFailureKind.unknown,
+  }) : super(message: message);
 }
 
 void main() {
@@ -26,7 +29,6 @@ void main() {
     mockSupabaseService = MockSupabaseService();
     dataSource = RatedBooksRemoteDataSourceImpl(
       supabaseService: mockSupabaseService,
-      enableMockFallback: false,
     );
   });
 
@@ -70,8 +72,13 @@ void main() {
     });
 
     test(
-      'throws exception when invokeFunction fails and mock fallback is disabled',
+      'throws SupabaseFailure preserving kind when invokeFunction fails',
       () async {
+        const failure = TestSupabaseFailure(
+          'Erro de conexão',
+          kind: SupabaseFailureKind.network,
+        );
+
         when(
           () => mockSupabaseService.invokeFunction<List<RatedBookModel>>(
             functionName: any(named: 'functionName'),
@@ -79,40 +86,18 @@ void main() {
             queryParameters: any(named: 'queryParameters'),
             decoder: any(named: 'decoder'),
           ),
-        ).thenAnswer(
-          (_) async => const Failure(TestSupabaseFailure('Erro de servidor')),
-        );
+        ).thenAnswer((_) async => const Failure(failure));
 
         expect(
           () => dataSource.getRatedBooks(page: 1, limit: 10),
-          throwsA(isA<Exception>()),
-        );
-      },
-    );
-
-    test(
-      'returns mock data on invokeFunction failure when mock fallback is enabled',
-      () async {
-        final mockDataSource = RatedBooksRemoteDataSourceImpl(
-          supabaseService: mockSupabaseService,
-          enableMockFallback: true,
-        );
-
-        when(
-          () => mockSupabaseService.invokeFunction<List<RatedBookModel>>(
-            functionName: any(named: 'functionName'),
-            method: any(named: 'method'),
-            queryParameters: any(named: 'queryParameters'),
-            decoder: any(named: 'decoder'),
+          throwsA(
+            isA<TestSupabaseFailure>().having(
+              (f) => f.kind,
+              'kind',
+              SupabaseFailureKind.network,
+            ),
           ),
-        ).thenAnswer(
-          (_) async => const Failure(TestSupabaseFailure('Function not found')),
         );
-
-        final result = await mockDataSource.getRatedBooks(page: 1, limit: 10);
-
-        expect(result, isNotEmpty);
-        expect(result.first.title, 'Harry Potter e a Pedra Filosofal');
       },
     );
   });

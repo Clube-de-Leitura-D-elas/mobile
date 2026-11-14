@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/domain/entities/rated_book.dart';
 
@@ -13,17 +14,18 @@ class RatedBookTile extends StatelessWidget {
     this.onTap,
   });
 
-  String _buildSemanticLabel() {
+  String _buildSemanticLabel(BuildContext context) {
+    final l10n = context.l10n;
     final ratingFormatted = book.rating == book.rating.floorToDouble()
         ? book.rating.toInt().toString()
         : book.rating.toStringAsFixed(1).replaceAll('.', ',');
 
     final parts = [
       book.title,
-      if (book.author.isNotEmpty) 'escrito por ${book.author}',
-      'avaliado com $ratingFormatted de 5 estrelas',
+      if (book.author.isNotEmpty) l10n.ratedBookTileAuthor(book.author),
+      l10n.ratedBookTileRating(ratingFormatted),
       if (book.comment != null && book.comment!.isNotEmpty)
-        'comentário: ${book.comment}',
+        l10n.ratedBookTileComment(book.comment!),
     ];
     return parts.join(', ');
   }
@@ -39,7 +41,7 @@ class RatedBookTile extends StatelessWidget {
       container: true,
       button: onTap != null,
       enabled: onTap != null,
-      label: _buildSemanticLabel(),
+      label: _buildSemanticLabel(context),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(spacing.s8),

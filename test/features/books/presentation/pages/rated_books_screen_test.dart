@@ -42,9 +42,7 @@ void main() {
       locale: const Locale('pt', 'BR'),
       home: BlocProvider<RatedBooksCubit>.value(
         value: mockCubit,
-        child: RatedBooksScreen(
-          onBookTap: onBookTap,
-        ),
+        child: RatedBooksScreen(onBookTap: onBookTap),
       ),
     );
   }
@@ -73,9 +71,9 @@ void main() {
     testWidgets(
       'shows error message and retry button when state is RatedBooksError',
       (tester) async {
-        when(() => mockCubit.state).thenReturn(
-          const RatedBooksError(RatedBooksLoadFailure()),
-        );
+        when(
+          () => mockCubit.state,
+        ).thenReturn(const RatedBooksError(RatedBooksLoadFailure()));
         when(() => mockCubit.refresh()).thenAnswer((_) async {});
 
         await tester.pumpWidget(buildScreen());
@@ -135,5 +133,100 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.byType(RatedBookTile), findsOneWidget);
     });
+    testWidgets(
+      'shows bottom error state and retries loadMore when loadMoreFailure is present',
+      (tester) async {
+        when(() => mockCubit.state).thenReturn(
+          const RatedBooksLoaded(
+            books: [tBook],
+            hasMore: true,
+            isLoadingMore: false,
+            currentPage: 1,
+            loadMoreFailure: RatedBooksLoadFailure(),
+          ),
+        );
+        when(() => mockCubit.loadMore()).thenAnswer((_) async {});
+
+        await tester.pumpWidget(buildScreen());
+
+        expect(find.byType(RatedBookTile), findsOneWidget);
+        expect(
+          find.text('Não foi possível carregar os livros avaliados.'),
+          findsOneWidget,
+        );
+        expect(find.text('Tentar novamente'), findsOneWidget);
+
+        await tester.tap(find.text('Tentar novamente'));
+        await tester.pump();
+
+        verify(() => mockCubit.loadMore()).called(1);
+      },
+    );
+
+    testWidgets('triggers loadMore on scroll past 80%', (tester) async {
+      final manyBooks = List.generate(
+        15,
+        (i) => RatedBook(
+          id: 'rated-$i',
+          bookId: 'book-$i',
+          title: 'Livro $i',
+          author: 'Autora $i',
+          rating: 4.0,
+        ),
+      );
+
+      when(() => mockCubit.state).thenReturn(
+        RatedBooksLoaded(
+          books: manyBooks,
+          hasMore: true,
+          isLoadingMore: false,
+          currentPage: 1,
+        ),
+      );
+      when(() => mockCubit.loadMore()).thenAnswer((_) async {});
+
+      await tester.pumpWidget(buildScreen());
+
+      // Pequena rolagem: não deve atingir o limiar de 80%
+      await tester.drag(find.byType(ListView), const Offset(0, -50));
+      await tester.pump();
+      verifyNever(() => mockCubit.loadMore());
+
+      // Rolagem grande até o final da lista (ultrapassa 80%)
+      await tester.drag(find.byType(ListView), const Offset(0, -2000));
+      await tester.pump();
+
+      verify(() => mockCubit.loadMore()).called(1);
+    });
+
+    testWidgets(
+      'calls loadMore automatically if content does not fill the screen and hasMore is true',
+      (tester) async {
+        const loadedState = RatedBooksLoaded(
+          books: [tBook],
+          hasMore: true,
+          isLoadingMore: false,
+          currentPage: 1,
+        );
+
+        // Usamos whenListen para emitir uma transição de Loading -> Loaded.
+        // É isso que faz o 'listener' do BlocConsumer ser engatilhado de verdade.
+        whenListen(
+          mockCubit,
+          Stream.fromIterable([loadedState]),
+          initialState: const RatedBooksLoading(),
+        );
+
+        when(() => mockCubit.loadMore()).thenAnswer((_) async {});
+
+        await tester.pumpWidget(buildScreen());
+
+        // pumpAndSettle vai aguardar a Stream emitir o novo estado,
+        // disparar o listener e rodar o addPostFrameCallback.
+        await tester.pumpAndSettle();
+
+        verify(() => mockCubit.loadMore()).called(1);
+      },
+    );
   });
 }

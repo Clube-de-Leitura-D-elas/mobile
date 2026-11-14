@@ -418,6 +418,22 @@ void main() {
         result,
         const Failure<List<RatedBook>, BookFailure>(BookNetworkFailure()),
       );
+
+      when(() => mockDataSource.getRatedBooks(page: 1, limit: 10)).thenThrow(
+        const FunctionSupabaseFailure(
+          message: 'auth',
+          kind: SupabaseFailureKind.unauthorized,
+        ),
+      );
+
+      final resultAuth = await repoWithMock.getRatedBooks(page: 1, limit: 10);
+
+      expect(
+        resultAuth,
+        const Failure<List<RatedBook>, BookFailure>(
+          BookSessionExpiredFailure(),
+        ),
+      );
     });
 
     test('maps generic exceptions to RatedBooksLoadFailure', () async {

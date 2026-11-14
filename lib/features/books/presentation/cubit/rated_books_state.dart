@@ -35,12 +35,14 @@ class RatedBooksLoaded extends RatedBooksState {
   final bool hasMore;
   final bool isLoadingMore;
   final int currentPage;
+  final BookFailure? loadMoreFailure;
 
   const RatedBooksLoaded({
     required this.books,
     required this.hasMore,
     this.isLoadingMore = false,
     required this.currentPage,
+    this.loadMoreFailure,
   });
 
   RatedBooksLoaded copyWith({
@@ -48,12 +50,17 @@ class RatedBooksLoaded extends RatedBooksState {
     bool? hasMore,
     bool? isLoadingMore,
     int? currentPage,
+    BookFailure? loadMoreFailure,
+    bool clearLoadMoreFailure = false,
   }) {
     return RatedBooksLoaded(
       books: books ?? this.books,
       hasMore: hasMore ?? this.hasMore,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       currentPage: currentPage ?? this.currentPage,
+      loadMoreFailure: clearLoadMoreFailure
+          ? null
+          : (loadMoreFailure ?? this.loadMoreFailure),
     );
   }
 
@@ -63,5 +70,6 @@ class RatedBooksLoaded extends RatedBooksState {
     hasMore,
     isLoadingMore,
     currentPage,
+    loadMoreFailure,
   ];
 }

@@ -470,6 +470,2616 @@ abstract class AppLocalizations {
   /// **'Sair'**
   String get logoutDialogConfirm;
 
+  /// No description provided for @meetingEditTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar encontro'**
+  String get meetingEditTitle;
+
+  /// No description provided for @meetingEditDateLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data'**
+  String get meetingEditDateLabel;
+
+  /// No description provided for @meetingEditDateHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'DD/MM/AAAA'**
+  String get meetingEditDateHint;
+
+  /// No description provided for @meetingEditDateError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe a data.'**
+  String get meetingEditDateError;
+
+  /// No description provided for @meetingEditTimeLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Horário'**
+  String get meetingEditTimeLabel;
+
+  /// No description provided for @meetingEditTimeHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'HH:MM'**
+  String get meetingEditTimeHint;
+
+  /// No description provided for @meetingEditTimeError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe o horário.'**
+  String get meetingEditTimeError;
+
+  /// No description provided for @meetingEditLocationLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Local'**
+  String get meetingEditLocationLabel;
+
+  /// No description provided for @meetingEditLocationHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do local'**
+  String get meetingEditLocationHint;
+
+  /// No description provided for @meetingEditLocationError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe o local.'**
+  String get meetingEditLocationError;
+
+  /// No description provided for @meetingEditLocationSelectError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um local da lista.'**
+  String get meetingEditLocationSelectError;
+
+  /// No description provided for @meetingEditLocationSearchError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível buscar locais. Tente novamente.'**
+  String get meetingEditLocationSearchError;
+
+  /// No description provided for @meetingEditDateInvalidError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe uma data válida (DD/MM/AAAA).'**
+  String get meetingEditDateInvalidError;
+
+  /// No description provided for @meetingEditTimeInvalidError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe um horário válido (HH:MM).'**
+  String get meetingEditTimeInvalidError;
+
+  /// No description provided for @meetingEditDescriptionLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Observações'**
+  String get meetingEditDescriptionLabel;
+
+  /// No description provided for @meetingEditDescriptionHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione observações (opcional)'**
+  String get meetingEditDescriptionHint;
+
+  /// No description provided for @meetingEditReadOnlySection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informações definidas pelo sorteio'**
+  String get meetingEditReadOnlySection;
+
+  /// No description provided for @meetingEditBookLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro da vez'**
+  String get meetingEditBookLabel;
+
+  /// No description provided for @meetingEditHostLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã'**
+  String get meetingEditHostLabel;
+
+  /// No description provided for @meetingEditSaveButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar alterações'**
+  String get meetingEditSaveButton;
+
+  /// Rótulo de acessibilidade da foto de capa do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto do {title}'**
+  String meetingCoverSemanticLabel(String title);
+
+  /// Anfitriã do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String meetingDetailsHost(String name);
+
+  /// Nome e endereço do local do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Local: {location}'**
+  String meetingDetailsLocation(String location);
+
+  /// Exibido quando o encontro ainda não tem local
+  ///
+  /// In pt, this message translates to:
+  /// **'Local: a definir'**
+  String get meetingDetailsLocationUndefined;
+
+  /// Título da seção de descrição do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição'**
+  String get meetingDetailsDescriptionTitle;
+
+  /// No description provided for @meetingDetailsOpenMapHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir no Google Maps'**
+  String get meetingDetailsOpenMapHint;
+
+  /// No description provided for @meetingDetailsMapLaunchError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o mapa.'**
+  String get meetingDetailsMapLaunchError;
+
+  /// Título da seção de fotos na tela de detalhes do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Fotos do encontro'**
+  String get meetingPhotosTitle;
+
+  /// Texto do estado vazio da seção de fotos; ao tocar abre a galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar fotos'**
+  String get meetingPhotosAdd;
+
+  /// Rótulo de acessibilidade do botão de adicionar fotos ao final da galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar mais fotos'**
+  String get meetingPhotosAddMoreSemanticLabel;
+
+  /// Rótulo de acessibilidade de uma miniatura da galeria do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto {index} do encontro'**
+  String meetingPhotoSemanticLabel(int index);
+
+  /// Progresso do envio das fotos selecionadas
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviando {current} de {total}'**
+  String meetingPhotosUploading(int current, int total);
+
+  /// Mensagem exibida quando parte das fotos não foi enviada
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{Não foi possível enviar 1 foto.} other{Não foi possível enviar {count} fotos.}}'**
+  String meetingPhotosUploadFailed(int count);
+
+  /// Ação para reenviar só as fotos que falharam ou recarregar a galeria
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get meetingPhotosRetryButton;
+
+  /// Erro ao carregar a galeria do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar as fotos do encontro.'**
+  String get meetingPhotosLoadError;
+
+  /// Encontro sem fotos, para quem não pode adicionar (nem coordenadora nem anfitriã)
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há fotos deste encontro.'**
+  String get meetingPhotosEmpty;
+
+  /// Exibido quando o acesso à galeria foi negado
+  ///
+  /// In pt, this message translates to:
+  /// **'Permita o acesso às fotos nos ajustes do aparelho para adicionar fotos.'**
+  String get meetingPhotosAccessDenied;
+
+  /// Exibido quando a galeria não abre por um erro inesperado
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir a galeria. Tente novamente.'**
+  String get meetingPhotosPickerFailed;
+
+  /// Fotos descartadas antes do envio por tamanho ou formato
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 foto foi ignorada: passa de 5 MB ou o formato não é aceito.} other{{count} fotos foram ignoradas: passam de 5 MB ou o formato não é aceito.}}'**
+  String meetingPhotosSkipped(int count);
+
+  /// Exibido quando o encontro atingiu o limite de fotos
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro já tem o máximo de {max} fotos.'**
+  String meetingPhotosLimitReached(int max);
+
+  /// Fotos recusadas pelo servidor (sem nova tentativa), por exemplo tamanho, formato ou permissão
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 foto foi recusada e não pode ser enviada.} other{{count} fotos foram recusadas e não podem ser enviadas.}}'**
+  String meetingPhotosRejected(int count);
+
+  /// Título do editor de legenda de uma foto do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Legenda da foto'**
+  String get meetingPhotoCaptionTitle;
+
+  /// Dica do campo de legenda da foto
+  ///
+  /// In pt, this message translates to:
+  /// **'Escreva uma legenda para esta foto'**
+  String get meetingPhotoCaptionHint;
+
+  /// Contador de caracteres da legenda da foto
+  ///
+  /// In pt, this message translates to:
+  /// **'{current} de {max}'**
+  String meetingPhotoCaptionCounter(int current, int max);
+
+  /// Erro para legenda acima do limite
+  ///
+  /// In pt, this message translates to:
+  /// **'A legenda deve ter no máximo {max} caracteres.'**
+  String meetingPhotoCaptionTooLong(int max);
+
+  /// Confirma a legenda da foto
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar legenda'**
+  String get meetingPhotoCaptionSave;
+
+  /// Envia a foto sem legenda
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem legenda'**
+  String get meetingPhotoCaptionSkip;
+
+  /// Título principal do review de cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique os seus dados'**
+  String get onboardingReviewTitle;
+
+  /// Rótulo do campo Nome
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome'**
+  String get onboardingNameLabel;
+
+  /// Rótulo e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get onboardingEmailLabel;
+
+  /// Rótulo celular
+  ///
+  /// In pt, this message translates to:
+  /// **'Celular'**
+  String get onboardingPhoneLabel;
+
+  /// Rótulo data de nascimento
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de nascimento'**
+  String get onboardingBirthDateLabel;
+
+  /// Dica de formato da data de nascimento
+  ///
+  /// In pt, this message translates to:
+  /// **'DD/MM/AAAA'**
+  String get onboardingBirthDateHint;
+
+  /// Rótulo cidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Cidade'**
+  String get onboardingCityLabel;
+
+  /// Dica de seleção de cidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma cidade'**
+  String get onboardingCityHint;
+
+  /// Rótulo região
+  ///
+  /// In pt, this message translates to:
+  /// **'Região'**
+  String get onboardingRegionLabel;
+
+  /// Rótulo profissão
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual sua profissão?'**
+  String get onboardingJobLabel;
+
+  /// Rótulo escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Nível de escolaridade'**
+  String get onboardingEducationLabel;
+
+  /// Dica seleção de escolaridade
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um nível'**
+  String get onboardingEducationHint;
+
+  /// Rótulo grupo de leitura
+  ///
+  /// In pt, this message translates to:
+  /// **'Você participa de outro grupo de leitura?'**
+  String get onboardingOtherGroupLabel;
+
+  /// Rótulo voluntariado
+  ///
+  /// In pt, this message translates to:
+  /// **'Teria interesse em se voluntariar como coordenadora de grupo?'**
+  String get onboardingVolunteerLabel;
+
+  /// Rótulo indicação livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual livro de ficção você indicaria para a leitura coletiva?'**
+  String get onboardingBookIndicationLabel;
+
+  /// Dica indicação livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get onboardingBookIndicationHint;
+
+  /// Rótulo expectativas
+  ///
+  /// In pt, this message translates to:
+  /// **'O que você espera ao participar do Clube de Leitura D\'Elas?'**
+  String get onboardingExpectationsLabel;
+
+  /// Dica expectativas
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get onboardingExpectationsHint;
+
+  /// Botão voltar
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get onboardingBackButton;
+
+  /// Botão continuar
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get onboardingContinueButton;
+
+  /// Título de boas-vindas
+  ///
+  /// In pt, this message translates to:
+  /// **'Seja Bem-vinda'**
+  String get onboardingWelcomeTitle;
+
+  /// Subtítulo de boas-vindas
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua inscrição foi realizada com sucesso!'**
+  String get onboardingWelcomeSubtitle;
+
+  /// Botão concluir onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Pronta para o próximo capítulo?'**
+  String get onboardingWelcomeButton;
+
+  /// Dica genérica de seleção em dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione'**
+  String get selectOptionHint;
+
+  /// Opção de gênero literário Romance usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Romance'**
+  String get genreRomance;
+
+  /// Opção de gênero literário Fantasia usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Fantasia'**
+  String get genreFantasy;
+
+  /// Opção de gênero literário Suspense usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Suspense'**
+  String get genreSuspense;
+
+  /// Opção de gênero literário Não Ficção usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Não Ficção'**
+  String get genreNonFiction;
+
+  /// Texto de dica para seleção de gênero usada nos testes/demonstrações do Dropdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um gênero'**
+  String get genreFieldHint;
+
+  /// Título principal da tela de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Meus grupos'**
+  String get myGroupsTitle;
+
+  /// Placeholder do campo de busca de grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar grupo'**
+  String get searchGroupPlaceholder;
+
+  /// Tooltip e rótulo de acessibilidade do botão que limpa o campo de busca
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar busca'**
+  String get clearSearchTooltip;
+
+  /// Aviso na home quando a anfitriã tem tarefas pendentes
+  ///
+  /// In pt, this message translates to:
+  /// **'Você tem tarefas pendentes'**
+  String get homePendingTasksMessage;
+
+  /// Botão do aviso de tarefas pendentes que abre as tarefas da anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Tarefas'**
+  String get homePendingTasksAction;
+
+  /// Título da tela com os grupos em que a anfitriã tem tarefas pendentes
+  ///
+  /// In pt, this message translates to:
+  /// **'Tarefas pendentes'**
+  String get pendingTasksTitle;
+
+  /// Mensagem exibida quando não há grupos com tarefas pendentes
+  ///
+  /// In pt, this message translates to:
+  /// **'Você não tem tarefas pendentes'**
+  String get emptyPendingTasks;
+
+  /// Título exibido quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo'**
+  String get emptyGroupsTitle;
+
+  /// Mensagem detalhada exibida quando a lista de grupos está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Assim que você entrar em um grupo de leitura, ele aparecerá aqui.'**
+  String get emptyGroupsMessage;
+
+  /// Mensagem exibida quando a busca por nome não retorna grupos
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo encontrado'**
+  String get emptyGroupsSearch;
+
+  /// Título da tela de detalhes do grupo, com o número do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupDetailsNumberLabel(int number);
+
+  /// Título da seção do próximo evento nos detalhes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo evento'**
+  String get groupNextEventTitle;
+
+  /// Mensagem exibida quando o grupo não possui próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum próximo evento agendado'**
+  String get groupNextEventEmpty;
+
+  /// Nome da anfitriã do próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {name}'**
+  String groupNextEventHost(String name);
+
+  /// Link exibido abaixo da seção de participantes para acessar o histórico de encontros
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de eventos'**
+  String get groupNextEventHistoryLink;
+
+  /// Link exibido abaixo do próximo evento para abrir os detalhes daquele encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Exibir mais detalhes'**
+  String get groupNextEventMoreDetailsLink;
+
+  /// Rótulo exibido acima da capa do livro do próximo evento do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'O livro da vez é:'**
+  String get groupNextEventCurrentBookLabel;
+
+  /// Rótulo de acessibilidade da capa do livro do próximo evento
+  ///
+  /// In pt, this message translates to:
+  /// **'Capa do livro {title}'**
+  String groupNextEventBookCoverSemanticLabel(String title);
+
+  /// Exibido no lugar da capa quando o próximo evento ainda não tem livro definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro ainda não definido'**
+  String get groupNextEventBookUndefined;
+
+  /// Exibido no próximo evento do grupo quando nenhum local foi definido
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem localização'**
+  String get groupNextEventNoLocation;
+
+  /// Exibido no card de grupo quando o horário do próximo evento não está definido
+  ///
+  /// In pt, this message translates to:
+  /// **'--:--'**
+  String get groupNextEventTimeUndefined;
+
+  /// Título da seção de participantes nos detalhes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Participantes'**
+  String get groupParticipantsTitle;
+
+  /// Quantidade de participantes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
+  String groupParticipantsCount(int count);
+
+  /// Botão para abrir o grupo no WhatsApp
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir Whatsapp'**
+  String get groupOpenWhatsAppButton;
+
+  /// Mensagem de erro exibida quando falha a abertura do link do WhatsApp
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o link do WhatsApp.'**
+  String get whatsappLaunchError;
+
+  /// Botão para indicar um livro ao grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar livro'**
+  String get groupRecommendBookButton;
+
+  /// Descrição acessível da foto de capa do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto do grupo {name}'**
+  String groupCoverSemanticLabel(String name);
+
+  /// Mensagem quando o grupo não tem participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há participantes neste grupo.'**
+  String get groupParticipantsEmpty;
+
+  /// Erro ao buscar a lista de participantes do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar as participantes.'**
+  String get groupParticipantsLoadError;
+
+  /// Botão para buscar de novo a lista de participantes após erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get groupParticipantsRetryButton;
+
+  /// Rótulo acessível do estado de carregamento da lista de participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando participantes'**
+  String get groupParticipantsLoading;
+
+  /// Tag exibida na lista de participantes para a coordenadora do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Coordenadora'**
+  String get groupParticipantCoordinatorTag;
+
+  /// Tag exibida na lista de participantes para a anfitriã do encontro atual
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã'**
+  String get groupParticipantHostTag;
+
+  /// Rótulo da seção de próximo encontro no card de grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo evento'**
+  String get groupNextMeetingLabel;
+
+  /// Botão para recusar presença no próximo encontro do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Não irei'**
+  String get groupDeclineMeetingButton;
+
+  /// Botão para confirmar presença no próximo encontro do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar presença'**
+  String get groupConfirmMeetingButton;
+
+  /// Rótulo exibido acima do botão 'Não irei' quando a presença no próximo encontro já foi confirmada
+  ///
+  /// In pt, this message translates to:
+  /// **'Presença confirmada'**
+  String get groupMeetingConfirmedLabel;
+
+  /// Rótulo exibido acima do botão 'Confirmar presença' quando a ausência no próximo encontro já foi confirmada
+  ///
+  /// In pt, this message translates to:
+  /// **'Ausência confirmada'**
+  String get groupMeetingDeclinedLabel;
+
+  /// Tentar responder a confirmação de presença no encontro novamente após um erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get groupMeetingRsvpRetryAction;
+
+  /// Título da tela de histórico de eventos do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de eventos'**
+  String get groupEventHistoryTitle;
+
+  /// Identificação da anfitriã de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã: {hostName}'**
+  String groupEventHistoryHost(String hostName);
+
+  /// Link para abrir os detalhes de um evento realizado
+  ///
+  /// In pt, this message translates to:
+  /// **'Confira mais detalhes'**
+  String get groupEventHistoryDetailsLink;
+
+  /// Rótulo do botão e título da tela de tarefas da anfitriã ou coordenadora do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Minhas tarefas'**
+  String get groupMeetingMyTasksAction;
+
+  /// Mensagem exibida quando o grupo não possui encontros realizados
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo ainda não realizou encontros.'**
+  String get groupEventHistoryEmpty;
+
+  /// Título do cabeçalho da tela de detalhes do encontro enquanto carrega ou em erro
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do encontro'**
+  String get meetingDetailsHeader;
+
+  /// Título do encontro com a numeração sequencial no grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro {number}'**
+  String meetingDetailsTitle(int number);
+
+  /// Título do encontro quando ele ainda não tem numeração (sem data)
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro'**
+  String get meetingDetailsTitleFallback;
+
+  /// Data do encontro já formatada
+  ///
+  /// In pt, this message translates to:
+  /// **'Data: {date}'**
+  String meetingDetailsDate(String date);
+
+  /// Exibido quando o encontro ainda não tem data
+  ///
+  /// In pt, this message translates to:
+  /// **'Data: a definir'**
+  String get meetingDetailsDateUndefined;
+
+  /// Horário do encontro já formatado
+  ///
+  /// In pt, this message translates to:
+  /// **'Horário: {time}'**
+  String meetingDetailsTime(String time);
+
+  /// Exibido quando o encontro ainda não tem horário
+  ///
+  /// In pt, this message translates to:
+  /// **'Horário: a definir'**
+  String get meetingDetailsTimeUndefined;
+
+  /// Livro lido no encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro: {title}'**
+  String meetingDetailsBook(String title);
+
+  /// Título exibido quando uma reunião não possui participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum participante nesta reunião'**
+  String get meetingPresenceEmptyTitle;
+
+  /// Descrição exibida no estado vazio da tela de presença.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quando houver participantes, eles aparecerão aqui para registrar a presença.'**
+  String get meetingPresenceEmptyDescription;
+
+  /// No description provided for @meetingEditAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar encontro'**
+  String get meetingEditAction;
+
+  /// No description provided for @meetingPresenceHeader.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de Presença'**
+  String get meetingPresenceHeader;
+
+  /// Indicação exibida após o registro da presença do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Presença confirmada'**
+  String get meetingPresenceConfirmed;
+
+  /// Indicação exibida na lista de presença para a participante marcada
+  ///
+  /// In pt, this message translates to:
+  /// **'Presente'**
+  String get meetingPresencePresent;
+
+  /// Indicação exibida na lista de presença para a participante desmarcada
+  ///
+  /// In pt, this message translates to:
+  /// **'Ausente'**
+  String get meetingPresenceAbsent;
+
+  /// No description provided for @invitationConfirmed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmou presença'**
+  String get invitationConfirmed;
+
+  /// No description provided for @invitationNoResponse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem resposta'**
+  String get invitationNoResponse;
+
+  /// No description provided for @invitationDeclined.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusou o convite'**
+  String get invitationDeclined;
+
+  /// Título principal da tela de preparação do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar sorteio'**
+  String get rafflePreparationTitle;
+
+  /// Subtítulo de instrução da tela de preparação do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione as participantes'**
+  String get rafflePreparationSubtitle;
+
+  /// Rótulo do cabeçalho da coluna de participante (foto e nome) na tabela do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Participante'**
+  String get raffleTableHeaderName;
+
+  /// Rótulo do cabeçalho de seleção/presença na tabela de participantes
+  ///
+  /// In pt, this message translates to:
+  /// **'Incluir no sorteio'**
+  String get raffleTableHeaderInclude;
+
+  /// Título da caixa de diálogo de confirmação do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar sorteio'**
+  String get raffleConfirmDialogTitle;
+
+  /// Mensagem de confirmação na caixa de diálogo do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Você deseja mesmo confirmar o sorteio?'**
+  String get raffleConfirmDialogMessage;
+
+  /// Texto do botão de cancelamento na caixa de diálogo do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get raffleConfirmDialogCancel;
+
+  /// Título no header da tela de realização do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar Sorteio'**
+  String get raffleDrawScreenTitle;
+
+  /// Título principal com o mês do sorteio do livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio do Livro - {month}'**
+  String raffleBookDrawTitle(String month);
+
+  /// Texto do botão central principal para realizar o sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'SORTEAR'**
+  String get raffleDrawButton;
+
+  /// Texto informativo no rodapé sobre a aleatoriedade do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'O sorteio é automático e aleatório.\nA participação é voluntária.'**
+  String get raffleDisclaimer;
+
+  /// Título do cabeçalho da tela de resultado do sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Resultado do Sorteio'**
+  String get raffleResultTitle;
+
+  /// Rótulo superior acima do livro sorteado
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro sorteado'**
+  String get raffleDrawnBookLabel;
+
+  /// Rótulo identificando a anfitriã sorteada
+  ///
+  /// In pt, this message translates to:
+  /// **'Anfitriã'**
+  String get raffleHostLabel;
+
+  /// Frase anunciando a anfitriã da vez
+  ///
+  /// In pt, this message translates to:
+  /// **'A Anfitriã da vez é'**
+  String get raffleHostAnnounceLabel;
+
+  /// Texto do botão principal de concluir e registrar o resultado
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluir'**
+  String get raffleFinishButton;
+
+  /// Texto do botão secundário para sortear novamente
+  ///
+  /// In pt, this message translates to:
+  /// **'Sortear novamente'**
+  String get raffleDrawAgainButton;
+
+  /// Mensagem exibida quando alguma etapa do sorteio falha
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível concluir o sorteio. Tente novamente.'**
+  String get raffleErrorMessage;
+
+  /// Aviso abaixo do botão de sortear novamente quando todas as participantes já foram sorteadas
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem mais pessoas para sortear'**
+  String get raffleNoMoreParticipantsToDraw;
+
+  /// Aviso emitido quando a lista de participantes elegíveis está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Não há participantes elegíveis para o sorteio.'**
+  String get raffleNoEligibleParticipants;
+
+  /// Mensagem de sucesso após registrar o sorteio e definir a nova anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio registrado com sucesso! Nova anfitriã definida.'**
+  String get raffleSavedSuccessToast;
+
+  /// Descrição de acessibilidade do contador de tarefas da anfitriã no card do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'{done} de {total} tarefas concluídas'**
+  String groupMeetingMyTasksProgress(int done, int total);
+
+  /// Título da tela de tarefas da anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Suas tarefas'**
+  String get meetingTasksTitle;
+
+  /// Mensagem quando a tela de tarefas é aberta sem meeting_id
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro inválido.'**
+  String get meetingTasksInvalidMeeting;
+
+  /// Sobretítulo do banner antes de o encontro ser publicado
+  ///
+  /// In pt, this message translates to:
+  /// **'VOCÊ FOI SORTEADA'**
+  String get meetingTasksDrawnLabel;
+
+  /// Título do banner quando o livro do encontro não é conhecido
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo encontro'**
+  String get meetingTasksDrawnFallbackTitle;
+
+  /// Sobretítulo do banner depois de o encontro ser publicado
+  ///
+  /// In pt, this message translates to:
+  /// **'TUDO CERTO'**
+  String get meetingTasksPublishedLabel;
+
+  /// Título do banner depois de o encontro ser publicado
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro publicado'**
+  String get meetingTasksPublishedTitle;
+
+  /// Mensagem do banner depois de o encontro ser publicado
+  ///
+  /// In pt, this message translates to:
+  /// **'As participantes já foram avisadas.'**
+  String get meetingTasksPublishedMessage;
+
+  /// Quantidade de tarefas pendentes da anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Todas as tarefas concluídas} =1{1 tarefa para você} other{{count} tarefas para você}}'**
+  String meetingTasksPendingCount(int count);
+
+  /// Título da tarefa de marcar data e local
+  ///
+  /// In pt, this message translates to:
+  /// **'1. Marcar data e local'**
+  String get meetingTasksScheduleTitle;
+
+  /// Descrição da tarefa de marcar data e local enquanto pendente
+  ///
+  /// In pt, this message translates to:
+  /// **'O grupo está esperando para saber quando e onde.'**
+  String get meetingTasksSchedulePending;
+
+  /// Botão que abre a edição do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar agora'**
+  String get meetingTasksScheduleAction;
+
+  /// Tooltip e rótulo de acessibilidade do botão de editar data e local no card de tarefas do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar data e local'**
+  String get meetingTasksScheduleEditAction;
+
+  /// Título da tarefa de enviar fotos e registro do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'2. Enviar fotos do encontro'**
+  String get meetingTasksRecordTitle;
+
+  /// Descrição da tarefa de fotos antes de o encontro ser encerrado
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponível depois que o encontro acontecer.'**
+  String get meetingTasksRecordLocked;
+
+  /// Descrição da tarefa de fotos quando disponível
+  ///
+  /// In pt, this message translates to:
+  /// **'Depois do encontro, compartilhe como foi.'**
+  String get meetingTasksRecordPending;
+
+  /// Descrição da tarefa de fotos quando há rascunho salvo
+  ///
+  /// In pt, this message translates to:
+  /// **'Você tem um rascunho salvo. Continue de onde parou.'**
+  String get meetingTasksRecordDraft;
+
+  /// Etiqueta que indica rascunho salvo na tarefa de fotos
+  ///
+  /// In pt, this message translates to:
+  /// **'Rascunho salvo'**
+  String get meetingTasksRecordDraftTag;
+
+  /// Descrição da tarefa de fotos depois de publicada
+  ///
+  /// In pt, this message translates to:
+  /// **'Registro publicado.'**
+  String get meetingTasksRecordPublished;
+
+  /// Botão que abre a tela de fotos e registro do encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar fotos'**
+  String get meetingTasksRecordAction;
+
+  /// Descrição de acessibilidade do ícone de tarefa concluída
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluída'**
+  String get meetingTasksDoneSemantics;
+
+  /// Botão de encerrar o encontro no rodapé das tarefas
+  ///
+  /// In pt, this message translates to:
+  /// **'Encerrar encontro'**
+  String get meetingTasksConcludeAction;
+
+  /// Aviso acima do botão de encerrar enquanto ele está bloqueado
+  ///
+  /// In pt, this message translates to:
+  /// **'Este botão ficará ativo quando o encontro iniciar.'**
+  String get meetingTasksConcludeHint;
+
+  /// Título do modal de confirmação de encerramento
+  ///
+  /// In pt, this message translates to:
+  /// **'Encerrar encontro'**
+  String get meetingTasksConcludeDialogTitle;
+
+  /// Mensagem do modal de confirmação de encerramento
+  ///
+  /// In pt, this message translates to:
+  /// **'Você deseja mesmo encerrar o encontro? Para concluir, preencha a lista de presença.'**
+  String get meetingTasksConcludeDialogMessage;
+
+  /// Botão que cancela o encerramento
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get meetingTasksConcludeDialogNo;
+
+  /// Botão que confirma o encerramento e abre a lista de presença
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get meetingTasksConcludeDialogYes;
+
+  /// Botão que conclui a lista de presença e encerra o encontro
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluir lista de presença'**
+  String get meetingAttendanceCompleteAction;
+
+  /// Tooltip e acessibilidade para exibir senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostrar senha'**
+  String get showPasswordTooltip;
+
+  /// Tooltip e acessibilidade para ocultar senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocultar senha'**
+  String get hidePasswordTooltip;
+
+  /// Descrição de acessibilidade do logotipo do aplicativo
+  ///
+  /// In pt, this message translates to:
+  /// **'Logo do Clube de Leitura D\'Elas'**
+  String get appLogoSemanticLabel;
+
+  /// Título do visualizador de fotos do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto {index} de {total}'**
+  String meetingPhotoViewerTitle(int index, int total);
+
+  /// Rótulo de acessibilidade para abrir a foto em tela cheia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir foto {index} do encontro'**
+  String meetingPhotoOpenSemanticLabel(int index);
+
+  /// Ação para baixar a foto do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Baixar'**
+  String get meetingPhotoDownload;
+
+  /// Ação para exibir a foto anterior no visualizador
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto anterior'**
+  String get meetingPhotoPrevious;
+
+  /// Ação para exibir a próxima foto no visualizador
+  ///
+  /// In pt, this message translates to:
+  /// **'Próxima foto'**
+  String get meetingPhotoNext;
+
+  /// Erro ao abrir a foto para download.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir a foto para baixar.'**
+  String get meetingPhotoDownloadFailed;
+
+  /// Ação para remover a foto do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover'**
+  String get meetingPhotoDelete;
+
+  /// Título da confirmação de remoção de foto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover foto'**
+  String get meetingPhotoDeleteDialogTitle;
+
+  /// Mensagem da confirmação de remoção de foto.
+  ///
+  /// In pt, this message translates to:
+  /// **'A foto deixa de aparecer no encontro. Deseja remover?'**
+  String get meetingPhotoDeleteDialogMessage;
+
+  /// Botão que cancela a remoção da foto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get meetingPhotoDeleteDialogCancel;
+
+  /// Aviso de foto removida.
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto removida.'**
+  String get meetingPhotoDeleted;
+
+  /// Erro ao remover a foto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível remover a foto. Tente novamente.'**
+  String get meetingPhotoDeleteFailed;
+
+  /// Título do bloco de texto de divulgação do encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Texto de divulgação'**
+  String get meetingPromoTextTitle;
+
+  /// Texto exibido quando o encontro não tem texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum texto de divulgação anexado.'**
+  String get meetingPromoTextEmpty;
+
+  /// Botão para anexar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar texto'**
+  String get meetingPromoTextAdd;
+
+  /// Botão para editar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar'**
+  String get meetingPromoTextEdit;
+
+  /// Botão para copiar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Copiar'**
+  String get meetingPromoTextCopy;
+
+  /// Aviso de texto de divulgação copiado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Texto copiado.'**
+  String get meetingPromoTextCopied;
+
+  /// Placeholder do editor de texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escreva o texto que acompanha as fotos na divulgação'**
+  String get meetingPromoTextHint;
+
+  /// Contador de caracteres do texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} de {max} caracteres'**
+  String meetingPromoTextCounter(int count, int max);
+
+  /// Erro de texto de divulgação longo demais.
+  ///
+  /// In pt, this message translates to:
+  /// **'O texto passa do limite de {max} caracteres.'**
+  String meetingPromoTextTooLong(int max);
+
+  /// Botão para salvar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar'**
+  String get meetingPromoTextSave;
+
+  /// Aviso de texto de divulgação salvo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Texto de divulgação salvo.'**
+  String get meetingPromoTextSaved;
+
+  /// Erro ao salvar o texto de divulgação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar o texto de divulgação. Tente novamente.'**
+  String get meetingPromoTextSaveFailed;
+
+  /// Rótulo de acessibilidade do componente de avaliação em estrelas
+  ///
+  /// In pt, this message translates to:
+  /// **'{rating} de {maxStars} estrelas'**
+  String starRatingSemanticLabel(String rating, int maxStars);
+
+  /// Rótulo de acessibilidade de cada estrela no modo input
+  ///
+  /// In pt, this message translates to:
+  /// **'{starValue} de {maxStars} estrelas'**
+  String starRatingInputStarLabel(int starValue, int maxStars);
+
+  /// Chip de status de leitura: livro já lido pela leitora.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já lido'**
+  String get readingStatusRead;
+
+  /// Chip de status de leitura: livro que a leitora quer ler.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quero ler'**
+  String get readingStatusWantToRead;
+
+  /// Chip no detalhe do livro para marcar o livro como lido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar como lido'**
+  String get readingStatusMarkAsRead;
+
+  /// Tag do grupo que já recebeu a indicação deste livro e não pode recebê-la de novo.
+  ///
+  /// In pt, this message translates to:
+  /// **'já indicado'**
+  String get bookGroupAlreadySuggested;
+
+  /// Autoria no topo do detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escrito por {author}'**
+  String bookDetailWrittenBy(String author);
+
+  /// Rótulo de acessibilidade das estrelas no detalhe do livro quando ninguém avaliou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda sem avaliações'**
+  String get bookDetailNoRatings;
+
+  /// Título da tela de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificações'**
+  String get notificationsTitle;
+
+  /// Valor de acessibilidade do sino com o total de não lidas.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 não lida} other{{count} não lidas}}'**
+  String notificationsUnreadCount(int count);
+
+  /// Texto do badge do sino quando há mais de 99 não lidas.
+  ///
+  /// In pt, this message translates to:
+  /// **'99+'**
+  String get notificationsBadgeOverflow;
+
+  /// Estado vazio da tela de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma notificação por aqui'**
+  String get notificationsEmpty;
+
+  /// Erro ao carregar a lista de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar suas notificações.'**
+  String get notificationsLoadError;
+
+  /// Erro ao carregar a próxima página de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar mais notificações.'**
+  String get notificationsLoadMoreError;
+
+  /// Botão de nova tentativa da tela de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get notificationsRetry;
+
+  /// Rótulo de acessibilidade do skeleton de notificações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando notificações'**
+  String get notificationsLoading;
+
+  /// Rótulo de acessibilidade do indicador do scroll infinito.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando mais notificações'**
+  String get notificationsLoadingMore;
+
+  /// Rótulo de acessibilidade de uma notificação não lida.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não lida: {title}. {message}'**
+  String notificationTileUnreadSemantic(String title, String message);
+
+  /// Rótulo de acessibilidade de uma notificação lida.
+  ///
+  /// In pt, this message translates to:
+  /// **'{title}. {message}'**
+  String notificationTileReadSemantic(String title, String message);
+
+  /// Data relativa de uma notificação de menos de um minuto.
+  ///
+  /// In pt, this message translates to:
+  /// **'agora'**
+  String get notificationDateNow;
+
+  /// Data relativa de uma notificação em minutos.
+  ///
+  /// In pt, this message translates to:
+  /// **'há {count} min'**
+  String notificationDateMinutes(int count);
+
+  /// Data relativa de uma notificação em horas.
+  ///
+  /// In pt, this message translates to:
+  /// **'há {count} h'**
+  String notificationDateHours(int count);
+
+  /// Data relativa de uma notificação em dias.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{ontem} other{há {count} dias}}'**
+  String notificationDateDays(int count);
+
+  /// Título do cabeçalho da tela de detalhes do livro enquanto carrega ou em erro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do livro'**
+  String get bookDetailScreenTitle;
+
+  /// Botão que abre o modal de avaliação do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliar'**
+  String get bookDetailRateButton;
+
+  /// Botão que abre o modal para editar a avaliação já feita.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar avaliação'**
+  String get bookDetailEditReviewButton;
+
+  /// Botão para indicar o livro a um grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar'**
+  String get bookDetailRecommendButton;
+
+  /// Título da seção de sinopse no detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sinopse'**
+  String get bookDetailSynopsisTitle;
+
+  /// Título da seção de avaliações das leitoras no detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comentários'**
+  String get bookDetailReviewsTitle;
+
+  /// Texto quando nenhuma outra leitora avaliou o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há comentários'**
+  String get bookDetailNoReviews;
+
+  /// Texto da seção Sinopse quando o livro não tem sinopse cadastrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este livro ainda não tem sinopse.'**
+  String get bookDetailNoSynopsis;
+
+  /// Rótulo de acessibilidade do carregamento do detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando livro'**
+  String get bookDetailLoading;
+
+  /// Erro ao carregar o detalhe do livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o livro.'**
+  String get bookDetailLoadError;
+
+  /// Mensagem quando o livro não existe.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro não encontrado.'**
+  String get bookDetailNotFound;
+
+  /// Rótulo de acessibilidade do carregamento da próxima página de comentários.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando mais comentários'**
+  String get bookDetailLoadingMoreReviews;
+
+  /// Erro ao carregar a próxima página de comentários.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar mais comentários.'**
+  String get bookDetailLoadMoreReviewsError;
+
+  /// Título da aba de busca de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Busca'**
+  String get bookSearchTitle;
+
+  /// Placeholder do campo de busca de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar livro'**
+  String get bookSearchHint;
+
+  /// Título da grade mostrada quando a busca está vazia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Populares esse mês'**
+  String get bookSearchPopularTitle;
+
+  /// Lista de resultados sem livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum livro encontrado'**
+  String get bookSearchEmpty;
+
+  /// Erro ao carregar a busca de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os livros. Tente novamente.'**
+  String get bookSearchLoadError;
+
+  /// Rótulo de acessibilidade do skeleton da busca.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando livros'**
+  String get bookSearchLoading;
+
+  /// Toast quando o chip de status de leitura não grava (busca e detalhes do livro).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível atualizar o status de leitura.'**
+  String get bookReadingStatusError;
+
+  /// Botão para repetir uma ação ou carregamento que falhou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get errorRetryButton;
+
+  /// Erro quando o app não consegue falar com o servidor (sem rede ou rede instável).
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem conexão com a internet. Verifique sua conexão e tente novamente.'**
+  String get errorNoConnection;
+
+  /// Erro quando o servidor recusa a sessão da usuária (HTTP 401).
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua sessão expirou. Saia do app e entre de novo na sua conta.'**
+  String get errorSessionExpired;
+
+  /// Login com e-mail e senha recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail ou senha incorretos. Confira os dados e tente novamente.'**
+  String get authInvalidCredentialsError;
+
+  /// Cadastro com e-mail que já existe.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este e-mail já tem uma conta. Volte e entre com ele, ou use outro e-mail.'**
+  String get authEmailAlreadyRegisteredError;
+
+  /// Cadastro recusado porque a senha é fraca.
+  ///
+  /// In pt, this message translates to:
+  /// **'Essa senha não é segura. Escolha outra senha e tente novamente.'**
+  String get authWeakPasswordError;
+
+  /// Supabase Auth limitou as tentativas (rate limit).
+  ///
+  /// In pt, this message translates to:
+  /// **'Muitas tentativas seguidas. Aguarde alguns minutos e tente novamente.'**
+  String get authTooManyAttemptsError;
+
+  /// Falha no login com o Google (não inclui quando a usuária cancela).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível entrar com o Google. Tente novamente ou entre com e-mail e senha.'**
+  String get authGoogleUnavailableError;
+
+  /// Falha inesperada ao entrar na conta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível entrar. Tente novamente em alguns minutos.'**
+  String get authLoginFailedError;
+
+  /// Falha inesperada ao criar a conta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível criar sua conta. Tente novamente em alguns minutos.'**
+  String get authSignUpFailedError;
+
+  /// Falha inesperada ao validar o token de acesso (não é token inválido).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível validar o token agora. Tente novamente em alguns minutos.'**
+  String get claimTokenFailedError;
+
+  /// Tela de abertura quando o perfil da usuária não carrega. {reason} é o motivo com a orientação (sem internet, sessão expirada...).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar sua conta. {reason}'**
+  String sessionProfileLoadError(String reason);
+
+  /// Revisão do cadastro: os dados da usuária não carregaram.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar seus dados.'**
+  String get onboardingProfileLoadError;
+
+  /// Revisão do cadastro: falha ao salvar.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar seus dados. Tente novamente.'**
+  String get onboardingProfileSaveError;
+
+  /// Sorteio recusado porque já existe resultado (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O sorteio deste encontro já foi feito.'**
+  String get raffleAlreadyRecordedError;
+
+  /// Sorteio recusado porque alguma participante não é mais elegível (HTTP 422).
+  ///
+  /// In pt, this message translates to:
+  /// **'A lista de participantes mudou.'**
+  String get raffleParticipantsChangedError;
+
+  /// Tela mostrada quando a inicialização do app falha (configuração, Firebase ou Supabase).
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o aplicativo. Feche e abra de novo; se continuar, atualize o app.'**
+  String get appStartupError;
+
+  /// Tela mostrada quando o app abre um endereço que não corresponde a nenhuma rota.
+  ///
+  /// In pt, this message translates to:
+  /// **'Página não encontrada.'**
+  String get routeNotFoundMessage;
+
+  /// Botão da tela de rota não encontrada que leva para a home.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ir para o início'**
+  String get routeNotFoundHomeButton;
+
+  /// Ação recusada por falta de permissão (HTTP 403). Sem "Tentar novamente", que falharia igual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você não tem permissão para fazer isso.'**
+  String get errorForbidden;
+
+  /// Sorteio recusado porque o encontro ainda não foi encerrado (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O sorteio só fica disponível depois que o encontro é encerrado.'**
+  String get raffleMeetingNotEndedError;
+
+  /// Sorteio recusado porque o livro da sorteada já foi sorteado no grupo (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'O livro sorteado já saiu em outro sorteio deste grupo.'**
+  String get raffleBookAlreadyDrawnError;
+
+  /// Sorteio recusado porque a indicação de livro da sorteada não vale mais (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'A indicação de livro de uma participante não está mais disponível.'**
+  String get raffleBookSuggestionUnavailableError;
+
+  /// Instrução depois do motivo, só onde há o botão Tentar novamente.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque em Tentar novamente para ver o resultado.'**
+  String get raffleRetryShowResultHint;
+
+  /// Instrução depois do motivo, só onde há o botão Tentar novamente.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque em Tentar novamente para atualizar a lista.'**
+  String get raffleRetryRefreshListHint;
+
+  /// Depois do motivo, quando a preparação recarrega a lista sozinha.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizamos a lista: confira as participantes e confirme de novo.'**
+  String get raffleListRefreshedHint;
+
+  /// Nome do mês no cabeçalho do calendário; a tela põe a inicial maiúscula.
+  ///
+  /// In pt, this message translates to:
+  /// **'{month}'**
+  String calendarMonthName(DateTime month);
+
+  /// Rótulo acessível do mês exibido ("agosto de 2026"); a tela põe a inicial maiúscula.
+  ///
+  /// In pt, this message translates to:
+  /// **'{month}'**
+  String calendarMonthSemantic(DateTime month);
+
+  /// Botão que mostra o mês anterior no calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês anterior'**
+  String get calendarPreviousMonth;
+
+  /// Botão que mostra o mês seguinte no calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo mês'**
+  String get calendarNextMonth;
+
+  /// Abreviação do dia da semana no topo da grade do calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'{weekday, select, sunday{Dom} monday{Seg} tuesday{Ter} wednesday{Qua} thursday{Qui} friday{Sex} saturday{Sáb} other{}}'**
+  String calendarWeekdayShort(String weekday);
+
+  /// Rótulo acessível de um dia da grade com a quantidade de encontros.
+  ///
+  /// In pt, this message translates to:
+  /// **'{day}, {count, plural, =0{sem encontros} =1{1 encontro} other{{count} encontros}}'**
+  String calendarDaySemantic(DateTime day, int count);
+
+  /// Valor acessível do dia de hoje na grade do calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Hoje'**
+  String get calendarToday;
+
+  /// Filtro do calendário que mostra todos os encontros do mês.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get calendarFilterAll;
+
+  /// Filtro do calendário com os encontros futuros do mês e a quantidade deles.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximos eventos ({count})'**
+  String calendarFilterUpcoming(int count);
+
+  /// Filtro do calendário com os encontros do mês que já aconteceram.
+  ///
+  /// In pt, this message translates to:
+  /// **'Eventos passados'**
+  String get calendarFilterPast;
+
+  /// Título da lista quando um dia está selecionado ("segunda-feira, 14 de agosto"); a tela põe a inicial maiúscula.
+  ///
+  /// In pt, this message translates to:
+  /// **'{day}'**
+  String calendarSelectedDayTitle(DateTime day);
+
+  /// Botão que tira a seleção do dia e volta para a lista do mês.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar dia selecionado'**
+  String get calendarClearSelectedDay;
+
+  /// Título do encontro na lista do dia selecionado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro Grupo {number}'**
+  String calendarMeetingTitle(int number);
+
+  /// Título do encontro na lista do mês, com a data.
+  ///
+  /// In pt, this message translates to:
+  /// **'{date} - Encontro Grupo {number}'**
+  String calendarMeetingTitleWithDate(DateTime date, int number);
+
+  /// Horário de início do encontro na lista do calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'{time}'**
+  String calendarMeetingTime(DateTime time);
+
+  /// Quantidade de participantes do grupo do encontro no calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Nenhum participante} =1{1 participante} other{{count} participantes}}'**
+  String calendarParticipantsCount(int count);
+
+  /// Local do encontro seguido da cidade do grupo, quando o calendário mostra mais de uma cidade.
+  ///
+  /// In pt, this message translates to:
+  /// **'{place}, {city}'**
+  String calendarMeetingPlaceWithCity(String place, String city);
+
+  /// Anfitriã do encontro no calendário; só aparece para quem é membro do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} (Anfitriã)'**
+  String calendarMeetingHost(String name);
+
+  /// Rótulo acessível do carregamento da lista de encontros do calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando encontros'**
+  String get calendarLoading;
+
+  /// Erro ao buscar os encontros do mês no calendário.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o calendário.'**
+  String get calendarLoadError;
+
+  /// Calendário sem encontros no mês exibido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum encontro neste mês.'**
+  String get calendarEmptyMonth;
+
+  /// Calendário com o filtro de próximos eventos e nenhum encontro futuro no mês.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum próximo encontro neste mês.'**
+  String get calendarEmptyUpcoming;
+
+  /// Calendário com o filtro de eventos passados e nenhum encontro passado no mês.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum encontro passado neste mês.'**
+  String get calendarEmptyPast;
+
+  /// Dia selecionado no calendário sem encontros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum encontro neste dia.'**
+  String get calendarEmptyDay;
+
+  /// Título do mês no cabeçalho do calendário ("Agosto 2026"); month já vem com a inicial maiúscula.
+  ///
+  /// In pt, this message translates to:
+  /// **'{month} {year}'**
+  String calendarMonthTitle(String month, int year);
+
+  /// Tag do encontro ainda em rascunho (status CREATED), visível só para quem é membro do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rascunho'**
+  String get calendarMeetingDraftTag;
+
+  /// Título da tela de grupo para quem não é membro, enquanto o grupo não carregou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes do grupo'**
+  String get publicGroupTitle;
+
+  /// Rótulo acessível do carregamento da tela de grupo para quem não é membro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando grupo'**
+  String get publicGroupLoading;
+
+  /// Erro ao buscar o grupo na tela de grupo para quem não é membro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar o grupo.'**
+  String get publicGroupLoadError;
+
+  /// Grupo inexistente ou inativo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo não está disponível.'**
+  String get publicGroupUnavailable;
+
+  /// Botão para pedir entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar entrada'**
+  String get publicGroupRequestJoin;
+
+  /// Botão para pedir entrada de novo depois de um pedido recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedir novamente'**
+  String get publicGroupRequestAgain;
+
+  /// Situação de quem pediu entrada e espera a coordenação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguardando aprovação'**
+  String get publicGroupStatusRequested;
+
+  /// Situação de quem teve o pedido de entrada recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitação recusada'**
+  String get publicGroupStatusRejected;
+
+  /// Situação de quem foi convidada e ainda não terminou de criar a conta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguardando criação de conta'**
+  String get publicGroupStatusPending;
+
+  /// Situação de quem já é membro do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já faz parte deste grupo'**
+  String get publicGroupStatusMember;
+
+  /// Botão que abre os detalhes completos do grupo para quem já é membro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver grupo'**
+  String get publicGroupOpenMemberDetails;
+
+  /// Título da confirmação do pedido de entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar entrada?'**
+  String get publicGroupJoinDialogTitle;
+
+  /// Texto da confirmação do pedido de entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'A coordenação do Grupo {number} vai analisar o seu pedido.'**
+  String publicGroupJoinDialogMessage(int number);
+
+  /// Botão que fecha a confirmação sem pedir entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get publicGroupJoinDialogCancel;
+
+  /// Botão que confirma o pedido de entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar'**
+  String get publicGroupJoinDialogConfirm;
+
+  /// Aviso depois de pedir entrada no grupo com sucesso.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido enviado! Agora é só aguardar a aprovação.'**
+  String get publicGroupJoinSuccess;
+
+  /// Pedido recusado porque a leitora já pediu ou já é membro (HTTP 409); a tela recarrega o status.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já pediu entrada ou já faz parte deste grupo.'**
+  String get publicGroupJoinAlreadyRequested;
+
+  /// Pedido recusado porque o grupo ainda não tem coordenadora (HTTP 409).
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo ainda não aceita pedidos de entrada.'**
+  String get publicGroupJoinNoCoordinator;
+
+  /// Erro genérico ao pedir entrada no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível enviar o pedido. Tente novamente.'**
+  String get publicGroupJoinError;
+
+  /// Aba da busca com os livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livros'**
+  String get searchTabBooks;
+
+  /// Aba da busca com os grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupos'**
+  String get searchTabGroups;
+
+  /// Título da aba de busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontre seu grupo ideal'**
+  String get groupSearchTitle;
+
+  /// Texto de exemplo do campo de busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar grupo'**
+  String get groupSearchHint;
+
+  /// Botão que abre os filtros da busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Filtros'**
+  String get groupSearchFiltersButton;
+
+  /// Valor acessível do botão de filtros quando há filtro aplicado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Filtros aplicados'**
+  String get groupSearchFiltersActive;
+
+  /// Rótulo do filtro de cidade do calendário e da busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cidade'**
+  String get cityFilterLabel;
+
+  /// Opção do filtro de cidade que mostra grupos e encontros de todas as cidades.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas as cidades'**
+  String get cityFilterAll;
+
+  /// Cidade numa opção do filtro de cidade.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name}, {uf}'**
+  String cityFilterOption(String name, String uf);
+
+  /// Rótulo do filtro de mínimo de participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mínimo de participantes'**
+  String get groupSearchFilterMin;
+
+  /// Exemplo no campo de mínimo de participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex.: 10'**
+  String get groupSearchFilterMinHint;
+
+  /// Rótulo do filtro de máximo de participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Máximo de participantes'**
+  String get groupSearchFilterMax;
+
+  /// Exemplo no campo de máximo de participantes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex.: 20'**
+  String get groupSearchFilterMaxHint;
+
+  /// Erro quando o mínimo de participantes passa do máximo.
+  ///
+  /// In pt, this message translates to:
+  /// **'O mínimo não pode ser maior que o máximo.'**
+  String get groupSearchFilterRangeError;
+
+  /// Botão que aplica os filtros da busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aplicar filtros'**
+  String get groupSearchFiltersApply;
+
+  /// Botão que tira todos os filtros da busca de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar filtros'**
+  String get groupSearchFiltersClear;
+
+  /// Rótulo acessível do carregamento da lista de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando grupos'**
+  String get groupSearchLoading;
+
+  /// Rótulo acessível do carregamento da próxima página de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando mais grupos'**
+  String get groupSearchLoadingMore;
+
+  /// Erro ao buscar a lista de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os grupos.'**
+  String get groupSearchLoadError;
+
+  /// Erro ao buscar a próxima página de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar mais grupos.'**
+  String get groupSearchLoadMoreError;
+
+  /// Lista de grupos vazia, sem busca nem filtro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não há grupos ativos.'**
+  String get groupSearchEmpty;
+
+  /// Lista de grupos vazia com busca ou filtro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum grupo encontrado. Tente outra busca ou mude os filtros.'**
+  String get groupSearchEmptyFiltered;
+
+  /// Rodapé da lista de grupos quando não há mais páginas.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você chegou ao fim da lista.'**
+  String get groupSearchEnd;
+
+  /// Link do card que abre a tela do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhes'**
+  String get groupSearchSeeDetails;
+
+  /// Rótulo acessível do link que abre a tela do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhes do Grupo {number}'**
+  String groupSearchSeeDetailsSemantic(int number);
+
+  /// Botão no detalhe do grupo, só para a coordenadora, com a quantidade de pedidos pendentes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedidos de entrada ({count})'**
+  String groupJoinRequestsAccess(int count);
+
+  /// Título da tela de pedidos de entrada do grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedidos de entrada'**
+  String get groupJoinRequestsTitle;
+
+  /// Rótulo de acessibilidade do carregamento da lista de pedidos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando pedidos de entrada'**
+  String get groupJoinRequestsLoading;
+
+  /// Lista de pedidos de entrada vazia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum pedido de entrada'**
+  String get groupJoinRequestsEmpty;
+
+  /// Erro genérico ao carregar os pedidos de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os pedidos de entrada.'**
+  String get groupJoinRequestsLoadError;
+
+  /// A leitora não é coordenadora do grupo (HTTP 403).
+  ///
+  /// In pt, this message translates to:
+  /// **'Só a coordenação do grupo pode ver os pedidos de entrada.'**
+  String get groupJoinRequestsNotCoordinator;
+
+  /// Link para os pedidos sem um grupo válido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este grupo não está disponível.'**
+  String get groupJoinRequestsGroupUnavailable;
+
+  /// Data e hora do pedido de entrada, no fuso de São Paulo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido em {date} às {time}'**
+  String groupJoinRequestsRequestedAt(DateTime date, DateTime time);
+
+  /// Botão que aceita o pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar'**
+  String get groupJoinRequestsApprove;
+
+  /// Botão que recusa o pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar'**
+  String get groupJoinRequestsReject;
+
+  /// Título da confirmação de aceite do pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar pedido?'**
+  String get groupJoinRequestsApproveDialogTitle;
+
+  /// Texto da confirmação de aceite do pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} vai passar a fazer parte do grupo.'**
+  String groupJoinRequestsApproveDialogMessage(String name);
+
+  /// Título da confirmação de recusa do pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar pedido?'**
+  String get groupJoinRequestsRejectDialogTitle;
+
+  /// Texto da confirmação de recusa do pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} não vai entrar no grupo agora, mas poderá pedir de novo.'**
+  String groupJoinRequestsRejectDialogMessage(String name);
+
+  /// Botão que fecha a confirmação sem decidir o pedido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get groupJoinRequestsDialogCancel;
+
+  /// Aviso depois de aceitar um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido aceito! A leitora já faz parte do grupo.'**
+  String get groupJoinRequestsApproved;
+
+  /// Aviso depois de recusar um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido recusado.'**
+  String get groupJoinRequestsRejected;
+
+  /// O pedido já foi decidido, por exemplo por outra coordenadora (HTTP 409); ele sai da lista.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido já foi respondido.'**
+  String get groupJoinRequestsAlreadyReviewed;
+
+  /// O pedido não existe mais (HTTP 404); ele sai da lista.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido não está mais disponível.'**
+  String get groupJoinRequestsNotFound;
+
+  /// Aceite recusado porque o grupo ou a conta da leitora foi inativado (HTTP 409); a lista recarrega.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido não pode mais ser aceito: o grupo ou a conta da leitora foi desativado.'**
+  String get groupJoinRequestsNoLongerValid;
+
+  /// Erro genérico ao aceitar ou recusar um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível responder ao pedido. Tente novamente.'**
+  String get groupJoinRequestsReviewError;
+
+  /// Rótulo de acessibilidade do botão Aceitar de um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar pedido de {name}'**
+  String groupJoinRequestsApproveSemantics(String name);
+
+  /// Rótulo de acessibilidade do botão Recusar de um pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar pedido de {name}'**
+  String groupJoinRequestsRejectSemantics(String name);
+
+  /// Quantidade de livros marcados como lidos, abaixo do nome no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{0 livros lidos} =1{1 livro lido} other{{count} livros lidos}}'**
+  String profileBooksReadCount(int count);
+
+  /// Quantidade de grupos ativos da leitora, abaixo do nome no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{0 grupos} =1{1 grupo} other{{count} grupos}}'**
+  String profileGroupsCount(int count);
+
+  /// Título da seção de grupos no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Meus grupos'**
+  String get profileMyGroupsTitle;
+
+  /// Rótulo de acessibilidade da foto de um grupo no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String profileGroupLabel(int number);
+
+  /// Rótulo de acessibilidade da seta que rola o carrossel de grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver mais grupos'**
+  String get profileMoreGroupsButtonLabel;
+
+  /// Texto da seção de grupos do perfil quando a leitora não tem grupos.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo.'**
+  String get profileNoGroups;
+
+  /// Título da seção de livros avaliados no perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livros avaliados'**
+  String get profileReviewedBooksTitle;
+
+  /// Texto da seção de livros avaliados quando não há avaliações.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não avaliou nenhum livro.'**
+  String get profileNoReviewedBooks;
+
+  /// Link para a lista completa de livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todos os livros'**
+  String get profileSeeAllBooks;
+
+  /// Rótulo de acessibilidade do carregamento das seções do perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando seus grupos e livros'**
+  String get profileSummaryLoading;
+
+  /// Erro ao carregar livros lidos, grupos e avaliações do perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar seus grupos e livros.'**
+  String get profileSummaryLoadError;
+
+  /// Título do modal ao confirmar a lista de presença sem ninguém marcado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ninguém compareceu?'**
+  String get meetingPresenceEmptyConfirmTitle;
+
+  /// Explica que confirmar sem marcações registra falta para todas, sem volta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma participante está marcada. Ao confirmar, todas ficam com falta e a lista não pode ser alterada depois.'**
+  String get meetingPresenceEmptyConfirmMessage;
+
+  /// Botão que fecha o modal e volta para a lista de presença.
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get meetingPresenceEmptyConfirmCancel;
+
+  /// Botão que envia a lista de presença sem ninguém marcado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar mesmo assim'**
+  String get meetingPresenceEmptyConfirmConfirm;
+
+  /// Tempo no clube, abaixo do nome no perfil, quando é menos de um ano
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Chegou ao clube este mês} =1{1 mês no clube} other{{count} meses no clube}}'**
+  String profileClubTimeMonths(int count);
+
+  /// Tempo no clube, abaixo do nome no perfil, a partir de um ano
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 ano no clube} other{{count} anos no clube}}'**
+  String profileClubTimeYears(int count);
+
+  /// Botão no detalhe do encontro, só para a anfitriã ou a coordenação, com a quantidade de pedidos de participação pendentes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedidos de participação ({count})'**
+  String meetingGuestRequestsAccess(int count);
+
+  /// Título da tela de pedidos de participação de um encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedidos de participação'**
+  String get meetingGuestRequestsTitle;
+
+  /// Rótulo de acessibilidade do carregamento da lista de pedidos de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando pedidos de participação'**
+  String get meetingGuestRequestsLoading;
+
+  /// Lista de pedidos de participação do encontro vazia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum pedido de participação'**
+  String get meetingGuestRequestsEmpty;
+
+  /// Erro genérico ao carregar os pedidos de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os pedidos de participação.'**
+  String get meetingGuestRequestsLoadError;
+
+  /// A leitora não é a anfitriã do encontro nem coordenadora do grupo (HTTP 403).
+  ///
+  /// In pt, this message translates to:
+  /// **'Só a anfitriã do encontro ou a coordenação do grupo pode ver os pedidos de participação.'**
+  String get meetingGuestRequestsNotReviewer;
+
+  /// Link para os pedidos de participação sem um encontro válido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não está disponível.'**
+  String get meetingGuestRequestsMeetingUnavailable;
+
+  /// Data e hora do pedido de participação, no fuso de São Paulo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido em {date} às {time}'**
+  String meetingGuestRequestsRequestedAt(DateTime date, DateTime time);
+
+  /// Botão que aceita o pedido de participação no encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar'**
+  String get meetingGuestRequestsApprove;
+
+  /// Botão que recusa o pedido de participação no encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar'**
+  String get meetingGuestRequestsReject;
+
+  /// Título da confirmação de aceite do pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar pedido?'**
+  String get meetingGuestRequestsApproveDialogTitle;
+
+  /// Texto da confirmação de aceite do pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} vai participar deste encontro como convidada.'**
+  String meetingGuestRequestsApproveDialogMessage(String name);
+
+  /// Título da confirmação de recusa do pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar pedido?'**
+  String get meetingGuestRequestsRejectDialogTitle;
+
+  /// Texto da confirmação de recusa do pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} não vai participar deste encontro, mas poderá pedir de novo.'**
+  String meetingGuestRequestsRejectDialogMessage(String name);
+
+  /// Botão que fecha a confirmação sem decidir o pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get meetingGuestRequestsDialogCancel;
+
+  /// Aviso depois de aceitar um pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido aceito! A leitora foi confirmada no encontro.'**
+  String get meetingGuestRequestsApproved;
+
+  /// Aviso depois de recusar um pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido recusado.'**
+  String get meetingGuestRequestsRejected;
+
+  /// O pedido de participação já foi decidido, por exemplo pela anfitriã ou outra coordenadora (HTTP 409); ele sai da lista.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido já foi respondido.'**
+  String get meetingGuestRequestsAlreadyReviewed;
+
+  /// O pedido de participação não existe mais ou a leitora deixou de poder decidi-lo (HTTP 404); ele sai da lista.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido não está mais disponível.'**
+  String get meetingGuestRequestsNotFound;
+
+  /// Decisão recusada porque o pedido deixou de valer (HTTP 409); a lista recarrega.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido não pode mais ser aceito: o encontro foi encerrado, a conta da leitora foi desativada ou ela já faz parte do grupo.'**
+  String get meetingGuestRequestsNoLongerValid;
+
+  /// Erro genérico ao aceitar ou recusar um pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível responder ao pedido. Tente novamente.'**
+  String get meetingGuestRequestsReviewError;
+
+  /// Rótulo de acessibilidade do botão Aceitar de um pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitar pedido de participação de {name}'**
+  String meetingGuestRequestsApproveSemantics(String name);
+
+  /// Rótulo de acessibilidade do botão Recusar de um pedido de participação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recusar pedido de participação de {name}'**
+  String meetingGuestRequestsRejectSemantics(String name);
+
+  /// Tag na lista de presença do encontro para a leitora de fora do grupo que teve o pedido de participação aceito.
+  ///
+  /// In pt, this message translates to:
+  /// **'Convidada'**
+  String get meetingAttendanceGuestTag;
+
+  /// Botão do card do calendário para pedir participação num encontro de um grupo do qual a leitora não é membro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar participação'**
+  String get calendarGuestRequest;
+
+  /// Botão do card do calendário para pedir de novo a participação depois de um pedido recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedir novamente'**
+  String get calendarGuestRequestAgain;
+
+  /// Situação do pedido de participação num encontro enquanto a anfitriã ou a coordenação não responde.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguardando aprovação'**
+  String get calendarGuestStatusRequested;
+
+  /// Situação do pedido de participação num encontro depois de aprovado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Participação confirmada'**
+  String get calendarGuestStatusAccepted;
+
+  /// Situação do pedido de participação num encontro depois de recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido recusado'**
+  String get calendarGuestStatusRejected;
+
+  /// Título do modal que confirma o pedido de participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar participação?'**
+  String get calendarGuestDialogTitle;
+
+  /// Texto do modal que confirma o pedido de participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'A anfitriã ou a coordenação do Grupo {number} vai analisar o seu pedido.'**
+  String calendarGuestDialogMessage(int number);
+
+  /// Botão que fecha o modal de pedido de participação sem enviar.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get calendarGuestDialogCancel;
+
+  /// Botão que confirma o envio do pedido de participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Solicitar'**
+  String get calendarGuestDialogConfirm;
+
+  /// Aviso depois de enviar o pedido de participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido enviado! Agora é só aguardar a aprovação.'**
+  String get calendarGuestRequestSuccess;
+
+  /// Aviso quando a leitora já tinha um pedido de participação em aberto no encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já pediu para participar deste encontro.'**
+  String get calendarGuestAlreadyRequested;
+
+  /// Aviso quando a leitora pede participação num encontro de um grupo com o qual já tem vínculo ou pedido de entrada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já tem um vínculo ou pedido com este grupo.'**
+  String get calendarGuestAlreadyMember;
+
+  /// Aviso quando a leitora pede de novo menos de 24 horas depois de ter o pedido de participação recusado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você poderá pedir de novo 24 horas depois da recusa.'**
+  String get calendarGuestRecentlyRejected;
+
+  /// Aviso quando o encontro deixou de estar agendado ou já passou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não está mais aberto a pedidos.'**
+  String get calendarGuestMeetingNotOpen;
+
+  /// Aviso quando o grupo do encontro não tem anfitriã nem coordenadora para analisar o pedido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro ainda não tem quem analise pedidos.'**
+  String get calendarGuestNoReviewer;
+
+  /// Aviso quando o backend recusa o encontro (HTTP 403 "meeting not available"), que só o backend anterior ao filtro de cidade devolve.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não está disponível para você.'**
+  String get calendarGuestMeetingUnavailable;
+
+  /// Aviso quando o encontro foi removido antes do pedido.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este encontro não existe mais.'**
+  String get calendarGuestMeetingNotFound;
+
+  /// Aviso de erro genérico ao pedir participação num encontro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível enviar o pedido. Tente novamente.'**
+  String get calendarGuestRequestError;
+
   /// Título da tela de livros avaliados.
   ///
   /// In pt, this message translates to:

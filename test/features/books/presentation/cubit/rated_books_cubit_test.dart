@@ -166,7 +166,7 @@ void main() {
     );
 
     blocTest<RatedBooksCubit, RatedBooksState>(
-      'keeps current books and stops loadingMore on loadMore failure',
+      'keeps current books, stops loadingMore and records failure on loadMore failure',
       build: () {
         when(
           () => mockRepository.getRatedBooks(page: 2, limit: 10),
@@ -192,12 +192,13 @@ void main() {
           hasMore: true,
           isLoadingMore: false,
           currentPage: 1,
+          loadMoreFailure: const RatedBooksLoadFailure(),
         ),
       ],
     );
 
     blocTest<RatedBooksCubit, RatedBooksState>(
-      'ignores loadMore when already loading more or hasMore is false',
+      'ignores loadMore when hasMore is false',
       build: () => RatedBooksCubit(bookRepository: mockRepository),
       seed: () => RatedBooksLoaded(
         books: tBooksPage1,
@@ -207,6 +208,21 @@ void main() {
       ),
       act: (cubit) => cubit.loadMore(),
       expect: () => [],
+      verify: (_) => verifyZeroInteractions(mockRepository),
+    );
+
+    blocTest<RatedBooksCubit, RatedBooksState>(
+      'ignores loadMore when isLoadingMore is already true',
+      build: () => RatedBooksCubit(bookRepository: mockRepository),
+      seed: () => RatedBooksLoaded(
+        books: tBooksPage1,
+        hasMore: true,
+        isLoadingMore: true,
+        currentPage: 1,
+      ),
+      act: (cubit) => cubit.loadMore(),
+      expect: () => [],
+      verify: (_) => verifyZeroInteractions(mockRepository),
     );
 
     blocTest<RatedBooksCubit, RatedBooksState>(
