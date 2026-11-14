@@ -534,6 +534,86 @@ void main() {
       );
     }
 
+    Matcher stateWith({
+      required GroupSearchStatus status,
+      required bool citiesAvailable,
+      GroupSearchFilters filters = GroupSearchFilters.empty,
+      List<DiscoveryGroupEntity> items = const [],
+    }) => isA<GroupSearchState>()
+        .having((s) => s.status, 'status', status)
+        .having((s) => s.citiesAvailable, 'citiesAvailable', citiesAvailable)
+        .having(
+          (s) => s.cities,
+          'cities',
+          citiesAvailable ? const [portoAlegre, saoPaulo] : isEmpty,
+        )
+        .having((s) => s.filters, 'filters', filters)
+        .having((s) => s.items, 'items', items);
+
+    blocTest<GroupSearchCubit, GroupSearchState>(
+      'emits loading, then the cities, then the groups of every city',
+      setUp: () {
+        stubCities(citiesRepository);
+        stubCityPage(CityScope.all, [g1]);
+      },
+      build: buildCubit,
+      act: (cubit) => cubit.load(),
+      expect: () => [
+        stateWith(status: GroupSearchStatus.loading, citiesAvailable: false),
+        stateWith(status: GroupSearchStatus.loading, citiesAvailable: true),
+        stateWith(
+          status: GroupSearchStatus.loaded,
+          citiesAvailable: true,
+          items: [g1],
+        ),
+      ],
+    );
+
+    blocTest<GroupSearchCubit, GroupSearchState>(
+      'without the cities emits loading and the groups, with no city list',
+      setUp: () => stubPage(1, [g1]),
+      build: buildCubit,
+      act: (cubit) => cubit.load(),
+      expect: () => [
+        stateWith(status: GroupSearchStatus.loading, citiesAvailable: false),
+        stateWith(
+          status: GroupSearchStatus.loaded,
+          citiesAvailable: false,
+          items: [g1],
+        ),
+      ],
+    );
+
+    blocTest<GroupSearchCubit, GroupSearchState>(
+      'changing the city keeps the city list while it reloads',
+      setUp: () {
+        stubCities(citiesRepository);
+        stubCityPage(CityScope.all, [g1]);
+        stubCityPage(CityScope.only(saoPaulo.id), [
+          g2,
+        ], filters: const GroupSearchFilters(city: saoPaulo));
+      },
+      build: buildCubit,
+      act: (cubit) async {
+        await cubit.load();
+        await cubit.applyFilters(const GroupSearchFilters(city: saoPaulo));
+      },
+      skip: 3,
+      expect: () => [
+        stateWith(
+          status: GroupSearchStatus.loading,
+          citiesAvailable: true,
+          filters: const GroupSearchFilters(city: saoPaulo),
+        ),
+        stateWith(
+          status: GroupSearchStatus.loaded,
+          citiesAvailable: true,
+          filters: const GroupSearchFilters(city: saoPaulo),
+          items: [g2],
+        ),
+      ],
+    );
+
     test('waits for the cities and searches every city by default', () async {
       stubCities(citiesRepository);
       stubCityPage(CityScope.all, [g1]);
