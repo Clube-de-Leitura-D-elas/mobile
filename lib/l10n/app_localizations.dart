@@ -3079,6 +3079,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível enviar o pedido. Tente novamente.'**
   String get calendarGuestRequestError;
+
+  /// Título da tela de livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livros avaliados'**
+  String get ratedBooksTitle;
+
+  /// Mensagem exibida quando a lista de livros avaliados está vazia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum livro avaliado ainda.'**
+  String get noRatedBooksMessage;
+
+  /// Mensagem de erro quando falha o carregamento dos livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os livros avaliados.'**
+  String get ratedBooksLoadError;
+
+  /// Rótulo de acessibilidade durante o carregamento de livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando livros avaliados'**
+  String get ratedBooksLoading;
+
+  /// Texto do botão ou link para ver todos os livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todos os livros'**
+  String get seeAllBooks;
+
+  /// Trecho de acessibilidade com o nome da autora do livro avaliado
+  ///
+  /// In pt, this message translates to:
+  /// **'escrito por {author}'**
+  String ratedBookTileAuthor(String author);
+
+  /// Trecho de acessibilidade com a nota do livro avaliado
+  ///
+  /// In pt, this message translates to:
+  /// **'avaliado com {rating} de 5 estrelas'**
+  String ratedBookTileRating(String rating);
+
+  /// Trecho de acessibilidade com o comentário do livro avaliado
+  ///
+  /// In pt, this message translates to:
+  /// **'comentário: {comment}'**
+  String ratedBookTileComment(String comment);
 }
 
 class _AppLocalizationsDelegate

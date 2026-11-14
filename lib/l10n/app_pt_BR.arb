@@ -12,7 +12,6 @@
   "meetingPhotoCaptionTooLong": "A legenda deve ter no máximo {max} caracteres.",
   "meetingPhotoCaptionSave": "Salvar legenda",
   "meetingPhotoCaptionSkip": "Sem legenda",
-
   "@@Auth": "--- Auth ---",
   "loginTitle": "Faça o seu login",
   "emailLabel": "E-mail",
@@ -72,7 +71,6 @@
   "logoutDialogMessage": "Você deseja mesmo sair do aplicativo? Será necessário fazer login novamente para acessar sua conta.",
   "logoutDialogCancel": "Cancelar",
   "logoutDialogConfirm": "Sair",
-
   "@@Groups": "--- Groups ---",
   "groupNextEventTitle": "Próximo evento",
   "groupNextEventEmpty": "Nenhum próximo evento agendado",
@@ -401,5 +399,13 @@
   "calendarGuestNoReviewer": "Este encontro ainda não tem quem analise pedidos.",
   "calendarGuestMeetingUnavailable": "Este encontro não está disponível para você.",
   "calendarGuestMeetingNotFound": "Este encontro não existe mais.",
-  "calendarGuestRequestError": "Não foi possível enviar o pedido. Tente novamente."
+  "calendarGuestRequestError": "Não foi possível enviar o pedido. Tente novamente.",
+  "ratedBooksTitle": "Livros avaliados",
+  "noRatedBooksMessage": "Nenhum livro avaliado ainda.",
+  "ratedBooksLoadError": "Não foi possível carregar os livros avaliados.",
+  "ratedBooksLoading": "Carregando livros avaliados",
+  "seeAllBooks": "Ver todos os livros",
+  "ratedBookTileAuthor": "escrito por {author}",
+  "ratedBookTileRating": "avaliado com {rating} de 5 estrelas",
+  "ratedBookTileComment": "comentário: {comment}"
 }

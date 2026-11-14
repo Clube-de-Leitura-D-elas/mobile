@@ -2452,5 +2452,52 @@
   "calendarGuestRequestError": "Não foi possível enviar o pedido. Tente novamente.",
   "@calendarGuestRequestError": {
     "description": "Aviso de erro genérico ao pedir participação num encontro."
+  },
+  "ratedBooksTitle": "Livros avaliados",
+  "@ratedBooksTitle": {
+    "description": "Título da tela de livros avaliados."
+  },
+  "noRatedBooksMessage": "Nenhum livro avaliado ainda.",
+  "@noRatedBooksMessage": {
+    "description": "Mensagem exibida quando a lista de livros avaliados está vazia."
+  },
+  "ratedBooksLoadError": "Não foi possível carregar os livros avaliados.",
+  "@ratedBooksLoadError": {
+    "description": "Mensagem de erro quando falha o carregamento dos livros avaliados."
+  },
+  "ratedBooksLoading": "Carregando livros avaliados",
+  "@ratedBooksLoading": {
+    "description": "Rótulo de acessibilidade durante o carregamento de livros avaliados."
+  },
+  "seeAllBooks": "Ver todos os livros",
+  "@seeAllBooks": {
+    "description": "Texto do botão ou link para ver todos os livros avaliados."
+  },
+  "ratedBookTileAuthor": "escrito por {author}",
+  "@ratedBookTileAuthor": {
+    "description": "Trecho de acessibilidade com o nome da autora do livro avaliado",
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
+  "ratedBookTileRating": "avaliado com {rating} de 5 estrelas",
+  "@ratedBookTileRating": {
+    "description": "Trecho de acessibilidade com a nota do livro avaliado",
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "ratedBookTileComment": "comentário: {comment}",
+  "@ratedBookTileComment": {
+    "description": "Trecho de acessibilidade com o comentário do livro avaliado",
+    "placeholders": {
+      "comment": {
+        "type": "String"
+      }
+    }
   }
 }
