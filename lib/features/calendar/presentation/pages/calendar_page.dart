@@ -20,6 +20,7 @@ import 'package:mobile/features/calendar/presentation/widgets/calendar_month_gri
 import 'package:mobile/features/calendar/presentation/widgets/calendar_month_header.dart';
 import 'package:mobile/features/calendar/presentation/widgets/meeting_participation_dialog.dart';
 import 'package:mobile/features/calendar/presentation/widgets/meeting_participation_feedback.dart';
+import 'package:mobile/features/cities/presentation/widgets/city_filter_dropdown.dart';
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
@@ -101,6 +102,23 @@ class _CalendarContent extends StatelessWidget {
 
     return CustomScrollView(
       slivers: [
+        // Fora dos ramos de status: recarregar o mês não fecha o dropdown.
+        if (state.citiesAvailable)
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              spacing.s16,
+              spacing.s16,
+              spacing.s16,
+              0,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: CityFilterDropdown(
+                cities: state.cities,
+                value: state.selectedCity,
+                onChanged: cubit.selectCity,
+              ),
+            ),
+          ),
         SliverPadding(
           padding: EdgeInsets.fromLTRB(
             spacing.s16,
@@ -225,6 +243,7 @@ class _CalendarContent extends StatelessWidget {
                   key: ValueKey(meeting.id),
                   meeting: meeting,
                   showDate: state.selectedDay == null,
+                  showCity: state.showsManyCities,
                   onTap: () => unawaited(context.push<Object?>(destination)),
                   now: now,
                   isRequesting: state.requestingIds.contains(meeting.id),

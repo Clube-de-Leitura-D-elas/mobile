@@ -20,7 +20,7 @@ class GroupDiscoveryInactiveAccountFailure extends GroupDiscoveryFailure {
   const GroupDiscoveryInactiveAccountFailure();
 }
 
-/// Grupo inexistente, inativo ou de outra cidade.
+/// Grupo inexistente ou inativo.
 class GroupUnavailableFailure extends GroupDiscoveryFailure {
   const GroupUnavailableFailure();
 }

@@ -29,6 +29,8 @@ import 'package:mobile/features/quick_access/presentation/pages/search_page.dart
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../features/cities/cities_fixtures.dart';
+
 class MockGoRouter extends Mock implements GoRouter {}
 
 class MockSessionCubit extends MockCubit<SessionState>
@@ -87,13 +89,18 @@ void _registerGroupSearch() {
       page: any(named: 'page'),
       search: any(named: 'search'),
       filters: any(named: 'filters'),
+      city: any(named: 'city'),
     ),
   ).thenAnswer(
-    (_) async =>
-        const Success(GroupSearchPageEntity(items: [], total: 0, genres: [])),
+    (_) async => const Success(GroupSearchPageEntity(items: [], total: 0)),
   );
+  final citiesRepository = MockDiscoveryCitiesRepository();
+  stubCities(citiesRepository);
   serviceLocator.registerFactory<GroupSearchCubit>(
-    () => GroupSearchCubit(repository: repository),
+    () => GroupSearchCubit(
+      repository: repository,
+      citiesRepository: citiesRepository,
+    ),
   );
 }
 
@@ -118,10 +125,16 @@ void _registerCalendar() {
     () => repository.getMeetings(
       from: any(named: 'from'),
       to: any(named: 'to'),
+      city: any(named: 'city'),
     ),
   ).thenAnswer((_) async => const Success([]));
+  final citiesRepository = MockDiscoveryCitiesRepository();
+  stubCities(citiesRepository);
   serviceLocator.registerFactory<CalendarCubit>(
-    () => CalendarCubit(repository: repository),
+    () => CalendarCubit(
+      repository: repository,
+      citiesRepository: citiesRepository,
+    ),
   );
 }
 

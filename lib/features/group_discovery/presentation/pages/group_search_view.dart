@@ -16,8 +16,9 @@ import 'package:mobile/features/group_discovery/presentation/widgets/group_searc
 import 'package:mobile/features/group_discovery/presentation/widgets/join_request_dialog.dart';
 import 'package:mobile/features/group_discovery/presentation/widgets/join_request_feedback.dart';
 
-/// Aba "Grupos" da busca: grupos da cidade com busca, filtros e pedido de
-/// entrada direto no card.
+/// Aba "Grupos" da busca: grupos de todas as cidades (ou da escolhida no
+/// filtro; sem a lista de cidades, da cidade da leitora), com busca, filtros
+/// e pedido de entrada direto no card.
 class GroupSearchView extends StatelessWidget {
   const GroupSearchView({super.key});
 
@@ -96,7 +97,7 @@ class _FiltersButton extends StatelessWidget {
     final filters = await GroupSearchFiltersDialog.show(
       context,
       initial: state.filters,
-      genres: state.genres,
+      cities: state.citiesAvailable ? state.cities : null,
     );
     if (filters != null) await cubit.applyFilters(filters);
   }

@@ -1,20 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/group_discovery/domain/entities/group_genre_entity.dart';
+import 'package:mobile/features/cities/domain/entities/discovery_city_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
 import 'package:mobile/features/group_discovery/presentation/widgets/group_search_filters_dialog.dart';
+import 'package:mobile/features/cities/presentation/widgets/city_filter_dropdown.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
+import '../../../cities/cities_fixtures.dart';
+
 void main() {
-  const fiction = GroupGenreEntity(id: 'g-1', name: 'Ficção');
-  const adventure = GroupGenreEntity(id: 'g-2', name: 'Aventura');
+  Finder cityDropdown() => find.byType(CityFilterDropdown);
 
   /// Abre o modal e devolve como ler o que ele retornou ao fechar.
   Future<GroupSearchFilters? Function()> openDialog(
     WidgetTester tester, {
     required GroupSearchFilters initial,
-    required List<GroupGenreEntity> genres,
+    required List<DiscoveryCityEntity>? cities,
   }) async {
     GroupSearchFilters? result;
     var closed = false;
@@ -33,7 +35,7 @@ void main() {
               result = await GroupSearchFiltersDialog.show(
                 context,
                 initial: initial,
-                genres: genres,
+                cities: cities,
               );
               closed = true;
             },
@@ -54,18 +56,15 @@ void main() {
     final read = await openDialog(
       tester,
       initial: const GroupSearchFilters(
-        genre: adventure,
+        city: saoPaulo,
         minParticipants: 10,
         maxParticipants: 20,
       ),
-      genres: const [fiction, adventure],
+      cities: const [portoAlegre, saoPaulo],
     );
 
     expect(
-      find.descendant(
-        of: find.byType(AppDropdown<GroupGenreEntity?>),
-        matching: find.text('Aventura'),
-      ),
+      find.descendant(of: cityDropdown(), matching: find.text('São Paulo, SP')),
       findsOneWidget,
     );
     expect(find.text('10'), findsOneWidget);
@@ -77,35 +76,63 @@ void main() {
     expect(
       read(),
       const GroupSearchFilters(
-        genre: adventure,
+        city: saoPaulo,
         minParticipants: 10,
         maxParticipants: 20,
       ),
     );
   });
 
-  testWidgets('keeps the applied genre when the genre list is not loaded', (
+  testWidgets('starts on "Todas as cidades" and applies the chosen city', (
     tester,
   ) async {
     final read = await openDialog(
       tester,
-      initial: const GroupSearchFilters(genre: fiction),
-      genres: const [],
+      initial: GroupSearchFilters.empty,
+      cities: const [portoAlegre, saoPaulo],
     );
 
-    expect(find.text('Ficção'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: cityDropdown(),
+        matching: find.text('Todas as cidades'),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(cityDropdown());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Porto Alegre, RS').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Aplicar filtros'));
+    await tester.pumpAndSettle();
+
+    expect(read(), const GroupSearchFilters(city: portoAlegre));
+  });
+
+  testWidgets('hides the city filter when the city list did not load', (
+    tester,
+  ) async {
+    final read = await openDialog(
+      tester,
+      initial: const GroupSearchFilters(minParticipants: 3),
+      cities: null,
+    );
+
+    expect(cityDropdown(), findsNothing);
+    expect(find.text('Cidade'), findsNothing);
 
     await tester.tap(find.text('Aplicar filtros'));
     await tester.pumpAndSettle();
 
-    expect(read(), const GroupSearchFilters(genre: fiction));
+    expect(read(), const GroupSearchFilters(minParticipants: 3));
   });
 
   testWidgets('"Limpar filtros" returns no filter', (tester) async {
     final read = await openDialog(
       tester,
-      initial: const GroupSearchFilters(genre: fiction, minParticipants: 3),
-      genres: const [fiction],
+      initial: const GroupSearchFilters(city: portoAlegre, minParticipants: 3),
+      cities: const [portoAlegre],
     );
 
     await tester.tap(find.text('Limpar filtros'));
@@ -114,11 +141,13 @@ void main() {
     expect(read(), GroupSearchFilters.empty);
   });
 
-  testWidgets('the actions have a 48 touch target', (tester) async {
+  testWidgets('the actions and the city filter have a 48 touch target', (
+    tester,
+  ) async {
     await openDialog(
       tester,
       initial: GroupSearchFilters.empty,
-      genres: const [],
+      cities: const [portoAlegre],
     );
 
     for (final label in ['Limpar filtros', 'Aplicar filtros']) {
@@ -127,5 +156,13 @@ void main() {
         greaterThanOrEqualTo(48),
       );
     }
+    expect(
+      tester
+          .getSize(
+            find.descendant(of: cityDropdown(), matching: find.byType(InkWell)),
+          )
+          .height,
+      greaterThanOrEqualTo(48),
+    );
   });
 }

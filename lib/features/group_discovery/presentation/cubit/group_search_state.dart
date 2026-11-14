@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
+import 'package:mobile/features/cities/domain/entities/discovery_city_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
-import 'package:mobile/features/group_discovery/domain/entities/group_genre_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_search_filters.dart';
 
 enum GroupSearchStatus { loading, loaded, error }
@@ -13,7 +14,11 @@ class GroupSearchState extends Equatable {
   final List<DiscoveryGroupEntity> items;
   final int total;
   final int page;
-  final List<GroupGenreEntity> genres;
+
+  /// A lista de cidades carregou; sem ela não há filtro de cidade e a busca
+  /// fica na cidade da leitora.
+  final bool citiesAvailable;
+  final List<DiscoveryCityEntity> cities;
   final bool isLoadingMore;
   final bool loadMoreFailed;
 
@@ -40,7 +45,8 @@ class GroupSearchState extends Equatable {
     this.items = const [],
     this.total = 0,
     this.page = 0,
-    this.genres = const [],
+    this.citiesAvailable = false,
+    this.cities = const [],
     this.isLoadingMore = false,
     this.loadMoreFailed = false,
     this.reachedEnd = false,
@@ -49,6 +55,13 @@ class GroupSearchState extends Equatable {
     this.joinRequested = false,
     this.joinFailure,
   });
+
+  /// Cidades a pedir ao backend; `null` deixa a cidade da leitora.
+  CityScope? get cityScope {
+    if (!citiesAvailable) return null;
+    final city = filters.city;
+    return city == null ? CityScope.all : CityScope.only(city.id);
+  }
 
   bool get hasMore => !reachedEnd && items.length < total;
 
@@ -60,7 +73,8 @@ class GroupSearchState extends Equatable {
     List<DiscoveryGroupEntity>? items,
     int? total,
     int? page,
-    List<GroupGenreEntity>? genres,
+    bool? citiesAvailable,
+    List<DiscoveryCityEntity>? cities,
     bool? isLoadingMore,
     bool? loadMoreFailed,
     bool? reachedEnd,
@@ -76,7 +90,8 @@ class GroupSearchState extends Equatable {
       items: items ?? this.items,
       total: total ?? this.total,
       page: page ?? this.page,
-      genres: genres ?? this.genres,
+      citiesAvailable: citiesAvailable ?? this.citiesAvailable,
+      cities: cities ?? this.cities,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       loadMoreFailed: loadMoreFailed ?? this.loadMoreFailed,
       reachedEnd: reachedEnd ?? this.reachedEnd,
@@ -95,7 +110,8 @@ class GroupSearchState extends Equatable {
     items,
     total,
     page,
-    genres,
+    citiesAvailable,
+    cities,
     isLoadingMore,
     loadMoreFailed,
     reachedEnd,

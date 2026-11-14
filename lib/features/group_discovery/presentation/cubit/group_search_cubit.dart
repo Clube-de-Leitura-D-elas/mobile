@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/cities/domain/repository/discovery_cities_repository.dart';
 import 'package:mobile/features/group_discovery/domain/entities/discovery_group_entity.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_discovery_failure.dart';
 import 'package:mobile/features/group_discovery/domain/entities/group_membership_status.dart';
@@ -9,6 +10,11 @@ import 'package:mobile/features/group_discovery/presentation/cubit/group_search_
 
 class GroupSearchCubit extends Cubit<GroupSearchState> {
   final GroupDiscoveryRepository repository;
+  final DiscoveryCitiesRepository citiesRepository;
+
+  /// Carga das cidades em andamento; a busca espera por ela para saber se
+  /// manda `cityId`.
+  Future<void>? _citiesLoad;
 
   /// Só a resposta da busca mais recente é aplicada.
   int _request = 0;
@@ -17,10 +23,15 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
   // iniciadas antes dele, que trariam o status antigo.
   final Map<String, int> _membershipVersion = {};
 
-  GroupSearchCubit({required this.repository})
+  GroupSearchCubit({required this.repository, required this.citiesRepository})
     : super(const GroupSearchState());
 
-  Future<void> load() => _reload(query: state.query, filters: state.filters);
+  /// Tenta de novo as cidades que ainda não carregaram; a busca e os filtros
+  /// não, para não repetir a chamada a cada letra digitada.
+  Future<void> load() {
+    if (!state.citiesAvailable) _citiesLoad ??= _loadCities();
+    return _reload(query: state.query, filters: state.filters);
+  }
 
   Future<void> search(String query) {
     final trimmed = query.trim();
@@ -54,6 +65,7 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
       page: nextPage,
       search: state.query,
       filters: state.filters,
+      city: state.cityScope,
     );
     if (isClosed || request != _request) return;
 
@@ -71,7 +83,6 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
             ],
             total: data.total,
             page: nextPage,
-            genres: data.genres,
             isLoadingMore: false,
             reachedEnd: _isLastPage(data.items.length),
           ),
@@ -177,15 +188,21 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
       GroupSearchState(
         query: query,
         filters: filters,
-        genres: state.genres,
+        citiesAvailable: state.citiesAvailable,
+        cities: state.cities,
         requestingIds: state.requestingIds,
       ),
     );
+
+    final cities = _citiesLoad;
+    if (cities != null) await cities;
+    if (isClosed || request != _request) return;
 
     final result = await repository.searchGroups(
       page: 1,
       search: query,
       filters: filters,
+      city: state.cityScope,
     );
     if (isClosed || request != _request) return;
 
@@ -196,7 +213,8 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
             status: GroupSearchStatus.error,
             query: query,
             filters: filters,
-            genres: state.genres,
+            citiesAvailable: state.citiesAvailable,
+            cities: state.cities,
             failure: failure,
             requestingIds: state.requestingIds,
           ),
@@ -210,11 +228,21 @@ class GroupSearchCubit extends Cubit<GroupSearchState> {
             items: data.items,
             total: data.total,
             page: 1,
-            genres: data.genres,
+            citiesAvailable: state.citiesAvailable,
+            cities: state.cities,
             reachedEnd: _isLastPage(data.items.length),
             requestingIds: state.requestingIds,
           ),
         );
+    }
+  }
+
+  Future<void> _loadCities() async {
+    final result = await citiesRepository.getCities();
+    _citiesLoad = null;
+    if (isClosed) return;
+    if (result case Success(:final data)) {
+      emit(state.copyWith(citiesAvailable: true, cities: data.cities));
     }
   }
 

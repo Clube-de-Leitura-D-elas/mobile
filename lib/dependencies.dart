@@ -19,6 +19,8 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/calendar/data/repositories/calendar_repository_impl.dart';
 import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
+import 'package:mobile/features/cities/data/repositories/discovery_cities_repository_impl.dart';
+import 'package:mobile/features/cities/domain/repository/discovery_cities_repository.dart';
 import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
 import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
 import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
@@ -243,6 +245,13 @@ class DependenciesContainer {
       ),
     );
 
+    // --- Cities ---
+    serviceLocator.registerLazySingleton<DiscoveryCitiesRepository>(
+      () => DiscoveryCitiesRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
     // --- Calendar Feature ---
     serviceLocator.registerLazySingleton<CalendarRepository>(
       () => CalendarRepositoryImpl(
@@ -251,7 +260,10 @@ class DependenciesContainer {
     );
 
     serviceLocator.registerFactory<CalendarCubit>(
-      () => CalendarCubit(repository: serviceLocator<CalendarRepository>()),
+      () => CalendarCubit(
+        repository: serviceLocator<CalendarRepository>(),
+        citiesRepository: serviceLocator<DiscoveryCitiesRepository>(),
+      ),
     );
 
     // --- Group Discovery Feature ---
@@ -270,6 +282,7 @@ class DependenciesContainer {
     serviceLocator.registerFactory<GroupSearchCubit>(
       () => GroupSearchCubit(
         repository: serviceLocator<GroupDiscoveryRepository>(),
+        citiesRepository: serviceLocator<DiscoveryCitiesRepository>(),
       ),
     );
 

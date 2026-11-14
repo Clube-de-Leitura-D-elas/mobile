@@ -1766,6 +1766,20 @@
       }
     }
   },
+  "calendarMeetingPlaceWithCity": "{place}, {city}",
+  "@calendarMeetingPlaceWithCity": {
+    "description": "Local do encontro seguido da cidade do grupo, quando o calendário mostra mais de uma cidade.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Moinhos"
+      },
+      "city": {
+        "type": "String",
+        "example": "Porto Alegre, RS"
+      }
+    }
+  },
   "calendarMeetingHost": "{name} (Anfitriã)",
   "@calendarMeetingHost": {
     "description": "Anfitriã do encontro no calendário; só aparece para quem é membro do grupo.",
@@ -1829,7 +1843,7 @@
   },
   "publicGroupUnavailable": "Este grupo não está disponível.",
   "@publicGroupUnavailable": {
-    "description": "Grupo inexistente, inativo ou de outra cidade."
+    "description": "Grupo inexistente ou inativo."
   },
   "publicGroupRequestJoin": "Solicitar entrada",
   "@publicGroupRequestJoin": {
@@ -1902,7 +1916,7 @@
   },
   "searchTabGroups": "Grupos",
   "@searchTabGroups": {
-    "description": "Aba da busca com os grupos da cidade."
+    "description": "Aba da busca com os grupos."
   },
   "groupSearchTitle": "Encontre seu grupo ideal",
   "@groupSearchTitle": {
@@ -1920,13 +1934,27 @@
   "@groupSearchFiltersActive": {
     "description": "Valor acessível do botão de filtros quando há filtro aplicado."
   },
-  "groupSearchFilterGenre": "Gênero",
-  "@groupSearchFilterGenre": {
-    "description": "Rótulo do filtro de gênero da busca de grupos."
+  "cityFilterLabel": "Cidade",
+  "@cityFilterLabel": {
+    "description": "Rótulo do filtro de cidade do calendário e da busca de grupos."
   },
-  "groupSearchFilterGenreAll": "Todos os gêneros",
-  "@groupSearchFilterGenreAll": {
-    "description": "Opção do filtro de gênero que não filtra."
+  "cityFilterAll": "Todas as cidades",
+  "@cityFilterAll": {
+    "description": "Opção do filtro de cidade que mostra grupos e encontros de todas as cidades."
+  },
+  "cityFilterOption": "{name}, {uf}",
+  "@cityFilterOption": {
+    "description": "Cidade numa opção do filtro de cidade.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Porto Alegre"
+      },
+      "uf": {
+        "type": "String",
+        "example": "RS"
+      }
+    }
   },
   "groupSearchFilterMin": "Mínimo de participantes",
   "@groupSearchFilterMin": {
@@ -1972,7 +2000,7 @@
   "@groupSearchLoadMoreError": {
     "description": "Erro ao buscar a próxima página de grupos."
   },
-  "groupSearchEmpty": "Ainda não há grupos na sua cidade.",
+  "groupSearchEmpty": "Ainda não há grupos ativos.",
   "@groupSearchEmpty": {
     "description": "Lista de grupos vazia, sem busca nem filtro."
   },
@@ -2415,7 +2443,7 @@
   },
   "calendarGuestMeetingUnavailable": "Este encontro não está disponível para você.",
   "@calendarGuestMeetingUnavailable": {
-    "description": "Aviso quando o encontro é de outra cidade."
+    "description": "Aviso quando o backend recusa o encontro (HTTP 403 \"meeting not available\"), que só o backend anterior ao filtro de cidade devolve."
   },
   "calendarGuestMeetingNotFound": "Este encontro não existe mais.",
   "@calendarGuestMeetingNotFound": {

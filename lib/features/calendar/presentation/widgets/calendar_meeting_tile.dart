@@ -13,6 +13,9 @@ class CalendarMeetingTile extends StatelessWidget {
   /// Na lista do mês o título leva a data; na do dia selecionado, não.
   final bool showDate;
 
+  /// Com mais de uma cidade na lista, o local leva a cidade do grupo.
+  final bool showCity;
+
   final VoidCallback onTap;
 
   /// Decide se o encontro ainda aceita pedido de participação.
@@ -29,6 +32,7 @@ class CalendarMeetingTile extends StatelessWidget {
     required this.now,
     required this.onRequestParticipation,
     this.isRequesting = false,
+    this.showCity = false,
   });
 
   @override
@@ -44,7 +48,7 @@ class CalendarMeetingTile extends StatelessWidget {
         : l10n.calendarMeetingTitle(group.number);
     final time = l10n.calendarMeetingTime(toSaoPaulo(meeting.date));
     final participants = l10n.calendarParticipantsCount(group.participantCount);
-    final place = meeting.placeLabel;
+    final place = _place(context);
     final host = hostName == null ? null : l10n.calendarMeetingHost(hostName);
     final draft = meeting.isDraft ? l10n.calendarMeetingDraftTag : null;
 
@@ -123,6 +127,15 @@ class CalendarMeetingTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String? _place(BuildContext context) {
+    final place = meeting.placeLabel;
+    final city = meeting.group.cityState;
+    if (!showCity || city == null || city.trim().isEmpty) return place;
+    // Sem local, o `placeLabel` já cai na cidade.
+    if (place == null || place == city) return city;
+    return context.l10n.calendarMeetingPlaceWithCity(place, city);
   }
 }
 

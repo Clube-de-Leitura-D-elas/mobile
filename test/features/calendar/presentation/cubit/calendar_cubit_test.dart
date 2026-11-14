@@ -12,14 +12,18 @@ import 'package:mobile/features/calendar/domain/entities/calendar_month.dart';
 import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_state.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
+import 'package:mobile/features/cities/domain/entities/discovery_cities_entity.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../cities/cities_fixtures.dart';
 import '../../calendar_fixtures.dart';
 
 class MockCalendarRepository extends Mock implements CalendarRepository {}
 
 void main() {
   late MockCalendarRepository repository;
+  late MockDiscoveryCitiesRepository citiesRepository;
 
   // 12h de 14/08 em São Paulo.
   final now = DateTime.utc(2026, 8, 14, 15);
@@ -44,8 +48,11 @@ void main() {
     ).thenAnswer((_) async => result);
   }
 
-  CalendarCubit buildCubit({DateTime? at}) =>
-      CalendarCubit(repository: repository, now: () => at ?? now);
+  CalendarCubit buildCubit({DateTime? at}) => CalendarCubit(
+    repository: repository,
+    citiesRepository: citiesRepository,
+    now: () => at ?? now,
+  );
 
   final loadedAugust = CalendarState(
     month: august,
@@ -58,6 +65,9 @@ void main() {
 
   setUp(() {
     repository = MockCalendarRepository();
+    citiesRepository = MockDiscoveryCitiesRepository();
+    // Sem a lista de cidades, o comportamento de antes do filtro.
+    stubCitiesFailure(citiesRepository);
   });
 
   test('starts on the current month, loading', () {
@@ -430,8 +440,11 @@ void main() {
     test('a meeting that started before the confirmation reports it as not '
         'open, without sending', () async {
       var clock = now;
-      final cubit = CalendarCubit(repository: repository, now: () => clock)
-        ..emit(loaded);
+      final cubit = CalendarCubit(
+        repository: repository,
+        citiesRepository: citiesRepository,
+        now: () => clock,
+      )..emit(loaded);
       addTearDown(cubit.close);
 
       clock = guest.date.add(const Duration(minutes: 1));
@@ -783,6 +796,262 @@ void main() {
       expect(cubit.state.status, CalendarStatus.loaded);
       expect(cubit.state.meetings, isEmpty);
       expect(cubit.state.requestingIds, isEmpty);
+    });
+  });
+
+  group('city filter', () {
+    void stubMonthIn(
+      CalendarMonth month,
+      CityScope? city,
+      Result<List<CalendarMeetingEntity>, CalendarFailure> result,
+    ) {
+      when(
+        () => repository.getMeetings(
+          from: month.firstVisibleDay,
+          to: month.lastVisibleDay,
+          city: city,
+        ),
+      ).thenAnswer((_) async => result);
+    }
+
+    test('selects the reader city, loading the month alongside without '
+        'cityId (the backend already uses her city)', () async {
+      stubCities(citiesRepository);
+      stubMonth(august, Success([upcoming]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      await cubit.load();
+
+      expect(cubit.state.citiesAvailable, isTrue);
+      expect(cubit.state.cities, const [portoAlegre, saoPaulo]);
+      expect(cubit.state.selectedCity, portoAlegre);
+      expect(cubit.state.cityScope, CityScope.only(portoAlegre.id));
+      expect(cubit.state.showsManyCities, isFalse);
+      expect(cubit.state.meetings, [upcoming]);
+      verify(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+        ),
+      ).called(1);
+    });
+
+    for (final (label, answer) in [
+      (
+        'success',
+        Success<List<CalendarMeetingEntity>, CalendarFailure>([upcoming]),
+      ),
+      (
+        'failure',
+        const Failure<List<CalendarMeetingEntity>, CalendarFailure>(
+          CalendarNetworkFailure(),
+        ),
+      ),
+    ]) {
+      test('a month answer ($label) arriving after the cities keeps the '
+          'filter', () async {
+        stubCities(citiesRepository);
+        final month =
+            Completer<Result<List<CalendarMeetingEntity>, CalendarFailure>>();
+        when(
+          () => repository.getMeetings(
+            from: august.firstVisibleDay,
+            to: august.lastVisibleDay,
+          ),
+        ).thenAnswer((_) => month.future);
+        final cubit = buildCubit();
+        addTearDown(cubit.close);
+
+        final load = cubit.load();
+        await Future<void>.delayed(Duration.zero);
+        expect(cubit.state.citiesAvailable, isTrue);
+        month.complete(answer);
+        await load;
+
+        expect(cubit.state.status, isNot(CalendarStatus.loading));
+        expect(cubit.state.citiesAvailable, isTrue);
+        expect(cubit.state.cities, const [portoAlegre, saoPaulo]);
+        expect(cubit.state.selectedCity, portoAlegre);
+      });
+    }
+
+    test('loads the cities only once', () async {
+      stubCities(citiesRepository);
+      stubMonth(august, const Success([]));
+      stubMonthIn(august, CityScope.only(portoAlegre.id), const Success([]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      await cubit.load();
+      await cubit.load();
+
+      verify(citiesRepository.getCities).called(1);
+    });
+
+    test('"Todas as cidades" reloads the month with every city', () async {
+      stubCities(citiesRepository);
+      stubMonth(august, Success([upcoming]));
+      stubMonthIn(august, CityScope.all, Success([past, upcoming]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+      await cubit.load();
+
+      final states = <CalendarState>[];
+      final sub = cubit.stream.listen(states.add);
+      addTearDown(sub.cancel);
+      await cubit.selectCity(null);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(states.map((state) => state.status), [
+        CalendarStatus.loaded,
+        CalendarStatus.loading,
+        CalendarStatus.loaded,
+      ]);
+      expect(states[1].selectedCity, isNull);
+      expect(states[1].meetings, isEmpty);
+      expect(cubit.state.status, CalendarStatus.loaded);
+      expect(cubit.state.selectedCity, isNull);
+      expect(cubit.state.showsManyCities, isTrue);
+      expect(cubit.state.meetings, [past, upcoming]);
+    });
+
+    test('another city reloads the month with its cityId, and month '
+        'navigation keeps it', () async {
+      stubCities(citiesRepository);
+      stubMonth(august, const Success([]));
+      final saoPauloScope = CityScope.only(saoPaulo.id);
+      stubMonthIn(august, saoPauloScope, Success([upcoming]));
+      stubMonthIn(september, saoPauloScope, const Success([]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+      await cubit.load();
+
+      await cubit.selectCity(saoPaulo);
+      expect(cubit.state.selectedCity, saoPaulo);
+      expect(cubit.state.meetings, [upcoming]);
+
+      await cubit.showNextMonth();
+      expect(cubit.state.month, september);
+      expect(cubit.state.selectedCity, saoPaulo);
+      verify(
+        () => repository.getMeetings(
+          from: september.firstVisibleDay,
+          to: september.lastVisibleDay,
+          city: saoPauloScope,
+        ),
+      ).called(1);
+    });
+
+    test('the refresh keeps the selected city', () async {
+      stubCities(citiesRepository);
+      stubMonth(august, const Success([]));
+      stubMonthIn(august, CityScope.all, Success([upcoming]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+      await cubit.load();
+      await cubit.selectCity(null);
+
+      await cubit.refresh();
+
+      verify(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+          city: CityScope.all,
+        ),
+      ).called(2);
+    });
+
+    test('selecting the city already selected does not reload', () async {
+      stubCities(citiesRepository);
+      stubMonth(august, const Success([]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+      await cubit.load();
+
+      await cubit.selectCity(portoAlegre);
+
+      verify(
+        () => repository.getMeetings(
+          from: any(named: 'from'),
+          to: any(named: 'to'),
+          city: any(named: 'city'),
+        ),
+      ).called(1);
+    });
+
+    test('a city changed again before the answer applies only the latest '
+        '(São Paulo, then all)', () async {
+      stubCities(citiesRepository);
+      stubMonth(august, const Success([]));
+      final saoPauloAnswer =
+          Completer<Result<List<CalendarMeetingEntity>, CalendarFailure>>();
+      when(
+        () => repository.getMeetings(
+          from: august.firstVisibleDay,
+          to: august.lastVisibleDay,
+          city: CityScope.only(saoPaulo.id),
+        ),
+      ).thenAnswer((_) => saoPauloAnswer.future);
+      stubMonthIn(august, CityScope.all, Success([past]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+      await cubit.load();
+
+      final staleLoad = cubit.selectCity(saoPaulo);
+      await cubit.selectCity(null);
+      saoPauloAnswer.complete(Success([upcoming]));
+      await staleLoad;
+
+      expect(cubit.state.selectedCity, isNull);
+      expect(cubit.state.meetings, [past]);
+    });
+
+    test('without the city list there is no filter and no cityId; the next '
+        'load tries the list again', () async {
+      stubMonth(august, const Success([]));
+      stubMonth(september, const Success([]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      await cubit.load();
+      expect(cubit.state.citiesAvailable, isFalse);
+      expect(cubit.state.cityScope, isNull);
+      expect(cubit.state.showsManyCities, isFalse);
+
+      await cubit.selectCity(saoPaulo);
+      expect(cubit.state.selectedCity, isNull);
+
+      await cubit.showNextMonth();
+      verify(
+        () => repository.getMeetings(
+          from: september.firstVisibleDay,
+          to: september.lastVisibleDay,
+        ),
+      ).called(1);
+
+      stubCities(citiesRepository);
+      await cubit.load();
+      expect(cubit.state.citiesAvailable, isTrue);
+      verify(citiesRepository.getCities).called(2);
+    });
+
+    test('a list without the reader city leaves the screen without the '
+        'filter', () async {
+      when(citiesRepository.getCities).thenAnswer(
+        (_) async => const Success(
+          DiscoveryCitiesEntity(readerCityId: 'missing', cities: [saoPaulo]),
+        ),
+      );
+      stubMonth(august, const Success([]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      await cubit.load();
+
+      expect(cubit.state.citiesAvailable, isFalse);
+      expect(cubit.state.cityScope, isNull);
     });
   });
 }

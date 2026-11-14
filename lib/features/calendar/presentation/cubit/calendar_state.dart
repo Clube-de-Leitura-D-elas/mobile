@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_failure.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_month.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
+import 'package:mobile/features/cities/domain/entities/discovery_city_entity.dart';
 
 enum CalendarStatus { loading, loaded, error }
 
@@ -33,6 +35,14 @@ class CalendarState extends Equatable {
   final bool participationRequested;
   final CalendarFailure? participationFailure;
 
+  /// A lista de cidades carregou; sem ela não há filtro e o mês vem da
+  /// cidade da leitora.
+  final bool citiesAvailable;
+  final List<DiscoveryCityEntity> cities;
+
+  /// `null` é "Todas as cidades".
+  final DiscoveryCityEntity? selectedCity;
+
   const CalendarState({
     required this.month,
     required this.today,
@@ -46,7 +56,20 @@ class CalendarState extends Equatable {
     this.requestingIds = const {},
     this.participationRequested = false,
     this.participationFailure,
+    this.citiesAvailable = false,
+    this.cities = const [],
+    this.selectedCity,
   });
+
+  /// Cidades a pedir ao backend; `null` deixa a cidade da leitora.
+  CityScope? get cityScope {
+    if (!citiesAvailable) return null;
+    final city = selectedCity;
+    return city == null ? CityScope.all : CityScope.only(city.id);
+  }
+
+  /// O card mostra a cidade do grupo quando a lista mistura cidades.
+  bool get showsManyCities => citiesAvailable && selectedCity == null;
 
   bool get hasParticipationFeedback =>
       participationRequested || participationFailure != null;
@@ -86,6 +109,10 @@ class CalendarState extends Equatable {
     bool? participationRequested,
     CalendarFailure? participationFailure,
     bool clearParticipationFailure = false,
+    bool? citiesAvailable,
+    List<DiscoveryCityEntity>? cities,
+    DiscoveryCityEntity? selectedCity,
+    bool clearSelectedCity = false,
   }) {
     return CalendarState(
       status: status,
@@ -103,6 +130,11 @@ class CalendarState extends Equatable {
       participationFailure: clearParticipationFailure
           ? null
           : participationFailure ?? this.participationFailure,
+      citiesAvailable: citiesAvailable ?? this.citiesAvailable,
+      cities: cities ?? this.cities,
+      selectedCity: clearSelectedCity
+          ? null
+          : selectedCity ?? this.selectedCity,
     );
   }
 
@@ -120,5 +152,8 @@ class CalendarState extends Equatable {
     requestingIds,
     participationRequested,
     participationFailure,
+    citiesAvailable,
+    cities,
+    selectedCity,
   ];
 }

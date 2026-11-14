@@ -6,6 +6,8 @@ import 'package:mobile/features/calendar/data/models/calendar_meeting_model.dart
 import 'package:mobile/features/calendar/domain/entities/calendar_failure.dart';
 import 'package:mobile/features/calendar/domain/entities/calendar_meeting_entity.dart';
 import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
+import 'package:mobile/features/cities/data/city_scope_query.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CalendarRepositoryImpl implements CalendarRepository {
@@ -17,12 +19,18 @@ class CalendarRepositoryImpl implements CalendarRepository {
   Future<Result<List<CalendarMeetingEntity>, CalendarFailure>> getMeetings({
     required DateTime from,
     required DateTime to,
+    CityScope? city,
   }) async {
+    final cityId = cityIdQueryValue(city);
     final result = await supabaseService
         .invokeFunction<List<CalendarMeetingModel>>(
           functionName: 'get-city-calendar',
           method: HttpMethod.get,
-          queryParameters: {'from': _civilDate(from), 'to': _civilDate(to)},
+          queryParameters: {
+            'from': _civilDate(from),
+            'to': _civilDate(to),
+            'cityId': ?cityId,
+          },
           decoder: (data) =>
               CalendarMeetingModel.listFromJson(data as Map<String, dynamic>),
         );

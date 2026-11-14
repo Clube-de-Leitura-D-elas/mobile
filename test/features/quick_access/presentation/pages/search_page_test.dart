@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/cities/domain/entities/city_scope.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
@@ -16,6 +17,8 @@ import 'package:mobile/features/quick_access/presentation/pages/search_page.dart
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../cities/cities_fixtures.dart';
+
 class MockBookRepository extends Mock implements BookRepository {}
 
 class MockGroupDiscoveryRepository extends Mock
@@ -24,6 +27,7 @@ class MockGroupDiscoveryRepository extends Mock
 void main() {
   late MockBookRepository bookRepository;
   late MockGroupDiscoveryRepository groupRepository;
+  late MockDiscoveryCitiesRepository citiesRepository;
 
   setUpAll(() {
     registerFallbackValue(GroupSearchFilters.empty);
@@ -32,6 +36,8 @@ void main() {
   setUp(() {
     bookRepository = MockBookRepository();
     groupRepository = MockGroupDiscoveryRepository();
+    citiesRepository = MockDiscoveryCitiesRepository();
+    stubCities(citiesRepository);
     when(
       () => bookRepository.searchBooks(
         query: any(named: 'query'),
@@ -47,10 +53,10 @@ void main() {
         page: any(named: 'page'),
         search: any(named: 'search'),
         filters: any(named: 'filters'),
+        city: any(named: 'city'),
       ),
     ).thenAnswer(
-      (_) async =>
-          const Success(GroupSearchPageEntity(items: [], total: 0, genres: [])),
+      (_) async => const Success(GroupSearchPageEntity(items: [], total: 0)),
     );
   });
 
@@ -71,8 +77,10 @@ void main() {
                   BookSearchCubit(bookRepository: bookRepository)..load(),
             ),
             BlocProvider(
-              create: (_) =>
-                  GroupSearchCubit(repository: groupRepository)..load(),
+              create: (_) => GroupSearchCubit(
+                repository: groupRepository,
+                citiesRepository: citiesRepository,
+              )..load(),
             ),
           ],
           child: const SearchPage(),
@@ -112,8 +120,10 @@ void main() {
         page: any(named: 'page'),
         search: any(named: 'search'),
         filters: any(named: 'filters'),
+        city: any(named: 'city'),
       ),
     );
+    verifyNever(citiesRepository.getCities);
   });
 
   testWidgets('switches to the groups tab and keeps what was typed', (
@@ -129,7 +139,7 @@ void main() {
       tester.getSemantics(find.text('Grupos')),
       isSemantics(isSelected: true),
     );
-    expect(find.text('Ainda não há grupos na sua cidade.'), findsOneWidget);
+    expect(find.text('Ainda não há grupos ativos.'), findsOneWidget);
 
     await tester.enterText(
       find.descendant(
@@ -158,6 +168,7 @@ void main() {
         page: 1,
         search: 'clube',
         filters: GroupSearchFilters.empty,
+        city: CityScope.all,
       ),
     ).called(1);
   });
