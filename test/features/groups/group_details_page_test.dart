@@ -7,6 +7,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/group_join_requests/domain/entities/group_join_request_entity.dart';
+import 'package:mobile/features/group_join_requests/domain/entities/group_join_requests_failure.dart';
+import 'package:mobile/features/group_join_requests/domain/repository/group_join_requests_repository.dart';
+import 'package:mobile/features/group_join_requests/presentation/cubit/group_join_requests_cubit.dart';
+import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
@@ -34,10 +39,14 @@ class MockGroupParticipantsRepository extends Mock
 class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
 
+class MockGroupJoinRequestsRepository extends Mock
+    implements GroupJoinRequestsRepository {}
+
 void main() {
   late MockGroupRepository mockRepository;
   late MockGroupParticipantsRepository mockParticipantsRepository;
   late MockSessionCubit sessionCubit;
+  late MockGroupJoinRequestsRepository joinRequestsRepository;
 
   const group = GroupDetailsEntity(
     name: '45',
@@ -51,6 +60,10 @@ void main() {
     mockRepository = MockGroupRepository();
     mockParticipantsRepository = MockGroupParticipantsRepository();
     sessionCubit = MockSessionCubit();
+    joinRequestsRepository = MockGroupJoinRequestsRepository();
+    when(() => joinRequestsRepository.getRequests(any())).thenAnswer(
+      (_) async => const Failure(GroupJoinRequestsNotCoordinatorFailure()),
+    );
     when(() => sessionCubit.state).thenReturn(const GuestSession());
     when(() => sessionCubit.logOut()).thenAnswer((_) async {});
     when(
@@ -101,6 +114,11 @@ void main() {
           create: (_) => GroupParticipantsCubit(
             participantsRepository: mockParticipantsRepository,
           )..load('group-1'),
+        ),
+        BlocProvider(
+          create: (_) =>
+              GroupJoinRequestsCubit(repository: joinRequestsRepository)
+                ..load('group-1'),
         ),
       ],
       child: const GroupDetailsPage(groupId: 'group-1'),
@@ -432,6 +450,11 @@ void main() {
                   participantsRepository: mockParticipantsRepository,
                 )..load('group-1'),
               ),
+              BlocProvider(
+                create: (_) =>
+                    GroupJoinRequestsCubit(repository: joinRequestsRepository)
+                      ..load('group-1'),
+              ),
             ],
             child: const GroupDetailsPage(groupId: 'group-1'),
           ),
@@ -477,4 +500,251 @@ void main() {
     expect(find.text('Detalhes do encontro'), findsNothing);
     verify(() => mockRepository.getNextEvent('group-1')).called(2);
   });
+
+  const joinGroupId = '11111111-1111-1111-1111-111111111111';
+
+  GroupJoinRequestEntity request(String id) =>
+      GroupJoinRequestEntity(id: id, userId: 'user-$id', name: 'Leitora $id');
+
+  void stubDetails() {
+    when(
+      () => mockRepository.getGroupDetails(joinGroupId),
+    ).thenAnswer((_) async => const Success(group));
+    when(
+      () => mockRepository.getNextEvent(joinGroupId),
+    ).thenAnswer((_) async => const Success(null));
+    when(
+      () => mockParticipantsRepository.getParticipants(joinGroupId),
+    ).thenAnswer((_) async => const Success([]));
+  }
+
+  Future<GoRouter> pumpDetails(
+    WidgetTester tester, {
+    void Function()? afterStubs,
+  }) async {
+    stubDetails();
+    afterStubs?.call();
+    tester.view.physicalSize = const Size(800, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) => MultiBlocProvider(
+            providers: [
+              BlocProvider<SessionCubit>.value(value: sessionCubit),
+              BlocProvider(
+                create: (_) =>
+                    GroupDetailsCubit(groupRepository: mockRepository)
+                      ..load(joinGroupId),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    NextEventCubit(groupRepository: mockRepository)
+                      ..load(joinGroupId),
+              ),
+              BlocProvider(
+                create: (_) => GroupParticipantsCubit(
+                  participantsRepository: mockParticipantsRepository,
+                )..load(joinGroupId),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    GroupJoinRequestsCubit(repository: joinRequestsRepository)
+                      ..load(joinGroupId),
+              ),
+            ],
+            child: const GroupDetailsPage(groupId: joinGroupId),
+          ),
+        ),
+        GoRoute(
+          path: GroupJoinRequestsRoutePaths.joinRequests,
+          builder: (_, state) => Scaffold(body: Text('pedidos: ${state.uri}')),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+    return router;
+  }
+
+  testWidgets(
+    'join requests access: shows the pending count to the coordinator',
+    (tester) async {
+      when(
+        () => joinRequestsRepository.getRequests(joinGroupId),
+      ).thenAnswer((_) async => Success([request('a'), request('b')]));
+
+      await pumpDetails(tester);
+
+      expect(find.text('Pedidos de entrada (2)'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'join requests access: shows the access with zero pending requests',
+    (tester) async {
+      when(
+        () => joinRequestsRepository.getRequests(joinGroupId),
+      ).thenAnswer((_) async => const Success([]));
+
+      await pumpDetails(tester);
+
+      expect(find.text('Pedidos de entrada (0)'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'join requests access: hides the access from a reader who is not coordinator',
+    (tester) async {
+      when(() => joinRequestsRepository.getRequests(joinGroupId)).thenAnswer(
+        (_) async => const Failure(GroupJoinRequestsNotCoordinatorFailure()),
+      );
+
+      await pumpDetails(tester);
+
+      expect(find.textContaining('Pedidos de entrada'), findsNothing);
+      expect(find.text('Grupo 45'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'join requests access: a failed check hides the access without breaking the page',
+    (tester) async {
+      when(() => joinRequestsRepository.getRequests(joinGroupId)).thenAnswer(
+        (_) async => const Failure(GroupJoinRequestsNetworkFailure()),
+      );
+
+      await pumpDetails(tester);
+
+      expect(find.textContaining('Pedidos de entrada'), findsNothing);
+      expect(find.text('Grupo 45'), findsOneWidget);
+      expect(find.text('Tentar novamente'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'join requests access: opens the list and updates the count when coming back',
+    (tester) async {
+      var calls = 0;
+      when(() => joinRequestsRepository.getRequests(joinGroupId)).thenAnswer(
+        (_) async => calls++ == 0
+            ? Success([request('a'), request('b')])
+            : Success([request('b')]),
+      );
+
+      final router = await pumpDetails(tester);
+      await tester.tap(find.text('Pedidos de entrada (2)'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'pedidos: ${GroupJoinRequestsRoutePaths.joinRequestsFor(joinGroupId)}',
+        ),
+        findsOneWidget,
+      );
+
+      // A aprovação muda a contagem do grupo e a lista de participantes.
+      when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+        (_) async => const Success(
+          GroupDetailsEntity(
+            name: '45',
+            genres: ['Ficção', 'Aventura'],
+            participantCount: 35,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+          ),
+        ),
+      );
+      when(
+        () => mockParticipantsRepository.getParticipants(joinGroupId),
+      ).thenAnswer(
+        (_) async => const Success([
+          GroupParticipantEntity(id: 'user-a', name: 'Leitora a'),
+        ]),
+      );
+
+      router.pop();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Pedidos de entrada (1)'), findsOneWidget);
+      expect(find.text('35 participantes'), findsOneWidget);
+      expect(find.text('Leitora a'), findsOneWidget);
+      verify(() => joinRequestsRepository.getRequests(joinGroupId)).called(2);
+      verify(() => mockRepository.getGroupDetails(joinGroupId)).called(2);
+      verify(
+        () => mockParticipantsRepository.getParticipants(joinGroupId),
+      ).called(2);
+    },
+  );
+
+  testWidgets('join requests access: a double tap opens the list only once', (
+    tester,
+  ) async {
+    when(
+      () => joinRequestsRepository.getRequests(joinGroupId),
+    ).thenAnswer((_) async => Success([request('a')]));
+
+    final router = await pumpDetails(tester);
+    await tester.tap(find.text('Pedidos de entrada (1)'));
+    await tester.tap(find.text('Pedidos de entrada (1)'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
+    router.pop();
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('pedidos:'), findsNothing);
+    expect(find.text('Grupo 45'), findsOneWidget);
+    verify(() => joinRequestsRepository.getRequests(joinGroupId)).called(2);
+  });
+
+  testWidgets(
+    'join requests access: retrying the group also checks the requests again',
+    (tester) async {
+      var detailsCalls = 0;
+      var requestCalls = 0;
+
+      await pumpDetails(
+        tester,
+        afterStubs: () {
+          when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+            (_) async => detailsCalls++ == 0
+                ? const Failure(GroupNetworkFailure())
+                : const Success(group),
+          );
+          when(
+            () => joinRequestsRepository.getRequests(joinGroupId),
+          ).thenAnswer(
+            (_) async => requestCalls++ == 0
+                ? const Failure(GroupJoinRequestsNetworkFailure())
+                : Success([request('a')]),
+          );
+        },
+      );
+
+      expect(find.text('Tentar novamente'), findsOneWidget);
+
+      await tester.tap(find.text('Tentar novamente'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Grupo 45'), findsOneWidget);
+      expect(find.text('Pedidos de entrada (1)'), findsOneWidget);
+      expect(requestCalls, 2);
+    },
+  );
 }

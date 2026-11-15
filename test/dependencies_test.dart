@@ -13,6 +13,13 @@ import 'package:mobile/features/books/data/repositories/book_repository_impl.dar
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
+import 'package:mobile/features/calendar/data/repositories/calendar_repository_impl.dart';
+import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
+import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
+import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
+import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/public_group_cubit.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
@@ -39,8 +46,10 @@ import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
+import 'package:mobile/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mobile/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mocktail/mocktail.dart';
@@ -99,7 +108,12 @@ void main() {
       );
       expect(serviceLocator.isRegistered<GroupParticipantsCubit>(), isTrue);
       expect(serviceLocator<PhotoPicker>(), isA<ImagePickerPhotoPicker>());
+      expect(
+        serviceLocator<ProfileRemoteDataSource>(),
+        isA<ProfileRemoteDataSourceImpl>(),
+      );
       expect(serviceLocator<ProfileRepository>(), isA<ProfileRepositoryImpl>());
+      expect(serviceLocator<ProfileSummaryCubit>(), isA<ProfileSummaryCubit>());
       expect(serviceLocator<GroupDetailsCubit>(), isA<GroupDetailsCubit>());
       expect(serviceLocator<EventHistoryCubit>(), isA<EventHistoryCubit>());
       expect(serviceLocator<MeetingDetailsCubit>(), isA<MeetingDetailsCubit>());
@@ -120,6 +134,17 @@ void main() {
       expect(serviceLocator<BookRepository>(), isA<BookRepositoryImpl>());
       expect(serviceLocator<BookDetailsCubit>(), isA<BookDetailsCubit>());
       expect(serviceLocator<BookSearchCubit>(), isA<BookSearchCubit>());
+      expect(
+        serviceLocator<CalendarRepository>(),
+        isA<CalendarRepositoryImpl>(),
+      );
+      expect(serviceLocator<CalendarCubit>(), isA<CalendarCubit>());
+      expect(
+        serviceLocator<GroupDiscoveryRepository>(),
+        isA<GroupDiscoveryRepositoryImpl>(),
+      );
+      expect(serviceLocator<PublicGroupCubit>(), isA<PublicGroupCubit>());
+      expect(serviceLocator<GroupSearchCubit>(), isA<GroupSearchCubit>());
       expect(
         serviceLocator<NotificationRepository>(),
         isA<NotificationRepositoryImpl>(),

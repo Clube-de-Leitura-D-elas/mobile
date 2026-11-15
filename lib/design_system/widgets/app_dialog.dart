@@ -4,12 +4,14 @@ import '../../l10n/app_localizations.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
+import 'app_dialog_actions.dart';
 import 'gap.dart';
 
 /// Modal base do design system: título, botão de fechar, conteúdo e ações.
 ///
-/// [actions] ficam lado a lado com a mesma largura; sem ações o rodapé não é
-/// renderizado. [onClose] é chamado pelo "x"; por padrão fecha o dialog.
+/// [actions] seguem o [AppDialogActions] (ação principal por último); sem
+/// ações o rodapé não é renderizado. [onClose] é chamado pelo "x"; por padrão
+/// fecha o dialog.
 /// [child] já fica dentro de um scroll: não passe `ListView` sem
 /// `shrinkWrap`.
 class AppDialog extends StatelessWidget {
@@ -45,7 +47,7 @@ class AppDialog extends StatelessWidget {
             Flexible(child: SingleChildScrollView(child: child)),
             if (actions.isNotEmpty) ...[
               const Gap24(),
-              _AppDialogActions(actions: actions),
+              AppDialogActions(actions: actions),
             ],
           ],
         ),
@@ -92,24 +94,6 @@ class _AppDialogHeader extends StatelessWidget {
             icon: Icon(Icons.close, color: colors.textDefault, size: 20),
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _AppDialogActions extends StatelessWidget {
-  const _AppDialogActions({required this.actions});
-
-  final List<Widget> actions;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        for (var i = 0; i < actions.length; i++) ...[
-          if (i > 0) const Gap16(),
-          Expanded(child: actions[i]),
-        ],
       ],
     );
   }

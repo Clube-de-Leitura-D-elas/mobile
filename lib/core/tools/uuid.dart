@@ -2,6 +2,13 @@ import 'dart:math';
 
 final _random = Random.secure();
 
+final _uuidPattern = RegExp(
+  r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+  caseSensitive: false,
+);
+
+bool isUuid(String value) => _uuidPattern.hasMatch(value);
+
 String generateUuidV4() {
   final bytes = List<int>.generate(16, (_) => _random.nextInt(256));
   bytes[6] = (bytes[6] & 0x0f) | 0x40;

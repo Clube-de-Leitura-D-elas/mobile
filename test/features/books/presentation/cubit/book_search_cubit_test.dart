@@ -313,9 +313,9 @@ void main() {
       when(
         () => repository.setReadingStatus(
           bookId: 'book-1',
-          status: BookReadingStatus.wantToRead,
+          status: BookReadingStatus.read,
         ),
-      ).thenAnswer((_) async => const Success(BookReadingStatus.wantToRead));
+      ).thenAnswer((_) async => const Success(BookReadingStatus.read));
       return buildCubit();
     },
     seed: () => const BookSearchState(books: [book], page: 1),
@@ -327,7 +327,7 @@ void main() {
         updatingStatusIds: ['book-1'],
       ),
       BookSearchState(
-        books: [book.copyWithStatus(BookReadingStatus.wantToRead)],
+        books: [book.copyWithStatus(BookReadingStatus.read)],
         page: 1,
       ),
     ],
@@ -339,7 +339,7 @@ void main() {
       when(
         () => repository.setReadingStatus(
           bookId: 'book-1',
-          status: BookReadingStatus.wantToRead,
+          status: BookReadingStatus.read,
         ),
       ).thenAnswer((_) async => const Failure(BookStatusFailure()));
       return buildCubit();
@@ -403,35 +403,36 @@ void main() {
       when(
         () => repository.setReadingStatus(
           bookId: 'book-1',
-          status: BookReadingStatus.wantToRead,
+          status: BookReadingStatus.read,
         ),
       ).thenAnswer((_) async {
         await Future<void>.delayed(Duration.zero);
-        return const Success(BookReadingStatus.wantToRead);
+        return const Success(BookReadingStatus.read);
       });
       return buildCubit();
     },
-    seed: () => const BookSearchState(books: [book], page: 1),
+    seed: () => BookSearchState(
+      books: [book.copyWithStatus(BookReadingStatus.wantToRead)],
+      page: 1,
+    ),
     act: (cubit) async {
       final write = cubit.toggleStatus('book-1');
-      cubit.applyReadingStatus('book-1', BookReadingStatus.read, isWrite: true);
+      // Nos detalhes a leitora desmarca o livro antes de o chip responder.
+      cubit.applyReadingStatus('book-1', null, isWrite: true);
       await write;
     },
     expect: () => [
+      BookSearchState(
+        books: [book.copyWithStatus(BookReadingStatus.wantToRead)],
+        page: 1,
+        updatingStatusIds: const ['book-1'],
+      ),
       const BookSearchState(
         books: [book],
         page: 1,
         updatingStatusIds: ['book-1'],
       ),
-      BookSearchState(
-        books: [book.copyWithStatus(BookReadingStatus.read)],
-        page: 1,
-        updatingStatusIds: const ['book-1'],
-      ),
-      BookSearchState(
-        books: [book.copyWithStatus(BookReadingStatus.read)],
-        page: 1,
-      ),
+      const BookSearchState(books: [book], page: 1),
     ],
   );
 
@@ -440,11 +441,11 @@ void main() {
       when(
         () => repository.setReadingStatus(
           bookId: 'book-1',
-          status: BookReadingStatus.wantToRead,
+          status: BookReadingStatus.read,
         ),
       ).thenAnswer((_) async {
         await Future<void>.delayed(Duration.zero);
-        return const Success(BookReadingStatus.wantToRead);
+        return const Success(BookReadingStatus.read);
       });
     }
 
@@ -452,11 +453,13 @@ void main() {
       'given no chip write, when the details load, then the chip follows them',
       build: buildCubit,
       seed: () => const BookSearchState(books: [book], page: 1),
-      act: (cubit) =>
-          cubit.statusSyncFor('book-1')(BookReadingStatus.read, isWrite: false),
+      act: (cubit) => cubit.statusSyncFor('book-1')(
+        BookReadingStatus.wantToRead,
+        isWrite: false,
+      ),
       expect: () => [
         BookSearchState(
-          books: [book.copyWithStatus(BookReadingStatus.read)],
+          books: [book.copyWithStatus(BookReadingStatus.wantToRead)],
           page: 1,
         ),
       ],
@@ -471,7 +474,10 @@ void main() {
       seed: () => const BookSearchState(books: [book], page: 1),
       act: (cubit) async {
         final write = cubit.toggleStatus('book-1');
-        cubit.statusSyncFor('book-1')(BookReadingStatus.read, isWrite: false);
+        cubit.statusSyncFor('book-1')(
+          BookReadingStatus.wantToRead,
+          isWrite: false,
+        );
         await write;
       },
       expect: () => [
@@ -481,7 +487,7 @@ void main() {
           updatingStatusIds: ['book-1'],
         ),
         BookSearchState(
-          books: [book.copyWithStatus(BookReadingStatus.wantToRead)],
+          books: [book.copyWithStatus(BookReadingStatus.read)],
           page: 1,
         ),
       ],
@@ -491,7 +497,7 @@ void main() {
       when(
         () => repository.setReadingStatus(
           bookId: 'book-1',
-          status: BookReadingStatus.wantToRead,
+          status: BookReadingStatus.read,
         ),
       ).thenAnswer((_) async {
         await Future<void>.delayed(Duration.zero);
@@ -508,7 +514,10 @@ void main() {
       seed: () => const BookSearchState(books: [book], page: 1),
       act: (cubit) async {
         final write = cubit.toggleStatus('book-1');
-        cubit.statusSyncFor('book-1')(BookReadingStatus.read, isWrite: false);
+        cubit.statusSyncFor('book-1')(
+          BookReadingStatus.wantToRead,
+          isWrite: false,
+        );
         await write;
       },
       expect: () => [
@@ -518,7 +527,7 @@ void main() {
           updatingStatusIds: ['book-1'],
         ),
         BookSearchState(
-          books: [book.copyWithStatus(BookReadingStatus.read)],
+          books: [book.copyWithStatus(BookReadingStatus.wantToRead)],
           page: 1,
           hasStatusError: true,
         ),
@@ -535,7 +544,7 @@ void main() {
       act: (cubit) async {
         final write = cubit.toggleStatus('book-1');
         final sync = cubit.statusSyncFor('book-1');
-        sync(BookReadingStatus.read, isWrite: false);
+        sync(BookReadingStatus.wantToRead, isWrite: false);
         sync(null, isWrite: true);
         await write;
       },
@@ -560,7 +569,7 @@ void main() {
         final write = cubit.toggleStatus('book-1');
         final sync = cubit.statusSyncFor('book-1');
         await write;
-        sync(BookReadingStatus.read, isWrite: false);
+        sync(BookReadingStatus.wantToRead, isWrite: false);
       },
       expect: () => [
         const BookSearchState(
@@ -569,7 +578,7 @@ void main() {
           updatingStatusIds: ['book-1'],
         ),
         BookSearchState(
-          books: [book.copyWithStatus(BookReadingStatus.wantToRead)],
+          books: [book.copyWithStatus(BookReadingStatus.read)],
           page: 1,
         ),
       ],
@@ -619,14 +628,11 @@ void main() {
         final write = cubit.toggleStatus('book-1');
         final sync = cubit.statusSyncFor('book-1');
         await write;
-        sync(BookReadingStatus.read, isWrite: true);
+        sync(null, isWrite: true);
       },
       skip: 2,
       expect: () => [
-        BookSearchState(
-          books: [book.copyWithStatus(BookReadingStatus.read)],
-          page: 1,
-        ),
+        const BookSearchState(books: [book], page: 1),
       ],
     );
   });
@@ -723,7 +729,7 @@ void main() {
       when(
         () => repository.setReadingStatus(
           bookId: 'book-1',
-          status: BookReadingStatus.wantToRead,
+          status: BookReadingStatus.read,
         ),
       ).thenAnswer((_) => gate.future);
       when(
@@ -731,7 +737,7 @@ void main() {
       ).thenAnswer((_) async => Success(page()));
       addTearDown(() {
         if (!gate.isCompleted) {
-          gate.complete(const Success(BookReadingStatus.wantToRead));
+          gate.complete(const Success(BookReadingStatus.read));
         }
       });
       return buildCubit();
@@ -766,7 +772,7 @@ void main() {
       verify(
         () => repository.setReadingStatus(
           bookId: 'book-1',
-          status: BookReadingStatus.wantToRead,
+          status: BookReadingStatus.read,
         ),
       ).called(1);
     },

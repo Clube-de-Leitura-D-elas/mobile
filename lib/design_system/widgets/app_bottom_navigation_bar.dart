@@ -5,7 +5,7 @@ import 'package:mobile/design_system/widgets/app_icon.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 
-enum QuickAccessItem { home, search, plus, calendar, profile }
+enum QuickAccessItem { home, search, calendar, profile }
 
 class BottomNavigationBarWidget extends StatelessWidget {
   const BottomNavigationBarWidget({
@@ -23,7 +23,6 @@ class BottomNavigationBarWidget extends StatelessWidget {
   static const List<_QuickAccessIconData> _icons = [
     _QuickAccessIconData(icon: AppIcons.home, label: 'Início'),
     _QuickAccessIconData(icon: AppIcons.search, label: 'Busca'),
-    _QuickAccessIconData(icon: AppIcons.plus, label: 'Adicionar'),
     _QuickAccessIconData(icon: AppIcons.calendar, label: 'Calendário'),
     _QuickAccessIconData(icon: AppIcons.user, label: 'Perfil'),
   ];

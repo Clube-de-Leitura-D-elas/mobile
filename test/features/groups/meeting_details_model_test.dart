@@ -32,6 +32,7 @@ void main() {
         locationAddress: 'Rua das Flores, 12',
         description: 'Conversa sobre narrativa não confiável.',
         coverPhotoUrl: 'https://example.com/cover.jpg',
+        status: 'CONCLUDED',
       ),
     );
   });
@@ -92,6 +93,43 @@ void main() {
   test('throws when can_edit is not a boolean', () {
     expect(
       () => MeetingDetailsModel.fromJson(withFields({'can_edit': 'yes'})),
+      throwsFormatException,
+    );
+  });
+
+  test('reads status and tells whether the meeting accepts guests', () {
+    final entity = MeetingDetailsModel.fromJson(
+      withFields({'status': 'SCHEDULED', 'date': '2026-11-20T21:00:00Z'}),
+    ).toDomain();
+
+    expect(entity.status, 'SCHEDULED');
+    expect(entity.acceptsGuestRequests(DateTime.utc(2026, 11, 20, 20)), isTrue);
+    expect(
+      entity.acceptsGuestRequests(DateTime.utc(2026, 11, 20, 22)),
+      isFalse,
+    );
+  });
+
+  test('does not accept guests when not scheduled or without status', () {
+    final now = DateTime.utc(2026, 11, 1);
+
+    expect(
+      MeetingDetailsModel.fromJson(
+        withFields({'status': 'CREATED', 'date': '2026-11-20T21:00:00Z'}),
+      ).toDomain().acceptsGuestRequests(now),
+      isFalse,
+    );
+    expect(
+      MeetingDetailsModel.fromJson(
+        withFields({'date': '2026-11-20T21:00:00Z'}),
+      ).toDomain().acceptsGuestRequests(now),
+      isFalse,
+    );
+  });
+
+  test('throws when status is not a string', () {
+    expect(
+      () => MeetingDetailsModel.fromJson(withFields({'status': 1})),
       throwsFormatException,
     );
   });

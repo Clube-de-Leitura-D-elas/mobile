@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart'
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/routes/app_route_observer.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -26,9 +27,11 @@ import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mobile/features/home/presentation/cubit/home_state.dart';
 import 'package:mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/home/presentation/widgets/home_pending_tasks_banner.dart';
+import 'package:mobile/features/notifications/domain/entities/notifications_page_entity.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notification_bell.dart';
@@ -46,8 +49,18 @@ class MockSessionCubit extends MockCubit<SessionState>
     implements SessionCubit {}
 
 Widget withBell(Widget child) => BlocProvider(
-  create: (_) =>
-      NotificationBadgeCubit(repository: MockNotificationRepository()),
+  create: (_) {
+    final repository = MockNotificationRepository();
+    // O sino se atualiza ao voltar para a home (didPopNext).
+    when(
+      () => repository.getNotifications(page: any(named: 'page')),
+    ).thenAnswer(
+      (_) async => const Success(
+        NotificationsPageEntity(items: [], total: 0, unreadCount: 0),
+      ),
+    );
+    return NotificationBadgeCubit(repository: repository);
+  },
   child: child,
 );
 
@@ -222,6 +235,7 @@ void main() {
 
       final router = GoRouter(
         initialLocation: QuickAccessRoutes.home,
+        observers: [appRouteObserver],
         routes: [
           GoRoute(
             path: QuickAccessRoutes.home,
@@ -265,6 +279,70 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(HomeScreen), findsOneWidget);
+      verify(() => repository.getMyGroups()).called(2);
+    },
+  );
+
+  testWidgets(
+    'refreshes groups without the loading state when returning from any screen',
+    (tester) async {
+      final repository = MockGroupRepository();
+      var calls = 0;
+      when(() => repository.getMyGroups()).thenAnswer((_) async {
+        calls++;
+        return Success([group.copyWith(participantsCount: calls == 1 ? 3 : 4)]);
+      });
+      final cubit = HomeCubit(groupRepository: repository);
+      addTearDown(cubit.close);
+      final states = <HomeStatus>[];
+      final sub = cubit.stream.listen((state) => states.add(state.status));
+      addTearDown(sub.cancel);
+
+      final router = GoRouter(
+        initialLocation: QuickAccessRoutes.home,
+        observers: [appRouteObserver],
+        routes: [
+          GoRoute(
+            path: QuickAccessRoutes.home,
+            builder: (context, state) => BlocProvider.value(
+              value: cubit,
+              child: withBell(const HomeScreen()),
+            ),
+          ),
+          GoRoute(
+            path: '/group-details',
+            builder: (context, state) =>
+                const Scaffold(body: Text('Detalhe do grupo')),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
+      await cubit.loadGroups();
+      await tester.pumpAndSettle();
+      expect(cubit.state.groups.single.participantsCount, 3);
+      states.clear();
+
+      unawaited(router.push('/group-details'));
+      await tester.pumpAndSettle();
+      router.pop();
+      await tester.pumpAndSettle();
+
+      expect(cubit.state.groups.single.participantsCount, 4);
+      expect(states, isNot(contains(HomeStatus.loading)));
       verify(() => repository.getMyGroups()).called(2);
     },
   );
@@ -349,7 +427,10 @@ void main() {
     await cubit.loadGroups();
     await tester.pumpAndSettle();
 
-    expect(find.text('Você não tem permissão para fazer isso.'), findsOneWidget);
+    expect(
+      find.text('Você não tem permissão para fazer isso.'),
+      findsOneWidget,
+    );
     expect(find.text('Tentar novamente'), findsNothing);
   });
 

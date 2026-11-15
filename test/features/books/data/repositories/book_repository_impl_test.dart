@@ -4,17 +4,23 @@ import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/books/data/datasources/rated_books_remote_data_source.dart';
 import 'package:mobile/features/books/data/models/book_details_model.dart';
 import 'package:mobile/features/books/data/models/book_page_model.dart';
+import 'package:mobile/features/books/data/models/rated_book_model.dart';
 import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/rated_book.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
+
+class MockRatedBooksRemoteDataSource extends Mock
+    implements RatedBooksRemoteDataSource {}
 
 void main() {
   late MockSupabaseService supabase;
@@ -233,6 +239,49 @@ void main() {
     expect((result as Failure).failure, isA<BookStatusFailure>());
   });
 
+  test('posts upsert-book-review with the review data', () async {
+    when(
+      () => supabase.invokeFunction<void>(
+        functionName: 'upsert-book-review',
+        body: {'book_id': 'book-1', 'rating': 5, 'commentary': 'Muito bom'},
+      ),
+    ).thenAnswer((_) async => const Success(SupabaseResponse<void>()));
+
+    final result = await repository.upsertBookReview(
+      bookId: 'book-1',
+      rating: 5,
+      commentary: 'Muito bom',
+    );
+
+    expect(result, const Success<void, BookFailure>(null));
+    verify(
+      () => supabase.invokeFunction<void>(
+        functionName: 'upsert-book-review',
+        body: {'book_id': 'book-1', 'rating': 5, 'commentary': 'Muito bom'},
+      ),
+    ).called(1);
+  });
+
+  test('maps upsert-book-review failures', () async {
+    when(
+      () => supabase.invokeFunction<void>(
+        functionName: 'upsert-book-review',
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer(
+      (_) async =>
+          const Failure(FunctionSupabaseFailure(message: 'invalid review')),
+    );
+
+    final result = await repository.upsertBookReview(
+      bookId: 'book-1',
+      rating: 1,
+      commentary: null,
+    );
+
+    expect(result, const Failure<void, BookFailure>(BookReviewFailure()));
+  });
+
   group('getBookDetails', () {
     void stubDetails(
       Result<SupabaseResponse<BookDetailsModel>, SupabaseFailure> result,
@@ -364,5 +413,83 @@ void main() {
         );
       },
     );
+  });
+
+  group('getRatedBooks', () {
+    late MockRatedBooksRemoteDataSource mockDataSource;
+    late BookRepositoryImpl repoWithMock;
+
+    setUp(() {
+      mockDataSource = MockRatedBooksRemoteDataSource();
+      repoWithMock = BookRepositoryImpl(
+        supabaseService: supabase,
+        ratedBooksRemoteDataSource: mockDataSource,
+      );
+    });
+
+    const tModel = RatedBookModel(
+      id: 'r1',
+      bookId: 'b1',
+      title: 'Title',
+      author: 'Author',
+      rating: 5.0,
+    );
+
+    test('returns mapped RatedBook entities on success', () async {
+      when(() => mockDataSource.getRatedBooks(page: 1, limit: 10))
+          .thenAnswer((_) async => [tModel]);
+
+      final result = await repoWithMock.getRatedBooks(page: 1, limit: 10);
+
+      expect(result, isA<Success<List<RatedBook>, BookFailure>>());
+      final books = (result as Success<List<RatedBook>, BookFailure>).data;
+      expect(books.length, 1);
+      expect(books.first.title, 'Title');
+    });
+
+    test('maps SupabaseFailure to BookFailure', () async {
+      when(() => mockDataSource.getRatedBooks(page: 1, limit: 10)).thenThrow(
+        const FunctionSupabaseFailure(
+          message: 'net',
+          kind: SupabaseFailureKind.network,
+        ),
+      );
+
+      final result = await repoWithMock.getRatedBooks(page: 1, limit: 10);
+
+      expect(
+        result,
+        const Failure<List<RatedBook>, BookFailure>(BookNetworkFailure()),
+      );
+
+      when(() => mockDataSource.getRatedBooks(page: 1, limit: 10)).thenThrow(
+        const FunctionSupabaseFailure(
+          message: 'auth',
+          kind: SupabaseFailureKind.unauthorized,
+        ),
+      );
+
+      final resultAuth = await repoWithMock.getRatedBooks(page: 1, limit: 10);
+
+      expect(
+        resultAuth,
+        const Failure<List<RatedBook>, BookFailure>(
+          BookSessionExpiredFailure(),
+        ),
+      );
+    });
+
+    test('maps generic exceptions to RatedBooksLoadFailure', () async {
+      when(() => mockDataSource.getRatedBooks(page: 1, limit: 10)).thenThrow(
+        Exception('boom'),
+      );
+
+      final result = await repoWithMock.getRatedBooks(page: 1, limit: 10);
+
+      expect(
+        result,
+        const Failure<List<RatedBook>, BookFailure>(RatedBooksLoadFailure()),
+      );
+    });
   });
 }

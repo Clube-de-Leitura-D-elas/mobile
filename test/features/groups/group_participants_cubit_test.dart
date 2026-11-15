@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -119,4 +121,110 @@ void main() {
     act: (cubit) => cubit.retry(),
     expect: () => <GroupParticipantsState>[],
   );
+
+  group('refresh', () {
+    test('a failed refresh during the initial load ends in error', () async {
+      final initial =
+          Completer<Result<List<GroupParticipantEntity>, GroupFailure>>();
+      var calls = 0;
+      when(() => repository.getParticipants('g1')).thenAnswer(
+        (_) => calls++ == 0
+            ? initial.future
+            : Future.value(const Failure(GroupNetworkFailure())),
+      );
+      final cubit = build();
+      addTearDown(cubit.close);
+      final states = <GroupParticipantsState>[];
+      final sub = cubit.stream.listen(states.add);
+      addTearDown(sub.cancel);
+
+      final loading = cubit.load('g1');
+      await cubit.refresh();
+      await Future<void>.delayed(Duration.zero);
+      expect(states, [
+        const GroupParticipantsLoading(),
+        isA<GroupParticipantsError>(),
+      ]);
+
+      initial.complete(const Success([coordinator]));
+      await loading;
+      await Future<void>.delayed(Duration.zero);
+
+      expect(states, hasLength(2), reason: 'stale load must not emit');
+    });
+
+    test('a slow initial load does not overwrite a newer refresh', () async {
+      final initial =
+          Completer<Result<List<GroupParticipantEntity>, GroupFailure>>();
+      var calls = 0;
+      when(() => repository.getParticipants('g1')).thenAnswer(
+        (_) => calls++ == 0
+            ? initial.future
+            : Future.value(const Success([coordinator, member])),
+      );
+      final cubit = build();
+      addTearDown(cubit.close);
+      final states = <GroupParticipantsState>[];
+      final sub = cubit.stream.listen(states.add);
+      addTearDown(sub.cancel);
+
+      final loading = cubit.load('g1');
+      await cubit.refresh();
+      initial.complete(const Success([coordinator]));
+      await loading;
+      await Future<void>.delayed(Duration.zero);
+
+      expect(states, [
+        const GroupParticipantsLoading(),
+        const GroupParticipantsLoaded([coordinator, member]),
+      ]);
+    });
+
+    blocTest<GroupParticipantsCubit, GroupParticipantsState>(
+      'updates the list without going through loading',
+      build: () {
+        var calls = 0;
+        when(() => repository.getParticipants('g1')).thenAnswer(
+          (_) async =>
+              Success(calls++ == 0 ? [coordinator] : [coordinator, member]),
+        );
+        return build();
+      },
+      act: (cubit) async {
+        await cubit.load('g1');
+        await cubit.refresh();
+      },
+      skip: 2,
+      expect: () => [
+        const GroupParticipantsLoaded([coordinator, member]),
+      ],
+    );
+
+    blocTest<GroupParticipantsCubit, GroupParticipantsState>(
+      'keeps the list when the refresh fails',
+      build: () {
+        var calls = 0;
+        when(() => repository.getParticipants('g1')).thenAnswer(
+          (_) async => calls++ == 0
+              ? const Success([coordinator])
+              : const Failure(GroupNetworkFailure()),
+        );
+        return build();
+      },
+      act: (cubit) async {
+        await cubit.load('g1');
+        await cubit.refresh();
+      },
+      skip: 2,
+      expect: () => <GroupParticipantsState>[],
+    );
+
+    blocTest<GroupParticipantsCubit, GroupParticipantsState>(
+      'does nothing before the first load',
+      build: build,
+      act: (cubit) => cubit.refresh(),
+      expect: () => <GroupParticipantsState>[],
+      verify: (_) => verifyNever(() => repository.getParticipants(any())),
+    );
+  });
 }

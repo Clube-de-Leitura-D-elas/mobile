@@ -14,11 +14,13 @@ import 'package:mobile/l10n/app_localizations.dart';
 MeetingAttendanceEntity _attendee({
   String name = 'Ana',
   MeetingInvitationStatus status = MeetingInvitationStatus.confirmed,
+  bool isGuest = false,
 }) => MeetingAttendanceEntity(
   id: 'u-1',
   name: name,
   invitationStatus: status,
   presenceStatus: MeetingPresenceStatus.present,
+  isGuest: isGuest,
 );
 
 void main() {
@@ -156,6 +158,37 @@ void main() {
         ),
       );
       semantics.dispose();
+    });
+
+    testWidgets('a convidada mostra a tag e o rótulo acessível diz que é '
+        'convidada', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pumpTile(
+        tester,
+        attendee: _attendee(isGuest: true),
+        isChecked: true,
+        onChanged: () {},
+      );
+
+      expect(find.widgetWithText(AppTag, 'Convidada'), findsOneWidget);
+      expect(
+        tester.getSemantics(find.byType(PresenceAttendeeTile)),
+        isSemantics(
+          label: 'Ana, Convidada, Presente',
+          hasCheckedState: true,
+          isChecked: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          hasTapAction: true,
+        ),
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('membro do grupo não mostra a tag Convidada', (tester) async {
+      await pumpTile(tester, attendee: _attendee(), onChanged: () {});
+
+      expect(find.text('Convidada'), findsNothing);
     });
 
     testWidgets('tocar no tile dispara onChanged', (tester) async {

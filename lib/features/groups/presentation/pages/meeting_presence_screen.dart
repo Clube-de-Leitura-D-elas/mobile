@@ -4,6 +4,7 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit.dart';
+import 'package:mobile/features/groups/presentation/widgets/empty_presence_confirm_dialog.dart';
 import 'package:mobile/features/groups/presentation/widgets/meeting_presence_attendee_tile.dart';
 
 class MeetingPresenceScreen extends StatelessWidget {
@@ -19,6 +20,19 @@ class MeetingPresenceScreen extends StatelessWidget {
   final Set<String> marked;
   final bool isSubmitting;
   final bool readOnly;
+
+  /// Sem ninguém marcado, todas ficariam com falta e o registro não pode ser
+  /// refeito: pede confirmação antes de enviar.
+  Future<void> _confirm(
+    BuildContext context,
+    MeetingPresenceCubit cubit,
+  ) async {
+    if (marked.isEmpty) {
+      final confirmed = await EmptyPresenceConfirmDialog.show(context);
+      if (confirmed != true) return;
+    }
+    await cubit.confirm();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +72,9 @@ class MeetingPresenceScreen extends StatelessWidget {
                       width: double.infinity,
                       child: AppButton.primary(
                         label: context.l10n.confirm,
-                        onPressed: isSubmitting ? null : cubit.confirm,
+                        onPressed: isSubmitting
+                            ? null
+                            : () => _confirm(context, cubit),
                         isLoading: isSubmitting,
                       ),
                     ),

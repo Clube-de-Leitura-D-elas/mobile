@@ -5,6 +5,7 @@ import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/group_join_requests/presentation/cubit/group_join_requests_cubit.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_details_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
@@ -26,6 +27,7 @@ import 'package:mobile/features/groups/presentation/pages/meeting_edit_route_pag
 import 'package:mobile/features/groups/presentation/pages/meeting_presence_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_tasks_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_cubit.dart';
 
 abstract class GroupRoutes {
   static const groupDetails = GroupRoutePaths.groupDetails;
@@ -53,6 +55,9 @@ abstract class GroupRoutes {
               BlocProvider(
                 create: (_) =>
                     serviceLocator<MeetingPhotosCubit>()..load(meetingId),
+              ),
+              BlocProvider(
+                create: (_) => serviceLocator<MeetingGuestRequestsCubit>(),
               ),
             ],
             child: const MeetingDetailsPage(),
@@ -113,6 +118,9 @@ abstract class GroupRoutes {
                 create: (_) =>
                     serviceLocator<MeetingPhotosCubit>()..load(meetingId),
               ),
+              BlocProvider(
+                create: (_) => serviceLocator<MeetingGuestRequestsCubit>(),
+              ),
             ],
             child: const MeetingDetailsPage(),
           ),
@@ -150,6 +158,10 @@ abstract class GroupRoutes {
               BlocProvider(
                 create: (_) =>
                     serviceLocator<GroupParticipantsCubit>()..load(groupId),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    serviceLocator<GroupJoinRequestsCubit>()..load(groupId),
               ),
             ],
             child: GroupDetailsPage(groupId: groupId),

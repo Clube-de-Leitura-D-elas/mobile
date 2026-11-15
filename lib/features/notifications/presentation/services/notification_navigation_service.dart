@@ -3,7 +3,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
+import 'package:mobile/features/group_discovery/presentation/routes/group_discovery_route_paths.dart';
+import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/routes/meeting_guest_requests_route_paths.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 
 class NotificationNavigationService {
@@ -44,8 +48,9 @@ class NotificationNavigationService {
     NotificationRepository repository,
     Map<String, dynamic> data,
   ) {
-    final notificationId =
-        (data['notification_id'] ?? data['id'])?.toString().trim();
+    final notificationId = (data['notification_id'] ?? data['id'])
+        ?.toString()
+        .trim();
     if (notificationId != null && notificationId.isNotEmpty) {
       unawaited(repository.markAsRead(notificationId));
     }
@@ -62,6 +67,19 @@ class NotificationNavigationService {
     final groupId = data['group_id'] as String?;
     final meetingId = data['meeting_id'] as String?;
 
+    // Vem com `meeting_id`: precisa ser checada antes do detalhe do encontro.
+    if (data['type'] == 'MEETING_GUEST_REQUESTED' &&
+        meetingId != null &&
+        meetingId.trim().isNotEmpty) {
+      return MeetingGuestRequestsRoutePaths.guestRequestsFor(meetingId.trim());
+    }
+
+    // Vêm com `meeting_id`, mas a convidada não abre o detalhe de membro.
+    if (data['type'] == 'MEETING_GUEST_APPROVED' ||
+        data['type'] == 'MEETING_GUEST_REJECTED') {
+      return QuickAccessRoutes.calendar;
+    }
+
     if (screen == GroupRoutePaths.meetingDetails ||
         screen == '/meeting-details' ||
         screen == 'meeting-details' ||
@@ -72,6 +90,21 @@ class NotificationNavigationService {
           queryParameters: {'meeting_id': meetingId.trim()},
         ).toString();
       }
+    }
+
+    // Recusada (ou aprovada e depois fora do grupo), o detalhe de membro
+    // recusaria; a tela pública mostra o vínculo atual.
+    if ((data['type'] == 'GROUP_JOIN_REJECTED' ||
+            data['type'] == 'GROUP_JOIN_APPROVED') &&
+        groupId != null &&
+        groupId.trim().isNotEmpty) {
+      return GroupDiscoveryRoutePaths.publicGroupFor(groupId.trim());
+    }
+
+    if (data['type'] == 'GROUP_JOIN_REQUESTED' &&
+        groupId != null &&
+        groupId.trim().isNotEmpty) {
+      return GroupJoinRequestsRoutePaths.joinRequestsFor(groupId.trim());
     }
 
     if (screen == GroupRoutePaths.groupDetails ||
@@ -105,7 +138,7 @@ class NotificationNavigationService {
     } else {
       final context = navigatorKey.currentContext;
       if (context != null) {
-        GoRouter.of(context).push(route);
+        openNotificationRoute(GoRouter.of(context), route);
       } else {
         pendingRoute = route;
       }
@@ -117,5 +150,16 @@ class NotificationNavigationService {
     final route = pendingRoute;
     pendingRoute = null;
     return route;
+  }
+}
+
+/// Aba (como o calendário) é trocada com `go`, como faz a barra inferior;
+/// `push` empilharia uma segunda instância dela. O resto é empilhado. A aba
+/// é avisada para reler o conteúdo, que a notificação acabou de mudar.
+void openNotificationRoute(GoRouter router, String route) {
+  if (QuickAccessRoutes.isTabPath(route)) {
+    router.go(route, extra: RefreshTabRequest());
+  } else {
+    unawaited(router.push<Object?>(route));
   }
 }

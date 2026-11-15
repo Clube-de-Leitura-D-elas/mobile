@@ -51,17 +51,17 @@ class _MeetingPhotoCaptionEditorState extends State<MeetingPhotoCaptionEditor> {
     return AppDialog(
       title: l10n.meetingPhotoCaptionTitle,
       actions: [
+        AppButton.secondary(
+          key: const ValueKey('meeting-photo-caption-skip'),
+          label: l10n.meetingPhotoCaptionSkip,
+          onPressed: () => Navigator.of(context).pop(''),
+        ),
         AppButton.primary(
           key: const ValueKey('meeting-photo-caption-save'),
           label: l10n.meetingPhotoCaptionSave,
           onPressed: _isTooLong
               ? null
               : () => Navigator.of(context).pop(_controller.text.trim()),
-        ),
-        AppButton.secondary(
-          key: const ValueKey('meeting-photo-caption-skip'),
-          label: l10n.meetingPhotoCaptionSkip,
-          onPressed: () => Navigator.of(context).pop(''),
         ),
       ],
       child: AppTextField(

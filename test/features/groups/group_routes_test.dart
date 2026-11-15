@@ -8,6 +8,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/group_join_requests/domain/entities/group_join_requests_failure.dart';
+import 'package:mobile/features/group_join_requests/domain/repository/group_join_requests_repository.dart';
+import 'package:mobile/features/group_join_requests/presentation/cubit/group_join_requests_cubit.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
@@ -29,6 +32,9 @@ class MockGroupRepository extends Mock implements GroupRepository {}
 
 class MockGroupParticipantsRepository extends Mock
     implements GroupParticipantsRepository {}
+
+class MockGroupJoinRequestsRepository extends Mock
+    implements GroupJoinRequestsRepository {}
 
 void main() {
   late MockGroupRepository mockRepository;
@@ -67,6 +73,13 @@ void main() {
         participantsRepository: mockParticipantsRepository,
       ),
     );
+    final joinRequestsRepository = MockGroupJoinRequestsRepository();
+    when(() => joinRequestsRepository.getRequests(any())).thenAnswer(
+      (_) async => const Failure(GroupJoinRequestsNotCoordinatorFailure()),
+    );
+    serviceLocator.registerFactory<GroupJoinRequestsCubit>(
+      () => GroupJoinRequestsCubit(repository: joinRequestsRepository),
+    );
     if (serviceLocator.isRegistered<MeetingAttendanceCubit>()) {
       serviceLocator.unregister<MeetingAttendanceCubit>();
     }
@@ -84,6 +97,9 @@ void main() {
   });
 
   tearDown(() {
+    if (serviceLocator.isRegistered<GroupJoinRequestsCubit>()) {
+      serviceLocator.unregister<GroupJoinRequestsCubit>();
+    }
     if (serviceLocator.isRegistered<GroupParticipantsCubit>()) {
       serviceLocator.unregister<GroupParticipantsCubit>();
     }

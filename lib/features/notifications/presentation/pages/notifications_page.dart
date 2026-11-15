@@ -10,6 +10,7 @@ import 'package:mobile/features/notifications/domain/entities/notification_failu
 import 'package:mobile/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notifications_state.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_route_paths.dart';
+import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notifications_message_view.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notifications_skeleton.dart';
@@ -99,7 +100,7 @@ class _NotificationsList extends StatelessWidget {
 
     final destination = NotificationRoutePaths.destinationFor(notification);
     if (destination != null) {
-      unawaited(context.push<Object?>(destination));
+      openNotificationRoute(GoRouter.of(context), destination);
     }
   }
 }

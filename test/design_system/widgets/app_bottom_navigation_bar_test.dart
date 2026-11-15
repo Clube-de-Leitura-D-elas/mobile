@@ -18,7 +18,7 @@ class _RecordingAssetBundle extends CachingAssetBundle {
 
 void main() {
   group('BottomNavigationBarWidget', () {
-    const labels = ['Início', 'Busca', 'Adicionar', 'Calendário', 'Perfil'];
+    const labels = ['Início', 'Busca', 'Calendário', 'Perfil'];
 
     Future<_RecordingAssetBundle> pumpWithBundle(
       WidgetTester tester, {
@@ -46,13 +46,15 @@ void main() {
       return bundle;
     }
 
-    testWidgets('Renders the 5 fixed items', (tester) async {
+    testWidgets('Renders the 4 fixed items, without Adicionar', (tester) async {
       final bundle = await pumpWithBundle(tester, currentIndex: 0);
 
-      expect(bundle.loadedKeys, hasLength(5));
+      expect(bundle.loadedKeys, hasLength(4));
       for (final label in labels) {
         expect(find.bySemanticsLabel(label), findsOneWidget);
       }
+      expect(find.bySemanticsLabel('Adicionar'), findsNothing);
+      expect(bundle.loadedKeys, isNot(contains(AppIcons.plus.assetPath)));
     });
 
     testWidgets('Marks only the current index as selected', (tester) async {
@@ -74,7 +76,6 @@ void main() {
         containsAll([
           AppIcons.home.assetPath,
           AppIcons.search.assetPath,
-          AppIcons.plus.assetPath,
           AppIcons.calendar.assetPath,
           AppIcons.user.assetPath,
         ]),
@@ -96,7 +97,7 @@ void main() {
             .map((w) => w.colorFilter)
             .toList();
 
-        expect(filters, hasLength(5));
+        expect(filters, hasLength(4));
         for (var i = 0; i < filters.length; i++) {
           final expected = i == 3
               ? AppColorTokens.light.actionPrimary
@@ -120,7 +121,8 @@ void main() {
       await tester.tap(find.bySemanticsLabel('Perfil'));
       await tester.pump();
 
-      expect(tapped, 4);
+      expect(tapped, QuickAccessItem.profile.index);
+      expect(tapped, 3);
     });
 
     testWidgets('Uses a top border in borderDefault color from the theme', (
@@ -161,7 +163,7 @@ void main() {
     testWidgets('Throws when currentIndex is out of range', (tester) async {
       expect(
         () =>
-            BottomNavigationBarWidget(currentIndex: 5, onItemSelected: (_) {}),
+            BottomNavigationBarWidget(currentIndex: 4, onItemSelected: (_) {}),
         throwsAssertionError,
       );
     });

@@ -41,21 +41,16 @@ class MeetingPhotoDeleteDialog extends StatelessWidget {
               style: typography.bodyDefault.copyWith(color: colors.textMuted),
             ),
             const Gap24(),
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton.secondary(
-                    label: l10n.meetingPhotoDeleteDialogCancel,
-                    onPressed: () => Navigator.of(context).pop(false),
-                  ),
+            AppDialogActions(
+              actions: [
+                AppButton.secondary(
+                  label: l10n.meetingPhotoDeleteDialogCancel,
+                  onPressed: () => Navigator.of(context).pop(false),
                 ),
-                const Gap16(),
-                Expanded(
-                  child: AppButton.danger(
-                    key: const ValueKey('meeting-photo-delete-confirm'),
-                    label: l10n.meetingPhotoDelete,
-                    onPressed: () => Navigator.of(context).pop(true),
-                  ),
+                AppButton.danger(
+                  key: const ValueKey('meeting-photo-delete-confirm'),
+                  label: l10n.meetingPhotoDelete,
+                  onPressed: () => Navigator.of(context).pop(true),
                 ),
               ],
             ),

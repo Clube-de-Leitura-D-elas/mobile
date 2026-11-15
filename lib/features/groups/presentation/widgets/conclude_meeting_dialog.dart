@@ -66,20 +66,15 @@ class ConcludeMeetingDialog extends StatelessWidget {
               style: typography.bodyDefault.copyWith(color: colors.textMuted),
             ),
             const Gap24(),
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton.secondary(
-                    label: l10n.meetingTasksConcludeDialogNo,
-                    onPressed: () => Navigator.of(context).pop(false),
-                  ),
+            AppDialogActions(
+              actions: [
+                AppButton.secondary(
+                  label: l10n.meetingTasksConcludeDialogNo,
+                  onPressed: () => Navigator.of(context).pop(false),
                 ),
-                const Gap16(),
-                Expanded(
-                  child: AppButton.primary(
-                    label: l10n.meetingTasksConcludeDialogYes,
-                    onPressed: () => Navigator.of(context).pop(true),
-                  ),
+                AppButton.primary(
+                  label: l10n.meetingTasksConcludeDialogYes,
+                  onPressed: () => Navigator.of(context).pop(true),
                 ),
               ],
             ),

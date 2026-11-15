@@ -23,12 +23,18 @@ import 'package:mobile/features/groups/presentation/pages/meeting_details_page.d
 import 'package:mobile/features/groups/presentation/pages/meeting_edit_page.dart';
 import 'package:mobile/features/groups/presentation/pages/meeting_tasks_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
+import 'package:mobile/features/meeting_guest_requests/domain/entities/meeting_guest_requests_failure.dart';
+import 'package:mobile/features/meeting_guest_requests/domain/repository/meeting_guest_requests_repository.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_cubit.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
 class MockPhotoPicker extends Mock implements PhotoPicker {}
+
+class MockMeetingGuestRequestsRepository extends Mock
+    implements MeetingGuestRequestsRepository {}
 
 const _meeting = MeetingDetailsEntity(
   id: 'meeting-1',
@@ -67,6 +73,13 @@ void main() {
         photoPicker: MockPhotoPicker(),
       ),
     );
+    final guestRequestsRepository = MockMeetingGuestRequestsRepository();
+    when(() => guestRequestsRepository.getRequests(any())).thenAnswer(
+      (_) async => const Failure(MeetingGuestRequestsNotReviewerFailure()),
+    );
+    register<MeetingGuestRequestsCubit>(
+      () => MeetingGuestRequestsCubit(repository: guestRequestsRepository),
+    );
   });
 
   tearDown(() {
@@ -75,6 +88,7 @@ void main() {
     unregister<MeetingEditCubit>();
     unregister<PlaceSearchCubit>();
     unregister<MeetingPhotosCubit>();
+    unregister<MeetingGuestRequestsCubit>();
   });
 
   Future<void> pumpRoute(WidgetTester tester, String location) async {

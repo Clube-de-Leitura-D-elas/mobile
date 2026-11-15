@@ -31,6 +31,12 @@ class BookStatusFailure extends BookFailure {
   });
 }
 
+class BookReviewFailure extends BookFailure {
+  const BookReviewFailure({
+    super.message = 'Não foi possível salvar sua avaliação.',
+  });
+}
+
 /// Falha genérica ao abrir os detalhes. O texto vem do l10n, na apresentação.
 class BookDetailsLoadFailure extends BookFailure {
   const BookDetailsLoadFailure() : super(message: '');
@@ -39,4 +45,9 @@ class BookDetailsLoadFailure extends BookFailure {
 /// Livro inexistente (404) ou id inválido (400). O texto vem do l10n.
 class BookNotFoundFailure extends BookFailure {
   const BookNotFoundFailure() : super(message: '');
+}
+
+/// Falha ao carregar a lista de livros avaliados. O texto vem do l10n.
+class RatedBooksLoadFailure extends BookFailure {
+  const RatedBooksLoadFailure() : super(message: '');
 }

@@ -64,22 +64,17 @@ class ConfirmRaffleDialog extends StatelessWidget {
               style: typography.bodyDefault.copyWith(color: colors.textMuted),
             ),
             const Gap24(),
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton.secondary(
-                    label: context.l10n.raffleConfirmDialogCancel, // "Cancelar"
-                    onPressed: () => Navigator.of(context).pop(false),
-                  ),
+            AppDialogActions(
+              actions: [
+                AppButton.secondary(
+                  label: context.l10n.raffleConfirmDialogCancel, // "Cancelar"
+                  onPressed: () => Navigator.of(context).pop(false),
                 ),
-                const Gap16(),
-                Expanded(
-                  child: AppButton.primary(
-                    label: context
-                        .l10n
-                        .confirm, // "Confirmar" (chave já existente no @@Common)
-                    onPressed: onConfirm,
-                  ),
+                AppButton.primary(
+                  label: context
+                      .l10n
+                      .confirm, // "Confirmar" (chave já existente no @@Common)
+                  onPressed: onConfirm,
                 ),
               ],
             ),

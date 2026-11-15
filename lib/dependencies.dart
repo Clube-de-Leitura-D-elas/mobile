@@ -7,15 +7,29 @@ import 'package:mobile/core/media/photo_picker.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/supabase/supabase_service_impl.dart';
+import 'package:mobile/features/books/data/datasources/rated_books_remote_data_source.dart';
 import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
+import 'package:mobile/features/books/presentation/cubit/rated_books_cubit.dart';
 import 'package:mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/password_validation_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/calendar/data/repositories/calendar_repository_impl.dart';
+import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
+import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
+import 'package:mobile/features/cities/data/repositories/discovery_cities_repository_impl.dart';
+import 'package:mobile/features/cities/domain/repository/discovery_cities_repository.dart';
+import 'package:mobile/features/group_discovery/data/repositories/group_discovery_repository_impl.dart';
+import 'package:mobile/features/group_discovery/domain/repository/group_discovery_repository.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
+import 'package:mobile/features/group_discovery/presentation/cubit/public_group_cubit.dart';
+import 'package:mobile/features/group_join_requests/data/repositories/group_join_requests_repository_impl.dart';
+import 'package:mobile/features/group_join_requests/domain/repository/group_join_requests_repository.dart';
+import 'package:mobile/features/group_join_requests/presentation/cubit/group_join_requests_cubit.dart';
 import 'package:mobile/features/groups/data/repositories/group_participants_repository_impl.dart';
 import 'package:mobile/features/groups/data/repositories/group_repository_impl.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
@@ -30,6 +44,9 @@ import 'package:mobile/features/groups/presentation/cubit/meeting_presence_cubit
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/place_search_cubit.dart';
 import 'package:mobile/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mobile/features/meeting_guest_requests/data/repositories/meeting_guest_requests_repository_impl.dart';
+import 'package:mobile/features/meeting_guest_requests/domain/repository/meeting_guest_requests_repository.dart';
+import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_cubit.dart';
 import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
 import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
@@ -39,8 +56,10 @@ import 'package:mobile/features/notifications/presentation/cubit/notifications_c
 import 'package:mobile/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
+import 'package:mobile/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:mobile/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:mobile/features/profile/domain/repository/profile_repository.dart';
+import 'package:mobile/features/profile/presentation/cubit/profile_summary_cubit.dart';
 import 'package:mobile/features/raffles/data/datasources/raffle_remote_data_source.dart';
 import 'package:mobile/features/raffles/data/repositories/raffle_repository_impl.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
@@ -163,16 +182,36 @@ class DependenciesContainer {
       () => PasswordValidationCubit(),
     );
 
-    serviceLocator.registerLazySingleton<ProfileRepository>(
-      () => ProfileRepositoryImpl(
+    serviceLocator.registerLazySingleton<ProfileRemoteDataSource>(
+      () => ProfileRemoteDataSourceImpl(
         supabaseService: serviceLocator<SupabaseService>(),
       ),
     );
 
+    serviceLocator.registerLazySingleton<ProfileRepository>(
+      () => ProfileRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+        remoteDataSource: serviceLocator<ProfileRemoteDataSource>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<ProfileSummaryCubit>(
+      () =>
+          ProfileSummaryCubit(repository: serviceLocator<ProfileRepository>()),
+    );
+
     // --- Books Feature ---
+    serviceLocator.registerLazySingleton<RatedBooksRemoteDataSource>(
+      () => RatedBooksRemoteDataSourceImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
     serviceLocator.registerLazySingleton<BookRepository>(
       () => BookRepositoryImpl(
         supabaseService: serviceLocator<SupabaseService>(),
+        ratedBooksRemoteDataSource:
+            serviceLocator<RatedBooksRemoteDataSource>(),
       ),
     );
 
@@ -182,6 +221,10 @@ class DependenciesContainer {
 
     serviceLocator.registerFactory<BookSearchCubit>(
       () => BookSearchCubit(bookRepository: serviceLocator<BookRepository>()),
+    );
+
+    serviceLocator.registerFactory<RatedBooksCubit>(
+      () => RatedBooksCubit(bookRepository: serviceLocator<BookRepository>()),
     );
 
     // --- Notifications Feature ---
@@ -216,6 +259,47 @@ class DependenciesContainer {
       ),
     );
 
+    // --- Cities ---
+    serviceLocator.registerLazySingleton<DiscoveryCitiesRepository>(
+      () => DiscoveryCitiesRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    // --- Calendar Feature ---
+    serviceLocator.registerLazySingleton<CalendarRepository>(
+      () => CalendarRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<CalendarCubit>(
+      () => CalendarCubit(
+        repository: serviceLocator<CalendarRepository>(),
+        citiesRepository: serviceLocator<DiscoveryCitiesRepository>(),
+      ),
+    );
+
+    // --- Group Discovery Feature ---
+    serviceLocator.registerLazySingleton<GroupDiscoveryRepository>(
+      () => GroupDiscoveryRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<PublicGroupCubit>(
+      () => PublicGroupCubit(
+        repository: serviceLocator<GroupDiscoveryRepository>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<GroupSearchCubit>(
+      () => GroupSearchCubit(
+        repository: serviceLocator<GroupDiscoveryRepository>(),
+        citiesRepository: serviceLocator<DiscoveryCitiesRepository>(),
+      ),
+    );
+
     // --- Raffles Feature ---
     serviceLocator.registerLazySingleton<RaffleRemoteDataSource>(
       () => RaffleRemoteDataSourceImpl(
@@ -238,6 +322,32 @@ class DependenciesContainer {
     serviceLocator.registerFactory<RaffleExecutionCubit>(
       () =>
           RaffleExecutionCubit(repository: serviceLocator<RaffleRepository>()),
+    );
+
+    // --- Group Join Requests Feature ---
+    serviceLocator.registerLazySingleton<GroupJoinRequestsRepository>(
+      () => GroupJoinRequestsRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<GroupJoinRequestsCubit>(
+      () => GroupJoinRequestsCubit(
+        repository: serviceLocator<GroupJoinRequestsRepository>(),
+      ),
+    );
+
+    // --- Meeting Guest Requests Feature ---
+    serviceLocator.registerLazySingleton<MeetingGuestRequestsRepository>(
+      () => MeetingGuestRequestsRepositoryImpl(
+        supabaseService: serviceLocator<SupabaseService>(),
+      ),
+    );
+
+    serviceLocator.registerFactory<MeetingGuestRequestsCubit>(
+      () => MeetingGuestRequestsCubit(
+        repository: serviceLocator<MeetingGuestRequestsRepository>(),
+      ),
     );
   }
 }

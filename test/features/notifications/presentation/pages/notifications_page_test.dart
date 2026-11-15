@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart'
     show GlobalWidgetsLocalizations;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
@@ -99,6 +100,7 @@ void main() {
         for (final path in [
           GroupRoutePaths.meetingDetails,
           GroupRoutePaths.groupDetails,
+          QuickAccessRoutes.calendar,
         ])
           GoRoute(
             path: path,
@@ -399,6 +401,29 @@ void main() {
         find.text('destino: ${GroupRoutePaths.meetingDetails}?meeting_id=m1'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('a guest approval goes to the calendar tab instead of '
+        'stacking it on the notifications', (tester) async {
+      stubPage(1, [
+        _notification(
+          'n1',
+          type: NotificationType.meetingGuestApproved,
+          meetingId: 'm1',
+          groupId: 'g1',
+        ),
+      ]);
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(NotificationTile));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('destino: ${QuickAccessRoutes.calendar}'),
+        findsOneWidget,
+      );
+      expect(find.byType(NotificationsPage, skipOffstage: false), findsNothing);
     });
 
     testWidgets('opens the group when there is no meeting', (tester) async {

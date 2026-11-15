@@ -53,7 +53,7 @@ void main() {
     when(
       () => repository.setReadingStatus(
         bookId: 'book-1',
-        status: BookReadingStatus.wantToRead,
+        status: BookReadingStatus.read,
       ),
     ).thenAnswer((_) async => const Failure(BookStatusFailure()));
 
@@ -74,9 +74,8 @@ void main() {
     }
   });
 
-  testWidgets('shows the status error toast again after the flag is cleared', (
-    tester,
-  ) async {
+  // Abre a busca e procura "harry", que traz o livro de teste.
+  Future<void> pumpSearch(WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
@@ -93,10 +92,31 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-
     await tester.enterText(find.byType(EditableText), 'harry');
     await tester.pump(const Duration(milliseconds: 300));
     await tester.pumpAndSettle();
+  }
+
+  testWidgets('marking a found book as read shows it as read', (tester) async {
+    when(
+      () => repository.setReadingStatus(
+        bookId: 'book-1',
+        status: BookReadingStatus.read,
+      ),
+    ).thenAnswer((_) async => const Success(BookReadingStatus.read));
+    await pumpSearch(tester);
+
+    await tester.tap(find.text('Marcar como lido'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Já lido'), findsOneWidget);
+    expect(find.text('Quero ler'), findsNothing);
+  });
+
+  testWidgets('shows the status error toast again after the flag is cleared', (
+    tester,
+  ) async {
+    await pumpSearch(tester);
 
     await tester.tap(find.text('Marcar como lido'));
     await tester.pump();
@@ -125,6 +145,7 @@ void main() {
   Future<void> openSearchWithFakeDetails(
     WidgetTester tester, {
     required bool isWrite,
+    BookReadingStatus? status = BookReadingStatus.read,
   }) async {
     final router = GoRouter(
       initialLocation: '/search',
@@ -143,7 +164,7 @@ void main() {
             return Scaffold(
               body: TextButton(
                 onPressed: () {
-                  onChanged(BookReadingStatus.read, isWrite: isWrite);
+                  onChanged(status, isWrite: isWrite);
                   context.pop();
                 },
                 child: Text('detalhe ${state.pathParameters['bookId']}'),
@@ -214,19 +235,23 @@ void main() {
     when(
       () => repository.setReadingStatus(
         bookId: 'book-1',
-        status: BookReadingStatus.wantToRead,
+        status: BookReadingStatus.read,
       ),
     ).thenAnswer((_) => pending.future);
-    await openSearchWithFakeDetails(tester, isWrite: false);
+    await openSearchWithFakeDetails(
+      tester,
+      isWrite: false,
+      status: BookReadingStatus.wantToRead,
+    );
 
     await tester.tap(find.text('Marcar como lido'));
     await tester.pump();
     await visitDetailsAndReturn(tester);
 
-    pending.complete(const Success(BookReadingStatus.wantToRead));
+    pending.complete(const Success(BookReadingStatus.read));
     await tester.pumpAndSettle();
 
-    expect(find.text('Quero ler'), findsOneWidget);
+    expect(find.text('Já lido'), findsOneWidget);
   });
 
   testWidgets('ignores an old details load once the chip write is confirmed', (
@@ -236,21 +261,25 @@ void main() {
     when(
       () => repository.setReadingStatus(
         bookId: 'book-1',
-        status: BookReadingStatus.wantToRead,
+        status: BookReadingStatus.read,
       ),
     ).thenAnswer((_) => pending.future);
-    await openSearchWithFakeDetails(tester, isWrite: false);
+    await openSearchWithFakeDetails(
+      tester,
+      isWrite: false,
+      status: BookReadingStatus.wantToRead,
+    );
 
     await tester.tap(find.text('Marcar como lido'));
     await tester.pump();
     await openDetails(tester);
 
     // A gravação confirma antes de os detalhes responderem com a leitura velha.
-    pending.complete(const Success(BookReadingStatus.wantToRead));
+    pending.complete(const Success(BookReadingStatus.read));
     await tester.pump();
     await returnFromDetails(tester);
     await tester.pumpAndSettle();
 
-    expect(find.text('Quero ler'), findsOneWidget);
+    expect(find.text('Já lido'), findsOneWidget);
   });
 }

@@ -1,10 +1,10 @@
 enum BookReadingStatus { read, wantToRead }
 
-/// Toque no chip da lista: ausente → quero ler → já lido → ausente.
-BookReadingStatus? nextListReadingStatus(BookReadingStatus? current) {
+/// Toque no chip de status, na busca e nos detalhes: "Marcar como lido" e
+/// "Quero ler" passam para lido; "Já lido" tira o livro da estante.
+BookReadingStatus? nextReadingStatus(BookReadingStatus? current) {
   return switch (current) {
-    null => BookReadingStatus.wantToRead,
-    BookReadingStatus.wantToRead => BookReadingStatus.read,
     BookReadingStatus.read => null,
+    null || BookReadingStatus.wantToRead => BookReadingStatus.read,
   };
 }

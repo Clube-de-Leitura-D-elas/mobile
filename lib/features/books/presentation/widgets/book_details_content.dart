@@ -7,6 +7,7 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
+import 'package:mobile/features/books/presentation/widgets/book_review_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
 
 class BookDetailsContent extends StatelessWidget {
@@ -131,13 +132,13 @@ class _BookActions extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          // TODO(CLU-271): abrir o modal Avaliar livro (upsert-book-review).
           child: AppButton.secondary(
             label: details.myReview == null
                 ? l10n.bookDetailRateButton
                 : l10n.bookDetailEditReviewButton,
             size: AppButtonSize.lg,
-            onPressed: null,
+            onPressed: () =>
+                BookReviewDialog.show(context, review: details.myReview),
           ),
         ),
         SizedBox(width: context.spacing.s16),

@@ -11,6 +11,7 @@ export 'widgets/app_card.dart';
 export 'widgets/app_checkbox.dart';
 export 'widgets/app_chip.dart';
 export 'widgets/app_dialog.dart';
+export 'widgets/app_dialog_actions.dart';
 export 'widgets/app_dropdown.dart';
 export 'widgets/app_error_state.dart';
 export 'widgets/app_icon.dart';

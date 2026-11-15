@@ -17,3 +17,11 @@ String bookDetailsFailureMessage(AppLocalizations l10n, BookFailure? failure) =>
       BookSessionExpiredFailure() => l10n.errorSessionExpired,
       _ => l10n.bookDetailLoadError,
     };
+
+/// Texto para a usuária quando os livros avaliados não carregam.
+String ratedBooksFailureMessage(AppLocalizations l10n, BookFailure failure) =>
+    switch (failure) {
+      BookNetworkFailure() => l10n.errorNoConnection,
+      BookSessionExpiredFailure() => l10n.errorSessionExpired,
+      _ => l10n.ratedBooksLoadError,
+    };

@@ -27,6 +27,7 @@ class GroupDetailsScreen extends StatefulWidget {
     this.participantsContent,
     this.onRecommendBook,
     this.onEventHistoryPressed,
+    this.joinRequestsAccess,
   });
 
   final String name;
@@ -41,6 +42,10 @@ class GroupDetailsScreen extends StatefulWidget {
   final Widget? participantsContent;
   final VoidCallback? onRecommendBook;
   final VoidCallback? onEventHistoryPressed;
+
+  /// Acesso da coordenadora aos pedidos de entrada; cuida da própria
+  /// visibilidade.
+  final Widget? joinRequestsAccess;
 
   @override
   State<GroupDetailsScreen> createState() => _GroupDetailsScreenState();
@@ -83,6 +88,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                     whatsappUrl: widget.whatsappUrl,
                     onRecommendBook: widget.onRecommendBook,
                   ),
+                  ?widget.joinRequestsAccess,
                   SizedBox(height: spacing.s24),
                   GroupSection(
                     title: l10n.groupNextEventTitle,
