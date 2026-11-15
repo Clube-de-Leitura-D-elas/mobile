@@ -52,11 +52,34 @@ void main() {
 
       final inkWell = tester.widget<InkWell>(find.byType(InkWell));
       expect(inkWell.onTap, isNull);
+      expect(_faceColor(tester), AppColorTokens.light.actionDisabledBg);
       expect(_faceBorderColor(tester), AppColorTokens.light.actionDisabledFg);
+      expect(_faceColor(tester), isNot(AppColorTokens.light.surfaceDefault));
+      expect(
+        _faceBorderColor(tester),
+        isNot(AppColorTokens.light.actionPrimary),
+      );
 
       await tester.tap(find.byType(AppCheckbox));
       await tester.pump();
       expect(find.byIcon(Icons.check), findsNothing);
+    });
+
+    testWidgets('disabled checked box stays gray, without the brand color', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: const Scaffold(body: AppCheckbox(value: true, onChanged: null)),
+        ),
+      );
+
+      final icon = tester.widget<Icon>(find.byIcon(Icons.check));
+      expect(_faceColor(tester), AppColorTokens.light.actionDisabledBg);
+      expect(_faceBorderColor(tester), AppColorTokens.light.actionDisabledFg);
+      expect(icon.color, AppColorTokens.light.actionDisabledFg);
+      expect(icon.color, isNot(AppColorTokens.light.actionPrimary));
     });
 
     testWidgets('tap reports the toggled value', (tester) async {
@@ -148,6 +171,22 @@ void main() {
 
       expect(_faceColor(tester), AppColorTokens.dark.surfaceDefault);
       expect(_faceBorderColor(tester), AppColorTokens.dark.borderStrong);
+    });
+
+    testWidgets('dark theme disabled box uses the dark disabled tokens', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.dark,
+          home: const Scaffold(
+            body: AppCheckbox(value: false, onChanged: null),
+          ),
+        ),
+      );
+
+      expect(_faceColor(tester), AppColorTokens.dark.actionDisabledBg);
+      expect(_faceBorderColor(tester), AppColorTokens.dark.actionDisabledFg);
     });
   });
 }
