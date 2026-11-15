@@ -281,6 +281,33 @@ class SessionCubit extends Cubit<SessionState> {
     }
   }
 
+  /// Atualiza cidade e zona na sessão sem passar por `LoadingSession`: a
+  /// revisão do onboarding acabou de salvar e o guard não pode achar que ainda
+  /// falta preencher.
+  void updateProfileLocation({
+    required String? cityId,
+    required String cityName,
+    required String? zoneId,
+    required String zoneName,
+  }) {
+    final session = state;
+    if (session is! AuthenticatedSession) return;
+    final profile = session.profile;
+    if (profile == null) return;
+
+    emit(
+      AuthenticatedSession(
+        user: session.user,
+        profile: profile.copyWith(
+          cityId: cityId,
+          cityName: cityName,
+          zoneId: zoneId,
+          zoneName: zoneName,
+        ),
+      ),
+    );
+  }
+
   /// Troca só a foto: o `refreshProfile` passa por `LoadingSession`, e isso
   /// tiraria a usuária da tela de perfil.
   void updateProfilePhoto(String photoUrl) {

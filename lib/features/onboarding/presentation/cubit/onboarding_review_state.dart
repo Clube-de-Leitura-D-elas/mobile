@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
+import 'package:mobile/features/onboarding/domain/entities/city.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
 
 abstract class OnboardingReviewState extends Equatable {
@@ -31,12 +32,14 @@ class OnboardingReviewLoadError extends OnboardingReviewState {
 class OnboardingReviewFormState extends OnboardingReviewState {
   final int currentStep;
   final UserReviewProfile profile;
+  final List<City> cities;
   final bool isSubmitting;
   final UserFailure? submitFailure;
 
   const OnboardingReviewFormState({
     required this.currentStep,
     required this.profile,
+    this.cities = const [],
     this.isSubmitting = false,
     this.submitFailure,
   });
@@ -44,12 +47,14 @@ class OnboardingReviewFormState extends OnboardingReviewState {
   OnboardingReviewFormState copyWith({
     int? currentStep,
     UserReviewProfile? profile,
+    List<City>? cities,
     bool? isSubmitting,
     UserFailure? submitFailure,
   }) {
     return OnboardingReviewFormState(
       currentStep: currentStep ?? this.currentStep,
       profile: profile ?? this.profile,
+      cities: cities ?? this.cities,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       submitFailure: submitFailure,
     );
@@ -59,11 +64,17 @@ class OnboardingReviewFormState extends OnboardingReviewState {
   List<Object?> get props => [
     currentStep,
     profile,
+    cities,
     isSubmitting,
     submitFailure,
   ];
 }
 
 class OnboardingReviewSuccess extends OnboardingReviewState {
-  const OnboardingReviewSuccess();
+  final UserReviewProfile profile;
+
+  const OnboardingReviewSuccess(this.profile);
+
+  @override
+  List<Object?> get props => [profile];
 }

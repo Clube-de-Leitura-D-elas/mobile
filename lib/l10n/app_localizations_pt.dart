@@ -444,6 +444,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingRegionLabel => 'Região';
 
   @override
+  String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingYes => 'Sim';
+
+  @override
+  String get onboardingNo => 'Não';
+
+  @override
   String get onboardingJobLabel => 'Qual sua profissão?';
 
   @override
@@ -1695,6 +1704,15 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingRegionLabel => 'Região';
+
+  @override
+  String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingYes => 'Sim';
+
+  @override
+  String get onboardingNo => 'Não';
 
   @override
   String get onboardingJobLabel => 'Qual sua profissão?';

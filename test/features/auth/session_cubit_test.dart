@@ -523,6 +523,51 @@ void main() {
       });
     });
 
+    group('updateProfileLocation', () {
+      test('updates the location and keeps the session authenticated', () async {
+        when(
+          () => mockAuthRepository.getUserProfile('user-123'),
+        ).thenAnswer((_) async => const Success(testProfile));
+        await sessionCubit.checkUserProfile('user-123', testUserEntity);
+
+        final states = <SessionState>[];
+        final subscription = sessionCubit.stream.listen(states.add);
+
+        sessionCubit.updateProfileLocation(
+          cityId: 'city-1',
+          cityName: 'Porto Alegre',
+          zoneId: 'zone-1',
+          zoneName: 'Zona Sul',
+        );
+        await Future<void>.delayed(Duration.zero);
+        await subscription.cancel();
+
+        expect(states, [
+          AuthenticatedSession(
+            user: testUserEntity,
+            profile: testProfile.copyWith(
+              cityId: 'city-1',
+              cityName: 'Porto Alegre',
+              zoneId: 'zone-1',
+              zoneName: 'Zona Sul',
+            ),
+          ),
+        ]);
+        verify(() => mockAuthRepository.getUserProfile('user-123')).called(1);
+      });
+
+      test('does nothing without an authenticated session', () {
+        sessionCubit.updateProfileLocation(
+          cityId: 'city-1',
+          cityName: 'Porto Alegre',
+          zoneId: 'zone-1',
+          zoneName: 'Zona Sul',
+        );
+
+        expect(sessionCubit.state, const GuestSession());
+      });
+    });
+
     group('FCM token synchronization and cleanup', () {
       late MockSyncFcmTokenUseCase mockSyncFcmTokenUseCase;
       late MockNotificationRepository mockNotificationRepository;

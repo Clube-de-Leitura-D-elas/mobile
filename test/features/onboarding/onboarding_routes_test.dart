@@ -10,6 +10,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/domain/entities/user_entity.dart';
+import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/domain/repository/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/cubit/claim_token_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -49,6 +51,9 @@ void main() {
     when(() => mockSessionCubit.refreshProfile()).thenAnswer((_) async {});
     when(() => mockOnboardingRepository.getUserProfile()).thenAnswer(
       (_) async => const Success(UserReviewProfile(name: 'Maria')),
+    );
+    when(() => mockOnboardingRepository.getCitiesAndZones()).thenAnswer(
+      (_) async => const Success([]),
     );
 
     serviceLocator.allowReassignment = true;
@@ -140,6 +145,39 @@ void main() {
     final mockContext = MockBuildContext();
     final mockState = MockGoRouterState();
 
+    AuthenticatedSession authenticated({
+      String? cityId,
+      String? zoneId,
+    }) {
+      return AuthenticatedSession(
+        user: const UserEntity(
+          name: 'Maria',
+          mail: 'maria@example.com',
+          birthday: '1990-01-01',
+          phoneNumber: '51999999999',
+          instagramUser: '',
+          educationDegree: '',
+          jobPosition: '',
+          cityZone: (id: '', name: '', acronym: ''),
+        ),
+        profile: UserProfileEntity(
+          id: 'p-1',
+          name: 'Maria',
+          email: 'maria@example.com',
+          address: '',
+          phoneNumber: '51999999999',
+          birthday: '1990-01-01',
+          instagram: '',
+          educationDegree: '',
+          jobPosition: '',
+          userId: 'u-1',
+          isActive: true,
+          cityId: cityId,
+          zoneId: zoneId,
+        ),
+      );
+    }
+
     test('redirects to claimToken if NeedsClaimSession and not on an onboarding route', () {
       when(() => mockState.matchedLocation).thenReturn('/home');
 
@@ -192,6 +230,75 @@ void main() {
           mockContext,
           mockState,
           const GuestSession(),
+        ),
+        isNull,
+      );
+    });
+
+    test('redirects to reviewProfile when authenticated without city', () {
+      when(() => mockState.matchedLocation).thenReturn('/home');
+
+      expect(
+        OnboardingRoutes.onboardingGuard(
+          mockContext,
+          mockState,
+          authenticated(),
+        ),
+        equals(OnboardingRoutes.reviewProfile),
+      );
+    });
+
+    test('redirects to reviewProfile when authenticated without zone', () {
+      when(() => mockState.matchedLocation).thenReturn('/home');
+
+      expect(
+        OnboardingRoutes.onboardingGuard(
+          mockContext,
+          mockState,
+          authenticated(cityId: 'city-1'),
+        ),
+        equals(OnboardingRoutes.reviewProfile),
+      );
+    });
+
+    test('leaves the user on reviewProfile while the location is missing', () {
+      when(() => mockState.matchedLocation).thenReturn(
+        OnboardingRoutes.reviewProfile,
+      );
+
+      expect(
+        OnboardingRoutes.onboardingGuard(
+          mockContext,
+          mockState,
+          authenticated(cityId: 'city-1'),
+        ),
+        isNull,
+      );
+    });
+
+    test('does not show reviewProfile after city and zone are set', () {
+      when(() => mockState.matchedLocation).thenReturn(
+        OnboardingRoutes.reviewProfile,
+      );
+
+      expect(
+        OnboardingRoutes.onboardingGuard(
+          mockContext,
+          mockState,
+          authenticated(cityId: 'city-1', zoneId: 'zone-1'),
+        ),
+        equals('/home'),
+      );
+    });
+
+    test('allows home after city and zone are set', () {
+      when(() => mockState.matchedLocation).thenReturn('/home');
+
+      expect(
+        OnboardingRoutes.onboardingGuard(
+          mockContext,
+          mockState,
+          authenticated(cityId: 'city-1', zoneId: 'zone-1'),
         ),
         isNull,
       );

@@ -11,6 +11,7 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
+import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
@@ -45,6 +46,24 @@ void main() {
     educationDegree: 'Degree',
     jobPosition: 'Dev',
     cityZone: (id: '', name: '', acronym: ''),
+  );
+
+  const testProfile = UserProfileEntity(
+    id: '1',
+    name: 'User',
+    email: 'user@example.com',
+    address: '',
+    phoneNumber: '123',
+    birthday: '01/01/2000',
+    instagram: '@user',
+    educationDegree: 'Degree',
+    jobPosition: 'Dev',
+    userId: 'user-1',
+    isActive: true,
+    cityId: 'city-1',
+    cityName: 'Porto Alegre',
+    zoneId: 'zone-1',
+    zoneName: 'Zona Sul',
   );
 
   final notification = NotificationEntity(
@@ -104,7 +123,10 @@ void main() {
     whenListen(
       sessionCubit,
       const Stream<SessionState>.empty(),
-      initialState: const AuthenticatedSession(user: testUser),
+      initialState: const AuthenticatedSession(
+        user: testUser,
+        profile: testProfile,
+      ),
     );
     stubUnread(3);
 

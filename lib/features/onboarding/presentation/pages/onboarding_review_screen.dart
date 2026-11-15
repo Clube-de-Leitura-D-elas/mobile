@@ -52,7 +52,15 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
         child: BlocConsumer<OnboardingReviewCubit, OnboardingReviewState>(
           listener: (context, state) {
             if (state is OnboardingReviewSuccess) {
-              context.read<SessionCubit>().refreshProfile();
+              final profile = state.profile;
+              if (profile.cityId != null && profile.zoneId != null) {
+                context.read<SessionCubit>().updateProfileLocation(
+                  cityId: profile.cityId,
+                  cityName: profile.cityName,
+                  zoneId: profile.zoneId,
+                  zoneName: profile.zoneName,
+                );
+              }
               context.go(OnboardingRoutes.welcome);
               return;
             }
@@ -117,6 +125,7 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
                       children: [
                         ReviewStepOneForm(
                           profile: state.profile,
+                          cities: state.cities,
                           onChanged: (p) =>
                               context.read<OnboardingReviewCubit>().updateProfile(p),
                         ),

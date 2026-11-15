@@ -19,6 +19,9 @@ void main() {
     when(() => mockRepository.getUserProfile()).thenAnswer(
       (_) async => const Success(UserReviewProfile(name: 'Maria')),
     );
+    when(() => mockRepository.getCitiesAndZones()).thenAnswer(
+      (_) async => const Success([]),
+    );
   });
 
   group('OnboardingReviewCubit', () {
@@ -75,12 +78,23 @@ void main() {
           profile: UserReviewProfile(name: 'Maria'),
           isSubmitting: true,
         ),
+        const OnboardingReviewSuccess(UserReviewProfile(name: 'Maria')),
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: UserReviewProfile(name: 'Maria'),
         ),
-        const OnboardingReviewSuccess(),
       ],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'emits OnboardingReviewLoadError when loading cities fails',
+      build: () {
+        when(() => mockRepository.getCitiesAndZones()).thenAnswer(
+          (_) async => const Failure(UserNetworkFailure()),
+        );
+        return OnboardingReviewCubit(onboardingRepository: mockRepository);
+      },
+      expect: () => [const OnboardingReviewLoadError(UserNetworkFailure())],
     );
 
     blocTest<OnboardingReviewCubit, OnboardingReviewState>(
@@ -110,13 +124,13 @@ void main() {
       skip: 1,
       expect: () => [
         const OnboardingReviewFormState(
-          currentStep: 0,
-          profile: UserReviewProfile(name: 'Maria'),
-        ),
-        const OnboardingReviewFormState(
           currentStep: 2,
           profile: UserReviewProfile(name: 'Maria'),
           submitFailure: UnknownUserFailure(),
+        ),
+        const OnboardingReviewFormState(
+          currentStep: 0,
+          profile: UserReviewProfile(name: 'Maria'),
         ),
       ],
     );

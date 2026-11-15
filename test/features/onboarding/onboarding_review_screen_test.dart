@@ -34,13 +34,24 @@ void main() {
   const testProfile = UserReviewProfile(
     name: 'Maria Silva',
     email: 'maria@example.com',
+    cityId: 'city-1',
+    cityName: 'Porto Alegre',
+    zoneId: 'zone-1',
+    zoneName: 'Zona Sul',
   );
 
   setUp(() {
     mockReviewCubit = MockOnboardingReviewCubit();
     mockSessionCubit = MockSessionCubit();
     when(() => mockSessionCubit.state).thenReturn(const GuestSession());
-    when(() => mockSessionCubit.refreshProfile()).thenAnswer((_) async {});
+    when(
+      () => mockSessionCubit.updateProfileLocation(
+        cityId: any(named: 'cityId'),
+        cityName: any(named: 'cityName'),
+        zoneId: any(named: 'zoneId'),
+        zoneName: any(named: 'zoneName'),
+      ),
+    ).thenReturn(null);
   });
 
   tearDown(() {
@@ -126,7 +137,7 @@ void main() {
   });
 
   testWidgets(
-    'calls refreshProfile and navigates to welcome on OnboardingReviewSuccess',
+    'updates the session location and navigates to welcome on OnboardingReviewSuccess',
     (tester) async {
       when(() => mockReviewCubit.state).thenReturn(
         const OnboardingReviewFormState(
@@ -173,10 +184,17 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      streamController.add(const OnboardingReviewSuccess());
+      streamController.add(const OnboardingReviewSuccess(testProfile));
       await tester.pumpAndSettle();
 
-      verify(() => mockSessionCubit.refreshProfile()).called(1);
+      verify(
+        () => mockSessionCubit.updateProfileLocation(
+          cityId: 'city-1',
+          cityName: 'Porto Alegre',
+          zoneId: 'zone-1',
+          zoneName: 'Zona Sul',
+        ),
+      ).called(1);
       expect(find.text('Welcome Screen'), findsOneWidget);
 
       await streamController.close();

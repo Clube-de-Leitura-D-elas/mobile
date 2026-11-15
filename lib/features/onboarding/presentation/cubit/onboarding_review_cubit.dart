@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/onboarding/domain/entities/city.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
@@ -14,14 +15,31 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
 
   Future<void> loadProfileData() async {
     emit(const OnboardingReviewLoadingProfile());
-    final result = await onboardingRepository.getUserProfile();
 
+    // As duas chamadas são independentes; esperar em paralelo evita uma ida
+    // extra ao servidor quando o formulário abre.
+    final profileFuture = onboardingRepository.getUserProfile();
+    final citiesFuture = onboardingRepository.getCitiesAndZones();
+
+    final profileResult = await profileFuture;
     if (isClosed) return;
 
     final UserReviewProfile profile;
-    switch (result) {
+    switch (profileResult) {
       case Success(:final data):
         profile = data;
+      case Failure(:final failure):
+        emit(OnboardingReviewLoadError(failure));
+        return;
+    }
+
+    final citiesResult = await citiesFuture;
+    if (isClosed) return;
+
+    final List<City> cities;
+    switch (citiesResult) {
+      case Success(:final data):
+        cities = data;
       case Failure(:final failure):
         emit(OnboardingReviewLoadError(failure));
         return;
@@ -31,10 +49,10 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
       OnboardingReviewFormState(
         currentStep: 0,
         profile: profile,
+        cities: cities,
       ),
     );
   }
-
 
   void updateProfile(UserReviewProfile updatedProfile) {
     final currentState = state;
@@ -92,6 +110,6 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
       return;
     }
 
-    emit(const OnboardingReviewSuccess());
+    emit(OnboardingReviewSuccess(currentState.profile));
   }
 }

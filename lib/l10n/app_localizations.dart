@@ -818,6 +818,24 @@ abstract class AppLocalizations {
   /// **'Região'**
   String get onboardingRegionLabel;
 
+  /// Dica de seleção de região
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma região'**
+  String get onboardingRegionHint;
+
+  /// Opção afirmativa dos selects do onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get onboardingYes;
+
+  /// Opção negativa dos selects do onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get onboardingNo;
+
   /// Rótulo profissão
   ///
   /// In pt, this message translates to:
