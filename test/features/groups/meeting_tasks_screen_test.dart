@@ -197,6 +197,31 @@ void main() {
     expect(find.text('VOCÊ É COORDENADORA DESTE GRUPO'), findsNothing);
   });
 
+  testWidgets(
+    'someone who is neither host nor coordinator sees the host banner',
+    (tester) async {
+      answerTasks([
+        const Success(
+          MeetingTasksEntity(
+            meetingId: 'meeting-1',
+            status: MeetingTaskStatus.created,
+            canManageTasks: false,
+            canConclude: false,
+            isHost: false,
+            isCoordinator: false,
+            schedule: MeetingScheduleTask(done: false),
+            record: MeetingRecordTask(MeetingRecordStatus.locked),
+            bookTitle: 'A Hora da Estrela',
+          ),
+        ),
+      ]);
+      await pumpScreen(tester);
+
+      expect(find.text('VOCÊ FOI SORTEADA'), findsOneWidget);
+      expect(find.text('VOCÊ É COORDENADORA DESTE GRUPO'), findsNothing);
+    },
+  );
+
   testWidgets('draft meeting: task 1 pending, task 2 and conclusion locked', (
     tester,
   ) async {
