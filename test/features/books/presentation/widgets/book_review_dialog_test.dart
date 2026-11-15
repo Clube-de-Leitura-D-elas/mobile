@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -158,5 +160,29 @@ void main() {
         commentary: null,
       ),
     ).called(1);
+  });
+
+  testWidgets('does not close from back while saving', (tester) async {
+    final pending = Completer<Result<void, BookFailure>>();
+    when(
+      () => repository.upsertBookReview(
+        bookId: 'b1',
+        rating: 3,
+        commentary: null,
+      ),
+    ).thenAnswer((_) => pending.future);
+
+    await pumpDialog(tester);
+    await tester.tap(find.bySemanticsLabel('3 de 5 estrelas'));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(AppButton, 'Concluir'));
+    await tester.pump();
+
+    await tester.binding.handlePopRoute();
+    await tester.pump();
+
+    expect(find.byType(BookReviewDialog), findsOneWidget);
+    pending.complete(const Failure(BookReviewFailure()));
+    await tester.pumpAndSettle();
   });
 }

@@ -19,6 +19,7 @@ class BookReviewDialog extends StatefulWidget {
     final cubit = context.read<BookDetailsCubit>();
     return showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: BookReviewDialog(review: review),
@@ -49,69 +50,72 @@ class _BookReviewDialogState extends State<BookReviewDialog> {
     return BlocBuilder<BookDetailsCubit, BookDetailsState>(
       builder: (context, state) {
         final isSubmitting = state.isSubmittingReview;
-        return AppDialog(
-          title: l10n.bookReviewDialogTitle,
-          onClose: () {
-            if (!isSubmitting) {
-              navigator.pop(false);
-            }
-          },
-          actions: [
-            AppButton.secondary(
-              label: l10n.bookReviewCancel,
-              size: AppButtonSize.lg,
-              onPressed: isSubmitting ? null : () => navigator.pop(false),
-            ),
-            AppButton.primary(
-              label: l10n.bookReviewSubmit,
-              size: AppButtonSize.lg,
-              isLoading: isSubmitting,
-              onPressed: _rating == 0
-                  ? null
-                  : () async {
-                      final saved = await context
-                          .read<BookDetailsCubit>()
-                          .upsertBookReview(
-                            rating: _rating,
-                            commentary: _commentary.trim().isEmpty
-                                ? null
-                                : _commentary.trim(),
-                          );
-                      if (saved && mounted) navigator.pop(true);
-                    },
-            ),
-          ],
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.bookReviewRatingLabel,
-                style: context.typography.bodySmall.copyWith(
-                  color: context.colors.textDefault,
-                ),
+        return PopScope(
+          canPop: !isSubmitting,
+          child: AppDialog(
+            title: l10n.bookReviewDialogTitle,
+            onClose: () {
+              if (!isSubmitting) {
+                navigator.pop(false);
+              }
+            },
+            actions: [
+              AppButton.secondary(
+                label: l10n.bookReviewCancel,
+                size: AppButtonSize.lg,
+                onPressed: isSubmitting ? null : () => navigator.pop(false),
               ),
-              const Gap8(),
-              Center(
-                child: AppStarRating.input(
-                  rating: _rating,
-                  emptyColor: context.colors.textMuted,
-                  onChanged: isSubmitting
-                      ? null
-                      : (rating) => setState(() => _rating = rating),
-                ),
-              ),
-              const Gap16(),
-              AppTextField(
-                label: l10n.bookReviewCommentLabel,
-                hintText: l10n.bookReviewCommentHint,
-                initialValue: _commentary,
-                maxLines: 6,
-                keyboardType: TextInputType.multiline,
-                inputFormatters: [LengthLimitingTextInputFormatter(1000)],
-                enabled: !isSubmitting,
-                onChanged: (value) => _commentary = value,
+              AppButton.primary(
+                label: l10n.bookReviewSubmit,
+                size: AppButtonSize.lg,
+                isLoading: isSubmitting,
+                onPressed: _rating == 0
+                    ? null
+                    : () async {
+                        final saved = await context
+                            .read<BookDetailsCubit>()
+                            .upsertBookReview(
+                              rating: _rating,
+                              commentary: _commentary.trim().isEmpty
+                                  ? null
+                                  : _commentary.trim(),
+                            );
+                        if (saved && mounted) navigator.pop(true);
+                      },
               ),
             ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.bookReviewRatingLabel,
+                  style: context.typography.bodySmall.copyWith(
+                    color: context.colors.textDefault,
+                  ),
+                ),
+                const Gap8(),
+                Center(
+                  child: AppStarRating.input(
+                    rating: _rating,
+                    emptyColor: context.colors.textMuted,
+                    onChanged: isSubmitting
+                        ? null
+                        : (rating) => setState(() => _rating = rating),
+                  ),
+                ),
+                const Gap16(),
+                AppTextField(
+                  label: l10n.bookReviewCommentLabel,
+                  hintText: l10n.bookReviewCommentHint,
+                  initialValue: _commentary,
+                  maxLines: 6,
+                  keyboardType: TextInputType.multiline,
+                  inputFormatters: [LengthLimitingTextInputFormatter(1000)],
+                  enabled: !isSubmitting,
+                  onChanged: (value) => _commentary = value,
+                ),
+              ],
+            ),
           ),
         );
       },

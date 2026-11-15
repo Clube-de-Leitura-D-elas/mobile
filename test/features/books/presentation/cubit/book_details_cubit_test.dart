@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
@@ -326,7 +328,7 @@ void main() {
     );
 
     blocTest<BookDetailsCubit, BookDetailsState>(
-      'keeps the review modal open when refreshing after save fails',
+      'reports the review as saved when refreshing after save fails',
       setUp: () {
         when(
           () => repository.upsertBookReview(
@@ -347,8 +349,53 @@ void main() {
         loaded(_details()).copyWith(isSubmittingReview: true),
         loaded(_details()).copyWith(
           isSubmittingReview: false,
-          notice: BookDetailsNotice.reviewFailed,
+          notice: BookDetailsNotice.reviewSaved,
         ),
+      ],
+    );
+
+    late Completer<Result<BookDetailsEntity, BookFailure>> pagination;
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'ignores a pending pagination response after refreshing reviews',
+      setUp: () {
+        pagination = Completer<Result<BookDetailsEntity, BookFailure>>();
+        final detailsAnswers = <Result<BookDetailsEntity, BookFailure>>[
+          Success(_details(reviews: [_review('r1')], hasMore: true)),
+          Success(_details(reviews: [_review('r1')])),
+        ];
+        when(
+          () => repository.getBookDetails(bookId: 'b1', reviewsPage: 1),
+        ).thenAnswer((_) async => detailsAnswers.removeAt(0));
+        when(
+          () => repository.upsertBookReview(
+            bookId: 'b1',
+            rating: 5,
+            commentary: null,
+          ),
+        ).thenAnswer((_) async => const Success(null));
+        when(
+          () => repository.getBookDetails(bookId: 'b1', reviewsPage: 2),
+        ).thenAnswer((_) => pagination.future);
+      },
+      seed: () => loaded(_details(hasMore: true)),
+      build: build,
+      act: (cubit) async {
+        await cubit.load('b1');
+        final paginationRequest = cubit.loadMoreReviews();
+        await cubit.upsertBookReview(rating: 5, commentary: null);
+        pagination.complete(Success(_details(reviews: [_review('r3')])));
+        await paginationRequest;
+      },
+      skip: 2,
+      expect: () => [
+        loaded(_details(hasMore: true)).copyWith(isLoadingMoreReviews: true),
+        loaded(_details(hasMore: true)).copyWith(
+          isLoadingMoreReviews: true,
+          isSubmittingReview: true,
+        ),
+        loaded(
+          _details(status: BookReadingStatus.read),
+        ).copyWith(notice: BookDetailsNotice.reviewSaved),
       ],
     );
 

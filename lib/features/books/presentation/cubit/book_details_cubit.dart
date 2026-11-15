@@ -8,12 +8,16 @@ import 'package:mobile/features/books/presentation/cubit/book_details_state.dart
 class BookDetailsCubit extends Cubit<BookDetailsState> {
   final BookRepository repository;
   String _bookId = '';
+  int _reviewsRequestGeneration = 0;
+  bool _isRefreshingReviews = false;
 
   BookDetailsCubit({required this.repository})
     : super(const BookDetailsState());
 
   Future<void> load(String bookId) async {
     _bookId = bookId;
+    _reviewsRequestGeneration++;
+    _isRefreshingReviews = false;
     emit(const BookDetailsState());
 
     final result = await repository.getBookDetails(bookId: bookId);
@@ -45,7 +49,12 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
   Future<void> retry() => load(_bookId);
 
   Future<void> loadMoreReviews() async {
-    if (!state.hasMoreReviews || state.isLoadingMoreReviews) return;
+    if (!state.hasMoreReviews ||
+        state.isLoadingMoreReviews ||
+        _isRefreshingReviews) {
+      return;
+    }
+    final requestGeneration = _reviewsRequestGeneration;
     emit(
       state.copyWith(isLoadingMoreReviews: true, loadMoreReviewsFailed: false),
     );
@@ -56,6 +65,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
       reviewsPage: nextPage,
     );
     if (isClosed) return;
+    if (requestGeneration != _reviewsRequestGeneration) return;
 
     switch (result) {
       case Failure():
@@ -139,18 +149,24 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
         );
         return false;
       case Success():
+        _isRefreshingReviews = true;
+        final refreshGeneration = ++_reviewsRequestGeneration;
         final refreshed = await repository.getBookDetails(bookId: details.id);
         if (isClosed) return false;
+        if (refreshGeneration != _reviewsRequestGeneration) return true;
         switch (refreshed) {
           case Failure():
             emit(
               state.copyWith(
                 isSubmittingReview: false,
-                notice: BookDetailsNotice.reviewFailed,
+                isLoadingMoreReviews: false,
+                notice: BookDetailsNotice.reviewSaved,
               ),
             );
-            return false;
+            _isRefreshingReviews = false;
+            return true;
           case Success(:final data):
+            _isRefreshingReviews = false;
             emit(
               BookDetailsState(
                 status: BookDetailsStatus.loaded,
