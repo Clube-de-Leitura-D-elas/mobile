@@ -1910,6 +1910,54 @@ abstract class AppLocalizations {
   /// **'Editar avaliação'**
   String get bookDetailEditReviewButton;
 
+  /// Título do modal de avaliação de livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliar livro'**
+  String get bookReviewDialogTitle;
+
+  /// Rótulo da nota no modal de avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua nota'**
+  String get bookReviewRatingLabel;
+
+  /// Rótulo do comentário opcional no modal de avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione seu comentário (opcional)'**
+  String get bookReviewCommentLabel;
+
+  /// Placeholder do comentário no modal de avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get bookReviewCommentHint;
+
+  /// Botão para cancelar a avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get bookReviewCancel;
+
+  /// Botão para salvar a avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluir'**
+  String get bookReviewSubmit;
+
+  /// Toast exibido após salvar uma avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliação salva com sucesso.'**
+  String get bookReviewSuccess;
+
+  /// Toast exibido quando não é possível salvar uma avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar sua avaliação.'**
+  String get bookReviewError;
+
   /// Botão para indicar o livro a um grupo.
   ///
   /// In pt, this message translates to:

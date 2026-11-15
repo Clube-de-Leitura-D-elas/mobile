@@ -29,4 +29,10 @@ abstract class BookRepository {
     int page = 1,
     int limit = 10,
   });
+
+  Future<Result<void, BookFailure>> upsertBookReview({
+    required String bookId,
+    required int rating,
+    required String? commentary,
+  });
 }
