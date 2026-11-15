@@ -1895,6 +1895,37 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get calendarGuestRequestError =>
       'Não foi possível enviar o pedido. Tente novamente.';
+
+  @override
+  String get ratedBooksTitle => 'Livros avaliados';
+
+  @override
+  String get noRatedBooksMessage => 'Nenhum livro avaliado ainda.';
+
+  @override
+  String get ratedBooksLoadError =>
+      'Não foi possível carregar os livros avaliados.';
+
+  @override
+  String get ratedBooksLoading => 'Carregando livros avaliados';
+
+  @override
+  String get seeAllBooks => 'Ver todos os livros';
+
+  @override
+  String ratedBookTileAuthor(String author) {
+    return 'escrito por $author';
+  }
+
+  @override
+  String ratedBookTileRating(String rating) {
+    return 'avaliado com $rating de 5 estrelas';
+  }
+
+  @override
+  String ratedBookTileComment(String comment) {
+    return 'comentário: $comment';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -3420,4 +3451,35 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get calendarGuestRequestError =>
       'Não foi possível enviar o pedido. Tente novamente.';
+
+  @override
+  String get ratedBooksTitle => 'Livros avaliados';
+
+  @override
+  String get noRatedBooksMessage => 'Nenhum livro avaliado ainda.';
+
+  @override
+  String get ratedBooksLoadError =>
+      'Não foi possível carregar os livros avaliados.';
+
+  @override
+  String get ratedBooksLoading => 'Carregando livros avaliados';
+
+  @override
+  String get seeAllBooks => 'Ver todos os livros';
+
+  @override
+  String ratedBookTileAuthor(String author) {
+    return 'escrito por $author';
+  }
+
+  @override
+  String ratedBookTileRating(String rating) {
+    return 'avaliado com $rating de 5 estrelas';
+  }
+
+  @override
+  String ratedBookTileComment(String comment) {
+    return 'comentário: $comment';
+  }
 }

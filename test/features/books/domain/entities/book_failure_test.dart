@@ -14,9 +14,14 @@ void main() {
   test('keeps the details failures apart, with the text left to l10n', () {
     expect(const BookDetailsLoadFailure().message, isEmpty);
     expect(const BookNotFoundFailure().message, isEmpty);
+    expect(const RatedBooksLoadFailure().message, isEmpty);
     expect(
       const BookDetailsLoadFailure(),
       isNot(equals(const BookNotFoundFailure())),
+    );
+    expect(
+      const RatedBooksLoadFailure(),
+      isNot(equals(const BookDetailsLoadFailure())),
     );
   });
 }
