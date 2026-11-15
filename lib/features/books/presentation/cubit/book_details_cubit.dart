@@ -8,12 +8,16 @@ import 'package:mobile/features/books/presentation/cubit/book_details_state.dart
 class BookDetailsCubit extends Cubit<BookDetailsState> {
   final BookRepository repository;
   String _bookId = '';
+  int _reviewsRequestGeneration = 0;
+  bool _isRefreshingReviews = false;
 
   BookDetailsCubit({required this.repository})
     : super(const BookDetailsState());
 
   Future<void> load(String bookId) async {
     _bookId = bookId;
+    _reviewsRequestGeneration++;
+    _isRefreshingReviews = false;
     emit(const BookDetailsState());
 
     final result = await repository.getBookDetails(bookId: bookId);
@@ -45,7 +49,12 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
   Future<void> retry() => load(_bookId);
 
   Future<void> loadMoreReviews() async {
-    if (!state.hasMoreReviews || state.isLoadingMoreReviews) return;
+    if (!state.hasMoreReviews ||
+        state.isLoadingMoreReviews ||
+        _isRefreshingReviews) {
+      return;
+    }
+    final requestGeneration = _reviewsRequestGeneration;
     emit(
       state.copyWith(isLoadingMoreReviews: true, loadMoreReviewsFailed: false),
     );
@@ -56,6 +65,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
       reviewsPage: nextPage,
     );
     if (isClosed) return;
+    if (requestGeneration != _reviewsRequestGeneration) return;
 
     switch (result) {
       case Failure():
@@ -111,6 +121,66 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
             isUpdatingStatus: false,
           ),
         );
+    }
+  }
+
+  Future<bool> upsertBookReview({
+    required int rating,
+    required String? commentary,
+  }) async {
+    final details = state.details;
+    if (details == null || state.isSubmittingReview) return false;
+
+    emit(state.copyWith(isSubmittingReview: true));
+    final result = await repository.upsertBookReview(
+      bookId: details.id,
+      rating: rating,
+      commentary: commentary,
+    );
+    if (isClosed) return false;
+
+    switch (result) {
+      case Failure():
+        emit(
+          state.copyWith(
+            isSubmittingReview: false,
+            notice: BookDetailsNotice.reviewFailed,
+          ),
+        );
+        return false;
+      case Success():
+        _isRefreshingReviews = true;
+        final refreshGeneration = ++_reviewsRequestGeneration;
+        final refreshed = await repository.getBookDetails(bookId: details.id);
+        if (isClosed) return false;
+        if (refreshGeneration != _reviewsRequestGeneration) return true;
+        switch (refreshed) {
+          case Failure():
+            emit(
+              state.copyWith(
+                isSubmittingReview: false,
+                isLoadingMoreReviews: false,
+                notice: BookDetailsNotice.reviewSaved,
+              ),
+            );
+            _isRefreshingReviews = false;
+            return true;
+          case Success(:final data):
+            _isRefreshingReviews = false;
+            emit(
+              BookDetailsState(
+                status: BookDetailsStatus.loaded,
+                details: data.withReadingStatus(
+                  data.myStatus ?? BookReadingStatus.read,
+                ),
+                reviews: data.reviews,
+                reviewsPage: 1,
+                hasMoreReviews: data.hasMoreReviews,
+                notice: BookDetailsNotice.reviewSaved,
+              ),
+            );
+            return true;
+        }
     }
   }
 }

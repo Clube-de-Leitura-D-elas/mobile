@@ -1081,6 +1081,30 @@ class AppLocalizationsPt extends AppLocalizations {
   String get bookDetailEditReviewButton => 'Editar avaliação';
 
   @override
+  String get bookReviewDialogTitle => 'Avaliar livro';
+
+  @override
+  String get bookReviewRatingLabel => 'Sua nota';
+
+  @override
+  String get bookReviewCommentLabel => 'Adicione seu comentário (opcional)';
+
+  @override
+  String get bookReviewCommentHint => 'Digite sua resposta';
+
+  @override
+  String get bookReviewCancel => 'Cancelar';
+
+  @override
+  String get bookReviewSubmit => 'Concluir';
+
+  @override
+  String get bookReviewSuccess => 'Avaliação salva com sucesso.';
+
+  @override
+  String get bookReviewError => 'Não foi possível salvar sua avaliação.';
+
+  @override
   String get bookDetailRecommendButton => 'Indicar';
 
   @override
@@ -2700,6 +2724,30 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get bookDetailEditReviewButton => 'Editar avaliação';
+
+  @override
+  String get bookReviewDialogTitle => 'Avaliar livro';
+
+  @override
+  String get bookReviewRatingLabel => 'Sua nota';
+
+  @override
+  String get bookReviewCommentLabel => 'Adicione seu comentário (opcional)';
+
+  @override
+  String get bookReviewCommentHint => 'Digite sua resposta';
+
+  @override
+  String get bookReviewCancel => 'Cancelar';
+
+  @override
+  String get bookReviewSubmit => 'Concluir';
+
+  @override
+  String get bookReviewSuccess => 'Avaliação salva com sucesso.';
+
+  @override
+  String get bookReviewError => 'Não foi possível salvar sua avaliação.';
 
   @override
   String get bookDetailRecommendButton => 'Indicar';

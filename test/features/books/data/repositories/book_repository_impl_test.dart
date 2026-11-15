@@ -233,6 +233,49 @@ void main() {
     expect((result as Failure).failure, isA<BookStatusFailure>());
   });
 
+  test('posts upsert-book-review with the review data', () async {
+    when(
+      () => supabase.invokeFunction<void>(
+        functionName: 'upsert-book-review',
+        body: {'book_id': 'book-1', 'rating': 5, 'commentary': 'Muito bom'},
+      ),
+    ).thenAnswer((_) async => const Success(SupabaseResponse<void>()));
+
+    final result = await repository.upsertBookReview(
+      bookId: 'book-1',
+      rating: 5,
+      commentary: 'Muito bom',
+    );
+
+    expect(result, const Success<void, BookFailure>(null));
+    verify(
+      () => supabase.invokeFunction<void>(
+        functionName: 'upsert-book-review',
+        body: {'book_id': 'book-1', 'rating': 5, 'commentary': 'Muito bom'},
+      ),
+    ).called(1);
+  });
+
+  test('maps upsert-book-review failures', () async {
+    when(
+      () => supabase.invokeFunction<void>(
+        functionName: 'upsert-book-review',
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer(
+      (_) async =>
+          const Failure(FunctionSupabaseFailure(message: 'invalid review')),
+    );
+
+    final result = await repository.upsertBookReview(
+      bookId: 'book-1',
+      rating: 1,
+      commentary: null,
+    );
+
+    expect(result, const Failure<void, BookFailure>(BookReviewFailure()));
+  });
+
   group('getBookDetails', () {
     void stubDetails(
       Result<SupabaseResponse<BookDetailsModel>, SupabaseFailure> result,
