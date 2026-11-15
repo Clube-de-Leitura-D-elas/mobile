@@ -44,9 +44,9 @@ void main() {
     test('returns rated books list on successful invokeFunction', () async {
       when(
         () => mockSupabaseService.invokeFunction<List<RatedBookModel>>(
-          functionName: 'get-rated-books',
+          functionName: 'get-my-reviewed-books',
           method: HttpMethod.get,
-          queryParameters: {'page': '1', 'limit': '10'},
+          queryParameters: {'page': '1', 'pageSize': '10'},
           decoder: any(named: 'decoder'),
         ),
       ).thenAnswer(
@@ -60,9 +60,9 @@ void main() {
       expect(result, [tBookModel]);
       verify(
         () => mockSupabaseService.invokeFunction<List<RatedBookModel>>(
-          functionName: 'get-rated-books',
+          functionName: 'get-my-reviewed-books',
           method: HttpMethod.get,
-          queryParameters: {'page': '1', 'limit': '10'},
+          queryParameters: {'page': '1', 'pageSize': '10'},
           decoder: any(named: 'decoder'),
         ),
       ).called(1);
@@ -97,6 +97,7 @@ void main() {
         );
       },
     );
+
     test(
       'decodes response using items envelope when decoder is invoked',
       () async {

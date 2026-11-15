@@ -20,14 +20,18 @@ class RatedBookModel {
   });
 
   factory RatedBookModel.fromJson(Map<String, dynamic> json) {
+    final resolvedBookId =
+        (json['book_id'] ?? json['bookId'] ?? json['id'] ?? '') as String;
+    final resolvedId = (json['id'] as String?) ?? resolvedBookId;
+
     return RatedBookModel(
-      id: (json['id'] ?? '') as String,
-      bookId: (json['book_id'] ?? json['bookId'] ?? json['id'] ?? '') as String,
+      id: resolvedId,
+      bookId: resolvedBookId,
       title: (json['title'] ?? '') as String,
       author: (json['author'] ?? '') as String,
       coverUrl: (json['cover_url'] ?? json['coverUrl']) as String?,
       rating: ((json['rating'] ?? 0.0) as num).toDouble(),
-      comment: json['comment'] as String?,
+      comment: (json['commentary'] ?? json['comment']) as String?,
     );
   }
 
@@ -61,7 +65,7 @@ class RatedBookModel {
       'author': author,
       'cover_url': coverUrl,
       'rating': rating,
-      'comment': comment,
+      'commentary': comment,
     };
   }
 

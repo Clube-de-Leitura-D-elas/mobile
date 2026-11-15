@@ -11,7 +11,7 @@ void main() {
       'author': 'J. K. Rowling',
       'cover_url': 'https://example.com/cover.jpg',
       'rating': 4.5,
-      'comment': 'Livro incrível!',
+      'commentary': 'Livro incrível!',
     };
 
     test('fromJson parses correctly', () {
@@ -26,6 +26,20 @@ void main() {
       expect(model.comment, 'Livro incrível!');
     });
 
+    test('fromJson falls back to book_id when id is absent', () {
+      final model = RatedBookModel.fromJson({
+        'book_id': 'book-1',
+        'title': 'Harry Potter e a Pedra Filosofal',
+        'author': 'J. K. Rowling',
+        'rating': 4.5,
+        'commentary': 'Livro incrível!',
+      });
+
+      expect(model.id, 'book-1');
+      expect(model.bookId, 'book-1');
+      expect(model.comment, 'Livro incrível!');
+    });
+
     test('toJson serializes correctly', () {
       final model = RatedBookModel.fromJson(jsonMap);
       final json = model.toJson();
@@ -36,7 +50,7 @@ void main() {
       expect(json['author'], 'J. K. Rowling');
       expect(json['cover_url'], 'https://example.com/cover.jpg');
       expect(json['rating'], 4.5);
-      expect(json['comment'], 'Livro incrível!');
+      expect(json['commentary'], 'Livro incrível!');
     });
 
     test('toDomain maps to RatedBook entity', () {

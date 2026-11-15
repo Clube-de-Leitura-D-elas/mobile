@@ -21,11 +21,11 @@ class RatedBooksRemoteDataSourceImpl implements RatedBooksRemoteDataSource {
     required int limit,
   }) async {
     final result = await supabaseService.invokeFunction<List<RatedBookModel>>(
-      functionName: 'get-rated-books',
+      functionName: 'get-my-reviewed-books',
       method: HttpMethod.get,
       queryParameters: {
         'page': '$page',
-        'limit': '$limit',
+        'pageSize': '$limit',
       },
       decoder: RatedBookModel.listFromJson,
     );
