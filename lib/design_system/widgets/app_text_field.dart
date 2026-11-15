@@ -40,9 +40,11 @@ class AppTextField extends StatefulWidget {
     this.maxLines = 1,
     this.size = AppTextFieldSize.md,
     this.validator,
+    this.isRequired = false,
   });
 
   final String? label;
+  final bool isRequired;
   final String? hintText;
   final String? helperText;
   final String? errorText;
@@ -152,6 +154,15 @@ class _AppTextFieldState extends State<AppTextField> {
       );
     }
 
+    final requiredHint = widget.isRequired
+        ? (Localizations.of<AppLocalizations>(context, AppLocalizations)
+                ?.requiredFieldSemantics ??
+            'Campo obrigatório')
+        : null;
+    final semanticsLabel = requiredHint == null
+        ? null
+        : [widget.label, requiredHint].whereType<String>().join(', ');
+
     return FormField<String>(
       enabled: widget.enabled,
       initialValue: widget.controller?.text,
@@ -165,8 +176,17 @@ class _AppTextFieldState extends State<AppTextField> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (widget.label != null) ...[
-              Text(
-                widget.label!,
+              Text.rich(
+                TextSpan(
+                  text: widget.label!,
+                  children: [
+                    if (widget.isRequired)
+                      TextSpan(
+                        text: ' *',
+                        style: TextStyle(color: colors.feedbackError),
+                      ),
+                  ],
+                ),
                 style: typography.bodyDefaultEmphasis.copyWith(
                   color: colors.textDefault,
                 ),
@@ -175,46 +195,49 @@ class _AppTextFieldState extends State<AppTextField> {
             ],
             SizedBox(
               height: widget.maxLines != 1 ? null : _height,
-              child: TextField(
-                controller: _effectiveController,
-                maxLines: widget.maxLines,
+              child: Semantics(
+                label: semanticsLabel,
+                child: TextField(
+                  controller: _effectiveController,
+                  maxLines: widget.maxLines,
 
-                onChanged: (value) {
-                  field.didChange(value);
-                  widget.onChanged?.call(value);
-                },
-                onSubmitted: widget.onSubmitted,
-                obscureText: _isObscured,
-                keyboardType: widget.keyboardType,
-                inputFormatters: widget.inputFormatters,
-                textInputAction: widget.textInputAction,
-                enabled: widget.enabled,
-                autofocus: widget.autofocus,
-                style: typography.bodyDefault.copyWith(
-                  color: widget.enabled
-                      ? colors.textDefault
-                      : colors.actionDisabledFg,
-                ),
-                decoration: InputDecoration(
-                  hintText: widget.hintText,
-                  hintStyle: typography.bodyDefault.copyWith(
-                    color: colors.textMuted,
+                  onChanged: (value) {
+                    field.didChange(value);
+                    widget.onChanged?.call(value);
+                  },
+                  onSubmitted: widget.onSubmitted,
+                  obscureText: _isObscured,
+                  keyboardType: widget.keyboardType,
+                  inputFormatters: widget.inputFormatters,
+                  textInputAction: widget.textInputAction,
+                  enabled: widget.enabled,
+                  autofocus: widget.autofocus,
+                  style: typography.bodyDefault.copyWith(
+                    color: widget.enabled
+                        ? colors.textDefault
+                        : colors.actionDisabledFg,
                   ),
-                  filled: true,
-                  fillColor:
-                      widget.enabled ? colors.bgDefault : colors.surfaceSunken,
-                  contentPadding: _contentPadding,
-                  border: baseBorder,
-                  enabledBorder: hasError ? errorBorder : baseBorder,
-                  focusedBorder: hasError ? errorBorder : focusedBorder,
-                  disabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide:
-                        BorderSide(color: colors.actionDisabledBg, width: 1.0),
+                  decoration: InputDecoration(
+                    hintText: widget.hintText,
+                    hintStyle: typography.bodyDefault.copyWith(
+                      color: colors.textMuted,
+                    ),
+                    filled: true,
+                    fillColor:
+                        widget.enabled ? colors.bgDefault : colors.surfaceSunken,
+                    contentPadding: _contentPadding,
+                    border: baseBorder,
+                    enabledBorder: hasError ? errorBorder : baseBorder,
+                    focusedBorder: hasError ? errorBorder : focusedBorder,
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                          BorderSide(color: colors.actionDisabledBg, width: 1.0),
+                    ),
+                    isDense: true,
+                    prefixIcon: widget.prefixIcon,
+                    suffixIcon: effectiveSuffixIcon,
                   ),
-                  isDense: true,
-                  prefixIcon: widget.prefixIcon,
-                  suffixIcon: effectiveSuffixIcon,
                 ),
               ),
             ),

@@ -256,6 +256,8 @@
   "bookDetailLoadingMoreReviews": "Carregando mais comentários",
   "bookDetailLoadMoreReviewsError": "Não foi possível carregar mais comentários.",
   "bookReadingStatusError": "Não foi possível atualizar o status de leitura.",
+  "bookSearchTitle": "Catálogo",
+  "requiredFieldSemantics": "Campo obrigatório",
   "calendarMonthName": "{month}",
   "calendarMonthSemantic": "{month}",
   "calendarPreviousMonth": "Mês anterior",

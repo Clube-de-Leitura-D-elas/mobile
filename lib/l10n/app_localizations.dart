@@ -2018,10 +2018,16 @@ abstract class AppLocalizations {
   /// **'Não foi possível carregar mais comentários.'**
   String get bookDetailLoadMoreReviewsError;
 
-  /// Título da aba de busca de livros.
+  /// Complemento do rótulo semântico de campos obrigatórios para leitores de tela.
   ///
   /// In pt, this message translates to:
-  /// **'Busca'**
+  /// **'Campo obrigatório'**
+  String get requiredFieldSemantics;
+
+  /// Título da aba de catálogo de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Catálogo'**
   String get bookSearchTitle;
 
   /// Placeholder do campo de busca de livros.
