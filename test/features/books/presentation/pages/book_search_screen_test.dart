@@ -75,6 +75,13 @@ void main() {
     expect(find.text('Catálogo'), findsOneWidget);
     final textWidget = tester.widget<Text>(find.text('Catálogo'));
     expect(textWidget.style?.fontSize, 24.0);
+
+    final handle = tester.ensureSemantics();
+    expect(
+      tester.getSemantics(find.text('Catálogo')),
+      matchesSemantics(isHeader: true),
+    );
+    handle.dispose();
   });
 
   testWidgets('shows the popular grid when there is no query', (tester) async {

@@ -1982,6 +1982,12 @@ abstract class AppLocalizations {
   /// **'Não foi possível carregar mais comentários.'**
   String get bookDetailLoadMoreReviewsError;
 
+  /// Complemento do rótulo semântico de campos obrigatórios para leitores de tela.
+  ///
+  /// In pt, this message translates to:
+  /// **'Campo obrigatório'**
+  String get requiredFieldSemantics;
+
   /// Título da aba de catálogo de livros.
   ///
   /// In pt, this message translates to:

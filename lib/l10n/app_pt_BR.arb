@@ -252,5 +252,6 @@
   "bookDetailLoadingMoreReviews": "Carregando mais comentários",
   "bookDetailLoadMoreReviewsError": "Não foi possível carregar mais comentários.",
   "bookReadingStatusError": "Não foi possível atualizar o status de leitura.",
-  "bookSearchTitle": "Catálogo"
+  "bookSearchTitle": "Catálogo",
+  "requiredFieldSemantics": "Campo obrigatório"
 }

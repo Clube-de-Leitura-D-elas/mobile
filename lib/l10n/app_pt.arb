@@ -1521,6 +1521,10 @@
   "@bookDetailLoadMoreReviewsError": {
     "description": "Erro ao carregar a próxima página de comentários."
   },
+  "requiredFieldSemantics": "Campo obrigatório",
+  "@requiredFieldSemantics": {
+    "description": "Complemento do rótulo semântico de campos obrigatórios para leitores de tela."
+  },
   "bookSearchTitle": "Catálogo",
   "@bookSearchTitle": {
     "description": "Título da aba de catálogo de livros."

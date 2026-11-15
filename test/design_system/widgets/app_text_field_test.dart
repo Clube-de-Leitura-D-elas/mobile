@@ -109,5 +109,25 @@ void main() {
       expect(asteriskSpan.text, ' *');
       expect(asteriskSpan.style?.color, const Color(0xFFD92D20));
     });
+
+    testWidgets('adds localized required hint to the field semantics label', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        buildTestableWidget(
+          const AppTextField(
+            label: 'Data',
+            isRequired: true,
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSemantics(find.byType(TextField)).label,
+        contains('Data, Campo obrigatório'),
+      );
+      handle.dispose();
+    });
   });
 }
