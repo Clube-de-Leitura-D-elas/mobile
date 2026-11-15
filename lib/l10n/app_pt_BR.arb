@@ -415,5 +415,6 @@
   "seeAllBooks": "Ver todos os livros",
   "ratedBookTileAuthor": "escrito por {author}",
   "ratedBookTileRating": "avaliado com {rating} de 5 estrelas",
-  "ratedBookTileComment": "comentário: {comment}"
+  "ratedBookTileComment": "comentário: {comment}",
+  "meetingTasksCoordinatorLabel": "VOCÊ É COORDENADORA DESTE GRUPO"
 }

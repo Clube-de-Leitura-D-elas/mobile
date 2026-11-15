@@ -1071,7 +1071,11 @@
   },
   "meetingTasksDrawnLabel": "VOCÊ FOI SORTEADA",
   "@meetingTasksDrawnLabel": {
-    "description": "Sobretítulo do banner antes de o encontro ser publicado"
+    "description": "Sobretítulo do banner antes de o encontro ser publicado, para a anfitriã"
+  },
+  "meetingTasksCoordinatorLabel": "VOCÊ É COORDENADORA DESTE GRUPO",
+  "@meetingTasksCoordinatorLabel": {
+    "description": "Sobretítulo do banner quando quem abre as tarefas é coordenadora e não é a anfitriã"
   },
   "meetingTasksDrawnFallbackTitle": "Próximo encontro",
   "@meetingTasksDrawnFallbackTitle": {

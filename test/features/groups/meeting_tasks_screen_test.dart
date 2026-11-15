@@ -147,6 +147,56 @@ void main() {
   AppButton buttonWithLabel(WidgetTester tester, String label) =>
       tester.widget<AppButton>(find.widgetWithText(AppButton, label));
 
+  testWidgets('coordinator who is not the host sees her own banner', (
+    tester,
+  ) async {
+    answerTasks([
+      const Success(
+        MeetingTasksEntity(
+          meetingId: 'meeting-1',
+          status: MeetingTaskStatus.created,
+          canManageTasks: true,
+          canConclude: false,
+          isHost: false,
+          isCoordinator: true,
+          schedule: MeetingScheduleTask(done: false),
+          record: MeetingRecordTask(MeetingRecordStatus.locked),
+          bookTitle: 'A Hora da Estrela',
+          bookAuthor: 'Clarice Lispector',
+          groupName: 'Grupo 12',
+        ),
+      ),
+    ]);
+    await pumpScreen(tester);
+
+    expect(find.text('VOCÊ É COORDENADORA DESTE GRUPO'), findsOneWidget);
+    expect(find.text('VOCÊ FOI SORTEADA'), findsNothing);
+  });
+
+  testWidgets('someone who is host and coordinator sees the host banner', (
+    tester,
+  ) async {
+    answerTasks([
+      const Success(
+        MeetingTasksEntity(
+          meetingId: 'meeting-1',
+          status: MeetingTaskStatus.created,
+          canManageTasks: true,
+          canConclude: false,
+          isHost: true,
+          isCoordinator: true,
+          schedule: MeetingScheduleTask(done: false),
+          record: MeetingRecordTask(MeetingRecordStatus.locked),
+          bookTitle: 'A Hora da Estrela',
+        ),
+      ),
+    ]);
+    await pumpScreen(tester);
+
+    expect(find.text('VOCÊ FOI SORTEADA'), findsOneWidget);
+    expect(find.text('VOCÊ É COORDENADORA DESTE GRUPO'), findsNothing);
+  });
+
   testWidgets('draft meeting: task 1 pending, task 2 and conclusion locked', (
     tester,
   ) async {
@@ -155,6 +205,7 @@ void main() {
 
     expect(find.text('Suas tarefas'), findsOneWidget);
     expect(find.text('VOCÊ FOI SORTEADA'), findsOneWidget);
+    expect(find.text('VOCÊ É COORDENADORA DESTE GRUPO'), findsNothing);
     expect(find.text('A Hora da Estrela'), findsOneWidget);
     expect(find.text('Clarice Lispector · Grupo 12'), findsOneWidget);
     expect(find.text('2 tarefas para você'), findsOneWidget);

@@ -11,6 +11,8 @@ void main() {
         'can_manage_tasks': true,
         'can_conclude': false,
         'can_raffle': true,
+        'is_host': true,
+        'is_coordinator': true,
         'book_title': 'A Hora da Estrela',
         'book_author': 'Clarice Lispector',
         'group_name': 'Grupo 12',
@@ -29,6 +31,8 @@ void main() {
       expect(model.canManageTasks, isTrue);
       expect(model.canConclude, isFalse);
       expect(model.canRaffle, isTrue);
+      expect(model.isHost, isTrue);
+      expect(model.isCoordinator, isTrue);
       expect(model.bookTitle, 'A Hora da Estrela');
       expect(model.bookAuthor, 'Clarice Lispector');
       expect(model.groupName, 'Grupo 12');
@@ -93,8 +97,23 @@ void main() {
       expect(model.schedule.done, isFalse);
       expect(model.record.status, MeetingRecordStatus.locked);
       expect(model.bookTitle, isNull);
+      expect(model.isHost, isTrue);
+      expect(model.isCoordinator, isFalse);
       expect(model.isPublished, isFalse);
       expect(model.pendingTasks, 2);
+    });
+
+    test('reads the caller role from the contract', () {
+      final model = MeetingTasksModel.fromJson(const {
+        'meeting_id': 'm',
+        'status': 'CREATED',
+        'can_manage_tasks': true,
+        'is_host': false,
+        'is_coordinator': true,
+      });
+
+      expect(model.isHost, isFalse);
+      expect(model.isCoordinator, isTrue);
     });
 
     test('throws on invalid payloads', () {
