@@ -22,3 +22,7 @@ class NotificationsLoadFailure extends NotificationFailure {
 class NotificationMarkReadFailure extends NotificationFailure {
   const NotificationMarkReadFailure();
 }
+
+class FcmTokenSyncFailure extends NotificationFailure {
+  const FcmTokenSyncFailure();
+}

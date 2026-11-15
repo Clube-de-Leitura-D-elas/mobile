@@ -1,6 +1,10 @@
+import 'dart:math' as math;
+
+import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'gap.dart';
 
@@ -94,6 +98,13 @@ class AppButton extends StatelessWidget {
 
   static const double _borderWidth = 1.0;
 
+  EdgeInsets _tightWidthPadding(double horizontal) {
+    if (_padding.left <= horizontal) {
+      return _padding;
+    }
+    return _padding.copyWith(left: horizontal, right: horizontal);
+  }
+
   EdgeInsets get _padding {
     switch (size) {
       case AppButtonSize.sm:
@@ -179,16 +190,12 @@ class AppButton extends StatelessWidget {
     final foregroundColor = _getForegroundColor(colors);
     final splashColor = _getSplashColor(colors);
     final border = _getBorder(colors);
-    // A borda do Container já consome espaço; descontá-la do padding mantém a
-    // área do label igual à dos botões sem borda (sem cortar o texto no md).
-    final padding = border == null
-        ? _padding
-        : _padding - const EdgeInsets.all(_borderWidth);
-
     final borderRadius = BorderRadius.circular(999.0);
 
+    // Altura mínima, não fixa: com fonte grande ou label longo o botão cresce
+    // em vez de cortar a segunda linha do texto.
     return Container(
-      height: _height,
+      constraints: BoxConstraints(minHeight: _height),
       decoration: BoxDecoration(borderRadius: borderRadius, border: border),
       child: Material(
         color: backgroundColor,
@@ -203,8 +210,12 @@ class AppButton extends StatelessWidget {
             splashColor: splashColor,
             highlightColor: splashColor.withValues(alpha: 0.1),
             onTap: _isEnabled ? onPressed : null,
-            child: Padding(
-              padding: padding,
+            child: _ButtonPadding(
+              padding: _withoutBorder(_padding, border),
+              tightWidthPadding: _withoutBorder(
+                _tightWidthPadding(context.spacing.s16),
+                border,
+              ),
               child: DefaultTextStyle(
                 style: textStyle.copyWith(color: foregroundColor),
                 child: IconTheme(
@@ -222,9 +233,18 @@ class AppButton extends StatelessWidget {
     );
   }
 
+  // A borda do Container já consome espaço; descontá-la do padding mantém a
+  // área do label igual à dos botões sem borda (sem cortar o texto no md).
+  EdgeInsets _withoutBorder(EdgeInsets padding, Border? border) {
+    return border == null
+        ? padding
+        : padding - const EdgeInsets.all(_borderWidth);
+  }
+
   Widget _buildChild(BuildContext context, Color foregroundColor) {
     if (isLoading) {
       return Center(
+        heightFactor: 1,
         child: SizedBox(
           width: 16.0,
           height: 16.0,
@@ -238,10 +258,10 @@ class AppButton extends StatelessWidget {
 
     final labelWidget = Text(label, textAlign: TextAlign.center);
 
-    // Sem Center, o Text ocupa toda a altura fixa do botão e é desenhado no
+    // Sem Center, o Text ocupa toda a altura mínima do botão e é desenhado no
     // topo, deixando o label acima do centro (visível nos botões sm).
     if (icon == null) {
-      return Center(child: labelWidget);
+      return Center(heightFactor: 1, child: labelWidget);
     }
 
     return Row(
@@ -250,6 +270,150 @@ class AppButton extends StatelessWidget {
       children: iconAlignment == IconAlignment.start
           ? [icon!, const Gap8(), labelWidget]
           : [labelWidget, const Gap8(), icon!],
+    );
+  }
+}
+
+/// Usa [tightWidthPadding] quando o pai impõe a largura. Não troque por
+/// `LayoutBuilder`: ele não responde às dimensões intrínsecas.
+class _ButtonPadding extends SingleChildRenderObjectWidget {
+  const _ButtonPadding({
+    required this.padding,
+    required this.tightWidthPadding,
+    super.child,
+  });
+
+  final EdgeInsets padding;
+  final EdgeInsets tightWidthPadding;
+
+  @override
+  _RenderButtonPadding createRenderObject(BuildContext context) {
+    return _RenderButtonPadding(
+      padding: padding,
+      tightWidthPadding: tightWidthPadding,
+    );
+  }
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderButtonPadding renderObject,
+  ) {
+    renderObject
+      ..padding = padding
+      ..tightWidthPadding = tightWidthPadding;
+  }
+}
+
+class _RenderButtonPadding extends RenderShiftedBox {
+  _RenderButtonPadding({
+    required EdgeInsets padding,
+    required EdgeInsets tightWidthPadding,
+  }) : _padding = padding,
+       _tightWidthPadding = tightWidthPadding,
+       super(null);
+
+  EdgeInsets _padding;
+  EdgeInsets get padding => _padding;
+  set padding(EdgeInsets value) {
+    if (_padding == value) {
+      return;
+    }
+    _padding = value;
+    markNeedsLayout();
+  }
+
+  EdgeInsets _tightWidthPadding;
+  EdgeInsets get tightWidthPadding => _tightWidthPadding;
+  set tightWidthPadding(EdgeInsets value) {
+    if (_tightWidthPadding == value) {
+      return;
+    }
+    _tightWidthPadding = value;
+    markNeedsLayout();
+  }
+
+  EdgeInsets _paddingFor(BoxConstraints constraints) {
+    return constraints.hasTightWidth ? _tightWidthPadding : _padding;
+  }
+
+  @override
+  double computeMinIntrinsicWidth(double height) {
+    final childWidth =
+        child?.getMinIntrinsicWidth(math.max(0, height - _padding.vertical));
+    return _padding.horizontal + (childWidth ?? 0);
+  }
+
+  @override
+  double computeMaxIntrinsicWidth(double height) {
+    final childWidth =
+        child?.getMaxIntrinsicWidth(math.max(0, height - _padding.vertical));
+    return _padding.horizontal + (childWidth ?? 0);
+  }
+
+  // A altura usa o padding largo: o label fica mais estreito e nunca ocupa
+  // menos linhas do que no layout real, que pode vir com largura frouxa.
+  @override
+  double computeMinIntrinsicHeight(double width) {
+    final p = _padding;
+    final childHeight =
+        child?.getMinIntrinsicHeight(math.max(0, width - p.horizontal));
+    return p.vertical + (childHeight ?? 0);
+  }
+
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    final p = _padding;
+    final childHeight =
+        child?.getMaxIntrinsicHeight(math.max(0, width - p.horizontal));
+    return p.vertical + (childHeight ?? 0);
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final p = _paddingFor(constraints);
+    final childSize =
+        child?.getDryLayout(constraints.deflate(p)) ?? Size.zero;
+    return constraints.constrain(
+      Size(p.horizontal + childSize.width, p.vertical + childSize.height),
+    );
+  }
+
+  @override
+  double? computeDryBaseline(
+    BoxConstraints constraints,
+    TextBaseline baseline,
+  ) {
+    final p = _paddingFor(constraints);
+    final childBaseline = child?.getDryBaseline(
+      constraints.deflate(p),
+      baseline,
+    );
+    return childBaseline == null ? null : childBaseline + p.top;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty<EdgeInsets>('padding', _padding))
+      ..add(
+        DiagnosticsProperty<EdgeInsets>('tightWidthPadding', _tightWidthPadding),
+      );
+  }
+
+  @override
+  void performLayout() {
+    final p = _paddingFor(constraints);
+    final child = this.child;
+    if (child == null) {
+      size = constraints.constrain(Size(p.horizontal, p.vertical));
+      return;
+    }
+    child.layout(constraints.deflate(p), parentUsesSize: true);
+    (child.parentData! as BoxParentData).offset = Offset(p.left, p.top);
+    size = constraints.constrain(
+      Size(p.horizontal + child.size.width, p.vertical + child.size.height),
     );
   }
 }

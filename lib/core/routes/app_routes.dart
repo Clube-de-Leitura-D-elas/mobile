@@ -13,6 +13,7 @@ import 'package:mobile/features/books/presentation/routes/book_routes.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 import 'package:mobile/features/notifications/presentation/routes/notification_routes.dart';
+import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/features/splash/presentation/routes/splash_routes.dart';
@@ -36,6 +37,7 @@ class GoRouterRefreshStream extends ChangeNotifier {
 abstract class AppRoutes {
   static GoRouter createRouter(SessionCubit sessionCubit) {
     return GoRouter(
+      navigatorKey: NotificationNavigationService.navigatorKey,
       initialLocation: SplashRoutes.splash,
       refreshListenable: GoRouterRefreshStream(sessionCubit.stream),
       observers: [appRouteObserver],

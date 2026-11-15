@@ -123,7 +123,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.47.9'
+          flutter-version: '3.50.0'
           cache: true
 
       - name: Configurar Ruby + Bundler (Fastlane)
@@ -202,7 +202,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.47.9'
+          flutter-version: '3.50.0'
           cache: true
 
       - name: Configurar Ruby + Bundler (Fastlane)

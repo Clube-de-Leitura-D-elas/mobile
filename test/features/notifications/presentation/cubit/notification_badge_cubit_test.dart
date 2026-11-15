@@ -113,4 +113,28 @@ void main() {
       expect(cubit.state, 5);
     });
   });
+
+  test('refreshes unread count when a foreground message arrives', () async {
+    final foregroundController =
+        StreamController<Map<String, dynamic>>.broadcast();
+    addTearDown(foregroundController.close);
+
+    when(
+      () => repository.onForegroundMessage,
+    ).thenAnswer((_) => foregroundController.stream);
+    when(() => repository.getNotifications(page: 1)).thenAnswer(
+      (_) async => const Success(
+        NotificationsPageEntity(items: [], total: 10, unreadCount: 4),
+      ),
+    );
+
+    final cubit = NotificationBadgeCubit(repository: repository);
+    addTearDown(cubit.close);
+
+    foregroundController.add(const {'notification_id': 'n-1'});
+    await pumpEventQueue();
+
+    expect(cubit.state, 4);
+    verify(() => repository.getNotifications(page: 1)).called(1);
+  });
 }
