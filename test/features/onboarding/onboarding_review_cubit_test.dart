@@ -2,13 +2,22 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
+import 'package:mobile/features/onboarding/domain/entities/city.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
+import 'package:mobile/features/onboarding/domain/entities/zone.dart';
 import 'package:mobile/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockOnboardingRepository extends Mock implements OnboardingRepository {}
+
+const cityWithZone = City(
+  id: 'city-1',
+  name: 'Porto Alegre',
+  uf: 'RS',
+  zones: [Zone(id: 'zone-1', name: 'Zona Sul')],
+);
 
 const profileWithLocation = UserReviewProfile(
   name: 'Maria',
@@ -28,7 +37,7 @@ void main() {
       (_) async => const Success(profileWithLocation),
     );
     when(() => mockRepository.getCitiesAndZones()).thenAnswer(
-      (_) async => const Success([]),
+      (_) async => const Success([cityWithZone]),
     );
   });
 
@@ -40,6 +49,26 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: profileWithLocation,
+          cities: [cityWithZone],
+        ),
+      ],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'clears ids that are not in the city list',
+      build: () {
+        when(() => mockRepository.getUserProfile()).thenAnswer(
+          (_) async => const Success(profileWithLocation),
+        );
+        when(() => mockRepository.getCitiesAndZones()).thenAnswer(
+          (_) async => const Success([]),
+        );
+        return OnboardingReviewCubit(onboardingRepository: mockRepository);
+      },
+      expect: () => [
+        const OnboardingReviewFormState(
+          currentStep: 0,
+          profile: profileWithoutLocation,
         ),
       ],
     );
@@ -50,6 +79,7 @@ void main() {
       seed: () => const OnboardingReviewFormState(
         currentStep: 0,
         profile: profileWithLocation,
+        cities: [cityWithZone],
       ),
       act: (cubit) {
         cubit.nextStep();
@@ -59,10 +89,12 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 1,
           profile: profileWithLocation,
+          cities: [cityWithZone],
         ),
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: profileWithLocation,
+          cities: [cityWithZone],
         ),
       ],
     );
@@ -78,6 +110,7 @@ void main() {
       seed: () => const OnboardingReviewFormState(
         currentStep: 0,
         profile: profileWithoutLocation,
+        cities: [cityWithZone],
       ),
       act: (cubit) => cubit.nextStep(),
       expect: () => [],
@@ -89,6 +122,7 @@ void main() {
       seed: () => const OnboardingReviewFormState(
         currentStep: 0,
         profile: profileWithLocation,
+        cities: [cityWithZone],
       ),
       act: (cubit) async {
         // Espera o load inicial terminar antes de avançar; sem isso a
@@ -100,6 +134,7 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 1,
           profile: profileWithLocation,
+          cities: [cityWithZone],
         ),
       ],
     );
@@ -118,6 +153,7 @@ void main() {
       seed: () => const OnboardingReviewFormState(
         currentStep: 2,
         profile: profileWithoutLocation,
+        cities: [cityWithZone],
       ),
       act: (cubit) => cubit.submitReview(),
       skip: 1,
@@ -138,18 +174,21 @@ void main() {
       seed: () => const OnboardingReviewFormState(
         currentStep: 2,
         profile: profileWithLocation,
+        cities: [cityWithZone],
       ),
       act: (cubit) => cubit.submitReview(),
       expect: () => [
         const OnboardingReviewFormState(
           currentStep: 2,
           profile: profileWithLocation,
+          cities: [cityWithZone],
           isSubmitting: true,
         ),
         const OnboardingReviewSuccess(profileWithLocation),
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: profileWithLocation,
+          cities: [cityWithZone],
         ),
       ],
     );
@@ -187,6 +226,7 @@ void main() {
       seed: () => const OnboardingReviewFormState(
         currentStep: 2,
         profile: profileWithLocation,
+        cities: [cityWithZone],
       ),
       act: (cubit) => cubit.submitReview(),
       skip: 1,
@@ -194,11 +234,13 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 2,
           profile: profileWithLocation,
+          cities: [cityWithZone],
           submitFailure: UnknownUserFailure(),
         ),
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: profileWithLocation,
+          cities: [cityWithZone],
         ),
       ],
     );

@@ -183,8 +183,7 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
                             onPressed: state.isSubmitting
                                 ? null
                                 : () {
-                                    if (step == 0 &&
-                                        !_hasLocation(state.profile)) {
+                                    if (!_hasLocation(state.profile)) {
                                       context.showErrorToast(
                                         l10n.onboardingLocationRequired,
                                       );

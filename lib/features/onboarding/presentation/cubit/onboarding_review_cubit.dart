@@ -45,10 +45,31 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
         return;
     }
 
+    // Id que não está na lista de cidades/zonas não vale: o select abre
+    // vazio, mas o id antigo ainda passaria no guard. Limpa para os dois
+    // concordarem.
+    var safeProfile = profile;
+    City? city;
+    for (final candidate in cities) {
+      if (candidate.id == profile.cityId) {
+        city = candidate;
+        break;
+      }
+    }
+
+    if (city == null) {
+      safeProfile = safeProfile.copyWith(clearCity: true, clearZone: true);
+    } else {
+      final hasZone = city.zones.any((zone) => zone.id == profile.zoneId);
+      if (!hasZone) {
+        safeProfile = safeProfile.copyWith(clearZone: true);
+      }
+    }
+
     emit(
       OnboardingReviewFormState(
         currentStep: 0,
-        profile: profile,
+        profile: safeProfile,
         cities: cities,
       ),
     );
