@@ -9,7 +9,7 @@ import 'package:mobile/design_system/widgets/app_button.dart';
 import 'package:mobile/design_system/widgets/app_card.dart';
 import 'package:mobile/design_system/widgets/app_icon.dart';
 
-enum GroupNextEventStatus { loading, loaded, empty, error }
+enum GroupNextEventStatus { loading, loaded, empty, inPreparation, error }
 
 class GroupNextEventData {
   const GroupNextEventData({
@@ -70,6 +70,10 @@ class GroupNextEvent extends StatelessWidget {
       GroupNextEventStatus.empty => _MessageState(
         icon: Icons.event_busy_outlined,
         message: context.l10n.groupNextEventEmpty,
+      ),
+      GroupNextEventStatus.inPreparation => _MessageState(
+        icon: Icons.hourglass_empty_outlined,
+        message: context.l10n.raffleMeetingInPreparation,
       ),
       GroupNextEventStatus.loaded when data != null => _EventDetails(
         data: data!,

@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_cubit.dart';
@@ -20,11 +22,15 @@ class AppGroupCard extends StatelessWidget {
   final int participantsCount;
   final String cityState;
   final GroupMeeting? nextMeeting;
+  final PendingRaffle? pendingRaffle;
+  final bool hasOpenMeeting;
+  final String? openMeetingStatus;
   final bool expanded;
   final VoidCallback? onTap;
   final VoidCallback? onToggleExpanded;
   final VoidCallback? onMeetingResponseSuccess;
   final VoidCallback? onMyTasksPressed;
+  final VoidCallback? onPendingRafflePressed;
 
   /// Chamado ao voltar de "Suas tarefas", para atualizar o contador.
   final VoidCallback? onTasksClosed;
@@ -40,11 +46,15 @@ class AppGroupCard extends StatelessWidget {
     required this.cityState,
     this.photoUrl,
     this.nextMeeting,
+    this.pendingRaffle,
+    this.hasOpenMeeting = false,
+    this.openMeetingStatus,
     this.expanded = true,
     this.onTap,
     this.onToggleExpanded,
     this.onMeetingResponseSuccess,
     this.onMyTasksPressed,
+    this.onPendingRafflePressed,
     this.onTasksClosed,
     this.tasksOnly = false,
   });
@@ -83,6 +93,14 @@ class AppGroupCard extends StatelessWidget {
                 onPressed: onMyTasksPressed,
                 onClosed: onTasksClosed,
               ),
+            ] else if (pendingRaffle != null) ...[
+              SizedBox(height: spacing.s16),
+              AppButton.primary(
+                label: pendingRaffle!.type == PendingRaffleType.inaugural
+                    ? context.l10n.homePendingTasksRaffleInaugural
+                    : context.l10n.homePendingTasksRafflePending,
+                onPressed: onPendingRafflePressed,
+              ),
             ],
           ] else if (meeting != null && !meeting.isEnded) ...[
             SizedBox(height: spacing.s16),
@@ -107,6 +125,22 @@ class AppGroupCard extends StatelessWidget {
                 ),
               ],
             ],
+          ] else if (pendingRaffle != null) ...[
+            SizedBox(height: spacing.s16),
+            AppButton.primary(
+              label: pendingRaffle!.type == PendingRaffleType.inaugural
+                  ? context.l10n.homePendingTasksRaffleInaugural
+                  : context.l10n.homePendingTasksRafflePending,
+              onPressed: onPendingRafflePressed,
+            ),
+          ] else if (hasOpenMeeting && openMeetingStatus == 'CREATED') ...[
+            SizedBox(height: spacing.s16),
+            Text(
+              context.l10n.raffleMeetingInPreparation,
+              style: context.typography.bodySmall.copyWith(
+                color: context.colors.textMuted,
+              ),
+            ),
           ],
         ],
       ),

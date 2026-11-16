@@ -13,6 +13,9 @@ class GroupModel extends GroupEntity {
     super.nextMeeting,
     super.pendingMeetings,
     super.hasPendingResponse,
+    super.pendingRaffle,
+    super.hasOpenMeeting,
+    super.openMeetingStatus,
   });
 
   factory GroupModel.fromJson(dynamic json) {
@@ -28,6 +31,9 @@ class GroupModel extends GroupEntity {
     final nextMeeting = _parseNextMeeting(json['next_meeting']);
     final pendingMeetings = _parsePendingMeetings(json['pending_meetings']);
     final hasPendingResponse = json['has_pending_response'];
+    final pendingRaffle = _parsePendingRaffle(json['pending_raffle']);
+    final hasOpenMeeting = json['has_open_meeting'] as bool? ?? false;
+    final openMeetingStatus = json['open_meeting_status'] as String?;
 
     if (id is! String ||
         number == null ||
@@ -47,6 +53,9 @@ class GroupModel extends GroupEntity {
       nextMeeting: nextMeeting,
       pendingMeetings: pendingMeetings,
       hasPendingResponse: hasPendingResponse as bool? ?? false,
+      pendingRaffle: pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus,
     );
   }
 
@@ -56,6 +65,18 @@ class GroupModel extends GroupEntity {
 
     return int.tryParse(name) ??
         int.tryParse(RegExp(r'\d+$').firstMatch(name)?.group(0) ?? '');
+  }
+
+  static PendingRaffle? _parsePendingRaffle(dynamic json) {
+    if (json == null || json is! Map<String, dynamic>) return null;
+    final typeStr = json['type'] as String?;
+    final groupId = json['group_id'] as String?;
+    final meetingId = json['meeting_id'] as String?;
+    if (groupId == null) return null;
+    final type = typeStr == 'INAUGURAL'
+        ? PendingRaffleType.inaugural
+        : PendingRaffleType.pending;
+    return PendingRaffle(type: type, groupId: groupId, meetingId: meetingId);
   }
 
   static List<GroupMeeting> _parsePendingMeetings(dynamic json) {
@@ -130,6 +151,9 @@ class GroupModel extends GroupEntity {
       nextMeeting: nextMeeting,
       pendingMeetings: pendingMeetings,
       hasPendingResponse: hasPendingResponse,
+      pendingRaffle: pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus,
     );
   }
 

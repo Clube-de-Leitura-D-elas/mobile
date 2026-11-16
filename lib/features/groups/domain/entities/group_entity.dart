@@ -1,6 +1,23 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 
+enum PendingRaffleType { inaugural, pending }
+
+class PendingRaffle extends Equatable {
+  final PendingRaffleType type;
+  final String groupId;
+  final String? meetingId;
+
+  const PendingRaffle({
+    required this.type,
+    required this.groupId,
+    this.meetingId,
+  });
+
+  @override
+  List<Object?> get props => [type, groupId, meetingId];
+}
+
 class GroupEntity extends Equatable {
   final String id;
   final int number;
@@ -13,6 +30,11 @@ class GroupEntity extends Equatable {
   final List<GroupMeeting> pendingMeetings;
   final bool hasPendingResponse;
 
+  /// Sorteio disponível quando o grupo não tem encontro aberto.
+  final PendingRaffle? pendingRaffle;
+  final bool hasOpenMeeting;
+  final String? openMeetingStatus;
+
   const GroupEntity({
     required this.id,
     required this.number,
@@ -22,6 +44,9 @@ class GroupEntity extends Equatable {
     this.nextMeeting,
     this.pendingMeetings = const [],
     this.hasPendingResponse = false,
+    this.pendingRaffle,
+    this.hasOpenMeeting = false,
+    this.openMeetingStatus,
   });
 
   GroupEntity copyWith({
@@ -33,6 +58,9 @@ class GroupEntity extends Equatable {
     GroupMeeting? nextMeeting,
     List<GroupMeeting>? pendingMeetings,
     bool? hasPendingResponse,
+    PendingRaffle? pendingRaffle,
+    bool? hasOpenMeeting,
+    String? openMeetingStatus,
   }) {
     return GroupEntity(
       id: id ?? this.id,
@@ -43,6 +71,9 @@ class GroupEntity extends Equatable {
       nextMeeting: nextMeeting ?? this.nextMeeting,
       pendingMeetings: pendingMeetings ?? this.pendingMeetings,
       hasPendingResponse: hasPendingResponse ?? this.hasPendingResponse,
+      pendingRaffle: pendingRaffle ?? this.pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting ?? this.hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus ?? this.openMeetingStatus,
     );
   }
 
@@ -58,5 +89,8 @@ class GroupEntity extends Equatable {
     nextMeeting,
     pendingMeetings,
     hasPendingResponse,
+    pendingRaffle,
+    hasOpenMeeting,
+    openMeetingStatus,
   ];
 }

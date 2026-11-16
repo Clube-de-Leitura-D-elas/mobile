@@ -59,6 +59,24 @@ void main() {
     );
 
     blocTest<RafflePreparationCubit, RafflePreparationState>(
+      'deve emitir [Loading, Loaded com isInaugural = true] quando groupId for fornecido sem meetingId',
+      build: () {
+        when(
+          () => mockRepository.getEligibleParticipants(null, 'group-1'),
+        ).thenAnswer((_) async => const Success([tParticipant]));
+        return RafflePreparationCubit(repository: mockRepository);
+      },
+      act: (cubit) => cubit.loadEligibleParticipants(null, 'group-1'),
+      expect: () => const [
+        RafflePreparationLoading(),
+        RafflePreparationLoaded(
+          participants: [tParticipant],
+          isInaugural: true,
+        ),
+      ],
+    );
+
+    blocTest<RafflePreparationCubit, RafflePreparationState>(
       'deve emitir [Loading, Error] quando o repositorio retornar falha',
       build: () {
         when(
@@ -172,6 +190,40 @@ void main() {
         ),
         RafflePreparationSuccess(selectedParticipants: [tParticipant]),
       ],
+    );
+
+    blocTest<RafflePreparationCubit, RafflePreparationState>(
+      'deve repassar groupId ao confirmar sorteio inaugural',
+      build: () {
+        when(
+          () => mockRepository.confirmRaffle(
+            groupId: any(named: 'groupId'),
+            selectedParticipantIds: any(named: 'selectedParticipantIds'),
+          ),
+        ).thenAnswer((_) async => const Success(null));
+        return RafflePreparationCubit(repository: mockRepository);
+      },
+      seed: () => const RafflePreparationLoaded(
+        participants: [tParticipant],
+        isInaugural: true,
+      ),
+      act: (cubit) => cubit.confirmRaffle(null, 'group-1'),
+      expect: () => const [
+        RafflePreparationLoaded(
+          participants: [tParticipant],
+          isInaugural: true,
+          isSubmitting: true,
+        ),
+        RafflePreparationSuccess(selectedParticipants: [tParticipant]),
+      ],
+      verify: (_) {
+        verify(
+          () => mockRepository.confirmRaffle(
+            groupId: 'group-1',
+            selectedParticipantIds: ['p1'],
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<RafflePreparationCubit, RafflePreparationState>(

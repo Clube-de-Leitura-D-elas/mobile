@@ -34,7 +34,7 @@ class MockRafflePreparationCubit extends Cubit<RafflePreparationState>
   }
 
   @override
-  Future<void> confirmRaffle(String meetingId) async {
+  Future<void> confirmRaffle([String? meetingId, String? groupId]) async {
     emit((state as RafflePreparationLoaded).copyWith(isSubmitting: true));
     await Future.delayed(const Duration(milliseconds: 500));
     emit(const RafflePreparationSuccess());

@@ -1,12 +1,14 @@
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 import 'package:mobile/features/home/presentation/cubit/home_state.dart';
 import 'package:mobile/features/home/presentation/widgets/home_empty_state.dart';
-import 'package:mobile/features/groups/domain/entities/group_failure.dart';
-import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 
 class HomeGroupsList extends StatelessWidget {
   final List<GroupEntity> groups;
@@ -97,7 +99,7 @@ class _GroupCardItem extends StatelessWidget {
       // Em "Tarefas pendentes" o mesmo grupo aparece uma vez por encontro.
       key: ValueKey(
         tasksOnly
-            ? 'group_card_${group.id}_${group.nextMeeting?.id}'
+            ? 'group_card_${group.id}_${group.nextMeeting?.id ?? 'raffle'}'
             : 'group_card_${group.id}',
       ),
       groupId: group.id,
@@ -106,6 +108,22 @@ class _GroupCardItem extends StatelessWidget {
       cityState: group.cityState,
       photoUrl: group.photoUrl,
       nextMeeting: group.nextMeeting,
+      pendingRaffle: group.pendingRaffle,
+      hasOpenMeeting: group.hasOpenMeeting,
+      openMeetingStatus: group.openMeetingStatus,
+      onPendingRafflePressed: () async {
+        await context.push(
+          RaffleRoutes.preparation,
+          extra: {
+            'group_id': group.id,
+            if (group.pendingRaffle?.meetingId != null)
+              'meeting_id': group.pendingRaffle!.meetingId,
+          },
+        );
+        if (context.mounted) {
+          onMeetingResponseSuccess();
+        }
+      },
       expanded: isExpanded,
       onToggleExpanded: onToggle,
       onMeetingResponseSuccess: onMeetingResponseSuccess,

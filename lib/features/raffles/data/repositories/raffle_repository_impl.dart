@@ -15,9 +15,12 @@ class RaffleRepositoryImpl implements RaffleRepository {
 
   @override
   Future<Result<List<RaffleParticipant>, RaffleFailure>>
-  getEligibleParticipants(String meetingId) async {
+  getEligibleParticipants([String? meetingId, String? groupId]) async {
     try {
-      final models = await remoteDataSource.getEligibleParticipants(meetingId);
+      final models = await remoteDataSource.getEligibleParticipants(
+        meetingId,
+        groupId,
+      );
       final entities = models.map((model) => model.toDomain()).toList();
       return Success(entities);
     } catch (e) {
@@ -27,11 +30,16 @@ class RaffleRepositoryImpl implements RaffleRepository {
 
   @override
   Future<Result<void, RaffleFailure>> confirmRaffle({
-    required String meetingId,
+    String? meetingId,
+    String? groupId,
     required List<String> selectedParticipantIds,
   }) async {
     try {
-      await remoteDataSource.confirmRaffle(meetingId, selectedParticipantIds);
+      await remoteDataSource.confirmRaffle(
+        meetingId,
+        selectedParticipantIds,
+        groupId,
+      );
       return const Success(null);
     } catch (e) {
       return Failure(_failureFrom(e));
@@ -40,10 +48,14 @@ class RaffleRepositoryImpl implements RaffleRepository {
 
   @override
   Future<Result<RaffleResult?, RaffleFailure>> getRaffleResult(
-    String meetingId,
-  ) async {
+    String? meetingId, [
+    String? groupId,
+  ]) async {
     try {
-      final model = await remoteDataSource.getRaffleResult(meetingId);
+      final model = await remoteDataSource.getRaffleResult(
+        meetingId,
+        groupId,
+      );
       return Success(model?.toDomain());
     } catch (e) {
       return Failure(_failureFrom(e));
@@ -52,12 +64,14 @@ class RaffleRepositoryImpl implements RaffleRepository {
 
   @override
   Future<Result<RaffleResult, RaffleFailure>> drawRaffle({
-    required String meetingId,
+    String? meetingId,
+    String? groupId,
     required List<String> eligibleParticipantIds,
   }) async {
     try {
       final model = await remoteDataSource.drawRaffle(
         meetingId: meetingId,
+        groupId: groupId,
         eligibleParticipantIds: eligibleParticipantIds,
       );
       return Success(model.toDomain());
@@ -68,8 +82,10 @@ class RaffleRepositoryImpl implements RaffleRepository {
 
   @override
   Future<Result<void, RaffleFailure>> saveRaffleResult(
-    RaffleResult result,
-  ) async {
+    RaffleResult result, {
+    String? meetingId,
+    String? groupId,
+  }) async {
     try {
       final model = RaffleResultModel(
         meetingId: result.meetingId,
@@ -81,7 +97,11 @@ class RaffleRepositoryImpl implements RaffleRepository {
         bookCoverUrl: result.bookCoverUrl,
         drawnAt: result.drawnAt ?? DateTime.now(),
       );
-      await remoteDataSource.saveRaffleResult(model);
+      await remoteDataSource.saveRaffleResult(
+        model,
+        meetingId: meetingId,
+        groupId: groupId,
+      );
       return const Success(null);
     } catch (e) {
       return Failure(_failureFrom(e));
@@ -110,6 +130,9 @@ class RaffleRepositoryImpl implements RaffleRepository {
     }
     if (message.contains('only available after the meeting is ended')) {
       return const RaffleMeetingNotEndedFailure();
+    }
+    if (message.contains('group already has an open meeting')) {
+      return const RaffleOpenMeetingAlreadyExistsFailure();
     }
     if (message.contains('book already drawn')) {
       return const RaffleBookAlreadyDrawnFailure();

@@ -775,6 +775,33 @@ class AppLocalizationsPt extends AppLocalizations {
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
 
   @override
+  String get raffleInauguralTitle => 'Sorteio Inaugural';
+
+  @override
+  String get raffleInauguralSubtitle =>
+      'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.';
+
+  @override
+  String get raffleNoEligibleParticipantsExplanation =>
+      'Nenhuma participante ativa possui sugestão de livro disponível para sorteio.';
+
+  @override
+  String get raffleManualDefinitionAction => 'Definir encontro sem sorteio';
+
+  @override
+  String get raffleMeetingInPreparation => 'Encontro em preparação';
+
+  @override
+  String get homePendingTasksRaffleInaugural => 'Realizar sorteio inaugural';
+
+  @override
+  String get homePendingTasksRafflePending => 'Realizar sorteio pendente';
+
+  @override
+  String get raffleOpenMeetingAlreadyExistsError =>
+      'O grupo já possui um encontro em andamento.';
+
+  @override
   String groupMeetingMyTasksProgress(int done, int total) {
     return '$done de $total tarefas concluídas';
   }
@@ -2651,6 +2678,33 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get raffleSavedSuccessToast =>
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
+
+  @override
+  String get raffleInauguralTitle => 'Sorteio Inaugural';
+
+  @override
+  String get raffleInauguralSubtitle =>
+      'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.';
+
+  @override
+  String get raffleNoEligibleParticipantsExplanation =>
+      'Nenhuma participante ativa possui sugestão de livro disponível para sorteio.';
+
+  @override
+  String get raffleManualDefinitionAction => 'Definir encontro sem sorteio';
+
+  @override
+  String get raffleMeetingInPreparation => 'Encontro em preparação';
+
+  @override
+  String get homePendingTasksRaffleInaugural => 'Realizar sorteio inaugural';
+
+  @override
+  String get homePendingTasksRafflePending => 'Realizar sorteio pendente';
+
+  @override
+  String get raffleOpenMeetingAlreadyExistsError =>
+      'O grupo já possui um encontro em andamento.';
 
   @override
   String get meetingPhotoPrevious => 'Foto anterior';

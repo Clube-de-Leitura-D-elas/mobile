@@ -17,8 +17,12 @@ import 'package:mobile/features/groups/presentation/widgets/participants/group_p
 import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key, required this.groupId});
@@ -53,13 +57,37 @@ class GroupDetailsPage extends StatelessWidget {
                 ? NetworkImage(group.coverImageUrl!)
                 : null,
             whatsappUrl: group.whatsappUrl,
+            raffleAction: group.pendingRaffle != null
+                ? AppButton.primary(
+                    label:
+                        group.pendingRaffle!.type == PendingRaffleType.inaugural
+                        ? context.l10n.raffleInauguralTitle
+                        : context.l10n.rafflePreparationTitle,
+                    onPressed: () async {
+                      await context.push(
+                        RaffleRoutes.preparation,
+                        extra: {
+                          'group_id': group.pendingRaffle!.groupId,
+                          if (group.pendingRaffle!.meetingId != null)
+                            'meeting_id': group.pendingRaffle!.meetingId,
+                        },
+                      );
+                      if (context.mounted) {
+                        await Future.wait([
+                          context.read<GroupDetailsCubit>().refresh(),
+                          context.read<NextEventCubit>().load(groupId),
+                        ]);
+                      }
+                    },
+                  )
+                : null,
             nextEvent: BlocBuilder<NextEventCubit, NextEventState>(
               builder: (context, nextEventState) {
                 final meetingId = nextEventState is NextEventLoaded
                     ? nextEventState.event.id
                     : null;
                 return GroupNextEvent(
-                  status: _toWidgetStatus(nextEventState),
+                  status: _toWidgetStatus(nextEventState, group),
                   data: _toWidgetData(nextEventState),
                   errorMessage: nextEventState is NextEventError
                       ? groupFailureMessage(
@@ -120,10 +148,16 @@ class GroupDetailsPage extends StatelessWidget {
     );
   }
 
-  GroupNextEventStatus _toWidgetStatus(NextEventState state) {
+  GroupNextEventStatus _toWidgetStatus(
+    NextEventState state,
+    GroupDetailsEntity group,
+  ) {
     return switch (state) {
       NextEventLoading() => GroupNextEventStatus.loading,
-      NextEventEmpty() => GroupNextEventStatus.empty,
+      NextEventEmpty() =>
+        (group.hasOpenMeeting && group.openMeetingStatus == 'CREATED')
+            ? GroupNextEventStatus.inPreparation
+            : GroupNextEventStatus.empty,
       NextEventLoaded() => GroupNextEventStatus.loaded,
       NextEventError() => GroupNextEventStatus.error,
     };

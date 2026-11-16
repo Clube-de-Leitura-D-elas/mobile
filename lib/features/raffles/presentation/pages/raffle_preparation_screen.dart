@@ -4,21 +4,23 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
-import 'package:mobile/features/raffles/presentation/raffle_failure_message.dart';
-import 'package:mobile/features/raffles/presentation/widgets/raffle_error_state.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
+import 'package:mobile/features/raffles/presentation/raffle_failure_message.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/features/raffles/presentation/widgets/confirm_raffle_dialog.dart';
+import 'package:mobile/features/raffles/presentation/widgets/raffle_error_state.dart';
 import 'package:mobile/features/raffles/presentation/widgets/raffle_participant_tile.dart';
 
 class RafflePreparationScreen extends StatelessWidget {
   final String meetingId;
+  final String? groupId;
   final String meetingTitle;
 
   const RafflePreparationScreen({
     super.key,
     required this.meetingId,
+    this.groupId,
     this.meetingTitle = '',
   });
 
@@ -29,7 +31,11 @@ class RafflePreparationScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: colors.bgDefault,
-      appBar: ScreenHeader.back(title: context.l10n.rafflePreparationTitle),
+      appBar: ScreenHeader.back(
+        title: (groupId != null && meetingId.isEmpty)
+            ? context.l10n.raffleInauguralTitle
+            : context.l10n.rafflePreparationTitle,
+      ),
       body: SafeArea(
         child: BlocConsumer<RafflePreparationCubit, RafflePreparationState>(
           listenWhen: (previous, current) =>
@@ -65,6 +71,10 @@ class RafflePreparationScreen extends StatelessWidget {
             }
 
             if (state is RafflePreparationLoaded) {
+              final eligibleParticipants = state.participants
+                  .where((p) => !p.isExcludedByRule)
+                  .toList();
+              final hasEligible = eligibleParticipants.isNotEmpty;
               final hasSelected = state.participants.any((p) => p.isSelected);
 
               return Column(
@@ -76,30 +86,47 @@ class RafflePreparationScreen extends StatelessWidget {
                           padding: EdgeInsets.symmetric(
                             horizontal: spacing.s24,
                           ),
-                          sliver: const SliverToBoxAdapter(
-                            child: _RaffleHeader(),
+                          sliver: SliverToBoxAdapter(
+                            child: _RaffleHeader(
+                              isInaugural: state.isInaugural,
+                            ),
                           ),
                         ),
-                        SliverPadding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: spacing.s24,
+                        if (!hasEligible)
+                          SliverPadding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: spacing.s24,
+                              vertical: spacing.s16,
+                            ),
+                            sliver: SliverToBoxAdapter(
+                              child: _NoEligibleCard(
+                                onManualDefine: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          )
+                        else
+                          SliverPadding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: spacing.s24,
+                            ),
+                            sliver: _ParticipantsTable(
+                              participants: state.participants,
+                            ),
                           ),
-                          sliver: _ParticipantsTable(
-                            participants: state.participants,
-                          ),
-                        ),
                       ],
                     ),
                   ),
                   _ContinueButton(
                     isSubmitting: state.isSubmitting,
-                    canConfirm: hasSelected,
+                    canConfirm: hasSelected && hasEligible,
                     onContinue: () async {
                       final confirmed = await ConfirmRaffleDialog.show(context);
                       if (confirmed == true && context.mounted) {
                         await context
                             .read<RafflePreparationCubit>()
-                            .confirmRaffle(meetingId);
+                            .confirmRaffle(meetingId, groupId);
                       }
                     },
                   ),
@@ -133,6 +160,7 @@ class RafflePreparationScreen extends StatelessWidget {
         RaffleRoutes.draw,
         extra: {
           'meeting_id': meetingId,
+          'group_id': groupId,
           'meeting_title': meetingTitle,
           'participants': selected,
         },
@@ -145,7 +173,9 @@ class RafflePreparationScreen extends StatelessWidget {
 }
 
 class _RaffleHeader extends StatelessWidget {
-  const _RaffleHeader();
+  final bool isInaugural;
+
+  const _RaffleHeader({this.isInaugural = false});
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +187,9 @@ class _RaffleHeader extends StatelessWidget {
       children: [
         const Gap16(),
         Text(
-          context.l10n.rafflePreparationSubtitle,
+          isInaugural
+              ? context.l10n.raffleInauguralSubtitle
+              : context.l10n.rafflePreparationSubtitle,
           style: typography.bodyDefault.copyWith(color: colors.textMuted),
         ),
         const Gap24(),
@@ -188,6 +220,50 @@ class _RaffleHeader extends StatelessWidget {
         ),
         const Gap12(),
       ],
+    );
+  }
+}
+
+class _NoEligibleCard extends StatelessWidget {
+  final VoidCallback onManualDefine;
+
+  const _NoEligibleCard({required this.onManualDefine});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
+
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.info_outline,
+                color: colors.actionPrimary,
+                size: 20,
+              ),
+              SizedBox(width: spacing.s8),
+              Expanded(
+                child: Text(
+                  context.l10n.raffleNoEligibleParticipantsExplanation,
+                  style: typography.bodySmall.copyWith(
+                    color: colors.textDefault,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: spacing.s16),
+          AppButton.secondary(
+            label: context.l10n.raffleManualDefinitionAction,
+            onPressed: onManualDefine,
+          ),
+        ],
+      ),
     );
   }
 }

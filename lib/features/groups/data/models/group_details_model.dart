@@ -1,4 +1,5 @@
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 
 class GroupDetailsModel extends GroupDetailsEntity {
   const GroupDetailsModel({
@@ -9,6 +10,9 @@ class GroupDetailsModel extends GroupDetailsEntity {
     required super.stateCode,
     super.coverImageUrl,
     super.whatsappUrl,
+    super.pendingRaffle,
+    super.hasOpenMeeting,
+    super.openMeetingStatus,
   });
 
   factory GroupDetailsModel.fromJson(dynamic json) {
@@ -23,6 +27,9 @@ class GroupDetailsModel extends GroupDetailsEntity {
     final stateCode = json['state_code'];
     final coverImageUrl = json['cover_image_url'];
     final whatsappUrl = json['whatsapp_url'];
+    final pendingRaffle = _parsePendingRaffle(json['pending_raffle']);
+    final hasOpenMeeting = json['has_open_meeting'] as bool? ?? false;
+    final openMeetingStatus = json['open_meeting_status'] as String?;
 
     if (name is! String ||
         genres is! List ||
@@ -43,7 +50,22 @@ class GroupDetailsModel extends GroupDetailsEntity {
       stateCode: stateCode as String? ?? '',
       coverImageUrl: coverImageUrl as String?,
       whatsappUrl: whatsappUrl as String?,
+      pendingRaffle: pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus,
     );
+  }
+
+  static PendingRaffle? _parsePendingRaffle(dynamic json) {
+    if (json == null || json is! Map<String, dynamic>) return null;
+    final typeStr = json['type'] as String?;
+    final groupId = json['group_id'] as String?;
+    final meetingId = json['meeting_id'] as String?;
+    if (groupId == null) return null;
+    final type = typeStr == 'INAUGURAL'
+        ? PendingRaffleType.inaugural
+        : PendingRaffleType.pending;
+    return PendingRaffle(type: type, groupId: groupId, meetingId: meetingId);
   }
 
   GroupDetailsEntity toDomain() {
@@ -55,6 +77,9 @@ class GroupDetailsModel extends GroupDetailsEntity {
       stateCode: stateCode,
       coverImageUrl: coverImageUrl,
       whatsappUrl: whatsappUrl,
+      pendingRaffle: pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus,
     );
   }
 }
