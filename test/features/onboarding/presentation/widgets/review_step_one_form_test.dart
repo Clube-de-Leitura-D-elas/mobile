@@ -102,6 +102,35 @@ void main() {
     expect(changed?.birthDate, '05/03/1990');
   });
 
+  testWidgets('sends the name text', (tester) async {
+    UserReviewProfile? changed;
+    await tester.pumpWidget(
+      _wrap(const UserReviewProfile(), (profile) => changed = profile),
+    );
+
+    await tester.enterText(find.byType(TextField).at(0), 'Maria');
+    expect(changed?.name, 'Maria');
+  });
+
+  testWidgets('sends the selected zone', (tester) async {
+    UserReviewProfile? changed;
+    await tester.pumpWidget(
+      _wrap(
+        const UserReviewProfile(cityId: 'poa', cityName: 'Porto Alegre'),
+        (profile) => changed = profile,
+        cities: cities,
+      ),
+    );
+
+    await tester.tap(find.text('Selecione uma região'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Zona Sul'));
+    await tester.pumpAndSettle();
+
+    expect(changed?.zoneId, 'poa-sul');
+    expect(changed?.zoneName, 'Zona Sul');
+  });
+
   testWidgets('keeps the login e-mail read-only', (tester) async {
     await tester.pumpWidget(
       _wrap(

@@ -20,6 +20,9 @@ import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
 import 'package:mobile/features/onboarding/presentation/pages/onboarding_review_screen.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
+import 'package:mobile/features/onboarding/presentation/widgets/review_step_one_form.dart';
+import 'package:mobile/features/onboarding/presentation/widgets/review_step_three_form.dart';
+import 'package:mobile/features/onboarding/presentation/widgets/review_step_two_form.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -48,6 +51,10 @@ void main() {
     uf: 'RS',
     zones: [Zone(id: 'zone-1', name: 'Zona Sul')],
   );
+
+  setUpAll(() {
+    registerFallbackValue(const UserReviewProfile());
+  });
 
   setUp(() {
     mockReviewCubit = MockOnboardingReviewCubit();
@@ -226,7 +233,7 @@ void main() {
       );
       const cityWithoutZones = City(id: 'city-2', name: 'Recife', uf: 'PE');
 
-      final initialState = OnboardingReviewFormState(
+      const initialState = OnboardingReviewFormState(
         currentStep: 0,
         profile: profileWithoutZone,
         cities: [cityWithoutZones],
@@ -282,6 +289,104 @@ void main() {
       expect(find.text('Welcome Screen'), findsOneWidget);
 
       await streamController.close();
+    },
+  );
+
+  testWidgets('goes back when Voltar is pressed on step 1', (tester) async {
+    const step0 = OnboardingReviewFormState(
+      currentStep: 0,
+      profile: testProfile,
+      cities: [testCity],
+    );
+    const step1 = OnboardingReviewFormState(
+      currentStep: 1,
+      profile: testProfile,
+      cities: [testCity],
+    );
+    when(() => mockReviewCubit.state).thenReturn(step0);
+    final controller = StreamController<OnboardingReviewState>.broadcast();
+    whenListen(
+      mockReviewCubit,
+      controller.stream,
+      initialState: step0,
+    );
+
+    await tester.pumpWidget(
+      buildSubject(child: const OnboardingReviewScreen()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Continuar'));
+    await tester.pumpAndSettle();
+
+    when(() => mockReviewCubit.state).thenReturn(step1);
+    controller.add(step1);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Voltar'));
+    await tester.pumpAndSettle();
+
+    verify(() => mockReviewCubit.goToStep(0)).called(1);
+    await controller.close();
+  });
+
+  testWidgets('forwards form changes to the cubit', (tester) async {
+    when(() => mockReviewCubit.state).thenReturn(
+      const OnboardingReviewFormState(
+        currentStep: 0,
+        profile: testProfile,
+        cities: [testCity],
+      ),
+    );
+
+    await tester.pumpWidget(
+      buildSubject(child: const OnboardingReviewScreen()),
+    );
+    await tester.pumpAndSettle();
+
+    tester
+        .widget<ReviewStepOneForm>(find.byType(ReviewStepOneForm))
+        .onChanged(testProfile.copyWith(name: 'Maria'));
+
+    await tester.tap(find.text('Continuar'));
+    await tester.pumpAndSettle();
+    tester
+        .widget<ReviewStepTwoForm>(find.byType(ReviewStepTwoForm))
+        .onChanged(testProfile.copyWith(job: 'Designer'));
+
+    await tester.tap(find.text('Continuar'));
+    await tester.pumpAndSettle();
+    tester
+        .widget<ReviewStepThreeForm>(find.byType(ReviewStepThreeForm))
+        .onChanged(testProfile.copyWith(expectations: 'Ler mais'));
+
+    verify(() => mockReviewCubit.updateProfile(any())).called(3);
+  });
+
+  testWidgets(
+    'shows the toast and returns to step 0 when swiping without location',
+    (tester) async {
+      when(() => mockReviewCubit.state).thenReturn(
+        const OnboardingReviewFormState(
+          currentStep: 0,
+          profile: UserReviewProfile(name: 'Maria Silva'),
+          cities: [testCity],
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(child: const OnboardingReviewScreen()),
+      );
+      await tester.pumpAndSettle();
+
+      tester.widget<PageView>(find.byType(PageView)).onPageChanged!(1);
+      await tester.pump();
+
+      expect(
+        find.text('Selecione a cidade e a região para continuar.'),
+        findsOneWidget,
+      );
+      verifyNever(() => mockReviewCubit.goToStep(1));
     },
   );
 

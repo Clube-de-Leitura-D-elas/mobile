@@ -554,6 +554,26 @@ void main() {
         ]);
       });
 
+      test('uses the authenticated user when refreshing silently', () async {
+        when(() => mockSupabaseService.currentUser)
+            .thenReturn(mockSupabaseUser);
+        when(
+          () => mockAuthRepository.getUserProfile('user-123'),
+        ).thenAnswer((_) async => const Success(testProfile));
+
+        sessionCubit.emit(
+          const AuthenticatedSession(
+            user: testUserEntity,
+            profile: testProfile,
+          ),
+        );
+
+        final authenticated = await sessionCubit.refreshProfileSilently();
+
+        expect(authenticated, isTrue);
+        verify(() => mockAuthRepository.getUserProfile('user-123')).called(1);
+      });
+
       test('returns false and keeps the claim state when profile is null', () async {
         when(() => mockSupabaseService.currentUser)
             .thenReturn(mockSupabaseUser);
