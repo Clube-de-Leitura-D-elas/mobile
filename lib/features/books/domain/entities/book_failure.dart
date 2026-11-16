@@ -40,3 +40,15 @@ class BookDetailsLoadFailure extends BookFailure {
 class BookNotFoundFailure extends BookFailure {
   const BookNotFoundFailure() : super(message: '');
 }
+
+class BookRecommendationGroupsFailure extends BookFailure {
+  const BookRecommendationGroupsFailure() : super(message: '');
+}
+
+class BookRecommendationFailure extends BookFailure {
+  const BookRecommendationFailure() : super(message: '');
+}
+
+class BookAlreadyRecommendedFailure extends BookFailure {
+  const BookAlreadyRecommendedFailure() : super(message: '');
+}

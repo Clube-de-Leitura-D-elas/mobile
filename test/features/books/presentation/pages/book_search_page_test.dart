@@ -13,8 +13,8 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
-import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -160,7 +160,9 @@ void main() {
         GoRoute(
           path: '/books/:bookId',
           builder: (context, state) {
-            final onChanged = state.extra! as ReadingStatusChanged;
+            final onChanged =
+                (state.extra! as BookDetailsRouteExtra)
+                    .onReadingStatusChanged!;
             return Scaffold(
               body: TextButton(
                 onPressed: () {

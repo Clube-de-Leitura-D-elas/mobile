@@ -317,6 +317,20 @@ void main() {
     expect(screen.whatsappUrl, 'https://chat.whatsapp.com/ABC123xyz');
   });
 
+  testWidgets('wires the recommend book action on the loaded group', (
+    tester,
+  ) async {
+    stubLoadedGroup();
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final screen = tester.widget<GroupDetailsScreen>(
+      find.byType(GroupDetailsScreen),
+    );
+    expect(screen.onRecommendBook, isNotNull);
+  });
+
   testWidgets('Given a next event with a book cover, '
       'When the page loads, '
       'Then GroupNextEvent receives the book title and a network cover', (

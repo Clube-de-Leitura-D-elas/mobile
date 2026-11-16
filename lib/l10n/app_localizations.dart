@@ -1916,6 +1916,42 @@ abstract class AppLocalizations {
   /// **'Indicar'**
   String get bookDetailRecommendButton;
 
+  /// Título do modal de grupos que podem receber a indicação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione o grupo'**
+  String get bookRecommendationGroupsTitle;
+
+  /// Estado vazio quando não há grupos para indicar o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo.'**
+  String get bookRecommendationGroupsEmpty;
+
+  /// Falha ao carregar os grupos para indicação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os grupos.'**
+  String get bookRecommendationGroupsError;
+
+  /// Falha genérica ao indicar o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível indicar o livro.'**
+  String get bookRecommendationError;
+
+  /// Indicação recusada porque o livro já foi indicado para o grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este livro já foi indicado para este grupo.'**
+  String get bookRecommendationAlreadyExists;
+
+  /// Confirmação da indicação de livro para o grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro indicado ao {groupName}'**
+  String bookRecommendationSuccess(Object groupName);
+
   /// Título da seção de sinopse no detalhe do livro.
   ///
   /// In pt, this message translates to:

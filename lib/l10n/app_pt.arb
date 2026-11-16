@@ -1467,6 +1467,33 @@
   "@bookDetailRecommendButton": {
     "description": "Botão para indicar o livro a um grupo."
   },
+  "bookRecommendationGroupsTitle": "Selecione o grupo",
+  "@bookRecommendationGroupsTitle": {
+    "description": "Título do modal de grupos que podem receber a indicação."
+  },
+  "bookRecommendationGroupsEmpty": "Você ainda não participa de nenhum grupo.",
+  "@bookRecommendationGroupsEmpty": {
+    "description": "Estado vazio quando não há grupos para indicar o livro."
+  },
+  "bookRecommendationGroupsError": "Não foi possível carregar os grupos.",
+  "@bookRecommendationGroupsError": {
+    "description": "Falha ao carregar os grupos para indicação."
+  },
+  "bookRecommendationError": "Não foi possível indicar o livro.",
+  "@bookRecommendationError": {
+    "description": "Falha genérica ao indicar o livro."
+  },
+  "bookRecommendationAlreadyExists": "Este livro já foi indicado para este grupo.",
+  "@bookRecommendationAlreadyExists": {
+    "description": "Indicação recusada porque o livro já foi indicado para o grupo."
+  },
+  "bookRecommendationSuccess": "Livro indicado ao {groupName}",
+  "@bookRecommendationSuccess": {
+    "description": "Confirmação da indicação de livro para o grupo.",
+    "placeholders": {
+      "groupName": {}
+    }
+  },
   "bookDetailSynopsisTitle": "Sinopse",
   "@bookDetailSynopsisTitle": {
     "description": "Título da seção de sinopse no detalhe do livro."

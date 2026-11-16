@@ -5,6 +5,7 @@ import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
@@ -255,6 +256,81 @@ void main() {
           status: any(named: 'status'),
         ),
       ),
+    );
+  });
+
+  group('recommendation', () {
+    const group = BookRecommendationGroup(
+      id: 'group-1',
+      name: 'Grupo 1',
+      alreadyRecommended: false,
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'loads the groups available for the book',
+      setUp: () {
+        when(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).thenAnswer((_) async => const Success([group]));
+      },
+      seed: () => loaded(_details()),
+      build: build,
+      act: (cubit) => cubit.loadRecommendationGroups(),
+      expect: () => [
+        loaded(_details()).copyWith(isLoadingRecommendationGroups: true),
+        loaded(_details()).copyWith(recommendationGroups: const [group]),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'marks a conflict as already recommended',
+      setUp: () {
+        when(
+          () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+        ).thenAnswer(
+          (_) async => const Failure(BookAlreadyRecommendedFailure()),
+        );
+      },
+      seed: () =>
+          loaded(_details()).copyWith(recommendationGroups: const [group]),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => [
+        loaded(
+          _details(),
+        ).copyWith(recommendationGroups: const [group], isRecommending: true),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [
+            BookRecommendationGroup(
+              id: 'group-1',
+              name: 'Grupo 1',
+              alreadyRecommended: true,
+            ),
+          ],
+          notice: BookDetailsNotice.recommendationAlreadyExists,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'raises a success notice after recommending a book',
+      setUp: () {
+        when(
+          () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+        ).thenAnswer((_) async => const Success(null));
+      },
+      seed: () => loaded(_details()),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => [
+        loaded(_details()).copyWith(isRecommending: true),
+        loaded(_details()).copyWith(
+          notice: BookDetailsNotice.recommendationSucceeded,
+          recommendedGroupName: 'Grupo 1',
+        ),
+      ],
     );
   });
 }

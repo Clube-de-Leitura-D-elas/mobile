@@ -3,16 +3,24 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
+import 'package:mobile/features/books/presentation/widgets/group_select_tile.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
 class BookDetailsContent extends StatelessWidget {
-  const BookDetailsContent({super.key, required this.state});
+  const BookDetailsContent({
+    super.key,
+    required this.state,
+    this.recommendationTarget,
+  });
 
   final BookDetailsState state;
+  final BookRecommendationTarget? recommendationTarget;
 
   static ReadingStatusChipState chipStateFor(BookReadingStatus? status) {
     return switch (status) {
@@ -51,7 +59,10 @@ class BookDetailsContent extends StatelessWidget {
           ),
           sliver: SliverList.list(
             children: [
-              _BookActions(details: details),
+              _BookActions(
+                details: details,
+                recommendationTarget: recommendationTarget,
+              ),
               ..._synopsis(context, details.synopsis),
               SizedBox(height: spacing.s24),
               _SectionTitle(context.l10n.bookDetailReviewsTitle),
@@ -120,9 +131,26 @@ class BookDetailsContent extends StatelessWidget {
 }
 
 class _BookActions extends StatelessWidget {
-  const _BookActions({required this.details});
+  const _BookActions({
+    required this.details,
+    required this.recommendationTarget,
+  });
 
   final BookDetailsEntity details;
+  final BookRecommendationTarget? recommendationTarget;
+
+  Future<void> _openRecommendationDialog(BuildContext context) async {
+    final cubit = context.read<BookDetailsCubit>();
+    await cubit.loadRecommendationGroups();
+    if (!context.mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: const _RecommendationGroupsDialog(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,14 +170,112 @@ class _BookActions extends StatelessWidget {
         ),
         SizedBox(width: context.spacing.s16),
         Expanded(
-          // TODO(CLU-272): abrir o modal Selecione o grupo (recommend-book).
           child: AppButton.primary(
             label: l10n.bookDetailRecommendButton,
             size: AppButtonSize.lg,
-            onPressed: null,
+            onPressed: recommendationTarget == null
+                ? () => _openRecommendationDialog(context)
+                : () => context.read<BookDetailsCubit>().recommendBook(
+                    groupId: recommendationTarget!.groupId,
+                    groupName: recommendationTarget!.groupName,
+                  ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _RecommendationGroupsDialog extends StatelessWidget {
+  const _RecommendationGroupsDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppDialog(
+      title: context.l10n.bookRecommendationGroupsTitle,
+      child: BlocBuilder<BookDetailsCubit, BookDetailsState>(
+        builder: (context, state) {
+          if (state.isLoadingRecommendationGroups) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: context.spacing.s24),
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: context.colors.actionPrimary,
+                ),
+              ),
+            );
+          }
+          if (state.notice == BookDetailsNotice.recommendationGroupsFailed) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  context.l10n.bookRecommendationGroupsError,
+                  style: context.typography.bodyDefault.copyWith(
+                    color: context.colors.textMuted,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: context.spacing.s16),
+                AppButton.secondary(
+                  label: context.l10n.errorRetryButton,
+                  size: AppButtonSize.lg,
+                  onPressed: context
+                      .read<BookDetailsCubit>()
+                      .loadRecommendationGroups,
+                ),
+              ],
+            );
+          }
+          if (state.recommendationGroups.isEmpty) {
+            return Text(
+              context.l10n.bookRecommendationGroupsEmpty,
+              style: context.typography.bodyDefault.copyWith(
+                color: context.colors.textMuted,
+              ),
+            );
+          }
+
+          return Column(
+            children: [
+              for (
+                var index = 0;
+                index < state.recommendationGroups.length;
+                index++
+              ) ...[
+                if (index > 0) SizedBox(height: context.spacing.s16),
+                _RecommendationGroupTile(
+                  group: state.recommendationGroups[index],
+                ),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _RecommendationGroupTile extends StatelessWidget {
+  const _RecommendationGroupTile({required this.group});
+
+  final BookRecommendationGroup group;
+
+  @override
+  Widget build(BuildContext context) {
+    return GroupSelectTile(
+      key: ValueKey(group.id),
+      name: group.name,
+      photoUrl: group.photoUrl,
+      alreadySuggested: group.alreadyRecommended,
+      onTap: () async {
+        final recommended = await context
+            .read<BookDetailsCubit>()
+            .recommendBook(groupId: group.id, groupName: group.name);
+        if (recommended && context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
     );
   }
 }

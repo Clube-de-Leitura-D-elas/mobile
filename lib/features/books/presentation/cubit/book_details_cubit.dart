@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 
@@ -111,6 +112,80 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
             isUpdatingStatus: false,
           ),
         );
+    }
+  }
+
+  Future<void> loadRecommendationGroups() async {
+    if (state.isLoadingRecommendationGroups || state.details == null) return;
+    emit(state.copyWith(isLoadingRecommendationGroups: true, notice: null));
+    final result = await repository.getBookRecommendationGroups(
+      bookId: state.details!.id,
+    );
+    if (isClosed) return;
+
+    switch (result) {
+      case Failure():
+        emit(
+          state.copyWith(
+            isLoadingRecommendationGroups: false,
+            notice: BookDetailsNotice.recommendationGroupsFailed,
+          ),
+        );
+      case Success(:final data):
+        emit(
+          state.copyWith(
+            recommendationGroups: data,
+            isLoadingRecommendationGroups: false,
+          ),
+        );
+    }
+  }
+
+  Future<bool> recommendBook({
+    required String groupId,
+    required String groupName,
+  }) async {
+    final details = state.details;
+    if (details == null || state.isRecommending) return false;
+    emit(state.copyWith(isRecommending: true, notice: null));
+
+    final result = await repository.recommendBook(
+      bookId: details.id,
+      groupId: groupId,
+    );
+    if (isClosed) return false;
+
+    switch (result) {
+      case Success():
+        emit(
+          state.copyWith(
+            isRecommending: false,
+            notice: BookDetailsNotice.recommendationSucceeded,
+            recommendedGroupName: groupName,
+          ),
+        );
+        return true;
+      case Failure(:final failure):
+        emit(
+          state.copyWith(
+            isRecommending: false,
+            notice: failure is BookAlreadyRecommendedFailure
+                ? BookDetailsNotice.recommendationAlreadyExists
+                : BookDetailsNotice.recommendationFailed,
+            recommendationGroups: [
+              for (final group in state.recommendationGroups)
+                group.id == groupId
+                    ? BookRecommendationGroup(
+                        id: group.id,
+                        name: group.name,
+                        photoUrl: group.photoUrl,
+                        alreadyRecommended: true,
+                      )
+                    : group,
+            ],
+          ),
+        );
+        return false;
     }
   }
 }

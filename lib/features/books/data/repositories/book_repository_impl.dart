@@ -6,9 +6,11 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/data/models/book_details_model.dart';
 import 'package:mobile/features/books/data/models/book_page_model.dart';
 import 'package:mobile/features/books/data/models/book_reading_status_model.dart';
+import 'package:mobile/features/books/data/models/book_recommendation_group_model.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 
@@ -106,6 +108,72 @@ class BookRepositoryImpl implements BookRepository {
       case Success(:final data):
         return Success(data.data);
     }
+  }
+
+  @override
+  Future<Result<List<BookRecommendationGroup>, BookFailure>>
+  getBookRecommendationGroups({required String bookId}) async {
+    final result = await supabaseService
+        .invokeFunction<List<BookRecommendationGroupModel>>(
+          functionName: 'get-book-recommendation-groups',
+          method: HttpMethod.get,
+          queryParameters: {'bookId': bookId},
+          decoder: BookRecommendationGroupModel.listFromJson,
+        );
+
+    switch (result) {
+      case Failure(:final failure):
+        return Failure(
+          _recommendationFailureFrom(
+            failure,
+            const BookRecommendationGroupsFailure(),
+          ),
+        );
+      case Success(:final data):
+        return Success(
+          data.data?.map((group) => group.toDomain()).toList() ?? const [],
+        );
+    }
+  }
+
+  @override
+  Future<Result<void, BookFailure>> recommendBook({
+    required String bookId,
+    required String groupId,
+  }) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'recommend-book',
+      body: {'book_id': bookId, 'group_id': groupId},
+    );
+
+    switch (result) {
+      case Success():
+        return const Success(null);
+      case Failure(:final failure):
+        if (failure.kind == SupabaseFailureKind.conflict) {
+          return const Failure(BookAlreadyRecommendedFailure());
+        }
+        return Failure(
+          _recommendationFailureFrom(
+            failure,
+            const BookRecommendationFailure(),
+          ),
+        );
+    }
+  }
+
+  BookFailure _recommendationFailureFrom(
+    SupabaseFailure failure,
+    BookFailure fallback,
+  ) {
+    debugPrint(
+      '[BookRecommendationFailure] ${failure.message} (${failure.code})',
+    );
+    return switch (failure.kind) {
+      SupabaseFailureKind.network => const BookNetworkFailure(),
+      SupabaseFailureKind.unauthorized => const BookSessionExpiredFailure(),
+      _ => fallback,
+    };
   }
 
   BookFailure _failureFrom(SupabaseFailure failure, BookFailure fallback) {

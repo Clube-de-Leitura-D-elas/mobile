@@ -19,6 +19,8 @@ import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key, required this.groupId});
@@ -53,6 +55,13 @@ class GroupDetailsPage extends StatelessWidget {
                 ? NetworkImage(group.coverImageUrl!)
                 : null,
             whatsappUrl: group.whatsappUrl,
+            onRecommendBook: () => context.push(
+              QuickAccessRoutes.search,
+              extra: BookRecommendationTarget(
+                groupId: groupId,
+                groupName: 'Grupo ${group.name}',
+              ),
+            ),
             nextEvent: BlocBuilder<NextEventCubit, NextEventState>(
               builder: (context, nextEventState) {
                 final meetingId = nextEventState is NextEventLoaded

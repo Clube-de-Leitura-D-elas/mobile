@@ -1084,6 +1084,29 @@ class AppLocalizationsPt extends AppLocalizations {
   String get bookDetailRecommendButton => 'Indicar';
 
   @override
+  String get bookRecommendationGroupsTitle => 'Selecione o grupo';
+
+  @override
+  String get bookRecommendationGroupsEmpty =>
+      'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get bookRecommendationGroupsError =>
+      'Não foi possível carregar os grupos.';
+
+  @override
+  String get bookRecommendationError => 'Não foi possível indicar o livro.';
+
+  @override
+  String get bookRecommendationAlreadyExists =>
+      'Este livro já foi indicado para este grupo.';
+
+  @override
+  String bookRecommendationSuccess(Object groupName) {
+    return 'Livro indicado ao $groupName';
+  }
+
+  @override
   String get bookDetailSynopsisTitle => 'Sinopse';
 
   @override
@@ -2703,6 +2726,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get bookDetailRecommendButton => 'Indicar';
+
+  @override
+  String get bookRecommendationGroupsTitle => 'Selecione o grupo';
+
+  @override
+  String get bookRecommendationGroupsEmpty =>
+      'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get bookRecommendationGroupsError =>
+      'Não foi possível carregar os grupos.';
+
+  @override
+  String get bookRecommendationError => 'Não foi possível indicar o livro.';
+
+  @override
+  String get bookRecommendationAlreadyExists =>
+      'Este livro já foi indicado para este grupo.';
+
+  @override
+  String bookRecommendationSuccess(Object groupName) {
+    return 'Livro indicado ao $groupName';
+  }
 
   @override
   String get bookDetailSynopsisTitle => 'Sinopse';

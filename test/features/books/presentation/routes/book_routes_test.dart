@@ -12,6 +12,7 @@ import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
 import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
 import 'package:mobile/features/books/presentation/routes/book_routes.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -109,6 +110,47 @@ void main() {
           .widget<BookDetailsPage>(find.byType(BookDetailsPage))
           .onReadingStatusChanged,
       isNull,
+    );
+  });
+
+  testWidgets('hands a preselected recommendation group to the page', (
+    tester,
+  ) async {
+    when(
+      () => repository.getBookDetails(bookId: 'b-42'),
+    ).thenAnswer((_) async => const Failure(BookNotFoundFailure()));
+    final router = GoRouter(routes: BookRoutes.routes);
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        routerConfig: router,
+      ),
+    );
+    router.go(
+      BookRoutePaths.detailsFor('b-42'),
+      extra: const BookDetailsRouteExtra(
+        recommendationTarget: BookRecommendationTarget(
+          groupId: 'group-1',
+          groupName: 'Grupo 1',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester
+          .widget<BookDetailsPage>(find.byType(BookDetailsPage))
+          .recommendationTarget
+          ?.groupId,
+      'group-1',
     );
   });
 }

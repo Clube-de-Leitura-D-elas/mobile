@@ -6,10 +6,12 @@ import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/data/models/book_details_model.dart';
 import 'package:mobile/features/books/data/models/book_page_model.dart';
+import 'package:mobile/features/books/data/models/book_recommendation_group_model.dart';
 import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mocktail/mocktail.dart';
@@ -364,5 +366,84 @@ void main() {
         );
       },
     );
+  });
+
+  group('book recommendations', () {
+    test('loads recommendation groups with the book id', () async {
+      when(
+        () => supabase.invokeFunction<List<BookRecommendationGroupModel>>(
+          functionName: 'get-book-recommendation-groups',
+          method: HttpMethod.get,
+          queryParameters: const {'bookId': 'book-1'},
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer((invocation) async {
+        final decoder =
+            invocation.namedArguments[#decoder]
+                as List<BookRecommendationGroupModel> Function(dynamic);
+        return Success(
+          SupabaseResponse(
+            data: decoder({
+              'items': [
+                {
+                  'group_id': 'group-1',
+                  'name': 'Grupo 1',
+                  'number': 1,
+                  'photo_url': null,
+                  'already_recommended': false,
+                },
+              ],
+            }),
+          ),
+        );
+      });
+
+      expect(
+        await repository.getBookRecommendationGroups(bookId: 'book-1'),
+        const Success<List<BookRecommendationGroup>, BookFailure>([
+          BookRecommendationGroup(
+            id: 'group-1',
+            name: 'Grupo 1',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+    });
+
+    test('posts the book and group ids to recommend-book', () async {
+      when(
+        () => supabase.invokeFunction<void>(
+          functionName: 'recommend-book',
+          body: const {'book_id': 'book-1', 'group_id': 'group-1'},
+        ),
+      ).thenAnswer((_) async => const Success(SupabaseResponse<void>()));
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Success<void, BookFailure>(null),
+      );
+    });
+
+    test('maps a recommendation conflict to already recommended', () async {
+      when(
+        () => supabase.invokeFunction<void>(
+          functionName: 'recommend-book',
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(
+            message: 'already_recommended',
+            code: '409',
+            kind: SupabaseFailureKind.conflict,
+          ),
+        ),
+      );
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Failure<void, BookFailure>(BookAlreadyRecommendedFailure()),
+      );
+    });
   });
 }

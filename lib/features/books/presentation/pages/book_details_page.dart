@@ -11,6 +11,7 @@ import 'package:mobile/features/books/presentation/book_failure_message.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_details_content.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
 /// Avisa quem abriu os detalhes (a busca) sobre o status do livro.
 /// [isWrite] é `true` quando a leitora mudou o status aqui e `false` quando os
@@ -19,9 +20,14 @@ typedef ReadingStatusChanged =
     void Function(BookReadingStatus? status, {required bool isWrite});
 
 class BookDetailsPage extends StatelessWidget {
-  const BookDetailsPage({super.key, this.onReadingStatusChanged});
+  const BookDetailsPage({
+    super.key,
+    this.onReadingStatusChanged,
+    this.recommendationTarget,
+  });
 
   final ReadingStatusChanged? onReadingStatusChanged;
+  final BookRecommendationTarget? recommendationTarget;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +62,16 @@ class BookDetailsPage extends StatelessWidget {
           BookDetailsNotice.readingStatusFailed => context.showErrorToast(
             l10n.bookReadingStatusError,
           ),
+          BookDetailsNotice.recommendationSucceeded => context.showSuccessToast(
+            l10n.bookRecommendationSuccess(state.recommendedGroupName ?? ''),
+          ),
+          BookDetailsNotice.recommendationAlreadyExists =>
+            context.showInfoToast(l10n.bookRecommendationAlreadyExists),
+          BookDetailsNotice.recommendationGroupsFailed =>
+            context.showErrorToast(l10n.bookRecommendationGroupsError),
+          BookDetailsNotice.recommendationFailed => context.showErrorToast(
+            l10n.bookRecommendationError,
+          ),
           null => null,
         },
         builder: (context, state) {
@@ -84,7 +100,10 @@ class BookDetailsPage extends StatelessWidget {
               BookDetailsStatus.notFound => AppErrorState(
                 message: l10n.bookDetailNotFound,
               ),
-              BookDetailsStatus.loaded => BookDetailsContent(state: state),
+              BookDetailsStatus.loaded => BookDetailsContent(
+                state: state,
+                recommendationTarget: recommendationTarget,
+              ),
             },
             bottomNavigationBar: BottomNavigationBarWidget(
               currentIndex: QuickAccessItem.search.index,

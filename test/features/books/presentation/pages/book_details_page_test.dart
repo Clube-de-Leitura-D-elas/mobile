@@ -14,12 +14,14 @@ import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -77,6 +79,7 @@ void main() {
     bool settle = true,
     ReadingStatusChanged? onReadingStatusChanged,
     SessionCubit? sessionCubit,
+    BookRecommendationTarget? recommendationTarget,
     String initialLocation = '/books/b1',
   }) async {
     final router = GoRouter(
@@ -104,6 +107,7 @@ void main() {
                   ..load(state.pathParameters['bookId']!),
             child: BookDetailsPage(
               onReadingStatusChanged: onReadingStatusChanged,
+              recommendationTarget: recommendationTarget,
             ),
           ),
         ),
@@ -157,7 +161,7 @@ void main() {
       expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
     });
 
-    testWidgets('keeps rate and recommend disabled until their tasks exist', (
+    testWidgets('enables recommend to open the group selection flow', (
       tester,
     ) async {
       stubDetails(_details());
@@ -165,7 +169,7 @@ void main() {
       await pumpPage(tester);
 
       expect(button(tester, 'Avaliar').onPressed, isNull);
-      expect(button(tester, 'Indicar').onPressed, isNull);
+      expect(button(tester, 'Indicar').onPressed, isNotNull);
     });
 
     testWidgets('meets the 48px touch target on the actions', (tester) async {
@@ -176,6 +180,147 @@ void main() {
       expect(
         tester.getSize(find.widgetWithText(AppButton, 'Avaliar')).height,
         greaterThanOrEqualTo(48),
+      );
+    });
+
+    testWidgets('indicates directly when a group was preselected', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer((_) async => const Success(null));
+
+      await pumpPage(
+        tester,
+        recommendationTarget: const BookRecommendationTarget(
+          groupId: 'group-1',
+          groupName: 'Grupo 1',
+        ),
+      );
+
+      await tester.tap(find.text('Indicar'));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).called(1);
+      expect(find.text('Livro indicado ao Grupo 1'), findsOneWidget);
+      expect(find.text('Selecione o grupo'), findsNothing);
+    });
+
+    testWidgets('opens groups, indicates the selected group and closes', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer(
+        (_) async => const Success([
+          BookRecommendationGroup(
+            id: 'group-1',
+            name: 'Grupo 1',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+      when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer((_) async => const Success(null));
+
+      await pumpPage(tester);
+      await tester.tap(find.text('Indicar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Selecione o grupo'), findsOneWidget);
+      await tester.tap(find.text('Grupo 1'));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).called(1);
+      expect(find.text('Livro indicado ao Grupo 1'), findsOneWidget);
+      expect(find.text('Selecione o grupo'), findsNothing);
+    });
+
+    testWidgets(
+      'shows the empty state when there are no recommendation groups',
+      (tester) async {
+        stubDetails(_details());
+        when(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).thenAnswer((_) async => const Success([]));
+
+        await pumpPage(tester);
+        await tester.tap(find.text('Indicar'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Você ainda não participa de nenhum grupo.'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('separates recommendation groups with design spacing', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer(
+        (_) async => const Success([
+          BookRecommendationGroup(
+            id: 'group-1',
+            name: 'Grupo 1',
+            alreadyRecommended: false,
+          ),
+          BookRecommendationGroup(
+            id: 'group-2',
+            name: 'Grupo 2',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+
+      await pumpPage(tester);
+      await tester.tap(find.text('Indicar'));
+      await tester.pumpAndSettle();
+
+      final first = tester.getRect(find.byKey(const ValueKey('group-1')));
+      final second = tester.getRect(find.byKey(const ValueKey('group-2')));
+      expect(second.top - first.bottom, AppSpacingTokens.standard.s16);
+    });
+
+    testWidgets('marks a group as already suggested after a conflict', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer(
+        (_) async => const Success([
+          BookRecommendationGroup(
+            id: 'group-1',
+            name: 'Grupo 1',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+      when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer((_) async => const Failure(BookAlreadyRecommendedFailure()));
+
+      await pumpPage(tester);
+      await tester.tap(find.text('Indicar'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Grupo 1'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('já indicado'), findsOneWidget);
+      expect(
+        find.text('Este livro já foi indicado para este grupo.'),
+        findsOneWidget,
       );
     });
 

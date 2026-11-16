@@ -2,11 +2,18 @@ import 'package:equatable/equatable.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 
 enum BookDetailsStatus { loading, loaded, error, notFound }
 
 /// Aviso pontual para a tela mostrar como toast.
-enum BookDetailsNotice { readingStatusFailed }
+enum BookDetailsNotice {
+  readingStatusFailed,
+  recommendationSucceeded,
+  recommendationAlreadyExists,
+  recommendationFailed,
+  recommendationGroupsFailed,
+}
 
 class BookDetailsState extends Equatable {
   final BookDetailsStatus status;
@@ -21,6 +28,10 @@ class BookDetailsState extends Equatable {
   final bool loadMoreReviewsFailed;
   final bool isUpdatingStatus;
   final BookDetailsNotice? notice;
+  final List<BookRecommendationGroup> recommendationGroups;
+  final bool isLoadingRecommendationGroups;
+  final bool isRecommending;
+  final String? recommendedGroupName;
 
   const BookDetailsState({
     this.status = BookDetailsStatus.loading,
@@ -33,6 +44,10 @@ class BookDetailsState extends Equatable {
     this.loadMoreReviewsFailed = false,
     this.isUpdatingStatus = false,
     this.notice,
+    this.recommendationGroups = const [],
+    this.isLoadingRecommendationGroups = false,
+    this.isRecommending = false,
+    this.recommendedGroupName,
   });
 
   /// O aviso vale só para a emissão em que aparece: sem [notice], ele é limpo.
@@ -45,6 +60,10 @@ class BookDetailsState extends Equatable {
     bool? loadMoreReviewsFailed,
     bool? isUpdatingStatus,
     BookDetailsNotice? notice,
+    List<BookRecommendationGroup>? recommendationGroups,
+    bool? isLoadingRecommendationGroups,
+    bool? isRecommending,
+    String? recommendedGroupName,
   }) {
     return BookDetailsState(
       status: status,
@@ -58,6 +77,11 @@ class BookDetailsState extends Equatable {
           loadMoreReviewsFailed ?? this.loadMoreReviewsFailed,
       isUpdatingStatus: isUpdatingStatus ?? this.isUpdatingStatus,
       notice: notice,
+      recommendationGroups: recommendationGroups ?? this.recommendationGroups,
+      isLoadingRecommendationGroups:
+          isLoadingRecommendationGroups ?? this.isLoadingRecommendationGroups,
+      isRecommending: isRecommending ?? this.isRecommending,
+      recommendedGroupName: recommendedGroupName ?? this.recommendedGroupName,
     );
   }
 
@@ -73,5 +97,9 @@ class BookDetailsState extends Equatable {
     loadMoreReviewsFailed,
     isUpdatingStatus,
     notice,
+    recommendationGroups,
+    isLoadingRecommendationGroups,
+    isRecommending,
+    recommendedGroupName,
   ];
 }
