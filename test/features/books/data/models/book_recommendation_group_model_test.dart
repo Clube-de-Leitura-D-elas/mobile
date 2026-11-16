@@ -3,7 +3,7 @@ import 'package:mobile/features/books/data/models/book_recommendation_group_mode
 
 void main() {
   test('parses and maps a recommendation group', () {
-    final model = BookRecommendationGroupModel.fromJson({
+    final model = BookRecommendationGroupModel.fromJson(const {
       'group_id': 'g1',
       'name': 'Grupo Aurora',
       'photo_url': 'https://example.com/group.jpg',
@@ -18,7 +18,7 @@ void main() {
   });
 
   test('parses a group without a photo', () {
-    final model = BookRecommendationGroupModel.fromJson({
+    final model = BookRecommendationGroupModel.fromJson(const {
       'group_id': 'g1',
       'name': 'Grupo Aurora',
       'photo_url': null,
@@ -38,7 +38,7 @@ void main() {
       throwsFormatException,
     );
     expect(
-      () => BookRecommendationGroupModel.fromJson({
+      () => BookRecommendationGroupModel.fromJson(const {
         'group_id': 'g1',
         'name': 'Grupo',
         'photo_url': 42,
