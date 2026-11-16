@@ -221,18 +221,18 @@ void main() {
 
       expect(
         find.text(
-          'Todas as participantes do grupo já foram anfitriãs recentemente ou não estão aptas.',
+          'Nenhuma participante ativa possui sugestão de livro disponível para sorteio.',
         ),
         findsOneWidget,
       );
-      expect(find.text('Definir livro e anfitriã manualmente'), findsOneWidget);
+      expect(find.text('Definir encontro sem sorteio'), findsOneWidget);
 
       final continueButton = tester.widget<AppButton>(
         find.widgetWithText(AppButton, 'Continuar'),
       );
       expect(continueButton.onPressed, isNull);
 
-      await tester.tap(find.text('Definir livro e anfitriã manualmente'));
+      await tester.tap(find.text('Definir encontro sem sorteio'));
       await tester.pumpAndSettle();
 
       expect(find.text('abrir'), findsOneWidget);
