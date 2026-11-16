@@ -1442,11 +1442,17 @@ abstract class AppLocalizations {
   /// **'Encontro inválido.'**
   String get meetingTasksInvalidMeeting;
 
-  /// Sobretítulo do banner antes de o encontro ser publicado
+  /// Sobretítulo do banner antes de o encontro ser publicado, para a anfitriã
   ///
   /// In pt, this message translates to:
   /// **'VOCÊ FOI SORTEADA'**
   String get meetingTasksDrawnLabel;
+
+  /// Sobretítulo do banner quando quem abre as tarefas é coordenadora e não é a anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'VOCÊ É COORDENADORA DESTE GRUPO'**
+  String get meetingTasksCoordinatorLabel;
 
   /// Título do banner quando o livro do encontro não é conhecido
   ///

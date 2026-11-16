@@ -789,6 +789,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meetingTasksDrawnLabel => 'VOCÊ FOI SORTEADA';
 
   @override
+  String get meetingTasksCoordinatorLabel => 'VOCÊ É COORDENADORA DESTE GRUPO';
+
+  @override
   String get meetingTasksDrawnFallbackTitle => 'Próximo encontro';
 
   @override
@@ -2654,6 +2657,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get raffleSavedSuccessToast =>
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
+
+  @override
+  String get meetingTasksCoordinatorLabel => 'VOCÊ É COORDENADORA DESTE GRUPO';
 
   @override
   String get meetingPhotoPrevious => 'Foto anterior';
