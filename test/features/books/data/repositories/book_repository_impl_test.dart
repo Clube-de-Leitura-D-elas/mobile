@@ -241,6 +241,22 @@ void main() {
     expect((result as Failure).failure, isA<BookStatusFailure>());
   });
 
+  test('returns a search failure when the response has no page data', () async {
+    when(
+      () => supabase.invokeFunction<BookPageModel>(
+        functionName: 'search-books',
+        queryParameters: any(named: 'queryParameters'),
+        method: HttpMethod.get,
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer((_) async => const Success(SupabaseResponse()));
+
+    expect(
+      await repository.searchBooks(page: 1),
+      const Failure<BookPage, BookFailure>(BookSearchFailure()),
+    );
+  });
+
   test('posts upsert-book-review with the review data', () async {
     when(
       () => supabase.invokeFunction<void>(
@@ -571,6 +587,53 @@ void main() {
       expect(
         await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
         const Failure<void, BookFailure>(BookAlreadyRecommendedFailure()),
+      );
+    });
+
+    test('maps recommendation group failures', () async {
+      for (final (kind, expected) in const [
+        (SupabaseFailureKind.network, BookNetworkFailure()),
+        (SupabaseFailureKind.unauthorized, BookSessionExpiredFailure()),
+        (SupabaseFailureKind.server, BookRecommendationGroupsFailure()),
+      ]) {
+        when(
+          () => supabase.invokeFunction<List<BookRecommendationGroupModel>>(
+            functionName: 'get-book-recommendation-groups',
+            method: HttpMethod.get,
+            queryParameters: const {'bookId': 'book-1'},
+            decoder: any(named: 'decoder'),
+          ),
+        ).thenAnswer(
+          (_) async =>
+              Failure(FunctionSupabaseFailure(message: 'failure', kind: kind)),
+        );
+
+        expect(
+          await repository.getBookRecommendationGroups(bookId: 'book-1'),
+          Failure<List<BookRecommendationGroup>, BookFailure>(expected),
+          reason: '$kind',
+        );
+      }
+    });
+
+    test('maps non-conflict recommendation failures', () async {
+      when(
+        () => supabase.invokeFunction<void>(
+          functionName: 'recommend-book',
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(
+            message: 'offline',
+            kind: SupabaseFailureKind.network,
+          ),
+        ),
+      );
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Failure<void, BookFailure>(BookNetworkFailure()),
       );
     });
   });

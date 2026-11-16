@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -13,9 +12,9 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
-import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
@@ -195,6 +194,81 @@ void main() {
       ).called(1);
     });
 
+    testWidgets(
+      'shows an empty state when there are no recommendation groups',
+      (tester) async {
+        stubDetails(_details());
+        when(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).thenAnswer((_) async => const Success([]));
+
+        await pumpPage(tester);
+        await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Você ainda não participa de nenhum grupo.'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('shows a retry action when recommendation groups fail', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      final pending =
+          Completer<Result<List<BookRecommendationGroup>, BookFailure>>();
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer((_) => pending.future);
+
+      await pumpPage(tester);
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pump();
+
+      pending.complete(const Failure(BookDetailsLoadFailure()));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Não foi possível carregar os grupos.'),
+        findsAtLeastNWidgets(1),
+      );
+      expect(
+        find.widgetWithText(AppButton, 'Tentar novamente'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('closes the groups dialog after a successful selection', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer(
+        (_) async => const Success([
+          BookRecommendationGroup(
+            id: 'g1',
+            name: 'Grupo Aurora',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+      when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+      ).thenAnswer((_) async => const Success(null));
+
+      await pumpPage(tester);
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Grupo Aurora'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Selecione o grupo'), findsNothing);
+      expect(find.text('Livro indicado ao Grupo Aurora'), findsOneWidget);
+    });
+
     testWidgets('indicates directly for a preselected group', (tester) async {
       stubDetails(_details());
       when(
@@ -215,6 +289,51 @@ void main() {
         () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
       ).called(1);
       expect(find.text('Livro indicado ao Grupo Aurora'), findsOneWidget);
+    });
+
+    testWidgets('shows an info toast when the book was already indicated', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+      ).thenAnswer((_) async => const Failure(BookAlreadyRecommendedFailure()));
+
+      await pumpPage(
+        tester,
+        recommendationTarget: const BookRecommendationTarget(
+          groupId: 'g1',
+          groupName: 'Grupo Aurora',
+        ),
+      );
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pump();
+
+      expect(
+        find.text('Este livro já foi indicado para este grupo.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('shows an error toast when recommendation fails', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+      ).thenAnswer((_) async => const Failure(BookRecommendationFailure()));
+
+      await pumpPage(
+        tester,
+        recommendationTarget: const BookRecommendationTarget(
+          groupId: 'g1',
+          groupName: 'Grupo Aurora',
+        ),
+      );
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pump();
+
+      expect(find.text('Não foi possível indicar o livro.'), findsOneWidget);
     });
 
     testWidgets('opens and saves a new review', (tester) async {

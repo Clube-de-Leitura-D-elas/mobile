@@ -25,11 +25,13 @@ import 'package:mobile/features/groups/presentation/pages/group_details_page.dar
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
@@ -577,6 +579,14 @@ void main() {
           path: GroupJoinRequestsRoutePaths.joinRequests,
           builder: (_, state) => Scaffold(body: Text('pedidos: ${state.uri}')),
         ),
+        GoRoute(
+          path: QuickAccessRoutes.search,
+          builder: (_, state) => Scaffold(
+            body: Text(
+              'busca: ${(state.extra as BookRecommendationTarget).groupName}',
+            ),
+          ),
+        ),
       ],
     );
     addTearDown(router.dispose);
@@ -759,6 +769,19 @@ void main() {
       expect(find.text('Grupo 45'), findsOneWidget);
       expect(find.text('Pedidos de entrada (1)'), findsOneWidget);
       expect(requestCalls, 2);
+    },
+  );
+
+  testWidgets(
+    'opens book search with the current group as recommendation target',
+    (tester) async {
+      await pumpDetails(tester);
+
+      await tester.ensureVisible(find.text('Indicar livro'));
+      await tester.tap(find.text('Indicar livro'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('busca: Grupo 45'), findsOneWidget);
     },
   );
 }
