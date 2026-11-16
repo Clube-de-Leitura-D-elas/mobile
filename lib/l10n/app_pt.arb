@@ -506,6 +506,8 @@
     "@onboardingRegionLabel": { "description": "Rótulo região" },
     "onboardingRegionHint": "Selecione uma região",
     "@onboardingRegionHint": { "description": "Dica de seleção de região" },
+    "onboardingNoZonesHint": "Esta cidade ainda não tem regiões cadastradas",
+    "@onboardingNoZonesHint": { "description": "Dica exibida quando a cidade selecionada não tem zonas cadastradas" },
     "onboardingLocationRequired": "Selecione a cidade e a região para continuar.",
     "@onboardingLocationRequired": { "description": "Aviso de validação quando cidade ou região não foram escolhidas" },
     "onboardingYes": "Sim",

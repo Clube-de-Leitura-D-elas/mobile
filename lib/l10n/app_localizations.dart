@@ -824,6 +824,12 @@ abstract class AppLocalizations {
   /// **'Selecione uma região'**
   String get onboardingRegionHint;
 
+  /// Dica exibida quando a cidade selecionada não tem zonas cadastradas
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta cidade ainda não tem regiões cadastradas'**
+  String get onboardingNoZonesHint;
+
   /// Aviso de validação quando cidade ou região não foram escolhidas
   ///
   /// In pt, this message translates to:

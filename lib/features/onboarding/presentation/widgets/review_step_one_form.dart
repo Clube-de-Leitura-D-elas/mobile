@@ -38,6 +38,7 @@ class ReviewStepOneForm extends StatelessWidget {
     final spacing = context.spacing;
     final selectedCity = _selectedCity();
     final selectedZone = _selectedZone(selectedCity);
+    final cityHasZones = selectedCity?.zones.isNotEmpty ?? false;
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: spacing.s16),
@@ -92,10 +93,12 @@ class ReviewStepOneForm extends StatelessWidget {
           const Gap16(),
           AppDropdown<Zone>(
             label: l10n.onboardingRegionLabel,
-            hintText: l10n.onboardingRegionHint,
+            hintText: selectedCity != null && !cityHasZones
+                ? l10n.onboardingNoZonesHint
+                : l10n.onboardingRegionHint,
             items: selectedCity?.zones ?? const [],
             value: selectedZone,
-            enabled: selectedCity != null,
+            enabled: cityHasZones,
             itemLabelBuilder: (zone) => zone.name,
             onChanged: (zone) => onChanged(
               profile.copyWith(zoneId: zone.id, zoneName: zone.name),

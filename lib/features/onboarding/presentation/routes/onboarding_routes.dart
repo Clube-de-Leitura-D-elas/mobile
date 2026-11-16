@@ -65,10 +65,9 @@ abstract class OnboardingRoutes {
 
     if (sessionState is AuthenticatedSession) {
       final cityId = sessionState.profile?.cityId;
-      final zoneId = sessionState.profile?.zoneId;
-      // Cidade nula (ou zona nula) é o sinal de revisão pendente: a tela
-      // continua aparecendo até as duas serem escolhidas no cadastro.
-      final reviewPending = cityId == null || zoneId == null;
+      // Cidade nula é o sinal de revisão pendente. Zona depende da cidade
+      // (nem toda cidade tem zonas), então o formulário valida esse caso.
+      final reviewPending = cityId == null;
 
       if (reviewPending && !isReview) {
         return reviewProfile;

@@ -91,14 +91,27 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
     }
   }
 
-  bool _hasLocation(UserReviewProfile profile) =>
-      profile.cityId != null && profile.zoneId != null;
+  City? _selectedCity(UserReviewProfile profile, List<City> cities) {
+    for (final city in cities) {
+      if (city.id == profile.cityId) return city;
+    }
+    return null;
+  }
+
+  // Cidade é obrigatória. Zona só quando a cidade cadastrada tem zonas; cidade
+  // sem zona pode seguir com zoneId nulo.
+  bool _isLocationValid(UserReviewProfile profile, List<City> cities) {
+    final city = _selectedCity(profile, cities);
+    if (city == null) return false;
+    if (city.zones.isEmpty) return true;
+    return city.zones.any((zone) => zone.id == profile.zoneId);
+  }
 
   void nextStep() {
     final currentState = state;
     if (currentState is OnboardingReviewFormState) {
       if (currentState.currentStep == 0 &&
-          !_hasLocation(currentState.profile)) {
+          !_isLocationValid(currentState.profile, currentState.cities)) {
         return;
       }
       if (currentState.currentStep < 2) {
@@ -121,9 +134,9 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
   Future<void> submitReview() async {
     final currentState = state;
     if (currentState is! OnboardingReviewFormState) return;
-    // Sem cidade e região a revisão continua pendente; o guard devolveria a
-    // leitora para cá depois de salvar.
-    if (!_hasLocation(currentState.profile)) return;
+    // Sem cidade (e sem a zona obrigatória da cidade) a revisão continua
+    // pendente; o guard devolveria a leitora para cá depois de salvar.
+    if (!_isLocationValid(currentState.profile, currentState.cities)) return;
 
     emit(currentState.copyWith(isSubmitting: true));
 

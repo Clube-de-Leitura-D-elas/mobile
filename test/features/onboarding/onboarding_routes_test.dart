@@ -248,7 +248,22 @@ void main() {
       );
     });
 
-    test('redirects to reviewProfile when authenticated without zone', () {
+    test('leaves reviewProfile while the city is missing', () {
+      when(() => mockState.matchedLocation).thenReturn(
+        OnboardingRoutes.reviewProfile,
+      );
+
+      expect(
+        OnboardingRoutes.onboardingGuard(
+          mockContext,
+          mockState,
+          authenticated(),
+        ),
+        isNull,
+      );
+    });
+
+    test('does not redirect when only the zone is missing', () {
       when(() => mockState.matchedLocation).thenReturn('/home');
 
       expect(
@@ -257,11 +272,11 @@ void main() {
           mockState,
           authenticated(cityId: 'city-1'),
         ),
-        equals(OnboardingRoutes.reviewProfile),
+        isNull,
       );
     });
 
-    test('leaves the user on reviewProfile while the location is missing', () {
+    test('leaves reviewProfile when only the zone is missing', () {
       when(() => mockState.matchedLocation).thenReturn(
         OnboardingRoutes.reviewProfile,
       );
@@ -272,7 +287,7 @@ void main() {
           mockState,
           authenticated(cityId: 'city-1'),
         ),
-        isNull,
+        equals('/home'),
       );
     });
 

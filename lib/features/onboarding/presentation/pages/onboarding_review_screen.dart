@@ -6,6 +6,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/user_failure_message.dart';
+import 'package:mobile/features/onboarding/domain/entities/city.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
@@ -40,7 +41,7 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
     final currentState = context.read<OnboardingReviewCubit>().state;
     if (page > 0 &&
         currentState is OnboardingReviewFormState &&
-        !_hasLocation(currentState.profile)) {
+        !_isLocationValid(currentState)) {
       context.showErrorToast(context.l10n.onboardingLocationRequired);
       _pageController.animateToPage(
         0,
@@ -52,8 +53,19 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
     context.read<OnboardingReviewCubit>().goToStep(page);
   }
 
-  bool _hasLocation(UserReviewProfile profile) =>
-      profile.cityId != null && profile.zoneId != null;
+  City? _selectedCity(UserReviewProfile profile, List<City> cities) {
+    for (final city in cities) {
+      if (city.id == profile.cityId) return city;
+    }
+    return null;
+  }
+
+  bool _isLocationValid(OnboardingReviewFormState state) {
+    final city = _selectedCity(state.profile, state.cities);
+    if (city == null) return false;
+    if (city.zones.isEmpty) return true;
+    return city.zones.any((zone) => zone.id == state.profile.zoneId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +195,7 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
                             onPressed: state.isSubmitting
                                 ? null
                                 : () {
-                                    if (!_hasLocation(state.profile)) {
+                                    if (!_isLocationValid(state)) {
                                       context.showErrorToast(
                                         l10n.onboardingLocationRequired,
                                       );

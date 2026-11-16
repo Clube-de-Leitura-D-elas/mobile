@@ -13,7 +13,9 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/onboarding/domain/entities/city.dart';
 import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
+import 'package:mobile/features/onboarding/domain/entities/zone.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
 import 'package:mobile/features/onboarding/presentation/pages/onboarding_review_screen.dart';
@@ -38,6 +40,13 @@ void main() {
     cityName: 'Porto Alegre',
     zoneId: 'zone-1',
     zoneName: 'Zona Sul',
+  );
+
+  const testCity = City(
+    id: 'city-1',
+    name: 'Porto Alegre',
+    uf: 'RS',
+    zones: [Zone(id: 'zone-1', name: 'Zona Sul')],
   );
 
   setUp(() {
@@ -123,6 +132,7 @@ void main() {
       const OnboardingReviewFormState(
         currentStep: 0,
         profile: testProfile,
+        cities: [testCity],
       ),
     );
 
@@ -143,6 +153,7 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: testProfile,
+          cities: [testCity],
         ),
       );
       final streamController =
@@ -153,6 +164,7 @@ void main() {
         initialState: const OnboardingReviewFormState(
           currentStep: 0,
           profile: testProfile,
+          cities: [testCity],
         ),
       );
 
@@ -208,6 +220,7 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: testProfile,
+          cities: [testCity],
         ),
       );
       final streamController =
@@ -218,6 +231,7 @@ void main() {
         initialState: const OnboardingReviewFormState(
           currentStep: 0,
           profile: testProfile,
+          cities: [testCity],
         ),
       );
 
@@ -230,6 +244,7 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: testProfile,
+          cities: [testCity],
           submitFailure: UnknownUserFailure(),
         ),
       );
@@ -341,6 +356,7 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 0,
           profile: testProfile,
+          cities: [testCity],
         ),
       );
       when(() => mockReviewCubit.goToStep(any())).thenReturn(null);
@@ -357,6 +373,7 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 1,
           profile: testProfile,
+          cities: [testCity],
         ),
       );
       await tester.pumpWidget(
@@ -408,6 +425,7 @@ void main() {
         const OnboardingReviewFormState(
           currentStep: 2,
           profile: testProfile,
+          cities: [testCity],
         ),
       );
       when(() => mockReviewCubit.submitReview()).thenAnswer((_) async {});

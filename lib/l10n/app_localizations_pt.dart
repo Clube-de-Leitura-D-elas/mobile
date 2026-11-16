@@ -447,6 +447,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingRegionHint => 'Selecione uma região';
 
   @override
+  String get onboardingNoZonesHint =>
+      'Esta cidade ainda não tem regiões cadastradas';
+
+  @override
   String get onboardingLocationRequired =>
       'Selecione a cidade e a região para continuar.';
 
@@ -1711,6 +1715,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingNoZonesHint =>
+      'Esta cidade ainda não tem regiões cadastradas';
 
   @override
   String get onboardingLocationRequired =>

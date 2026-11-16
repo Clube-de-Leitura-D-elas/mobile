@@ -51,6 +51,11 @@ void main() {
       ],
     ),
     City(
+      id: 'recife',
+      name: 'Recife',
+      uf: 'PE',
+    ),
+    City(
       id: 'sp',
       name: 'São Paulo',
       uf: 'SP',
@@ -192,6 +197,28 @@ void main() {
     expect(find.text('Centro Histórico'), findsOneWidget);
     expect(find.text('Zona Sul'), findsOneWidget);
     expect(find.text('Pinheiros'), findsNothing);
+  });
+
+  testWidgets('disables the zone and shows a hint when the city has no zones', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        const UserReviewProfile(cityId: 'recife', cityName: 'Recife'),
+        (_) {},
+        cities: cities,
+      ),
+    );
+
+    expect(
+      find.text('Esta cidade ainda não tem regiões cadastradas'),
+      findsOneWidget,
+    );
+
+    final region = tester.widget<AppDropdown<Zone>>(
+      find.byWidgetPredicate((widget) => widget is AppDropdown<Zone>),
+    );
+    expect(region.enabled, isFalse);
   });
 
   testWidgets('disables the zone select until a city is chosen', (

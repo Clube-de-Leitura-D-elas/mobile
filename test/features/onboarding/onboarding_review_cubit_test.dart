@@ -27,6 +27,18 @@ const profileWithLocation = UserReviewProfile(
 
 const profileWithoutLocation = UserReviewProfile(name: 'Maria');
 
+const cityWithoutZones = City(id: 'city-2', name: 'Recife', uf: 'PE');
+
+const profileCityWithoutZone = UserReviewProfile(
+  name: 'Maria',
+  cityId: 'city-2',
+);
+
+const profileWithCityButNoZone = UserReviewProfile(
+  name: 'Maria',
+  cityId: 'city-1',
+);
+
 void main() {
   late MockOnboardingRepository mockRepository;
 
@@ -137,6 +149,55 @@ void main() {
           cities: [cityWithZone],
         ),
       ],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'advances when the city has no zones and the zone is null',
+      build: () {
+        when(() => mockRepository.getUserProfile()).thenAnswer(
+          (_) async => const Success(profileCityWithoutZone),
+        );
+        when(() => mockRepository.getCitiesAndZones()).thenAnswer(
+          (_) async => const Success([cityWithoutZones]),
+        );
+        return OnboardingReviewCubit(onboardingRepository: mockRepository);
+      },
+      seed: () => const OnboardingReviewFormState(
+        currentStep: 0,
+        profile: profileCityWithoutZone,
+        cities: [cityWithoutZones],
+      ),
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        cubit.nextStep();
+      },
+      expect: () => [
+        const OnboardingReviewFormState(
+          currentStep: 1,
+          profile: profileCityWithoutZone,
+          cities: [cityWithoutZones],
+        ),
+      ],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'does not advance when the city has zones and the zone is null',
+      build: () {
+        when(() => mockRepository.getUserProfile()).thenAnswer(
+          (_) async => const Success(profileWithCityButNoZone),
+        );
+        return OnboardingReviewCubit(onboardingRepository: mockRepository);
+      },
+      seed: () => const OnboardingReviewFormState(
+        currentStep: 0,
+        profile: profileWithCityButNoZone,
+        cities: [cityWithZone],
+      ),
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        cubit.nextStep();
+      },
+      expect: () => [],
     );
 
     blocTest<OnboardingReviewCubit, OnboardingReviewState>(
