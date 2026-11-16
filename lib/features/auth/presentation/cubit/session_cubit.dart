@@ -185,11 +185,15 @@ class SessionCubit extends Cubit<SessionState> {
     return const Success(null);
   }
 
-  Future<void> checkUserProfile(String userId, [UserEntity? userEntity]) async {
+  Future<void> checkUserProfile(
+    String userId, [
+    UserEntity? userEntity,
+    bool silent = false,
+  ]) async {
     if (kDebugMode) {
       debugPrint('[SessionCubit] Checking user profile for userId: $userId');
     }
-    emit(const LoadingSession());
+    if (!silent) emit(const LoadingSession());
 
     final profileResult = await authRepository.getUserProfile(userId);
 
@@ -266,6 +270,24 @@ class SessionCubit extends Cubit<SessionState> {
         },
       );
     }
+  }
+
+  /// Revalida o perfil sem passar por `LoadingSession`. A tela de
+  /// boas-vindas usa isso para concluir o claim: até aqui a sessão ainda é
+  /// `NeedsClaimSession`, e o `homeGuard` mandaria a leitora de volta ao token.
+  Future<bool> refreshProfileSilently() async {
+    final user = supabaseService.currentUser;
+    if (user == null) return false;
+
+    final current = state;
+    final userEntity = switch (current) {
+      NeedsClaimSession(:final user) => user,
+      AuthenticatedSession(:final user) => user,
+      _ => null,
+    };
+
+    await checkUserProfile(user.id, userEntity, true);
+    return state is AuthenticatedSession;
   }
 
   Future<void> retryProfile() async {

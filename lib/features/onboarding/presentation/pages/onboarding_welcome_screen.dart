@@ -1,7 +1,9 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 
 class OnboardingWelcomeScreen extends StatelessWidget {
@@ -45,7 +47,14 @@ class OnboardingWelcomeScreen extends StatelessWidget {
               const Spacer(),
               AppButton.primary(
                 label: l10n.onboardingWelcomeButton,
-                onPressed: () => context.go(HomeRoutes.home),
+                onPressed: () async {
+                  final authenticated = await context
+                      .read<SessionCubit>()
+                      .refreshProfileSilently();
+                  if (authenticated && context.mounted) {
+                    context.go(HomeRoutes.home);
+                  }
+                },
               ),
               SizedBox(height: spacing.s24),
             ],

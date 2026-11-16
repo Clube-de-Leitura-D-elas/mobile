@@ -523,6 +523,66 @@ void main() {
       });
     });
 
+    group('refreshProfileSilently', () {
+      test('emits AuthenticatedSession without LoadingSession', () async {
+        when(() => mockSupabaseService.currentUser)
+            .thenReturn(mockSupabaseUser);
+        when(
+          () => mockAuthRepository.getUserProfile('user-123'),
+        ).thenAnswer((_) async => const Success(testProfile));
+
+        sessionCubit.emit(
+          const NeedsClaimSession(
+            userId: 'user-123',
+            user: testUserEntity,
+          ),
+        );
+
+        final states = <SessionState>[];
+        final subscription = sessionCubit.stream.listen(states.add);
+
+        final authenticated = await sessionCubit.refreshProfileSilently();
+        await Future<void>.delayed(Duration.zero);
+        await subscription.cancel();
+
+        expect(authenticated, isTrue);
+        expect(states, [
+          const AuthenticatedSession(
+            user: testUserEntity,
+            profile: testProfile,
+          ),
+        ]);
+      });
+
+      test('returns false and keeps the claim state when profile is null', () async {
+        when(() => mockSupabaseService.currentUser)
+            .thenReturn(mockSupabaseUser);
+        when(
+          () => mockAuthRepository.getUserProfile('user-123'),
+        ).thenAnswer(
+          (_) async => const Success<UserProfileEntity?, UserFailure>(null),
+        );
+
+        sessionCubit.emit(
+          const NeedsClaimSession(
+            userId: 'user-123',
+            user: testUserEntity,
+          ),
+        );
+
+        final authenticated = await sessionCubit.refreshProfileSilently();
+
+        expect(authenticated, isFalse);
+        expect(
+          sessionCubit.state,
+          const NeedsClaimSession(
+            userId: 'user-123',
+            user: testUserEntity,
+          ),
+        );
+      });
+    });
+
     group('updateProfileLocation', () {
       test('updates the location and keeps the session authenticated', () async {
         when(
