@@ -70,9 +70,16 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
     }
   }
 
+  bool _hasLocation(UserReviewProfile profile) =>
+      profile.cityId != null && profile.zoneId != null;
+
   void nextStep() {
     final currentState = state;
     if (currentState is OnboardingReviewFormState) {
+      if (currentState.currentStep == 0 &&
+          !_hasLocation(currentState.profile)) {
+        return;
+      }
       if (currentState.currentStep < 2) {
         emit(currentState.copyWith(currentStep: currentState.currentStep + 1));
       } else {
@@ -93,6 +100,9 @@ class OnboardingReviewCubit extends Cubit<OnboardingReviewState> {
   Future<void> submitReview() async {
     final currentState = state;
     if (currentState is! OnboardingReviewFormState) return;
+    // Sem cidade e região a revisão continua pendente; o guard devolveria a
+    // leitora para cá depois de salvar.
+    if (!_hasLocation(currentState.profile)) return;
 
     emit(currentState.copyWith(isSubmitting: true));
 

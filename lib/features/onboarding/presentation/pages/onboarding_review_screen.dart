@@ -6,6 +6,7 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/user_failure_message.dart';
+import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
@@ -36,8 +37,23 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
   }
 
   void _onPageChanged(int page, BuildContext context) {
+    final currentState = context.read<OnboardingReviewCubit>().state;
+    if (page > 0 &&
+        currentState is OnboardingReviewFormState &&
+        !_hasLocation(currentState.profile)) {
+      context.showErrorToast(context.l10n.onboardingLocationRequired);
+      _pageController.animateToPage(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      return;
+    }
     context.read<OnboardingReviewCubit>().goToStep(page);
   }
+
+  bool _hasLocation(UserReviewProfile profile) =>
+      profile.cityId != null && profile.zoneId != null;
 
   @override
   Widget build(BuildContext context) {
@@ -167,6 +183,13 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
                             onPressed: state.isSubmitting
                                 ? null
                                 : () {
+                                    if (step == 0 &&
+                                        !_hasLocation(state.profile)) {
+                                      context.showErrorToast(
+                                        l10n.onboardingLocationRequired,
+                                      );
+                                      return;
+                                    }
                                     if (step < 2) {
                                       _pageController.nextPage(
                                         duration: const Duration(milliseconds: 300),
@@ -185,6 +208,10 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
                   ),
                 ],
               );
+            }
+
+            if (state is OnboardingReviewSuccess) {
+              return const Center(child: CircularProgressIndicator());
             }
 
             return const SizedBox.shrink();

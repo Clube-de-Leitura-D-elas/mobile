@@ -506,6 +506,8 @@
     "@onboardingRegionLabel": { "description": "Rótulo região" },
     "onboardingRegionHint": "Selecione uma região",
     "@onboardingRegionHint": { "description": "Dica de seleção de região" },
+    "onboardingLocationRequired": "Selecione a cidade e a região para continuar.",
+    "@onboardingLocationRequired": { "description": "Aviso de validação quando cidade ou região não foram escolhidas" },
     "onboardingYes": "Sim",
     "@onboardingYes": { "description": "Opção afirmativa dos selects do onboarding" },
     "onboardingNo": "Não",

@@ -10,6 +10,14 @@ import 'package:mocktail/mocktail.dart';
 
 class MockOnboardingRepository extends Mock implements OnboardingRepository {}
 
+const profileWithLocation = UserReviewProfile(
+  name: 'Maria',
+  cityId: 'city-1',
+  zoneId: 'zone-1',
+);
+
+const profileWithoutLocation = UserReviewProfile(name: 'Maria');
+
 void main() {
   late MockOnboardingRepository mockRepository;
 
@@ -17,7 +25,7 @@ void main() {
     mockRepository = MockOnboardingRepository();
     registerFallbackValue(const UserReviewProfile());
     when(() => mockRepository.getUserProfile()).thenAnswer(
-      (_) async => const Success(UserReviewProfile(name: 'Maria')),
+      (_) async => const Success(profileWithLocation),
     );
     when(() => mockRepository.getCitiesAndZones()).thenAnswer(
       (_) async => const Success([]),
@@ -31,7 +39,7 @@ void main() {
       expect: () => [
         const OnboardingReviewFormState(
           currentStep: 0,
-          profile: UserReviewProfile(name: 'Maria'),
+          profile: profileWithLocation,
         ),
       ],
     );
@@ -41,7 +49,7 @@ void main() {
       build: () => OnboardingReviewCubit(onboardingRepository: mockRepository),
       seed: () => const OnboardingReviewFormState(
         currentStep: 0,
-        profile: UserReviewProfile(name: 'Maria'),
+        profile: profileWithLocation,
       ),
       act: (cubit) {
         cubit.nextStep();
@@ -50,13 +58,73 @@ void main() {
       expect: () => [
         const OnboardingReviewFormState(
           currentStep: 1,
-          profile: UserReviewProfile(name: 'Maria'),
+          profile: profileWithLocation,
         ),
         const OnboardingReviewFormState(
           currentStep: 0,
-          profile: UserReviewProfile(name: 'Maria'),
+          profile: profileWithLocation,
         ),
       ],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'does not advance from step 0 without city and zone',
+      build: () {
+        when(() => mockRepository.getUserProfile()).thenAnswer(
+          (_) async => const Success(profileWithoutLocation),
+        );
+        return OnboardingReviewCubit(onboardingRepository: mockRepository);
+      },
+      seed: () => const OnboardingReviewFormState(
+        currentStep: 0,
+        profile: profileWithoutLocation,
+      ),
+      act: (cubit) => cubit.nextStep(),
+      expect: () => [],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'advances from step 0 when city and zone are set',
+      build: () => OnboardingReviewCubit(onboardingRepository: mockRepository),
+      seed: () => const OnboardingReviewFormState(
+        currentStep: 0,
+        profile: profileWithLocation,
+      ),
+      act: (cubit) async {
+        // Espera o load inicial terminar antes de avançar; sem isso a
+        // emissão assíncrona do load aparece depois do nextStep.
+        await Future<void>.delayed(Duration.zero);
+        cubit.nextStep();
+      },
+      expect: () => [
+        const OnboardingReviewFormState(
+          currentStep: 1,
+          profile: profileWithLocation,
+        ),
+      ],
+    );
+
+    blocTest<OnboardingReviewCubit, OnboardingReviewState>(
+      'does not submit without city and zone',
+      build: () {
+        when(() => mockRepository.getUserProfile()).thenAnswer(
+          (_) async => const Success(profileWithoutLocation),
+        );
+        when(() => mockRepository.updateUserProfile(any())).thenAnswer(
+          (_) async => const Success(null),
+        );
+        return OnboardingReviewCubit(onboardingRepository: mockRepository);
+      },
+      seed: () => const OnboardingReviewFormState(
+        currentStep: 2,
+        profile: profileWithoutLocation,
+      ),
+      act: (cubit) => cubit.submitReview(),
+      skip: 1,
+      expect: () => [],
+      verify: (_) {
+        verifyNever(() => mockRepository.updateUserProfile(any()));
+      },
     );
 
     blocTest<OnboardingReviewCubit, OnboardingReviewState>(
@@ -69,19 +137,19 @@ void main() {
       },
       seed: () => const OnboardingReviewFormState(
         currentStep: 2,
-        profile: UserReviewProfile(name: 'Maria'),
+        profile: profileWithLocation,
       ),
       act: (cubit) => cubit.submitReview(),
       expect: () => [
         const OnboardingReviewFormState(
           currentStep: 2,
-          profile: UserReviewProfile(name: 'Maria'),
+          profile: profileWithLocation,
           isSubmitting: true,
         ),
-        const OnboardingReviewSuccess(UserReviewProfile(name: 'Maria')),
+        const OnboardingReviewSuccess(profileWithLocation),
         const OnboardingReviewFormState(
           currentStep: 0,
-          profile: UserReviewProfile(name: 'Maria'),
+          profile: profileWithLocation,
         ),
       ],
     );
@@ -118,23 +186,21 @@ void main() {
       },
       seed: () => const OnboardingReviewFormState(
         currentStep: 2,
-        profile: UserReviewProfile(name: 'Maria'),
+        profile: profileWithLocation,
       ),
       act: (cubit) => cubit.submitReview(),
       skip: 1,
       expect: () => [
         const OnboardingReviewFormState(
           currentStep: 2,
-          profile: UserReviewProfile(name: 'Maria'),
+          profile: profileWithLocation,
           submitFailure: UnknownUserFailure(),
         ),
         const OnboardingReviewFormState(
           currentStep: 0,
-          profile: UserReviewProfile(name: 'Maria'),
+          profile: profileWithLocation,
         ),
       ],
     );
   });
 }
-
-

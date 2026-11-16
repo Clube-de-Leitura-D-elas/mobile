@@ -824,6 +824,12 @@ abstract class AppLocalizations {
   /// **'Selecione uma região'**
   String get onboardingRegionHint;
 
+  /// Aviso de validação quando cidade ou região não foram escolhidas
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione a cidade e a região para continuar.'**
+  String get onboardingLocationRequired;
+
   /// Opção afirmativa dos selects do onboarding
   ///
   /// In pt, this message translates to:

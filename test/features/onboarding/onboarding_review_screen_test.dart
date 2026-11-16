@@ -306,6 +306,35 @@ void main() {
   });
 
   testWidgets(
+    'blocks Continuar on step 0 without city and zone',
+    (tester) async {
+      when(() => mockReviewCubit.state).thenReturn(
+        const OnboardingReviewFormState(
+          currentStep: 0,
+          profile: UserReviewProfile(
+            name: 'Maria Silva',
+            email: 'maria@example.com',
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildSubject(child: const OnboardingReviewScreen()),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Selecione a cidade e a região para continuar.'),
+        findsOneWidget,
+      );
+      verifyNever(() => mockReviewCubit.goToStep(any()));
+    },
+  );
+
+  testWidgets(
     'clicking Continuar on step 0 and 1 moves to next page, and Voltar moves to previous page',
     (tester) async {
       when(() => mockReviewCubit.state).thenReturn(

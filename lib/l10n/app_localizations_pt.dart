@@ -447,6 +447,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingRegionHint => 'Selecione uma região';
 
   @override
+  String get onboardingLocationRequired =>
+      'Selecione a cidade e a região para continuar.';
+
+  @override
   String get onboardingYes => 'Sim';
 
   @override
@@ -1707,6 +1711,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingLocationRequired =>
+      'Selecione a cidade e a região para continuar.';
 
   @override
   String get onboardingYes => 'Sim';
