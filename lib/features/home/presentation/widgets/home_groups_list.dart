@@ -109,8 +109,6 @@ class _GroupCardItem extends StatelessWidget {
       photoUrl: group.photoUrl,
       nextMeeting: group.nextMeeting,
       pendingRaffle: group.pendingRaffle,
-      hasOpenMeeting: group.hasOpenMeeting,
-      openMeetingStatus: group.openMeetingStatus,
       onPendingRafflePressed: () async {
         await context.push(
           RaffleRoutes.preparation,

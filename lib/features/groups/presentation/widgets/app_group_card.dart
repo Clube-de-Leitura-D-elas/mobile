@@ -23,8 +23,6 @@ class AppGroupCard extends StatelessWidget {
   final String cityState;
   final GroupMeeting? nextMeeting;
   final PendingRaffle? pendingRaffle;
-  final bool hasOpenMeeting;
-  final String? openMeetingStatus;
   final bool expanded;
   final VoidCallback? onTap;
   final VoidCallback? onToggleExpanded;
@@ -47,8 +45,6 @@ class AppGroupCard extends StatelessWidget {
     this.photoUrl,
     this.nextMeeting,
     this.pendingRaffle,
-    this.hasOpenMeeting = false,
-    this.openMeetingStatus,
     this.expanded = true,
     this.onTap,
     this.onToggleExpanded,
@@ -132,14 +128,6 @@ class AppGroupCard extends StatelessWidget {
                   ? context.l10n.homePendingTasksRaffleInaugural
                   : context.l10n.homePendingTasksRafflePending,
               onPressed: onPendingRafflePressed,
-            ),
-          ] else if (hasOpenMeeting && openMeetingStatus == 'CREATED') ...[
-            SizedBox(height: spacing.s16),
-            Text(
-              context.l10n.raffleMeetingInPreparation,
-              style: context.typography.bodySmall.copyWith(
-                color: context.colors.textMuted,
-              ),
             ),
           ],
         ],
