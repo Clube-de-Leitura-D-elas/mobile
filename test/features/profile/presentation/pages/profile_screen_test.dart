@@ -8,14 +8,14 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
-import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mobile/features/profile/domain/entities/profile_summary_entity.dart';
+import 'package:mobile/features/profile/domain/entities/profile_summary_failure.dart';
 import 'package:mobile/features/profile/presentation/cubit/profile_summary_state.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_screen.dart';
-import 'package:mobile/features/profile/presentation/widgets/profile_groups_carousel.dart';
-import 'package:mobile/features/profile/presentation/widgets/profile_reviewed_books.dart';
 import 'package:mobile/features/profile/presentation/widgets/logout_confirm_dialog.dart';
+import 'package:mobile/features/profile/presentation/widgets/profile_groups_carousel.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
+import 'package:mobile/features/profile/presentation/widgets/profile_reviewed_books.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -197,6 +197,7 @@ void main() {
     expect(find.byType(LogoutConfirmDialog), findsOneWidget);
     expect(find.text('Sair da conta'), findsOneWidget);
   });
+
   testWidgets('Deve expor Semantics de botão com label', (tester) async {
     await tester.pumpWidget(buildSubject());
 
@@ -384,19 +385,6 @@ void main() {
       expect(find.text('Harry Potter e a Pedra Filosofal'), findsOneWidget);
     });
 
-    testWidgets('o link de todos os livros fica desabilitado por enquanto', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        buildSubject(summary: const ProfileSummaryLoaded(summary)),
-      );
-
-      final seeAll = tester.widget<AppButton>(
-        find.widgetWithText(AppButton, 'Ver todos os livros'),
-      );
-      expect(seeAll.onPressed, isNull);
-    });
-
     Future<GoRouter> pumpWithRouter(
       WidgetTester tester, {
       VoidCallback? onReturn,
@@ -416,6 +404,10 @@ void main() {
             path: GroupRoutes.groupDetails,
             builder: (_, state) =>
                 Text('grupo ${state.uri.queryParameters['group_id']}'),
+          ),
+          GoRoute(
+            path: BookRoutePaths.ratedBooks,
+            builder: (_, _) => const Text('livros avaliados'),
           ),
           GoRoute(
             path: BookRoutePaths.details,
@@ -463,6 +455,30 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('livro b-1'), findsOneWidget);
+      expect(returns, 0);
+
+      router.pop();
+      await tester.pumpAndSettle();
+      expect(returns, 1);
+    });
+
+    testWidgets('tocar em Ver todos os livros abre a lista e avisa ao voltar', (
+      tester,
+    ) async {
+      var returns = 0;
+      final router = await pumpWithRouter(tester, onReturn: () => returns++);
+
+      final seeAllButton = find.widgetWithText(
+        AppButton,
+        'Ver todos os livros',
+      );
+      await tester.ensureVisible(seeAllButton);
+      await tester.pumpAndSettle();
+
+      await tester.tap(seeAllButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text('livros avaliados'), findsOneWidget);
       expect(returns, 0);
 
       router.pop();

@@ -1081,6 +1081,30 @@ class AppLocalizationsPt extends AppLocalizations {
   String get bookDetailEditReviewButton => 'Editar avaliação';
 
   @override
+  String get bookReviewDialogTitle => 'Avaliar livro';
+
+  @override
+  String get bookReviewRatingLabel => 'Sua nota';
+
+  @override
+  String get bookReviewCommentLabel => 'Adicione seu comentário (opcional)';
+
+  @override
+  String get bookReviewCommentHint => 'Digite sua resposta';
+
+  @override
+  String get bookReviewCancel => 'Cancelar';
+
+  @override
+  String get bookReviewSubmit => 'Concluir';
+
+  @override
+  String get bookReviewSuccess => 'Avaliação salva com sucesso.';
+
+  @override
+  String get bookReviewError => 'Não foi possível salvar sua avaliação.';
+
+  @override
   String get bookDetailRecommendButton => 'Indicar';
 
   @override
@@ -1135,7 +1159,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível carregar mais comentários.';
 
   @override
-  String get bookSearchTitle => 'Busca';
+  String get requiredFieldSemantics => 'Campo obrigatório';
+
+  @override
+  String get bookSearchTitle => 'Catálogo';
 
   @override
   String get bookSearchHint => 'Buscar livro';
@@ -1894,6 +1921,37 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get calendarGuestRequestError =>
       'Não foi possível enviar o pedido. Tente novamente.';
+
+  @override
+  String get ratedBooksTitle => 'Livros avaliados';
+
+  @override
+  String get noRatedBooksMessage => 'Nenhum livro avaliado ainda.';
+
+  @override
+  String get ratedBooksLoadError =>
+      'Não foi possível carregar os livros avaliados.';
+
+  @override
+  String get ratedBooksLoading => 'Carregando livros avaliados';
+
+  @override
+  String get seeAllBooks => 'Ver todos os livros';
+
+  @override
+  String ratedBookTileAuthor(String author) {
+    return 'escrito por $author';
+  }
+
+  @override
+  String ratedBookTileRating(String rating) {
+    return 'avaliado com $rating de 5 estrelas';
+  }
+
+  @override
+  String ratedBookTileComment(String comment) {
+    return 'comentário: $comment';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2725,6 +2783,30 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get bookDetailEditReviewButton => 'Editar avaliação';
 
   @override
+  String get bookReviewDialogTitle => 'Avaliar livro';
+
+  @override
+  String get bookReviewRatingLabel => 'Sua nota';
+
+  @override
+  String get bookReviewCommentLabel => 'Adicione seu comentário (opcional)';
+
+  @override
+  String get bookReviewCommentHint => 'Digite sua resposta';
+
+  @override
+  String get bookReviewCancel => 'Cancelar';
+
+  @override
+  String get bookReviewSubmit => 'Concluir';
+
+  @override
+  String get bookReviewSuccess => 'Avaliação salva com sucesso.';
+
+  @override
+  String get bookReviewError => 'Não foi possível salvar sua avaliação.';
+
+  @override
   String get bookDetailRecommendButton => 'Indicar';
 
   @override
@@ -2777,6 +2859,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get bookDetailLoadMoreReviewsError =>
       'Não foi possível carregar mais comentários.';
+
+  @override
+  String get requiredFieldSemantics => 'Campo obrigatório';
+
+  @override
+  String get bookSearchTitle => 'Catálogo';
 
   @override
   String get bookReadingStatusError =>
@@ -3418,4 +3506,35 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get calendarGuestRequestError =>
       'Não foi possível enviar o pedido. Tente novamente.';
+
+  @override
+  String get ratedBooksTitle => 'Livros avaliados';
+
+  @override
+  String get noRatedBooksMessage => 'Nenhum livro avaliado ainda.';
+
+  @override
+  String get ratedBooksLoadError =>
+      'Não foi possível carregar os livros avaliados.';
+
+  @override
+  String get ratedBooksLoading => 'Carregando livros avaliados';
+
+  @override
+  String get seeAllBooks => 'Ver todos os livros';
+
+  @override
+  String ratedBookTileAuthor(String author) {
+    return 'escrito por $author';
+  }
+
+  @override
+  String ratedBookTileRating(String rating) {
+    return 'avaliado com $rating de 5 estrelas';
+  }
+
+  @override
+  String ratedBookTileComment(String comment) {
+    return 'comentário: $comment';
+  }
 }

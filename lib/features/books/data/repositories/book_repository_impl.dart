@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/core/tools/result.dart';
+import 'package:mobile/features/books/data/datasources/rated_books_remote_data_source.dart';
 import 'package:mobile/features/books/data/models/book_details_model.dart';
 import 'package:mobile/features/books/data/models/book_page_model.dart';
 import 'package:mobile/features/books/data/models/book_reading_status_model.dart';
@@ -10,14 +10,22 @@ import 'package:mobile/features/books/data/models/book_recommendation_group_mode
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
-import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/rated_book.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BookRepositoryImpl implements BookRepository {
-  BookRepositoryImpl({required this.supabaseService});
+  BookRepositoryImpl({
+    required this.supabaseService,
+    RatedBooksRemoteDataSource? ratedBooksRemoteDataSource,
+  }) : ratedBooksRemoteDataSource =
+           ratedBooksRemoteDataSource ??
+           RatedBooksRemoteDataSourceImpl(supabaseService: supabaseService);
 
   final SupabaseService supabaseService;
+  final RatedBooksRemoteDataSource ratedBooksRemoteDataSource;
 
   static const pageSize = 20;
   static const minQueryLength = 2;
@@ -137,6 +145,24 @@ class BookRepositoryImpl implements BookRepository {
   }
 
   @override
+  Future<Result<List<RatedBook>, BookFailure>> getRatedBooks({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final models = await ratedBooksRemoteDataSource.getRatedBooks(
+        page: page,
+        limit: limit,
+      );
+      return Success(models.map((m) => m.toDomain()).toList());
+    } on SupabaseFailure catch (failure) {
+      return Failure(_failureFrom(failure, const RatedBooksLoadFailure()));
+    } catch (_) {
+      return const Failure(RatedBooksLoadFailure());
+    }
+  }
+
+  @override
   Future<Result<void, BookFailure>> recommendBook({
     required String bookId,
     required String groupId,
@@ -174,6 +200,25 @@ class BookRepositoryImpl implements BookRepository {
       SupabaseFailureKind.unauthorized => const BookSessionExpiredFailure(),
       _ => fallback,
     };
+  }
+
+  @override
+  Future<Result<void, BookFailure>> upsertBookReview({
+    required String bookId,
+    required int rating,
+    required String? commentary,
+  }) async {
+    final result = await supabaseService.invokeFunction<void>(
+      functionName: 'upsert-book-review',
+      body: {'book_id': bookId, 'rating': rating, 'commentary': commentary},
+    );
+
+    switch (result) {
+      case Failure(:final failure):
+        return Failure(_failureFrom(failure, const BookReviewFailure()));
+      case Success():
+        return const Success(null);
+    }
   }
 
   BookFailure _failureFrom(SupabaseFailure failure, BookFailure fallback) {

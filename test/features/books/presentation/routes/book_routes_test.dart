@@ -7,12 +7,15 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/rated_book.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
+import 'package:mobile/features/books/presentation/cubit/rated_books_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
+import 'package:mobile/features/books/presentation/pages/rated_books_screen.dart';
 import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
-import 'package:mobile/features/books/presentation/routes/book_routes.dart';
 import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
+import 'package:mobile/features/books/presentation/routes/book_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -27,14 +30,22 @@ void main() {
       ..allowReassignment = true
       ..registerFactory<BookDetailsCubit>(
         () => BookDetailsCubit(repository: repository),
+      )
+      ..registerFactory<RatedBooksCubit>(
+        () => RatedBooksCubit(bookRepository: repository),
       );
   });
 
-  tearDown(() => serviceLocator.unregister<BookDetailsCubit>());
+  tearDown(() {
+    serviceLocator
+      ..unregister<BookDetailsCubit>()
+      ..unregister<RatedBooksCubit>();
+  });
 
   test('builds the details path from the book id', () {
     expect(BookRoutePaths.detailsFor('b1'), '/books/b1');
     expect(BookRoutePaths.detailsFor('a b'), '/books/a%20b');
+    expect(BookRoutePaths.ratedBooks, '/books/rated');
   });
 
   testWidgets('/books/:bookId loads the book from the path', (tester) async {
@@ -113,12 +124,60 @@ void main() {
     );
   });
 
-  testWidgets('hands a preselected recommendation group to the page', (
+  testWidgets('/books/rated loads rated books screen', (tester) async {
+    when(() => repository.getRatedBooks(page: 1, limit: 10)).thenAnswer(
+      (_) async => const Success([
+        RatedBook(
+          id: 'r1',
+          bookId: 'b1',
+          title: 'Livro Avaliado',
+          author: 'Autora',
+          rating: 5.0,
+        ),
+      ]),
+    );
+
+    final router = GoRouter(
+      initialLocation: BookRoutePaths.ratedBooks,
+      routes: BookRoutes.routes,
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        routerConfig: router,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RatedBooksScreen), findsOneWidget);
+    expect(find.text('Livro Avaliado'), findsOneWidget);
+    verify(() => repository.getRatedBooks(page: 1, limit: 10)).called(1);
+  });
+
+  testWidgets('hands the recommendation target from extra to the page', (
     tester,
   ) async {
-    when(
-      () => repository.getBookDetails(bookId: 'b-42'),
-    ).thenAnswer((_) async => const Failure(BookNotFoundFailure()));
+    when(() => repository.getBookDetails(bookId: 'b-42')).thenAnswer(
+      (_) async => const Success(
+        BookDetailsEntity(
+          id: 'b-42',
+          title: 'Dom Casmurro',
+          author: 'Machado de Assis',
+          genre: '',
+          publisher: '',
+          ratingsCount: 0,
+        ),
+      ),
+    );
+
     final router = GoRouter(routes: BookRoutes.routes);
     addTearDown(router.dispose);
 
@@ -138,8 +197,8 @@ void main() {
       BookRoutePaths.detailsFor('b-42'),
       extra: const BookDetailsRouteExtra(
         recommendationTarget: BookRecommendationTarget(
-          groupId: 'group-1',
-          groupName: 'Grupo 1',
+          groupId: 'g1',
+          groupName: 'Grupo Aurora',
         ),
       ),
     );
@@ -148,9 +207,8 @@ void main() {
     expect(
       tester
           .widget<BookDetailsPage>(find.byType(BookDetailsPage))
-          .recommendationTarget
-          ?.groupId,
-      'group-1',
+          .recommendationTarget,
+      const BookRecommendationTarget(groupId: 'g1', groupName: 'Grupo Aurora'),
     );
   });
 }

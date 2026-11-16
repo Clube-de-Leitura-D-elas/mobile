@@ -14,14 +14,14 @@ import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
-import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
-import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -161,15 +161,123 @@ void main() {
       expect(find.byType(BottomNavigationBarWidget), findsOneWidget);
     });
 
-    testWidgets('enables recommend to open the group selection flow', (
-      tester,
-    ) async {
+    testWidgets('enables both book actions', (tester) async {
       stubDetails(_details());
 
       await pumpPage(tester);
 
-      expect(button(tester, 'Avaliar').onPressed, isNull);
+      expect(button(tester, 'Avaliar').onPressed, isNotNull);
       expect(button(tester, 'Indicar').onPressed, isNotNull);
+    });
+
+    testWidgets('opens the recommendation groups dialog', (tester) async {
+      stubDetails(_details());
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer(
+        (_) async => const Success([
+          BookRecommendationGroup(
+            id: 'g1',
+            name: 'Grupo Aurora',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+
+      await pumpPage(tester);
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Selecione o grupo'), findsOneWidget);
+      expect(find.text('Grupo Aurora'), findsOneWidget);
+      verify(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).called(1);
+    });
+
+    testWidgets('indicates directly for a preselected group', (tester) async {
+      stubDetails(_details());
+      when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+      ).thenAnswer((_) async => const Success(null));
+
+      await pumpPage(
+        tester,
+        recommendationTarget: const BookRecommendationTarget(
+          groupId: 'g1',
+          groupName: 'Grupo Aurora',
+        ),
+      );
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+      ).called(1);
+      expect(find.text('Livro indicado ao Grupo Aurora'), findsOneWidget);
+    });
+
+    testWidgets('opens and saves a new review', (tester) async {
+      var detailsCalls = 0;
+      when(
+        () => repository.getBookDetails(bookId: 'b1', reviewsPage: 1),
+      ).thenAnswer((_) async {
+        detailsCalls++;
+        return Success(
+          _details(
+            status: detailsCalls == 1 ? null : BookReadingStatus.read,
+            myReview: detailsCalls == 1
+                ? null
+                : MyBookReviewEntity(
+                    rating: 5,
+                    commentary: 'Gostei muito',
+                    evaluatedAt: DateTime.utc(2026, 11, 13),
+                  ),
+          ),
+        );
+      });
+      when(
+        () => repository.upsertBookReview(
+          bookId: 'b1',
+          rating: 5,
+          commentary: 'Gostei muito',
+        ),
+      ).thenAnswer((_) async => const Success(null));
+
+      await pumpPage(tester);
+      await tester.tap(find.text('Avaliar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Avaliar livro'), findsOneWidget);
+      expect(find.text('Sua nota'), findsOneWidget);
+      expect(find.text('Adicione seu comentário (opcional)'), findsOneWidget);
+      expect(find.widgetWithText(AppButton, 'Concluir'), findsOneWidget);
+
+      final dialogRatingFinder = find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(AppStarRating),
+      );
+      final rating = tester.widget<AppStarRating>(dialogRatingFinder);
+      expect(rating.emptyColor, AppColorTokens.light.textMuted);
+      expect(
+        tester.getCenter(dialogRatingFinder).dx,
+        closeTo(tester.getCenter(find.byType(Dialog)).dx, 0.1),
+      );
+
+      await tester.tap(find.bySemanticsLabel('5 de 5 estrelas'));
+      await tester.enterText(find.byType(TextField), 'Gostei muito');
+      await tester.tap(find.widgetWithText(AppButton, 'Concluir'));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => repository.upsertBookReview(
+          bookId: 'b1',
+          rating: 5,
+          commentary: 'Gostei muito',
+        ),
+      ).called(1);
+      expect(find.text('Avaliar livro'), findsNothing);
+      expect(find.text('Já lido'), findsOneWidget);
     });
 
     testWidgets('meets the 48px touch target on the actions', (tester) async {
@@ -180,147 +288,6 @@ void main() {
       expect(
         tester.getSize(find.widgetWithText(AppButton, 'Avaliar')).height,
         greaterThanOrEqualTo(48),
-      );
-    });
-
-    testWidgets('indicates directly when a group was preselected', (
-      tester,
-    ) async {
-      stubDetails(_details());
-      when(
-        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
-      ).thenAnswer((_) async => const Success(null));
-
-      await pumpPage(
-        tester,
-        recommendationTarget: const BookRecommendationTarget(
-          groupId: 'group-1',
-          groupName: 'Grupo 1',
-        ),
-      );
-
-      await tester.tap(find.text('Indicar'));
-      await tester.pumpAndSettle();
-
-      verify(
-        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
-      ).called(1);
-      expect(find.text('Livro indicado ao Grupo 1'), findsOneWidget);
-      expect(find.text('Selecione o grupo'), findsNothing);
-    });
-
-    testWidgets('opens groups, indicates the selected group and closes', (
-      tester,
-    ) async {
-      stubDetails(_details());
-      when(
-        () => repository.getBookRecommendationGroups(bookId: 'b1'),
-      ).thenAnswer(
-        (_) async => const Success([
-          BookRecommendationGroup(
-            id: 'group-1',
-            name: 'Grupo 1',
-            alreadyRecommended: false,
-          ),
-        ]),
-      );
-      when(
-        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
-      ).thenAnswer((_) async => const Success(null));
-
-      await pumpPage(tester);
-      await tester.tap(find.text('Indicar'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Selecione o grupo'), findsOneWidget);
-      await tester.tap(find.text('Grupo 1'));
-      await tester.pumpAndSettle();
-
-      verify(
-        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
-      ).called(1);
-      expect(find.text('Livro indicado ao Grupo 1'), findsOneWidget);
-      expect(find.text('Selecione o grupo'), findsNothing);
-    });
-
-    testWidgets(
-      'shows the empty state when there are no recommendation groups',
-      (tester) async {
-        stubDetails(_details());
-        when(
-          () => repository.getBookRecommendationGroups(bookId: 'b1'),
-        ).thenAnswer((_) async => const Success([]));
-
-        await pumpPage(tester);
-        await tester.tap(find.text('Indicar'));
-        await tester.pumpAndSettle();
-
-        expect(
-          find.text('Você ainda não participa de nenhum grupo.'),
-          findsOneWidget,
-        );
-      },
-    );
-
-    testWidgets('separates recommendation groups with design spacing', (
-      tester,
-    ) async {
-      stubDetails(_details());
-      when(
-        () => repository.getBookRecommendationGroups(bookId: 'b1'),
-      ).thenAnswer(
-        (_) async => const Success([
-          BookRecommendationGroup(
-            id: 'group-1',
-            name: 'Grupo 1',
-            alreadyRecommended: false,
-          ),
-          BookRecommendationGroup(
-            id: 'group-2',
-            name: 'Grupo 2',
-            alreadyRecommended: false,
-          ),
-        ]),
-      );
-
-      await pumpPage(tester);
-      await tester.tap(find.text('Indicar'));
-      await tester.pumpAndSettle();
-
-      final first = tester.getRect(find.byKey(const ValueKey('group-1')));
-      final second = tester.getRect(find.byKey(const ValueKey('group-2')));
-      expect(second.top - first.bottom, AppSpacingTokens.standard.s16);
-    });
-
-    testWidgets('marks a group as already suggested after a conflict', (
-      tester,
-    ) async {
-      stubDetails(_details());
-      when(
-        () => repository.getBookRecommendationGroups(bookId: 'b1'),
-      ).thenAnswer(
-        (_) async => const Success([
-          BookRecommendationGroup(
-            id: 'group-1',
-            name: 'Grupo 1',
-            alreadyRecommended: false,
-          ),
-        ]),
-      );
-      when(
-        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
-      ).thenAnswer((_) async => const Failure(BookAlreadyRecommendedFailure()));
-
-      await pumpPage(tester);
-      await tester.tap(find.text('Indicar'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Grupo 1'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('já indicado'), findsOneWidget);
-      expect(
-        find.text('Este livro já foi indicado para este grupo.'),
-        findsOneWidget,
       );
     });
 

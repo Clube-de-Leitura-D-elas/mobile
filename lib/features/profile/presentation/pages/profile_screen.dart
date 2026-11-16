@@ -92,6 +92,11 @@ class _SummarySections extends StatelessWidget {
     onReturn?.call();
   }
 
+  Future<void> _openRatedBooks(BuildContext context) async {
+    await context.push<Object?>(BookRoutePaths.ratedBooks);
+    onReturn?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;
@@ -128,7 +133,7 @@ class _SummarySections extends StatelessWidget {
           AppButton.ghost(
             label: l10n.profileSeeAllBooks,
             size: AppButtonSize.lg,
-            onPressed: null,
+            onPressed: () => _openRatedBooks(context),
           ),
         ],
       ],

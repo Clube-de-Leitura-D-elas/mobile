@@ -1910,6 +1910,54 @@ abstract class AppLocalizations {
   /// **'Editar avaliação'**
   String get bookDetailEditReviewButton;
 
+  /// Título do modal de avaliação de livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliar livro'**
+  String get bookReviewDialogTitle;
+
+  /// Rótulo da nota no modal de avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua nota'**
+  String get bookReviewRatingLabel;
+
+  /// Rótulo do comentário opcional no modal de avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione seu comentário (opcional)'**
+  String get bookReviewCommentLabel;
+
+  /// Placeholder do comentário no modal de avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua resposta'**
+  String get bookReviewCommentHint;
+
+  /// Botão para cancelar a avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get bookReviewCancel;
+
+  /// Botão para salvar a avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluir'**
+  String get bookReviewSubmit;
+
+  /// Toast exibido após salvar uma avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliação salva com sucesso.'**
+  String get bookReviewSuccess;
+
+  /// Toast exibido quando não é possível salvar uma avaliação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível salvar sua avaliação.'**
+  String get bookReviewError;
+
   /// Botão para indicar o livro a um grupo.
   ///
   /// In pt, this message translates to:
@@ -2006,10 +2054,16 @@ abstract class AppLocalizations {
   /// **'Não foi possível carregar mais comentários.'**
   String get bookDetailLoadMoreReviewsError;
 
-  /// Título da aba de busca de livros.
+  /// Complemento do rótulo semântico de campos obrigatórios para leitores de tela.
   ///
   /// In pt, this message translates to:
-  /// **'Busca'**
+  /// **'Campo obrigatório'**
+  String get requiredFieldSemantics;
+
+  /// Título da aba de catálogo de livros.
+  ///
+  /// In pt, this message translates to:
+  /// **'Catálogo'**
   String get bookSearchTitle;
 
   /// Placeholder do campo de busca de livros.
@@ -3115,6 +3169,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível enviar o pedido. Tente novamente.'**
   String get calendarGuestRequestError;
+
+  /// Título da tela de livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livros avaliados'**
+  String get ratedBooksTitle;
+
+  /// Mensagem exibida quando a lista de livros avaliados está vazia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum livro avaliado ainda.'**
+  String get noRatedBooksMessage;
+
+  /// Mensagem de erro quando falha o carregamento dos livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os livros avaliados.'**
+  String get ratedBooksLoadError;
+
+  /// Rótulo de acessibilidade durante o carregamento de livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando livros avaliados'**
+  String get ratedBooksLoading;
+
+  /// Texto do botão ou link para ver todos os livros avaliados.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todos os livros'**
+  String get seeAllBooks;
+
+  /// Trecho de acessibilidade com o nome da autora do livro avaliado
+  ///
+  /// In pt, this message translates to:
+  /// **'escrito por {author}'**
+  String ratedBookTileAuthor(String author);
+
+  /// Trecho de acessibilidade com a nota do livro avaliado
+  ///
+  /// In pt, this message translates to:
+  /// **'avaliado com {rating} de 5 estrelas'**
+  String ratedBookTileRating(String rating);
+
+  /// Trecho de acessibilidade com o comentário do livro avaliado
+  ///
+  /// In pt, this message translates to:
+  /// **'comentário: {comment}'**
+  String ratedBookTileComment(String comment);
 }
 
 class _AppLocalizationsDelegate
