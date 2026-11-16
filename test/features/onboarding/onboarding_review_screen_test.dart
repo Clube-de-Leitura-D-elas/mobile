@@ -214,6 +214,78 @@ void main() {
   );
 
   testWidgets(
+    'updates the session when the city has no zones (zoneId nulo)',
+    (tester) async {
+      const profileWithoutZone = UserReviewProfile(
+        name: 'Maria Silva',
+        email: 'maria@example.com',
+        cityId: 'city-2',
+        cityName: 'Recife',
+        zoneId: null,
+        zoneName: '',
+      );
+      const cityWithoutZones = City(id: 'city-2', name: 'Recife', uf: 'PE');
+
+      final initialState = OnboardingReviewFormState(
+        currentStep: 0,
+        profile: profileWithoutZone,
+        cities: [cityWithoutZones],
+      );
+      when(() => mockReviewCubit.state).thenReturn(initialState);
+      final streamController =
+          StreamController<OnboardingReviewState>.broadcast();
+      whenListen(
+        mockReviewCubit,
+        streamController.stream,
+        initialState: initialState,
+      );
+
+      final router = GoRouter(
+        initialLocation: OnboardingRoutes.reviewProfile,
+        routes: [
+          GoRoute(
+            path: OnboardingRoutes.reviewProfile,
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider<SessionCubit>.value(value: mockSessionCubit),
+                BlocProvider<OnboardingReviewCubit>.value(
+                  value: mockReviewCubit,
+                ),
+              ],
+              child: const OnboardingReviewScreen(),
+            ),
+          ),
+          GoRoute(
+            path: OnboardingRoutes.welcome,
+            builder: (context, state) =>
+                const Scaffold(body: Text('Welcome Screen')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        buildSubject(child: const SizedBox(), router: router),
+      );
+      await tester.pumpAndSettle();
+
+      streamController.add(const OnboardingReviewSuccess(profileWithoutZone));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => mockSessionCubit.updateProfileLocation(
+          cityId: 'city-2',
+          cityName: 'Recife',
+          zoneId: null,
+          zoneName: '',
+        ),
+      ).called(1);
+      expect(find.text('Welcome Screen'), findsOneWidget);
+
+      await streamController.close();
+    },
+  );
+
+  testWidgets(
     'shows the save error toast when OnboardingReviewFormState has submitFailure',
     (tester) async {
       when(() => mockReviewCubit.state).thenReturn(

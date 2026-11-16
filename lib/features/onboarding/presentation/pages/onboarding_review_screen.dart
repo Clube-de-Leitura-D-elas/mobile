@@ -25,6 +25,10 @@ class OnboardingReviewScreen extends StatefulWidget {
 class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
   late final PageController _pageController;
 
+  /// Uma única tentativa extra de sair da tela depois do sucesso. Sem o limite,
+  /// um guard que ainda devolvesse para cá criaria um loop de redirecionamento.
+  bool _retriedNavigation = false;
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +85,10 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
           listener: (context, state) {
             if (state is OnboardingReviewSuccess) {
               final profile = state.profile;
-              if (profile.cityId != null && profile.zoneId != null) {
+              // Cidade é o que libera a revisão; zona pode ser nula quando a
+              // cidade não tem zonas cadastradas. Exigir as duas aqui deixava a
+              // sessão com `cityId` nulo e o guard devolvia para esta tela.
+              if (profile.cityId != null) {
                 context.read<SessionCubit>().updateProfileLocation(
                   cityId: profile.cityId,
                   cityName: profile.cityName,
@@ -222,6 +229,15 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
             }
 
             if (state is OnboardingReviewSuccess) {
+              // A navegação acontece no listener. Se o guard devolver a leitora
+              // para cá, o estado continua `Success` e o listener não dispara
+              // de novo: sem este retry a tela ficaria girando para sempre.
+              if (!_retriedNavigation) {
+                _retriedNavigation = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (context.mounted) context.go(OnboardingRoutes.welcome);
+                });
+              }
               return const Center(child: CircularProgressIndicator());
             }
 
