@@ -116,8 +116,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       'zone_name': profile.zoneName,
       'job': profile.job,
       'level_of_education': profile.levelOfEducation,
-      'other_group_interest': profile.hasOtherReadingGroup,
-      'coordinator_interest': profile.wantsToCoordinate,
+      'has_other_reading_group': profile.hasOtherReadingGroup,
+      'wants_to_coordinate': profile.wantsToCoordinate,
       'suggested_book': profile.bookIndication,
       'expectations': profile.expectations,
     };
@@ -128,21 +128,6 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     );
 
     if (response case Failure(:final failure)) {
-      return Failure(userFailureFromFunction(failure));
-    }
-
-    // `update-user-profile` ignora as três respostas da revisão; elas são
-    // gravadas pela function dedicada, que também valida o tipo.
-    final reviewResponse = await supabaseService.invokeFunction(
-      functionName: 'save-onboarding-review',
-      body: {
-        'expectations': profile.expectations,
-        'has_other_reading_group': profile.hasOtherReadingGroup,
-        'wants_to_coordinate': profile.wantsToCoordinate,
-      },
-    );
-
-    if (reviewResponse case Failure(:final failure)) {
       return Failure(userFailureFromFunction(failure));
     }
 

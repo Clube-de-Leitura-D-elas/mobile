@@ -117,7 +117,6 @@ void main() {
 
     test('updateUserProfile sends booleans and saves the review answers', () async {
       Map<String, dynamic>? updateBody;
-      Map<String, dynamic>? reviewBody;
 
       when(
         () => mockSupabaseService.invokeFunction<dynamic>(
@@ -128,16 +127,6 @@ void main() {
         updateBody = invocation.namedArguments[#body] as Map<String, dynamic>?;
         return const Success(SupabaseResponse<dynamic>(data: null));
       });
-      when(
-        () => mockSupabaseService.invokeFunction<dynamic>(
-          functionName: 'save-onboarding-review',
-          body: any(named: 'body'),
-        ),
-      ).thenAnswer((invocation) async {
-        reviewBody = invocation.namedArguments[#body] as Map<String, dynamic>?;
-        return const Success(SupabaseResponse<dynamic>(data: null));
-      });
-
       final result = await repository.updateUserProfile(
         const UserReviewProfile(
           name: 'Maria',
@@ -160,38 +149,21 @@ void main() {
       expect(result, isA<Success<void, UserFailure>>());
       expect(updateBody?['city_name'], 'Porto Alegre');
       expect(updateBody?['zone_name'], 'Zona Sul');
-      expect(updateBody?['other_group_interest'], isTrue);
-      expect(updateBody?['coordinator_interest'], isFalse);
-      expect(reviewBody?['has_other_reading_group'], isTrue);
-      expect(reviewBody?['wants_to_coordinate'], isFalse);
-      expect(reviewBody?['expectations'], 'Ler mais');
-    });
-
-    test('updateUserProfile returns failure when the review call fails', () async {
-      when(
+      expect(updateBody?['has_other_reading_group'], isTrue);
+      expect(updateBody?['wants_to_coordinate'], isFalse);
+      expect(updateBody?['expectations'], 'Ler mais');
+      verify(
         () => mockSupabaseService.invokeFunction<dynamic>(
           functionName: 'update-user-profile',
           body: any(named: 'body'),
         ),
-      ).thenAnswer(
-        (_) async => const Success(SupabaseResponse<dynamic>(data: null)),
-      );
-      when(
+      ).called(1);
+      verifyNever(
         () => mockSupabaseService.invokeFunction<dynamic>(
           functionName: 'save-onboarding-review',
           body: any(named: 'body'),
         ),
-      ).thenAnswer(
-        (_) async => const Failure(
-          FunctionSupabaseFailure(message: 'Failed to fetch'),
-        ),
       );
-
-      final result = await repository.updateUserProfile(
-        const UserReviewProfile(name: 'Maria'),
-      );
-
-      expect(result, isA<Failure<void, UserFailure>>());
     });
 
     test('updateUserProfile maps a network failure', () async {
