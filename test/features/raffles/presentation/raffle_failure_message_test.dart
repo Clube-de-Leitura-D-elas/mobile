@@ -19,6 +19,8 @@ void main() {
       const RaffleForbiddenFailure(): l10n.errorForbidden,
       const RaffleAlreadyRecordedFailure(): l10n.raffleAlreadyRecordedError,
       const RaffleMeetingNotEndedFailure(): l10n.raffleMeetingNotEndedError,
+      const RaffleOpenMeetingAlreadyExistsFailure():
+          l10n.raffleOpenMeetingAlreadyExistsError,
       const RaffleParticipantsChangedFailure():
           l10n.raffleParticipantsChangedError,
       const RaffleBookAlreadyDrawnFailure(): l10n.raffleBookAlreadyDrawnError,

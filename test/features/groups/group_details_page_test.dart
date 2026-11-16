@@ -13,7 +13,9 @@ import 'package:mobile/features/group_join_requests/domain/repository/group_join
 import 'package:mobile/features/group_join_requests/presentation/cubit/group_join_requests_cubit.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
+import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
@@ -563,6 +565,14 @@ void main() {
           path: GroupJoinRequestsRoutePaths.joinRequests,
           builder: (_, state) => Scaffold(body: Text('pedidos: ${state.uri}')),
         ),
+        GoRoute(
+          path: RaffleRoutes.preparation,
+          builder: (_, state) => Scaffold(
+            body: Text(
+              'raffle_preparation: ${(state.extra as Map<String, dynamic>?)?['group_id']}',
+            ),
+          ),
+        ),
       ],
     );
     addTearDown(router.dispose);
@@ -745,6 +755,67 @@ void main() {
       expect(find.text('Grupo 45'), findsOneWidget);
       expect(find.text('Pedidos de entrada (1)'), findsOneWidget);
       expect(requestCalls, 2);
+    },
+  );
+
+  testWidgets(
+    'renders inaugural raffle action button and navigates to preparation route',
+    (tester) async {
+      when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+        (_) async => const Success(
+          GroupDetailsEntity(
+            name: '45',
+            genres: ['Ficção'],
+            participantCount: 5,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+            pendingRaffle: PendingRaffle(
+              type: PendingRaffleType.inaugural,
+              groupId: joinGroupId,
+            ),
+          ),
+        ),
+      );
+
+      final router = await pumpDetails(tester);
+
+      expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
+
+      await tester.tap(find.text('Realizar sorteio inaugural'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('raffle_preparation: $joinGroupId'), findsOneWidget);
+
+      router.pop();
+      await tester.pumpAndSettle();
+
+      verify(() => mockRepository.getGroupDetails(joinGroupId)).called(2);
+    },
+  );
+
+  testWidgets(
+    'renders pending raffle action button for regular pending raffle',
+    (tester) async {
+      when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+        (_) async => const Success(
+          GroupDetailsEntity(
+            name: '45',
+            genres: ['Ficção'],
+            participantCount: 5,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+            pendingRaffle: PendingRaffle(
+              type: PendingRaffleType.pending,
+              groupId: joinGroupId,
+              meetingId: 'm-1',
+            ),
+          ),
+        ),
+      );
+
+      await pumpDetails(tester);
+
+      expect(find.text('Preparar sorteio'), findsOneWidget);
     },
   );
 }

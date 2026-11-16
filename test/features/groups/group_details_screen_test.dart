@@ -299,4 +299,27 @@ void main() {
       expect(tapped, isTrue);
     },
   );
+
+  testWidgets(
+    'renders raffleAction above nextEvent when raffleAction is provided',
+    (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          GroupDetailsScreen(
+            name: 'Grupo 1',
+            genres: const ['Ficção'],
+            participantCount: 5,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+            raffleAction: AppButton.primary(
+              label: 'Realizar sorteio inaugural',
+              onPressed: () {},
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
+    },
+  );
 }
