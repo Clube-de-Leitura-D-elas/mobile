@@ -1060,14 +1060,6 @@
   "@raffleInauguralSubtitle": {
     "description": "Subtítulo da tela de preparação do sorteio inaugural"
   },
-  "raffleNoEligibleParticipantsExplanation": "Nenhuma participante ativa possui sugestão de livro disponível para sorteio.",
-  "@raffleNoEligibleParticipantsExplanation": {
-    "description": "Explicação quando nenhuma participante tem livros disponíveis para sortear"
-  },
-  "raffleManualDefinitionAction": "Definir encontro sem sorteio",
-  "@raffleManualDefinitionAction": {
-    "description": "Ação para definir o encontro manualmente quando não há participantes elegíveis"
-  },
   "raffleMeetingInPreparation": "Encontro em preparação",
   "@raffleMeetingInPreparation": {
     "description": "Texto informando que há um encontro em preparação pela anfitriã"

@@ -202,13 +202,14 @@ void main() {
   );
 
   testWidgets(
-    'renders _NoEligibleCard when no participants are eligible and pops on manual define',
+    'displays exclusion reason when participant is excluded and disables continue button',
     (tester) async {
       const ineligible = RaffleParticipant(
         id: 'p2',
         name: 'Bia',
         hasAttended: true,
         isExcludedByRule: true,
+        exclusionReason: 'Sem indicação de livro',
       );
       when(
         () => repository.getEligibleParticipants(meetingId, null),
@@ -219,23 +220,13 @@ void main() {
         initialParticipants: [ineligible],
       );
 
-      expect(
-        find.text(
-          'Nenhuma participante ativa possui sugestão de livro disponível para sorteio.',
-        ),
-        findsOneWidget,
-      );
-      expect(find.text('Definir encontro sem sorteio'), findsOneWidget);
+      expect(find.text('Bia'), findsOneWidget);
+      expect(find.text('Sem indicação de livro'), findsOneWidget);
 
       final continueButton = tester.widget<AppButton>(
         find.widgetWithText(AppButton, 'Continuar'),
       );
       expect(continueButton.onPressed, isNull);
-
-      await tester.tap(find.text('Definir encontro sem sorteio'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('abrir'), findsOneWidget);
     },
   );
 

@@ -71,10 +71,6 @@ class RafflePreparationScreen extends StatelessWidget {
             }
 
             if (state is RafflePreparationLoaded) {
-              final eligibleParticipants = state.participants
-                  .where((p) => !p.isExcludedByRule)
-                  .toList();
-              final hasEligible = eligibleParticipants.isNotEmpty;
               final hasSelected = state.participants.any((p) => p.isSelected);
 
               return Column(
@@ -92,35 +88,20 @@ class RafflePreparationScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (!hasEligible)
-                          SliverPadding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: spacing.s24,
-                              vertical: spacing.s16,
-                            ),
-                            sliver: SliverToBoxAdapter(
-                              child: _NoEligibleCard(
-                                onManualDefine: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ),
-                          )
-                        else
-                          SliverPadding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: spacing.s24,
-                            ),
-                            sliver: _ParticipantsTable(
-                              participants: state.participants,
-                            ),
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: spacing.s24,
                           ),
+                          sliver: _ParticipantsTable(
+                            participants: state.participants,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   _ContinueButton(
                     isSubmitting: state.isSubmitting,
-                    canConfirm: hasSelected && hasEligible,
+                    canConfirm: hasSelected,
                     onContinue: () async {
                       final confirmed = await ConfirmRaffleDialog.show(context);
                       if (confirmed == true && context.mounted) {
@@ -220,50 +201,6 @@ class _RaffleHeader extends StatelessWidget {
         ),
         const Gap12(),
       ],
-    );
-  }
-}
-
-class _NoEligibleCard extends StatelessWidget {
-  final VoidCallback onManualDefine;
-
-  const _NoEligibleCard({required this.onManualDefine});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final typography = context.typography;
-    final spacing = context.spacing;
-
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.info_outline,
-                color: colors.actionPrimary,
-                size: 20,
-              ),
-              SizedBox(width: spacing.s8),
-              Expanded(
-                child: Text(
-                  context.l10n.raffleNoEligibleParticipantsExplanation,
-                  style: typography.bodySmall.copyWith(
-                    color: colors.textDefault,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: spacing.s16),
-          AppButton.secondary(
-            label: context.l10n.raffleManualDefinitionAction,
-            onPressed: onManualDefine,
-          ),
-        ],
-      ),
     );
   }
 }

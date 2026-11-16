@@ -1436,18 +1436,6 @@ abstract class AppLocalizations {
   /// **'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.'**
   String get raffleInauguralSubtitle;
 
-  /// Explicação quando nenhuma participante tem livros disponíveis para sortear
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhuma participante ativa possui sugestão de livro disponível para sorteio.'**
-  String get raffleNoEligibleParticipantsExplanation;
-
-  /// Ação para definir o encontro manualmente quando não há participantes elegíveis
-  ///
-  /// In pt, this message translates to:
-  /// **'Definir encontro sem sorteio'**
-  String get raffleManualDefinitionAction;
-
   /// Texto informando que há um encontro em preparação pela anfitriã
   ///
   /// In pt, this message translates to:

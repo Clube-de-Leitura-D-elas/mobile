@@ -782,13 +782,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.';
 
   @override
-  String get raffleNoEligibleParticipantsExplanation =>
-      'Nenhuma participante ativa possui sugestão de livro disponível para sorteio.';
-
-  @override
-  String get raffleManualDefinitionAction => 'Definir encontro sem sorteio';
-
-  @override
   String get raffleMeetingInPreparation => 'Encontro em preparação';
 
   @override
@@ -2685,13 +2678,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get raffleInauguralSubtitle =>
       'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.';
-
-  @override
-  String get raffleNoEligibleParticipantsExplanation =>
-      'Nenhuma participante ativa possui sugestão de livro disponível para sorteio.';
-
-  @override
-  String get raffleManualDefinitionAction => 'Definir encontro sem sorteio';
 
   @override
   String get raffleMeetingInPreparation => 'Encontro em preparação';

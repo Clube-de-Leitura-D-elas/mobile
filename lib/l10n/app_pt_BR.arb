@@ -217,8 +217,6 @@
   "raffleSavedSuccessToast": "Sorteio registrado com sucesso! Nova anfitriã definida.",
   "raffleInauguralTitle": "Sorteio Inaugural",
   "raffleInauguralSubtitle": "Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.",
-  "raffleNoEligibleParticipantsExplanation": "Nenhuma participante ativa possui sugestão de livro disponível para sorteio.",
-  "raffleManualDefinitionAction": "Definir encontro sem sorteio",
   "raffleMeetingInPreparation": "Encontro em preparação",
   "homePendingTasksRaffleInaugural": "Realizar sorteio inaugural",
   "homePendingTasksRafflePending": "Realizar sorteio pendente",
