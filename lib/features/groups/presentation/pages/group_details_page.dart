@@ -87,7 +87,7 @@ class GroupDetailsPage extends StatelessWidget {
                     ? nextEventState.event.id
                     : null;
                 return GroupNextEvent(
-                  status: _toWidgetStatus(nextEventState, group),
+                  status: _toWidgetStatus(nextEventState),
                   data: _toWidgetData(nextEventState),
                   errorMessage: nextEventState is NextEventError
                       ? groupFailureMessage(
@@ -148,16 +148,10 @@ class GroupDetailsPage extends StatelessWidget {
     );
   }
 
-  GroupNextEventStatus _toWidgetStatus(
-    NextEventState state,
-    GroupDetailsEntity group,
-  ) {
+  GroupNextEventStatus _toWidgetStatus(NextEventState state) {
     return switch (state) {
       NextEventLoading() => GroupNextEventStatus.loading,
-      NextEventEmpty() =>
-        (group.hasOpenMeeting && group.openMeetingStatus == 'CREATED')
-            ? GroupNextEventStatus.inPreparation
-            : GroupNextEventStatus.empty,
+      NextEventEmpty() => GroupNextEventStatus.empty,
       NextEventLoaded() => GroupNextEventStatus.loaded,
       NextEventError() => GroupNextEventStatus.error,
     };
