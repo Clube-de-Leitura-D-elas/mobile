@@ -102,7 +102,7 @@ void main() {
         routes: [
           GoRoute(
             path: '/',
-            builder: (_, __) => const Scaffold(body: Text('root')),
+            builder: (_, _) => const Scaffold(body: Text('root')),
           ),
           ...RaffleRoutes.routes,
         ],
@@ -141,7 +141,7 @@ void main() {
       );
       expect(page.groupId, 'g-inaugural');
       expect(page.participants, hasLength(1));
-      expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
+      expect(find.text('Sorteio Inaugural'), findsOneWidget);
     },
   );
 

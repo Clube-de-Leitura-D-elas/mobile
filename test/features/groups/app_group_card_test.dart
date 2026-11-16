@@ -13,6 +13,7 @@ import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
+import 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';

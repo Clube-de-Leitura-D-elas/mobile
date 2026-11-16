@@ -1,3 +1,4 @@
+import 'package:mobile/features/groups/data/models/pending_raffle_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
@@ -31,7 +32,7 @@ class GroupModel extends GroupEntity {
     final nextMeeting = _parseNextMeeting(json['next_meeting']);
     final pendingMeetings = _parsePendingMeetings(json['pending_meetings']);
     final hasPendingResponse = json['has_pending_response'];
-    final pendingRaffle = _parsePendingRaffle(json['pending_raffle']);
+    final pendingRaffle = PendingRaffleModel.fromJson(json['pending_raffle']);
     final hasOpenMeeting = json['has_open_meeting'] as bool? ?? false;
     final openMeetingStatus = json['open_meeting_status'] as String?;
 
@@ -65,18 +66,6 @@ class GroupModel extends GroupEntity {
 
     return int.tryParse(name) ??
         int.tryParse(RegExp(r'\d+$').firstMatch(name)?.group(0) ?? '');
-  }
-
-  static PendingRaffle? _parsePendingRaffle(dynamic json) {
-    if (json == null || json is! Map<String, dynamic>) return null;
-    final typeStr = json['type'] as String?;
-    final groupId = json['group_id'] as String?;
-    final meetingId = json['meeting_id'] as String?;
-    if (groupId == null) return null;
-    final type = typeStr == 'INAUGURAL'
-        ? PendingRaffleType.inaugural
-        : PendingRaffleType.pending;
-    return PendingRaffle(type: type, groupId: groupId, meetingId: meetingId);
   }
 
   static List<GroupMeeting> _parsePendingMeetings(dynamic json) {

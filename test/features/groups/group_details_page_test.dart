@@ -567,11 +567,14 @@ void main() {
         ),
         GoRoute(
           path: RaffleRoutes.preparation,
-          builder: (_, state) => Scaffold(
-            body: Text(
-              'raffle_preparation: ${(state.extra as Map<String, dynamic>?)?['group_id']}',
-            ),
-          ),
+          builder: (_, state) {
+            final extra = state.extra as Map<String, dynamic>?;
+            return Scaffold(
+              body: Text(
+                'raffle_preparation: ${extra?['group_id']}:${extra?['meeting_id'] ?? ''}',
+              ),
+            );
+          },
         ),
       ],
     );
@@ -761,30 +764,33 @@ void main() {
   testWidgets(
     'renders inaugural raffle action button and navigates to preparation route',
     (tester) async {
-      when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
-        (_) async => const Success(
-          GroupDetailsEntity(
-            name: '45',
-            genres: ['Ficção'],
-            participantCount: 5,
-            city: 'Porto Alegre',
-            stateCode: 'RS',
-            pendingRaffle: PendingRaffle(
-              type: PendingRaffleType.inaugural,
-              groupId: joinGroupId,
+      final router = await pumpDetails(
+        tester,
+        afterStubs: () {
+          when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+            (_) async => const Success(
+              GroupDetailsEntity(
+                name: '45',
+                genres: ['Ficção'],
+                participantCount: 5,
+                city: 'Porto Alegre',
+                stateCode: 'RS',
+                pendingRaffle: PendingRaffle(
+                  type: PendingRaffleType.inaugural,
+                  groupId: joinGroupId,
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       );
 
-      final router = await pumpDetails(tester);
+      expect(find.text('Sorteio Inaugural'), findsOneWidget);
 
-      expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
-
-      await tester.tap(find.text('Realizar sorteio inaugural'));
+      await tester.tap(find.text('Sorteio Inaugural'));
       await tester.pumpAndSettle();
 
-      expect(find.text('raffle_preparation: $joinGroupId'), findsOneWidget);
+      expect(find.text('raffle_preparation: $joinGroupId:'), findsOneWidget);
 
       router.pop();
       await tester.pumpAndSettle();
@@ -796,26 +802,39 @@ void main() {
   testWidgets(
     'renders pending raffle action button for regular pending raffle',
     (tester) async {
-      when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
-        (_) async => const Success(
-          GroupDetailsEntity(
-            name: '45',
-            genres: ['Ficção'],
-            participantCount: 5,
-            city: 'Porto Alegre',
-            stateCode: 'RS',
-            pendingRaffle: PendingRaffle(
-              type: PendingRaffleType.pending,
-              groupId: joinGroupId,
-              meetingId: 'm-1',
+      final router = await pumpDetails(
+        tester,
+        afterStubs: () {
+          when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+            (_) async => const Success(
+              GroupDetailsEntity(
+                name: '45',
+                genres: ['Ficção'],
+                participantCount: 5,
+                city: 'Porto Alegre',
+                stateCode: 'RS',
+                pendingRaffle: PendingRaffle(
+                  type: PendingRaffleType.pending,
+                  groupId: joinGroupId,
+                  meetingId: 'm-1',
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       );
 
-      await pumpDetails(tester);
+      expect(find.text('Realizar sorteio'), findsOneWidget);
+      await tester.tap(find.text('Realizar sorteio'));
+      await tester.pumpAndSettle();
 
-      expect(find.text('Preparar sorteio'), findsOneWidget);
+      expect(
+        find.text('raffle_preparation: $joinGroupId:m-1'),
+        findsOneWidget,
+      );
+
+      router.pop();
+      await tester.pumpAndSettle();
     },
   );
 }

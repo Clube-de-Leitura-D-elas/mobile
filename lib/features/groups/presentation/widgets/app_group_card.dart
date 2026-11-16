@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
-import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/meeting_invitation_cubit.dart';
+import 'package:mobile/features/groups/presentation/widgets/pending_raffle_button.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_meeting_response_buttons.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_card/group_card_header.dart';
@@ -91,10 +91,8 @@ class AppGroupCard extends StatelessWidget {
               ),
             ] else if (pendingRaffle != null) ...[
               SizedBox(height: spacing.s16),
-              AppButton.primary(
-                label: pendingRaffle!.type == PendingRaffleType.inaugural
-                    ? context.l10n.homePendingTasksRaffleInaugural
-                    : context.l10n.homePendingTasksRafflePending,
+              PendingRaffleButton(
+                pendingRaffle: pendingRaffle!,
                 onPressed: onPendingRafflePressed,
               ),
             ],
@@ -123,10 +121,8 @@ class AppGroupCard extends StatelessWidget {
             ],
           ] else if (pendingRaffle != null) ...[
             SizedBox(height: spacing.s16),
-            AppButton.primary(
-              label: pendingRaffle!.type == PendingRaffleType.inaugural
-                  ? context.l10n.homePendingTasksRaffleInaugural
-                  : context.l10n.homePendingTasksRafflePending,
+            PendingRaffleButton(
+              pendingRaffle: pendingRaffle!,
               onPressed: onPendingRafflePressed,
             ),
           ],

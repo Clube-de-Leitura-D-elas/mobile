@@ -493,7 +493,11 @@ void main() {
       );
 
       await expectLater(
-        dataSource.saveRaffleResult(tModel, groupId: 'group-1'),
+        dataSource.saveRaffleResult(
+          tModel,
+          meetingId: 'meeting-123',
+          groupId: 'group-1',
+        ),
         completes,
       );
 

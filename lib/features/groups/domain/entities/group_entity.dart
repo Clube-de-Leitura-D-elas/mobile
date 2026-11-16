@@ -1,22 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
 
-enum PendingRaffleType { inaugural, pending }
-
-class PendingRaffle extends Equatable {
-  final PendingRaffleType type;
-  final String groupId;
-  final String? meetingId;
-
-  const PendingRaffle({
-    required this.type,
-    required this.groupId,
-    this.meetingId,
-  });
-
-  @override
-  List<Object?> get props => [type, groupId, meetingId];
-}
+export 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
 
 class GroupEntity extends Equatable {
   final String id;

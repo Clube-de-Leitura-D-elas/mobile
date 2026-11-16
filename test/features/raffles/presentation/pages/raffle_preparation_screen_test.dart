@@ -191,10 +191,10 @@ void main() {
         groupId: 'group-8',
       );
 
-      expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
+      expect(find.text('Sorteio Inaugural'), findsOneWidget);
       expect(
         find.text(
-          'Defina as participantes aptas para o sorteio inicial do grupo.',
+          'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.',
         ),
         findsOneWidget,
       );

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mobile/features/groups/domain/entities/group_entity.dart';
+import 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
 
 class GroupDetailsEntity extends Equatable {
   final String name;

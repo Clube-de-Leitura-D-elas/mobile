@@ -232,7 +232,7 @@ void main() {
     test('parses pending_raffle inaugural and pending correctly', () {
       final inauguralGroup = GroupModel.fromJson({
         ...groupJson(),
-        'pending_raffle': {
+        'pending_raffle': const {
           'type': 'INAUGURAL',
           'group_id': 'g1',
         },
@@ -241,13 +241,17 @@ void main() {
       });
 
       expect(inauguralGroup.pendingRaffle?.type, PendingRaffleType.inaugural);
+      expect(
+        inauguralGroup.pendingRaffle,
+        const PendingRaffle(type: PendingRaffleType.inaugural, groupId: 'g1'),
+      );
       expect(inauguralGroup.pendingRaffle?.groupId, 'g1');
       expect(inauguralGroup.pendingRaffle?.meetingId, isNull);
       expect(inauguralGroup.hasOpenMeeting, isFalse);
 
       final pendingGroup = GroupModel.fromJson({
         ...groupJson(),
-        'pending_raffle': {
+        'pending_raffle': const {
           'type': 'PENDING',
           'group_id': 'g1',
           'meeting_id': 'm1',
@@ -290,7 +294,7 @@ void main() {
 
       final groupNoId = GroupModel.fromJson({
         ...groupJson(),
-        'pending_raffle': {'type': 'INAUGURAL'},
+        'pending_raffle': const {'type': 'INAUGURAL'},
       });
       expect(groupNoId.pendingRaffle, isNull);
     });

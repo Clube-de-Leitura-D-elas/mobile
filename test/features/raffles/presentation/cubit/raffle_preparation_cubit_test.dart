@@ -169,6 +169,32 @@ void main() {
     },
   );
 
+  blocTest<RafflePreparationCubit, RafflePreparationState>(
+    'setParticipants desmarca participante excluída pelas regras',
+    build: () => RafflePreparationCubit(repository: mockRepository),
+    act: (cubit) => cubit.setParticipants(const [
+      RaffleParticipant(
+        id: 'excluded',
+        name: 'Participante excluída',
+        hasAttended: true,
+        isExcludedByRule: true,
+      ),
+    ]),
+    expect: () => const [
+      RafflePreparationLoaded(
+        participants: [
+          RaffleParticipant(
+            id: 'excluded',
+            name: 'Participante excluída',
+            hasAttended: true,
+            isExcludedByRule: true,
+            isSelected: false,
+          ),
+        ],
+      ),
+    ],
+  );
+
   group('confirmRaffle', () {
     blocTest<RafflePreparationCubit, RafflePreparationState>(
       'deve emitir estado de submissao e sucesso ao confirmar',

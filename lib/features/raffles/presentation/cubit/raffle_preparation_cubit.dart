@@ -79,7 +79,13 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
   }) {
     emit(
       RafflePreparationLoaded(
-        participants: participants,
+        participants: [
+          for (final participant in participants)
+            if (participant.isExcludedByRule && participant.isSelected)
+              participant.copyWith(isSelected: false)
+            else
+              participant,
+        ],
         isInaugural: isInaugural,
       ),
     );

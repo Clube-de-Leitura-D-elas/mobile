@@ -717,6 +717,7 @@ void main() {
 
       final cubit = HomeCubit(groupRepository: repository);
       addTearDown(cubit.close);
+      await cubit.loadGroups();
 
       final router = GoRouter(
         initialLocation: QuickAccessRoutes.home,
@@ -793,6 +794,7 @@ void main() {
 
       final cubit = HomeCubit(groupRepository: repository);
       addTearDown(cubit.close);
+      await cubit.loadGroups();
 
       Map<String, dynamic>? receivedExtra;
       final router = GoRouter(
@@ -831,9 +833,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Preparar sorteio'), findsOneWidget);
+      expect(find.text('Realizar sorteio pendente'), findsOneWidget);
 
-      await tester.tap(find.text('Preparar sorteio'));
+      await tester.tap(find.text('Realizar sorteio pendente'));
       await tester.pumpAndSettle();
 
       expect(receivedExtra?['group_id'], 'g-pending');

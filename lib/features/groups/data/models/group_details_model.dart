@@ -1,5 +1,5 @@
+import 'package:mobile/features/groups/data/models/pending_raffle_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
-import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 
 class GroupDetailsModel extends GroupDetailsEntity {
   const GroupDetailsModel({
@@ -27,7 +27,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
     final stateCode = json['state_code'];
     final coverImageUrl = json['cover_image_url'];
     final whatsappUrl = json['whatsapp_url'];
-    final pendingRaffle = _parsePendingRaffle(json['pending_raffle']);
+    final pendingRaffle = PendingRaffleModel.fromJson(json['pending_raffle']);
     final hasOpenMeeting = json['has_open_meeting'] as bool? ?? false;
     final openMeetingStatus = json['open_meeting_status'] as String?;
 
@@ -54,18 +54,6 @@ class GroupDetailsModel extends GroupDetailsEntity {
       hasOpenMeeting: hasOpenMeeting,
       openMeetingStatus: openMeetingStatus,
     );
-  }
-
-  static PendingRaffle? _parsePendingRaffle(dynamic json) {
-    if (json == null || json is! Map<String, dynamic>) return null;
-    final typeStr = json['type'] as String?;
-    final groupId = json['group_id'] as String?;
-    final meetingId = json['meeting_id'] as String?;
-    if (groupId == null) return null;
-    final type = typeStr == 'INAUGURAL'
-        ? PendingRaffleType.inaugural
-        : PendingRaffleType.pending;
-    return PendingRaffle(type: type, groupId: groupId, meetingId: meetingId);
   }
 
   GroupDetailsEntity toDomain() {

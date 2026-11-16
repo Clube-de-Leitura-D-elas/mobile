@@ -19,7 +19,6 @@ import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
