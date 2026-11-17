@@ -50,6 +50,16 @@ void main() {
       expect(ratingWidget.rating, 4.5);
     });
 
+    testWidgets('clamps a long comment to three lines', (tester) async {
+      await tester.pumpWidget(buildWidget(tBook));
+
+      final comment = tester.widget<Text>(
+        find.text('Livro fantástico, adorei a leitura.'),
+      );
+      expect(comment.maxLines, 3);
+      expect(comment.overflow, TextOverflow.ellipsis);
+    });
+
     testWidgets('hides comment when null or empty', (tester) async {
       const bookWithoutComment = RatedBook(
         id: 'rated-2',

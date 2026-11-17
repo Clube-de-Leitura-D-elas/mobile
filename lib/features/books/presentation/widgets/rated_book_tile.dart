@@ -91,6 +91,8 @@ class RatedBookTile extends StatelessWidget {
                         SizedBox(height: spacing.s8),
                         Text(
                           book.comment!,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
                           style: typography.bodySmall.copyWith(
                             color: colors.textDefault,
                           ),

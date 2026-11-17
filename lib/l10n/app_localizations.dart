@@ -2012,6 +2012,24 @@ abstract class AppLocalizations {
   /// **'Digite sua resposta'**
   String get bookReviewCommentHint;
 
+  /// Expande um comentário de avaliação longo na tela do livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver mais'**
+  String get bookReviewCommentShowMore;
+
+  /// Recolhe um comentário de avaliação expandido na tela do livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver menos'**
+  String get bookReviewCommentShowLess;
+
+  /// Nome na avaliação da própria leitora quando o perfil não está disponível
+  ///
+  /// In pt, this message translates to:
+  /// **'Você'**
+  String get bookDetailMyReviewFallbackName;
+
   /// Botão para cancelar a avaliação.
   ///
   /// In pt, this message translates to:

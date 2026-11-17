@@ -1137,6 +1137,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get bookReviewCommentHint => 'Digite sua resposta';
 
   @override
+  String get bookReviewCommentShowMore => 'Ver mais';
+
+  @override
+  String get bookReviewCommentShowLess => 'Ver menos';
+
+  @override
+  String get bookDetailMyReviewFallbackName => 'Você';
+
+  @override
   String get bookReviewCancel => 'Cancelar';
 
   @override
@@ -2858,6 +2867,15 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get bookReviewCommentHint => 'Digite sua resposta';
+
+  @override
+  String get bookReviewCommentShowMore => 'Ver mais';
+
+  @override
+  String get bookReviewCommentShowLess => 'Ver menos';
+
+  @override
+  String get bookDetailMyReviewFallbackName => 'Você';
 
   @override
   String get bookReviewCancel => 'Cancelar';
