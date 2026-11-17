@@ -229,6 +229,76 @@ void main() {
       expect(group.toDomain().pendingMeetings, isEmpty);
     });
 
+    test('parses pending_raffle inaugural and pending correctly', () {
+      final inauguralGroup = GroupModel.fromJson({
+        ...groupJson(),
+        'pending_raffle': const {
+          'type': 'INAUGURAL',
+          'group_id': 'g1',
+        },
+        'has_open_meeting': false,
+        'open_meeting_status': null,
+      });
+
+      expect(inauguralGroup.pendingRaffle?.type, PendingRaffleType.inaugural);
+      expect(
+        inauguralGroup.pendingRaffle,
+        const PendingRaffle(type: PendingRaffleType.inaugural, groupId: 'g1'),
+      );
+      expect(inauguralGroup.pendingRaffle?.groupId, 'g1');
+      expect(inauguralGroup.pendingRaffle?.meetingId, isNull);
+      expect(inauguralGroup.hasOpenMeeting, isFalse);
+
+      final pendingGroup = GroupModel.fromJson({
+        ...groupJson(),
+        'pending_raffle': const {
+          'type': 'PENDING',
+          'group_id': 'g1',
+          'meeting_id': 'm1',
+        },
+        'has_open_meeting': true,
+        'open_meeting_status': 'CREATED',
+      });
+
+      expect(pendingGroup.pendingRaffle?.type, PendingRaffleType.pending);
+      expect(pendingGroup.pendingRaffle?.meetingId, 'm1');
+      expect(pendingGroup.hasOpenMeeting, isTrue);
+      expect(pendingGroup.openMeetingStatus, 'CREATED');
+
+      final copied = pendingGroup.toDomain().copyWith(
+            pendingRaffle: const PendingRaffle(
+              type: PendingRaffleType.inaugural,
+              groupId: 'g2',
+            ),
+            hasOpenMeeting: false,
+            openMeetingStatus: 'SCHEDULED',
+          );
+      expect(copied.pendingRaffle?.type, PendingRaffleType.inaugural);
+      expect(copied.hasOpenMeeting, isFalse);
+      expect(copied.openMeetingStatus, 'SCHEDULED');
+      expect(copied.props, contains(const PendingRaffle(type: PendingRaffleType.inaugural, groupId: 'g2')));
+    });
+
+    test('returns null pending_raffle when invalid or missing group_id', () {
+      final groupNull = GroupModel.fromJson({
+        ...groupJson(),
+        'pending_raffle': null,
+      });
+      expect(groupNull.pendingRaffle, isNull);
+
+      final groupInvalid = GroupModel.fromJson({
+        ...groupJson(),
+        'pending_raffle': 'not a map',
+      });
+      expect(groupInvalid.pendingRaffle, isNull);
+
+      final groupNoId = GroupModel.fromJson({
+        ...groupJson(),
+        'pending_raffle': const {'type': 'INAUGURAL'},
+      });
+      expect(groupNoId.pendingRaffle, isNull);
+    });
+
     test(
       'Given item inválido ou nulo em pending_meetings, When parses, Then ignora só o item',
       () {
@@ -258,5 +328,26 @@ void main() {
         expect(group.toDomain().pendingMeetings, isEmpty);
       },
     );
+
+    test('GroupEntity copyWith and props cover pendingRaffle, hasOpenMeeting, openMeetingStatus', () {
+      const entity = GroupEntity(
+        id: 'g1',
+        number: 1,
+        participantsCount: 5,
+        cityState: 'POA',
+      );
+      const raffle = PendingRaffle(type: PendingRaffleType.inaugural, groupId: 'g1');
+      final updated = entity.copyWith(
+        pendingRaffle: raffle,
+        hasOpenMeeting: true,
+        openMeetingStatus: 'SCHEDULED',
+      );
+      expect(updated.pendingRaffle, raffle);
+      expect(updated.hasOpenMeeting, isTrue);
+      expect(updated.openMeetingStatus, 'SCHEDULED');
+      expect(updated.props, contains(raffle));
+      expect(updated.props, contains(true));
+      expect(updated.props, contains('SCHEDULED'));
+    });
   });
 }

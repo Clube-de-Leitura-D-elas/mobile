@@ -1064,6 +1064,30 @@
   "@raffleSavedSuccessToast": {
     "description": "Mensagem de sucesso após registrar o sorteio e definir a nova anfitriã"
   },
+  "raffleInauguralTitle": "Sorteio Inaugural",
+  "@raffleInauguralTitle": {
+    "description": "Título da tela de sorteio inaugural do grupo"
+  },
+  "raffleInauguralSubtitle": "Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.",
+  "@raffleInauguralSubtitle": {
+    "description": "Subtítulo da tela de preparação do sorteio inaugural"
+  },
+  "raffleMeetingInPreparation": "Encontro em preparação",
+  "@raffleMeetingInPreparation": {
+    "description": "Texto informando que há um encontro em preparação pela anfitriã"
+  },
+  "homePendingTasksRaffleInaugural": "Realizar sorteio inaugural",
+  "@homePendingTasksRaffleInaugural": {
+    "description": "Ação no card de tarefas para o sorteio inaugural"
+  },
+  "homePendingTasksRafflePending": "Realizar sorteio pendente",
+  "@homePendingTasksRafflePending": {
+    "description": "Ação no card de tarefas para sorteio pendente"
+  },
+  "raffleOpenMeetingAlreadyExistsError": "O grupo já possui um encontro em andamento.",
+  "@raffleOpenMeetingAlreadyExistsError": {
+    "description": "Erro quando tenta realizar sorteio mas o grupo já tem encontro aberto"
+  },
 
   "groupMeetingMyTasksProgress": "{done} de {total} tarefas concluídas",
   "@groupMeetingMyTasksProgress": {

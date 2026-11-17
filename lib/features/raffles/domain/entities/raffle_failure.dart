@@ -35,6 +35,11 @@ class RaffleMeetingNotEndedFailure extends RaffleFailure {
   const RaffleMeetingNotEndedFailure();
 }
 
+/// O grupo já possui um encontro em andamento (HTTP 409 `group already has an open meeting`).
+class RaffleOpenMeetingAlreadyExistsFailure extends RaffleFailure {
+  const RaffleOpenMeetingAlreadyExistsFailure();
+}
+
 /// A lista enviada não vale mais: é preciso buscá-la de novo antes de
 /// sortear outra vez.
 abstract class RaffleStaleListFailure extends RaffleFailure {

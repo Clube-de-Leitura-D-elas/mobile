@@ -453,7 +453,13 @@ void main() {
             eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
           ),
         ).thenAnswer((_) async => const Success(tResult));
-        when(() => mockRepository.saveRaffleResult(tResult)).thenAnswer(
+        when(
+          () => mockRepository.saveRaffleResult(
+            tResult,
+            meetingId: any(named: 'meetingId'),
+            groupId: any(named: 'groupId'),
+          ),
+        ).thenAnswer(
           (_) async => const Failure(RaffleParticipantsChangedFailure()),
         );
         // A lista do servidor vem com todas marcadas.
@@ -654,7 +660,11 @@ void main() {
         ),
       ],
       verify: (_) =>
-          verify(() => mockRepository.saveRaffleResult(tResult)).called(1),
+          verify(() => mockRepository.saveRaffleResult(
+            tResult,
+            meetingId: any(named: 'meetingId'),
+            groupId: any(named: 'groupId'),
+          )).called(1),
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
@@ -699,7 +709,13 @@ void main() {
             eligibleParticipantIds: ['p1'],
           ),
         ).thenAnswer((_) async => const Success(tResult));
-        when(() => mockRepository.saveRaffleResult(tResult)).thenAnswer(
+        when(
+          () => mockRepository.saveRaffleResult(
+            tResult,
+            meetingId: any(named: 'meetingId'),
+            groupId: any(named: 'groupId'),
+          ),
+        ).thenAnswer(
           (_) async => const Failure(RaffleAlreadyRecordedFailure()),
         );
         return RaffleExecutionCubit(repository: mockRepository);
@@ -725,7 +741,11 @@ void main() {
         ),
       ],
       verify: (_) =>
-          verify(() => mockRepository.saveRaffleResult(tResult)).called(1),
+          verify(() => mockRepository.saveRaffleResult(
+            tResult,
+            meetingId: any(named: 'meetingId'),
+            groupId: any(named: 'groupId'),
+          )).called(1),
     );
   });
 }

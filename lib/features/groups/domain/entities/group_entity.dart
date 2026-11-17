@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
+import 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
+
+export 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
 
 class GroupEntity extends Equatable {
   final String id;
@@ -13,6 +16,11 @@ class GroupEntity extends Equatable {
   final List<GroupMeeting> pendingMeetings;
   final bool hasPendingResponse;
 
+  /// Sorteio disponível quando o grupo não tem encontro aberto.
+  final PendingRaffle? pendingRaffle;
+  final bool hasOpenMeeting;
+  final String? openMeetingStatus;
+
   const GroupEntity({
     required this.id,
     required this.number,
@@ -22,6 +30,9 @@ class GroupEntity extends Equatable {
     this.nextMeeting,
     this.pendingMeetings = const [],
     this.hasPendingResponse = false,
+    this.pendingRaffle,
+    this.hasOpenMeeting = false,
+    this.openMeetingStatus,
   });
 
   GroupEntity copyWith({
@@ -33,6 +44,9 @@ class GroupEntity extends Equatable {
     GroupMeeting? nextMeeting,
     List<GroupMeeting>? pendingMeetings,
     bool? hasPendingResponse,
+    PendingRaffle? pendingRaffle,
+    bool? hasOpenMeeting,
+    String? openMeetingStatus,
   }) {
     return GroupEntity(
       id: id ?? this.id,
@@ -43,6 +57,9 @@ class GroupEntity extends Equatable {
       nextMeeting: nextMeeting ?? this.nextMeeting,
       pendingMeetings: pendingMeetings ?? this.pendingMeetings,
       hasPendingResponse: hasPendingResponse ?? this.hasPendingResponse,
+      pendingRaffle: pendingRaffle ?? this.pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting ?? this.hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus ?? this.openMeetingStatus,
     );
   }
 
@@ -58,5 +75,8 @@ class GroupEntity extends Equatable {
     nextMeeting,
     pendingMeetings,
     hasPendingResponse,
+    pendingRaffle,
+    hasOpenMeeting,
+    openMeetingStatus,
   ];
 }

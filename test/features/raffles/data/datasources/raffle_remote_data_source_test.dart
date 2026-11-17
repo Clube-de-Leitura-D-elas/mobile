@@ -98,6 +98,34 @@ void main() {
     );
 
     test(
+      'deve repassar group_id no body quando meetingId for nulo',
+      () async {
+        when(
+          () =>
+              mockSupabaseService.invokeFunction<List<RaffleParticipantModel>>(
+                functionName: any(named: 'functionName'),
+                body: any(named: 'body'),
+                decoder: any(named: 'decoder'),
+              ),
+        ).thenAnswer((_) async => const Success(
+              SupabaseResponse<List<RaffleParticipantModel>>(data: [tParticipantModel]),
+            ));
+
+        final result = await dataSource.getEligibleParticipants(null, 'group-1');
+
+        expect(result, isNotEmpty);
+        verify(
+          () =>
+              mockSupabaseService.invokeFunction<List<RaffleParticipantModel>>(
+                functionName: 'get-eligible-raffle-participants',
+                body: {'group_id': 'group-1'},
+                decoder: any(named: 'decoder'),
+              ),
+        ).called(1);
+      },
+    );
+
+    test(
       'deve lançar RaffleRemoteException com a falha original quando o invokeFunction falhar',
       () async {
         when(
@@ -118,6 +146,34 @@ void main() {
               mockSupabaseService.invokeFunction<List<RaffleParticipantModel>>(
                 functionName: 'get-eligible-raffle-participants',
                 body: {'meeting_id': tMeetingId},
+                decoder: any(named: 'decoder'),
+              ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'deve repassar group_id no body quando meetingId for nulo',
+      () async {
+        when(
+          () =>
+              mockSupabaseService.invokeFunction<List<RaffleParticipantModel>>(
+                functionName: any(named: 'functionName'),
+                body: any(named: 'body'),
+                decoder: any(named: 'decoder'),
+              ),
+        ).thenAnswer((_) async => const Success(
+              SupabaseResponse<List<RaffleParticipantModel>>(data: [tParticipantModel]),
+            ));
+
+        final result = await dataSource.getEligibleParticipants(null, 'group-1');
+
+        expect(result, isNotEmpty);
+        verify(
+          () =>
+              mockSupabaseService.invokeFunction<List<RaffleParticipantModel>>(
+                functionName: 'get-eligible-raffle-participants',
+                body: {'group_id': 'group-1'},
                 decoder: any(named: 'decoder'),
               ),
         ).called(1);
@@ -159,6 +215,35 @@ void main() {
     );
 
     test(
+      'deve repassar group_id no body quando confirmRaffle for chamado com groupId',
+      () async {
+        when(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: any(named: 'functionName'),
+            body: any(named: 'body'),
+          ),
+        ).thenAnswer(
+          (_) async => const Success(SupabaseResponse<void>(data: null)),
+        );
+
+        await expectLater(
+          dataSource.confirmRaffle(null, tSelectedParticipantIds, 'group-1'),
+          completes,
+        );
+
+        verify(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: 'confirm-meeting-raffle',
+            body: {
+              'group_id': 'group-1',
+              'eligible_participant_ids': tSelectedParticipantIds,
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
       'deve lançar RaffleRemoteException com a falha original quando o confirmRaffle falhar',
       () async {
         when(
@@ -177,6 +262,35 @@ void main() {
             functionName: 'confirm-meeting-raffle',
             body: {
               'meeting_id': tMeetingId,
+              'eligible_participant_ids': tSelectedParticipantIds,
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'deve repassar group_id no body quando confirmRaffle for chamado com groupId',
+      () async {
+        when(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: any(named: 'functionName'),
+            body: any(named: 'body'),
+          ),
+        ).thenAnswer(
+          (_) async => const Success(SupabaseResponse<void>(data: null)),
+        );
+
+        await expectLater(
+          dataSource.confirmRaffle(null, tSelectedParticipantIds, 'group-1'),
+          completes,
+        );
+
+        verify(
+          () => mockSupabaseService.invokeFunction<void>(
+            functionName: 'confirm-meeting-raffle',
+            body: {
+              'group_id': 'group-1',
               'eligible_participant_ids': tSelectedParticipantIds,
             },
           ),
@@ -364,6 +478,34 @@ void main() {
         () => mockSupabaseService.invokeFunction<void>(
           functionName: 'confirm-meeting-raffle-winner',
           body: tModel.toJson(),
+        ),
+      ).called(1);
+    });
+
+    test('deve repassar group_id ao salvar resultado de sorteio inaugural', () async {
+      when(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: any(named: 'functionName'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => const Success(SupabaseResponse<void>(data: null)),
+      );
+
+      await expectLater(
+        dataSource.saveRaffleResult(
+          tModel,
+          meetingId: 'meeting-123',
+          groupId: 'group-1',
+        ),
+        completes,
+      );
+
+      final expectedBody = tModel.toJson()..['group_id'] = 'group-1';
+      verify(
+        () => mockSupabaseService.invokeFunction<void>(
+          functionName: 'confirm-meeting-raffle-winner',
+          body: expectedBody,
         ),
       ).called(1);
     });

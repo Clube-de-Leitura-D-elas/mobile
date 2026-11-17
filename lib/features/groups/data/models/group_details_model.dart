@@ -1,3 +1,4 @@
+import 'package:mobile/features/groups/data/models/pending_raffle_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 
 class GroupDetailsModel extends GroupDetailsEntity {
@@ -9,6 +10,9 @@ class GroupDetailsModel extends GroupDetailsEntity {
     required super.stateCode,
     super.coverImageUrl,
     super.whatsappUrl,
+    super.pendingRaffle,
+    super.hasOpenMeeting,
+    super.openMeetingStatus,
   });
 
   factory GroupDetailsModel.fromJson(dynamic json) {
@@ -23,6 +27,9 @@ class GroupDetailsModel extends GroupDetailsEntity {
     final stateCode = json['state_code'];
     final coverImageUrl = json['cover_image_url'];
     final whatsappUrl = json['whatsapp_url'];
+    final pendingRaffle = PendingRaffleModel.fromJson(json['pending_raffle']);
+    final hasOpenMeeting = json['has_open_meeting'] as bool? ?? false;
+    final openMeetingStatus = json['open_meeting_status'] as String?;
 
     if (name is! String ||
         genres is! List ||
@@ -43,6 +50,9 @@ class GroupDetailsModel extends GroupDetailsEntity {
       stateCode: stateCode as String? ?? '',
       coverImageUrl: coverImageUrl as String?,
       whatsappUrl: whatsappUrl as String?,
+      pendingRaffle: pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus,
     );
   }
 
@@ -55,6 +65,9 @@ class GroupDetailsModel extends GroupDetailsEntity {
       stateCode: stateCode,
       coverImageUrl: coverImageUrl,
       whatsappUrl: whatsappUrl,
+      pendingRaffle: pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus,
     );
   }
 }

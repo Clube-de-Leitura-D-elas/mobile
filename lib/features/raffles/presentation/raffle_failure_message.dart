@@ -9,6 +9,8 @@ String raffleFailureMessage(AppLocalizations l10n, RaffleFailure failure) =>
       RaffleForbiddenFailure() => l10n.errorForbidden,
       RaffleAlreadyRecordedFailure() => l10n.raffleAlreadyRecordedError,
       RaffleMeetingNotEndedFailure() => l10n.raffleMeetingNotEndedError,
+      RaffleOpenMeetingAlreadyExistsFailure() =>
+        l10n.raffleOpenMeetingAlreadyExistsError,
       RaffleParticipantsChangedFailure() => l10n.raffleParticipantsChangedError,
       RaffleBookAlreadyDrawnFailure() => l10n.raffleBookAlreadyDrawnError,
       RaffleBookSuggestionUnavailableFailure() =>

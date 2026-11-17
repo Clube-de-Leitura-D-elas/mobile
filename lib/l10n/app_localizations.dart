@@ -1460,6 +1460,42 @@ abstract class AppLocalizations {
   /// **'Sorteio registrado com sucesso! Nova anfitriã definida.'**
   String get raffleSavedSuccessToast;
 
+  /// Título da tela de sorteio inaugural do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio Inaugural'**
+  String get raffleInauguralTitle;
+
+  /// Subtítulo da tela de preparação do sorteio inaugural
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.'**
+  String get raffleInauguralSubtitle;
+
+  /// Texto informando que há um encontro em preparação pela anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro em preparação'**
+  String get raffleMeetingInPreparation;
+
+  /// Ação no card de tarefas para o sorteio inaugural
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar sorteio inaugural'**
+  String get homePendingTasksRaffleInaugural;
+
+  /// Ação no card de tarefas para sorteio pendente
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar sorteio pendente'**
+  String get homePendingTasksRafflePending;
+
+  /// Erro quando tenta realizar sorteio mas o grupo já tem encontro aberto
+  ///
+  /// In pt, this message translates to:
+  /// **'O grupo já possui um encontro em andamento.'**
+  String get raffleOpenMeetingAlreadyExistsError;
+
   /// Descrição de acessibilidade do contador de tarefas da anfitriã no card do grupo
   ///
   /// In pt, this message translates to:

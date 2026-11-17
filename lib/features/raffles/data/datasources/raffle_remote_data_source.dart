@@ -6,18 +6,28 @@ import 'package:mobile/features/raffles/data/models/raffle_result_model.dart';
 
 abstract class RaffleRemoteDataSource {
   Future<List<RaffleParticipantModel>> getEligibleParticipants(
-    String meetingId,
-  );
+    String? meetingId, [
+    String? groupId,
+  ]);
   Future<void> confirmRaffle(
-    String meetingId,
-    List<String> selectedParticipantIds,
-  );
-  Future<RaffleResultModel?> getRaffleResult(String meetingId);
+    String? meetingId,
+    List<String> selectedParticipantIds, [
+    String? groupId,
+  ]);
+  Future<RaffleResultModel?> getRaffleResult(
+    String? meetingId, [
+    String? groupId,
+  ]);
   Future<RaffleResultModel> drawRaffle({
-    required String meetingId,
+    String? meetingId,
+    String? groupId,
     required List<String> eligibleParticipantIds,
   });
-  Future<void> saveRaffleResult(RaffleResultModel result);
+  Future<void> saveRaffleResult(
+    RaffleResultModel result, {
+    String? meetingId,
+    String? groupId,
+  });
 }
 
 /// Falha de uma Edge Function do sorteio, com o tipo e o status preservados
@@ -36,14 +46,22 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
 
   RaffleRemoteDataSourceImpl({required this.supabaseService});
 
+  Map<String, dynamic> _targetBody({String? meetingId, String? groupId}) {
+    return {
+      if (meetingId != null && meetingId.isNotEmpty) 'meeting_id': meetingId,
+      if (groupId != null && groupId.isNotEmpty) 'group_id': groupId,
+    };
+  }
+
   @override
   Future<List<RaffleParticipantModel>> getEligibleParticipants(
-    String meetingId,
-  ) async {
+    String? meetingId, [
+    String? groupId,
+  ]) async {
     final result = await supabaseService
         .invokeFunction<List<RaffleParticipantModel>>(
           functionName: 'get-eligible-raffle-participants',
-          body: {'meeting_id': meetingId},
+          body: _targetBody(meetingId: meetingId, groupId: groupId),
           decoder: (data) {
             final list = data as List<dynamic>;
             return list
@@ -64,15 +82,16 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
 
   @override
   Future<void> confirmRaffle(
-    String meetingId,
-    List<String> selectedParticipantIds,
-  ) async {
+    String? meetingId,
+    List<String> selectedParticipantIds, [
+    String? groupId,
+  ]) async {
+    final body = _targetBody(meetingId: meetingId, groupId: groupId);
+    body['eligible_participant_ids'] = selectedParticipantIds;
+
     final result = await supabaseService.invokeFunction<void>(
       functionName: 'confirm-meeting-raffle',
-      body: {
-        'meeting_id': meetingId,
-        'eligible_participant_ids': selectedParticipantIds,
-      },
+      body: body,
     );
 
     result.match(
@@ -82,10 +101,13 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
   }
 
   @override
-  Future<RaffleResultModel?> getRaffleResult(String meetingId) async {
+  Future<RaffleResultModel?> getRaffleResult(
+    String? meetingId, [
+    String? groupId,
+  ]) async {
     final result = await supabaseService.invokeFunction<Map<String, dynamic>?>(
       functionName: 'get-meeting-raffle-result',
-      body: {'meeting_id': meetingId},
+      body: _targetBody(meetingId: meetingId, groupId: groupId),
       decoder: (data) {
         if (data == null) return null;
         if (data is Map<String, dynamic>) {
@@ -105,15 +127,16 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
 
   @override
   Future<RaffleResultModel> drawRaffle({
-    required String meetingId,
+    String? meetingId,
+    String? groupId,
     required List<String> eligibleParticipantIds,
   }) async {
+    final body = _targetBody(meetingId: meetingId, groupId: groupId);
+    body['eligible_participant_ids'] = eligibleParticipantIds;
+
     final result = await supabaseService.invokeFunction<RaffleResultModel>(
       functionName: 'draw-meeting-raffle',
-      body: {
-        'meeting_id': meetingId,
-        'eligible_participant_ids': eligibleParticipantIds,
-      },
+      body: body,
       decoder: (data) =>
           RaffleResultModel.fromJson(data as Map<String, dynamic>),
     );
@@ -125,10 +148,22 @@ class RaffleRemoteDataSourceImpl implements RaffleRemoteDataSource {
   }
 
   @override
-  Future<void> saveRaffleResult(RaffleResultModel result) async {
+  Future<void> saveRaffleResult(
+    RaffleResultModel result, {
+    String? meetingId,
+    String? groupId,
+  }) async {
+    final body = result.toJson();
+    if (meetingId != null && meetingId.isNotEmpty) {
+      body['meeting_id'] = meetingId;
+    }
+    if (groupId != null && groupId.isNotEmpty) {
+      body['group_id'] = groupId;
+    }
+
     final res = await supabaseService.invokeFunction<void>(
       functionName: 'confirm-meeting-raffle-winner',
-      body: result.toJson(),
+      body: body,
     );
 
     res.match((_) => null, (failure) => throw RaffleRemoteException(failure));

@@ -7,12 +7,14 @@ import 'package:mobile/features/raffles/presentation/pages/raffle_execution_scre
 
 class RaffleExecutionPage extends StatelessWidget {
   final String meetingId;
+  final String? groupId;
   final String meetingTitle;
   final List<RaffleParticipant>? participants;
 
   const RaffleExecutionPage({
     super.key,
-    required this.meetingId,
+    this.meetingId = '',
+    this.groupId,
     this.meetingTitle = '',
     this.participants,
   });
@@ -23,6 +25,7 @@ class RaffleExecutionPage extends StatelessWidget {
       create: (context) => serviceLocator<RaffleExecutionCubit>()
         ..load(
           meetingId,
+          groupId: groupId,
           meetingTitle: meetingTitle,
           participants: participants,
         ),

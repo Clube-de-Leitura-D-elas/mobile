@@ -40,7 +40,13 @@ void main() {
     ).thenAnswer((_) async => Failure(failure));
   }
 
-  Future<void> pumpScreen(WidgetTester tester) async {
+  Future<void> pumpScreen(
+    WidgetTester tester, {
+    String? testMeetingId,
+    String? groupId,
+    List<RaffleParticipant>? initialParticipants,
+  }) async {
+    final mId = testMeetingId ?? meetingId;
     final router = GoRouter(
       initialLocation: '/start',
       routes: [
@@ -57,7 +63,7 @@ void main() {
           path: '/prep',
           builder: (_, _) => BlocProvider.value(
             value: cubit,
-            child: const RafflePreparationScreen(meetingId: meetingId),
+            child: RafflePreparationScreen(meetingId: mId, groupId: groupId),
           ),
         ),
         GoRoute(
@@ -80,7 +86,12 @@ void main() {
     );
     await tester.tap(find.text('abrir'));
     await tester.pumpAndSettle();
-    await cubit.loadEligibleParticipants(meetingId);
+    if (initialParticipants != null) {
+      final isInaugural = mId.isEmpty && groupId != null && groupId.isNotEmpty;
+      cubit.setParticipants(initialParticipants, isInaugural: isInaugural);
+    } else {
+      await cubit.loadEligibleParticipants(mId, groupId);
+    }
     await tester.pumpAndSettle();
   }
 
@@ -166,4 +177,88 @@ void main() {
     expect(find.text('tela do sorteio'), findsOneWidget);
     verifyConfirmedWithAna();
   });
+
+  testWidgets(
+    'renders inaugural title and subtitle when groupId is set and meetingId is empty',
+    (tester) async {
+      when(
+        () => repository.getEligibleParticipants('', 'group-8'),
+      ).thenAnswer((_) async => const Success([ana]));
+
+      await pumpScreen(
+        tester,
+        testMeetingId: '',
+        groupId: 'group-8',
+      );
+
+      expect(find.text('Sorteio Inaugural'), findsOneWidget);
+      expect(
+        find.text(
+          'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'displays exclusion reason when participant is excluded and disables continue button',
+    (tester) async {
+      const ineligible = RaffleParticipant(
+        id: 'p2',
+        name: 'Bia',
+        hasAttended: true,
+        isExcludedByRule: true,
+        exclusionReason: 'Sem indicação de livro',
+      );
+      when(
+        () => repository.getEligibleParticipants(meetingId, null),
+      ).thenAnswer((_) async => const Success([ineligible]));
+
+      await pumpScreen(
+        tester,
+        initialParticipants: [ineligible],
+      );
+
+      expect(find.text('Bia'), findsOneWidget);
+      expect(find.text('Sem indicação de livro'), findsOneWidget);
+
+      final continueButton = tester.widget<AppButton>(
+        find.widgetWithText(AppButton, 'Continuar'),
+      );
+      expect(continueButton.onPressed, isNull);
+    },
+  );
+
+  testWidgets(
+    'confirms raffle passing groupId when inaugural',
+    (tester) async {
+      when(
+        () => repository.confirmRaffle(
+          meetingId: '',
+          groupId: 'group-8',
+          selectedParticipantIds: any(named: 'selectedParticipantIds'),
+        ),
+      ).thenAnswer((_) async => const Success(null));
+
+      await pumpScreen(
+        tester,
+        testMeetingId: '',
+        groupId: 'group-8',
+        initialParticipants: [ana],
+      );
+
+      await confirmThroughScreen(tester);
+      await tester.pumpAndSettle();
+
+      expect(find.text('tela do sorteio'), findsOneWidget);
+      verify(
+        () => repository.confirmRaffle(
+          meetingId: '',
+          groupId: 'group-8',
+          selectedParticipantIds: ['p1'],
+        ),
+      ).called(1);
+    },
+  );
 }

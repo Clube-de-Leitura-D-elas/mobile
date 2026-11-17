@@ -13,6 +13,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     : super(const RaffleExecutionInitial());
 
   String _meetingId = '';
+  String? _groupId;
   String? _meetingTitle;
   List<RaffleParticipant>? _participants;
 
@@ -30,6 +31,7 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     if (unsaved != null) return _retrySave(unsaved);
     return load(
       _meetingId,
+      groupId: _groupId,
       meetingTitle: _meetingTitle,
       participants: _participants,
     );
@@ -40,7 +42,10 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
   Future<void> _retrySave(RaffleExecutionResultLoaded unsaved) async {
     emit(const RaffleExecutionLoading());
 
-    final existingResult = await repository.getRaffleResult(unsaved.meetingId);
+    final existingResult = await repository.getRaffleResult(
+      unsaved.meetingId.isNotEmpty ? unsaved.meetingId : null,
+      _groupId,
+    );
     if (isClosed) return;
 
     switch (existingResult) {
@@ -64,10 +69,12 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
 
   Future<void> load(
     String meetingId, {
+    String? groupId,
     String? meetingTitle,
     List<RaffleParticipant>? participants,
   }) async {
     _meetingId = meetingId;
+    _groupId = groupId;
     _meetingTitle = meetingTitle;
     _participants = participants;
     if (participants != null) {
@@ -78,7 +85,10 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     }
     emit(const RaffleExecutionLoading());
 
-    final existingResult = await repository.getRaffleResult(meetingId);
+    final existingResult = await repository.getRaffleResult(
+      meetingId.isNotEmpty ? meetingId : null,
+      groupId,
+    );
     if (isClosed) return;
 
     final existing = existingResult.match((res) => res, (failure) {
@@ -104,7 +114,8 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     }
 
     final participantsResult = await repository.getEligibleParticipants(
-      meetingId,
+      meetingId.isNotEmpty ? meetingId : null,
+      groupId,
     );
     if (isClosed) return;
 
@@ -189,7 +200,8 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     }
 
     final drawResult = await repository.drawRaffle(
-      meetingId: meetingId,
+      meetingId: meetingId.isNotEmpty ? meetingId : null,
+      groupId: _groupId,
       eligibleParticipantIds: eligible.map((p) => p.id).toList(),
     );
     if (isClosed) return;
@@ -216,7 +228,11 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
     final currentState = state as RaffleExecutionResultLoaded;
     emit(currentState.copyWith(isSubmitting: true));
 
-    final saveResult = await repository.saveRaffleResult(currentState.result);
+    final saveResult = await repository.saveRaffleResult(
+      currentState.result,
+      meetingId: _meetingId.isNotEmpty ? _meetingId : null,
+      groupId: _groupId,
+    );
     if (isClosed) return;
 
     saveResult.match(

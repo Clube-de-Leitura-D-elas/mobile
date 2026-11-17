@@ -18,6 +18,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
@@ -262,58 +263,61 @@ void main() {
     );
   });
 
-  test('encodes groupId query parameter in getGroupDetails, getEventHistory, and getNextEvent', () async {
-    const rawGroupId = 'group 1&inject=true';
-    const encodedGroupId = 'group+1%26inject%3Dtrue';
+  test(
+    'encodes groupId query parameter in getGroupDetails, getEventHistory, and getNextEvent',
+    () async {
+      const rawGroupId = 'group 1&inject=true';
+      const encodedGroupId = 'group+1%26inject%3Dtrue';
 
-    when(
-      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
-        functionName: 'get-group-details?group_id=$encodedGroupId',
-        decoder: any(named: 'decoder'),
-      ),
-    ).thenAnswer(
-      (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
-    );
-    when(
-      () => mockSupabaseService.invokeFunction<List<GroupEventHistoryModel>>(
-        functionName: 'get-group-event-history?group_id=$encodedGroupId',
-        decoder: any(named: 'decoder'),
-      ),
-    ).thenAnswer(
-      (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
-    );
-    when(
-      () => mockSupabaseService.invokeFunction<NextEventModel?>(
-        functionName: 'get-group-next-event?group_id=$encodedGroupId',
-        decoder: any(named: 'decoder'),
-      ),
-    ).thenAnswer(
-      (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
-    );
+      when(
+        () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
+          functionName: 'get-group-details?group_id=$encodedGroupId',
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
+      );
+      when(
+        () => mockSupabaseService.invokeFunction<List<GroupEventHistoryModel>>(
+          functionName: 'get-group-event-history?group_id=$encodedGroupId',
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
+      );
+      when(
+        () => mockSupabaseService.invokeFunction<NextEventResponseModel>(
+          functionName: 'get-group-next-event?group_id=$encodedGroupId',
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(FunctionSupabaseFailure(message: 'err')),
+      );
 
-    await repository.getGroupDetails(rawGroupId);
-    await repository.getEventHistory(rawGroupId);
-    await repository.getNextEvent(rawGroupId);
+      await repository.getGroupDetails(rawGroupId);
+      await repository.getEventHistory(rawGroupId);
+      await repository.getNextEvent(rawGroupId);
 
-    verify(
-      () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
-        functionName: 'get-group-details?group_id=$encodedGroupId',
-        decoder: any(named: 'decoder'),
-      ),
-    ).called(1);
-    verify(
-      () => mockSupabaseService.invokeFunction<List<GroupEventHistoryModel>>(
-        functionName: 'get-group-event-history?group_id=$encodedGroupId',
-        decoder: any(named: 'decoder'),
-      ),
-    ).called(1);
-    verify(
-      () => mockSupabaseService.invokeFunction<NextEventModel?>(
-        functionName: 'get-group-next-event?group_id=$encodedGroupId',
-        decoder: any(named: 'decoder'),
-      ),
-    ).called(1);
-  });
+      verify(
+        () => mockSupabaseService.invokeFunction<GroupDetailsModel>(
+          functionName: 'get-group-details?group_id=$encodedGroupId',
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
+      verify(
+        () => mockSupabaseService.invokeFunction<List<GroupEventHistoryModel>>(
+          functionName: 'get-group-event-history?group_id=$encodedGroupId',
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
+      verify(
+        () => mockSupabaseService.invokeFunction<NextEventResponseModel>(
+          functionName: 'get-group-next-event?group_id=$encodedGroupId',
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
+    },
+  );
 
   test('maps event history items from the Edge Function response', () async {
     const eventHistoryJson = {
@@ -383,6 +387,8 @@ void main() {
   test('maps next event JSON to NextEventEntity', () async {
     // A edge function retorna { next_event: { ... } }
     const nextEventEnvelope = {
+      'is_in_preparation': false,
+      'draft_meeting_id': null,
       'next_event': {
         'location_name': 'Porto Alegre, RS',
         'date': '2026-09-15T21:30:00Z',
@@ -391,15 +397,15 @@ void main() {
     };
 
     when(
-      () => mockSupabaseService.invokeFunction<NextEventModel?>(
+      () => mockSupabaseService.invokeFunction<NextEventResponseModel>(
         functionName: 'get-group-next-event?group_id=group-1',
         decoder: any(named: 'decoder'),
       ),
     ).thenAnswer((invocation) async {
       final decoder =
           invocation.namedArguments[#decoder]
-              as NextEventModel? Function(dynamic);
-      return Success<SupabaseResponse<NextEventModel?>, SupabaseFailure>(
+              as NextEventResponseModel Function(dynamic);
+      return Success<SupabaseResponse<NextEventResponseModel>, SupabaseFailure>(
         SupabaseResponse(data: decoder(nextEventEnvelope)),
       );
     });
@@ -408,11 +414,13 @@ void main() {
 
     expect(
       result,
-      Success<NextEventEntity?, GroupFailure>(
-        NextEventEntity(
-          location: 'Porto Alegre, RS',
-          date: DateTime.utc(2026, 9, 15, 21, 30),
-          hostName: 'Roberta',
+      Success<NextEventResult, GroupFailure>(
+        NextEventResult.loaded(
+          NextEventEntity(
+            location: 'Porto Alegre, RS',
+            date: DateTime.utc(2026, 9, 15, 21, 30),
+            hostName: 'Roberta',
+          ),
         ),
       ),
     );
@@ -420,30 +428,37 @@ void main() {
 
   test('returns Success(null) when group has no next event', () async {
     // A edge function retorna { next_event: null } quando não há evento
-    const noEventEnvelope = {'next_event': null};
+    const noEventEnvelope = {
+      'next_event': null,
+      'is_in_preparation': false,
+      'draft_meeting_id': null,
+    };
 
     when(
-      () => mockSupabaseService.invokeFunction<NextEventModel?>(
+      () => mockSupabaseService.invokeFunction<NextEventResponseModel>(
         functionName: 'get-group-next-event?group_id=group-1',
         decoder: any(named: 'decoder'),
       ),
     ).thenAnswer((invocation) async {
       final decoder =
           invocation.namedArguments[#decoder]
-              as NextEventModel? Function(dynamic);
-      return Success<SupabaseResponse<NextEventModel?>, SupabaseFailure>(
+              as NextEventResponseModel Function(dynamic);
+      return Success<SupabaseResponse<NextEventResponseModel>, SupabaseFailure>(
         SupabaseResponse(data: decoder(noEventEnvelope)),
       );
     });
 
     final result = await repository.getNextEvent('group-1');
 
-    expect(result, const Success<NextEventEntity?, GroupFailure>(null));
+    expect(
+      result,
+      const Success<NextEventResult, GroupFailure>(NextEventResult.empty()),
+    );
   });
 
   test('maps a next event function failure to GroupNextEventFailure', () async {
     when(
-      () => mockSupabaseService.invokeFunction<NextEventModel?>(
+      () => mockSupabaseService.invokeFunction<NextEventResponseModel>(
         functionName: 'get-group-next-event?group_id=group-1',
         decoder: any(named: 'decoder'),
       ),
@@ -456,7 +471,7 @@ void main() {
 
     expect(
       result,
-      const Failure<NextEventEntity?, GroupFailure>(GroupNextEventFailure()),
+      const Failure<NextEventResult, GroupFailure>(GroupNextEventFailure()),
     );
   });
 

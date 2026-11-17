@@ -9,7 +9,7 @@ import 'package:mobile/design_system/widgets/app_button.dart';
 import 'package:mobile/design_system/widgets/app_card.dart';
 import 'package:mobile/design_system/widgets/app_icon.dart';
 
-enum GroupNextEventStatus { loading, loaded, empty, error }
+enum GroupNextEventStatus { loading, loaded, inPreparation, empty, error }
 
 class GroupNextEventData {
   const GroupNextEventData({
@@ -66,6 +66,10 @@ class GroupNextEvent extends StatelessWidget {
         message: errorMessage ?? context.l10n.genericError,
         onRetry: onRetry,
         onLogout: onLogout,
+      ),
+      GroupNextEventStatus.inPreparation => _MessageState(
+        icon: Icons.edit_calendar_outlined,
+        message: context.l10n.raffleMeetingInPreparation,
       ),
       GroupNextEventStatus.empty => _MessageState(
         icon: Icons.event_busy_outlined,

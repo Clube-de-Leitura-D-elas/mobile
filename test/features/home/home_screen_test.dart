@@ -35,6 +35,7 @@ import 'package:mobile/features/notifications/domain/entities/notifications_page
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/presentation/cubit/notification_badge_cubit.dart';
 import 'package:mobile/features/notifications/presentation/widgets/notification_bell.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -690,6 +691,155 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(selectedIndex, QuickAccessItem.profile.index);
+    },
+  );
+
+  testWidgets(
+    'taps pending inaugural raffle button in home group list and navigates to raffle preparation',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(
+        () => repository.getMyGroups(),
+      ).thenAnswer(
+        (_) async => const Success([
+          GroupEntity(
+            id: 'g-inaugural',
+            number: 8,
+            participantsCount: 5,
+            cityState: 'Porto Alegre, RS',
+            pendingRaffle: PendingRaffle(
+              type: PendingRaffleType.inaugural,
+              groupId: 'g-inaugural',
+            ),
+          ),
+        ]),
+      );
+
+      final cubit = HomeCubit(groupRepository: repository);
+      addTearDown(cubit.close);
+      await cubit.loadGroups();
+
+      final router = GoRouter(
+        initialLocation: QuickAccessRoutes.home,
+        routes: [
+          GoRoute(
+            path: QuickAccessRoutes.home,
+            builder: (context, state) => BlocProvider.value(
+              value: cubit,
+              child: withBell(const HomeScreen()),
+            ),
+          ),
+          GoRoute(
+            path: RaffleRoutes.preparation,
+            builder: (_, state) => Scaffold(
+              body: Text(
+                'raffle_screen: ${(state.extra as Map<String, dynamic>?)?['group_id']}',
+              ),
+            ),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
+
+      await tester.tap(find.text('Realizar sorteio inaugural'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('raffle_screen: g-inaugural'), findsOneWidget);
+
+      router.pop();
+      await tester.pumpAndSettle();
+
+      verify(() => repository.getMyGroups()).called(2);
+    },
+  );
+
+  testWidgets(
+    'taps pending raffle button with meetingId navigates to raffle preparation passing meeting_id',
+    (tester) async {
+      final repository = MockGroupRepository();
+      when(
+        () => repository.getMyGroups(),
+      ).thenAnswer(
+        (_) async => const Success([
+          GroupEntity(
+            id: 'g-pending',
+            number: 1,
+            participantsCount: 5,
+            cityState: 'Porto Alegre, RS',
+            pendingRaffle: PendingRaffle(
+              type: PendingRaffleType.pending,
+              groupId: 'g-pending',
+              meetingId: 'm-99',
+            ),
+          ),
+        ]),
+      );
+
+      final cubit = HomeCubit(groupRepository: repository);
+      addTearDown(cubit.close);
+      await cubit.loadGroups();
+
+      Map<String, dynamic>? receivedExtra;
+      final router = GoRouter(
+        initialLocation: QuickAccessRoutes.home,
+        routes: [
+          GoRoute(
+            path: QuickAccessRoutes.home,
+            builder: (context, state) => BlocProvider.value(
+              value: cubit,
+              child: withBell(const HomeScreen()),
+            ),
+          ),
+          GoRoute(
+            path: RaffleRoutes.preparation,
+            builder: (_, state) {
+              receivedExtra = state.extra as Map<String, dynamic>?;
+              return const Scaffold(body: Text('raffle_screen'));
+            },
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Realizar sorteio pendente'), findsOneWidget);
+
+      await tester.tap(find.text('Realizar sorteio pendente'));
+      await tester.pumpAndSettle();
+
+      expect(receivedExtra?['group_id'], 'g-pending');
+      expect(receivedExtra?['meeting_id'], 'm-99');
     },
   );
 }

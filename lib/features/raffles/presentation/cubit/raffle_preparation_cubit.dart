@@ -11,7 +11,8 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
   RafflePreparationCubit({required this.repository})
     : super(const RafflePreparationInitial());
 
-  String _meetingId = '';
+  String? _meetingId;
+  String? _groupId;
 
   /// Escolha da coordenadora antes de o servidor recusar a lista. A lista
   /// rebuscada vem com todas marcadas e não pode trazer de volta quem saiu.
@@ -20,8 +21,17 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
   /// Motivo da recusa, para avisar quando a lista nova chegar.
   RaffleFailure? _refreshReason;
 
-  Future<void> loadEligibleParticipants(String meetingId) {
+  bool get _isInaugural =>
+      (_meetingId == null || _meetingId!.isEmpty) &&
+      _groupId != null &&
+      _groupId!.isNotEmpty;
+
+  Future<void> loadEligibleParticipants(
+    String? meetingId, [
+    String? groupId,
+  ]) {
     _meetingId = meetingId;
+    _groupId = groupId;
     _chosenIds = null;
     _refreshReason = null;
     return _load();
@@ -33,7 +43,10 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
   Future<void> _load() async {
     emit(const RafflePreparationLoading());
 
-    final result = await repository.getEligibleParticipants(_meetingId);
+    final result = await repository.getEligibleParticipants(
+      _meetingId,
+      _groupId,
+    );
     if (isClosed) return;
 
     switch (result) {
@@ -52,6 +65,7 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
                             !p.isExcludedByRule && chosenIds.contains(p.id),
                       ),
                   ],
+            isInaugural: _isInaugural,
             refreshedBecause: _refreshReason,
           ),
         );
@@ -59,8 +73,22 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     }
   }
 
-  void setParticipants(List<RaffleParticipant> participants) {
-    emit(RafflePreparationLoaded(participants: participants));
+  void setParticipants(
+    List<RaffleParticipant> participants, {
+    bool isInaugural = false,
+  }) {
+    emit(
+      RafflePreparationLoaded(
+        participants: [
+          for (final participant in participants)
+            if (participant.isExcludedByRule && participant.isSelected)
+              participant.copyWith(isSelected: false)
+            else
+              participant,
+        ],
+        isInaugural: isInaugural,
+      ),
+    );
   }
 
   void toggleParticipantSelection(String participantId) {
@@ -78,7 +106,7 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
     emit(currentState.copyWith(participants: updatedList));
   }
 
-  Future<void> confirmRaffle(String meetingId) async {
+  Future<void> confirmRaffle([String? meetingId, String? groupId]) async {
     if (state is! RafflePreparationLoaded) return;
 
     final currentState = state as RafflePreparationLoaded;
@@ -92,8 +120,12 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
 
     emit(currentState.copyWith(isSubmitting: true));
 
+    final targetMeetingId = meetingId ?? _meetingId;
+    final targetGroupId = groupId ?? _groupId;
+
     final result = await repository.confirmRaffle(
-      meetingId: meetingId,
+      meetingId: targetMeetingId,
+      groupId: targetGroupId,
       selectedParticipantIds: selectedIds,
     );
     if (isClosed) return;
@@ -105,7 +137,8 @@ class RafflePreparationCubit extends Cubit<RafflePreparationState> {
       case Failure(failure: RaffleAlreadyRecordedFailure()):
         emit(RafflePreparationSuccess(selectedParticipants: selected));
       case Failure(failure: final RaffleStaleListFailure failure):
-        _meetingId = meetingId;
+        _meetingId = targetMeetingId;
+        _groupId = targetGroupId;
         _chosenIds = selectedIds.toSet();
         _refreshReason = failure;
         await _load();

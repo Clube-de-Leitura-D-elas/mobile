@@ -41,11 +41,15 @@ class HomeState extends Equatable {
   bool isGroupExpanded(String groupId) => expandedGroupIds.contains(groupId);
 
   /// Uma entrada por encontro em que a usuária ainda tem tarefas a concluir,
-  /// com o encontro pendente no lugar de `nextMeeting`.
+  /// com o encontro pendente no lugar de `nextMeeting`, ou grupos onde a
+  /// coordenação precisa realizar sorteio inaugural ou pendente.
   List<GroupEntity> get pendingTasksGroups => [
-    for (final group in groups)
+    for (final group in groups) ...[
       for (final meeting in _pendingMeetingsOf(group))
         group.copyWith(nextMeeting: meeting),
+      if (group.pendingRaffle != null && _pendingMeetingsOf(group).isEmpty)
+        group,
+    ],
   ];
 
   // Backends anteriores a `pending_meetings` só mandam as tarefas no
@@ -64,7 +68,9 @@ class HomeState extends Equatable {
       meeting.canManageTasks &&
       meeting.tasksDone < meeting.tasksTotal;
 
-  bool get hasPendingTasks => pendingTasksGroups.isNotEmpty;
+  bool get hasPendingTasks =>
+      pendingTasksGroups.isNotEmpty ||
+      groups.any((g) => g.pendingRaffle != null);
 
   List<GroupEntity> filteredGroups(String Function(GroupEntity) nameOf) {
     final query = searchQuery.trim().toLowerCase();

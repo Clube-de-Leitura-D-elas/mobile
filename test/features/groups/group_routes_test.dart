@@ -16,6 +16,7 @@ import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_attendance_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/event_history_cubit.dart';
@@ -220,10 +221,12 @@ void main() {
       );
       when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
         (_) async => Success(
-          NextEventEntity(
-            location: 'Porto Alegre, RS',
-            date: DateTime.utc(2026, 9, 15, 21, 30),
-            hostName: 'Roberta',
+          NextEventResult.loaded(
+            NextEventEntity(
+              location: 'Porto Alegre, RS',
+              date: DateTime.utc(2026, 9, 15, 21, 30),
+              hostName: 'Roberta',
+            ),
           ),
         ),
       );

@@ -18,6 +18,15 @@ class NextEventEmpty extends NextEventState {
   const NextEventEmpty();
 }
 
+class NextEventInPreparation extends NextEventState {
+  const NextEventInPreparation(this.meetingId);
+
+  final String meetingId;
+
+  @override
+  List<Object?> get props => [meetingId];
+}
+
 class NextEventLoaded extends NextEventState {
   const NextEventLoaded(this.event);
 

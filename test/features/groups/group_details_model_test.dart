@@ -60,5 +60,54 @@ void main() {
 
       expect(entity.whatsappUrl, 'https://chat.whatsapp.com/ABC123xyz');
     });
+
+    test('parses pending_raffle and open meeting fields correctly', () {
+      final jsonInaugural = Map<String, dynamic>.from(validJson)
+        ..['pending_raffle'] = {
+          'type': 'INAUGURAL',
+          'group_id': 'g-1',
+        }
+        ..['has_open_meeting'] = false
+        ..['open_meeting_status'] = null;
+
+      final modelInaugural = GroupDetailsModel.fromJson(jsonInaugural);
+      expect(modelInaugural.pendingRaffle?.type.name, 'inaugural');
+      expect(modelInaugural.hasOpenMeeting, isFalse);
+      expect(modelInaugural.openMeetingStatus, isNull);
+
+      final jsonPending = Map<String, dynamic>.from(validJson)
+        ..['pending_raffle'] = {
+          'type': 'PENDING',
+          'group_id': 'g-1',
+          'meeting_id': 'm-1',
+        }
+        ..['has_open_meeting'] = true
+        ..['open_meeting_status'] = 'CREATED';
+
+      final modelPending = GroupDetailsModel.fromJson(jsonPending);
+      expect(modelPending.pendingRaffle?.type.name, 'pending');
+      expect(modelPending.pendingRaffle?.meetingId, 'm-1');
+      expect(modelPending.hasOpenMeeting, isTrue);
+      expect(modelPending.openMeetingStatus, 'CREATED');
+
+      final domain = modelPending.toDomain();
+      expect(domain.pendingRaffle?.type.name, 'pending');
+      expect(domain.hasOpenMeeting, isTrue);
+      expect(domain.openMeetingStatus, 'CREATED');
+    });
+
+    test('ignores invalid or null pending_raffle', () {
+      final jsonNull = Map<String, dynamic>.from(validJson)
+        ..['pending_raffle'] = null;
+      expect(GroupDetailsModel.fromJson(jsonNull).pendingRaffle, isNull);
+
+      final jsonNotMap = Map<String, dynamic>.from(validJson)
+        ..['pending_raffle'] = 123;
+      expect(GroupDetailsModel.fromJson(jsonNotMap).pendingRaffle, isNull);
+
+      final jsonNoGroup = Map<String, dynamic>.from(validJson)
+        ..['pending_raffle'] = {'type': 'INAUGURAL'};
+      expect(GroupDetailsModel.fromJson(jsonNoGroup).pendingRaffle, isNull);
+    });
   });
 }
