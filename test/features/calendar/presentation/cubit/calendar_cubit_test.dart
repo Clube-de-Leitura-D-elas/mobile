@@ -143,6 +143,31 @@ void main() {
       ],
     );
 
+    test('with "past" active, the next month lists all its meetings, and '
+        'coming back restores the filter', () async {
+      final septemberMeeting = calendarMeeting(
+        'sep',
+        day: DateTime(2026, 9, 3),
+      );
+      stubMonth(august, Success([past, upcoming]));
+      stubMonth(september, Success([septemberMeeting]));
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+      await cubit.load();
+      cubit.selectFilter(CalendarFilter.past);
+      expect(cubit.state.visibleMeetings, [past]);
+
+      await cubit.showNextMonth();
+
+      expect(cubit.state.showsTimeFilter, isFalse);
+      expect(cubit.state.visibleMeetings, [septemberMeeting]);
+
+      await cubit.showPreviousMonth();
+
+      expect(cubit.state.showsTimeFilter, isTrue);
+      expect(cubit.state.visibleMeetings, [past]);
+    });
+
     blocTest<CalendarCubit, CalendarState>(
       'loads the previous month',
       setUp: () => stubMonth(const CalendarMonth(2026, 7), const Success([])),
@@ -319,6 +344,42 @@ void main() {
   });
 
   group('CalendarState', () {
+    test('shows the time filter only in the month of today', () {
+      expect(loadedAugust.showsTimeFilter, isTrue);
+      expect(
+        CalendarState(month: september, today: today).showsTimeFilter,
+        isFalse,
+      );
+      expect(
+        CalendarState(
+          month: const CalendarMonth(2026, 7),
+          today: today,
+        ).showsTimeFilter,
+        isFalse,
+      );
+    });
+
+    test('ignores the chosen filter outside the current month', () {
+      final september = CalendarState(
+        month: const CalendarMonth(2026, 9),
+        today: today,
+        status: CalendarStatus.loaded,
+        meetings: [upcoming],
+        upcoming: [upcoming],
+        filter: CalendarFilter.past,
+      );
+
+      expect(september.effectiveFilter, CalendarFilter.all);
+      expect(september.visibleMeetings, [upcoming]);
+    });
+
+    test('keeps the chosen filter in the current month', () {
+      final state = loadedAugust.copyWith(filter: CalendarFilter.past);
+
+      expect(state.effectiveFilter, CalendarFilter.past);
+      expect(state.visibleMeetings, [past]);
+    });
+
     test('lists the whole month in date order under "all"', () {
       expect(loadedAugust.visibleMeetings, [past, upcoming]);
     });
