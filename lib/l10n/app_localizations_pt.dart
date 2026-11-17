@@ -421,6 +421,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingRegionLabel => 'Região';
 
   @override
+  String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingNoZonesHint =>
+      'Esta cidade ainda não tem regiões cadastradas';
+
+  @override
+  String get onboardingLocationRequired =>
+      'Selecione a cidade e a região para continuar.';
+
+  @override
+  String get onboardingYes => 'Sim';
+
+  @override
+  String get onboardingNo => 'Não';
+
+  @override
   String get onboardingJobLabel => 'Qual sua profissão?';
 
   @override
@@ -466,6 +483,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get onboardingFinishError =>
+      'Não foi possível concluir o cadastro. Tente novamente.';
 
   @override
   String get selectOptionHint => 'Selecione';
@@ -2349,6 +2370,23 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get onboardingRegionLabel => 'Região';
 
   @override
+  String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingNoZonesHint =>
+      'Esta cidade ainda não tem regiões cadastradas';
+
+  @override
+  String get onboardingLocationRequired =>
+      'Selecione a cidade e a região para continuar.';
+
+  @override
+  String get onboardingYes => 'Sim';
+
+  @override
+  String get onboardingNo => 'Não';
+
+  @override
   String get onboardingJobLabel => 'Qual sua profissão?';
 
   @override
@@ -2394,6 +2432,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get onboardingFinishError =>
+      'Não foi possível concluir o cadastro. Tente novamente.';
 
   @override
   String get selectOptionHint => 'Selecione';

@@ -23,30 +23,29 @@ class ReviewStepThreeForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppDropdown<String>(
+          AppDropdown<bool>(
             label: l10n.onboardingOtherGroupLabel,
             hintText: l10n.selectOptionHint,
-            value: profile.otherReadingGroup.isNotEmpty
-                ? profile.otherReadingGroup
-                : null,
-            items: const ['SIM', 'NAO'],
-            itemLabelBuilder: (item) => item == 'SIM' ? 'Sim' : 'Não',
+            value: profile.hasOtherReadingGroup,
+            items: const [true, false],
+            itemLabelBuilder: (value) => value
+                ? l10n.onboardingYes
+                : l10n.onboardingNo,
             onChanged: (val) =>
-                onChanged(profile.copyWith(otherReadingGroup: val)),
+                onChanged(profile.copyWith(hasOtherReadingGroup: val)),
           ),
           const Gap16(),
-          AppDropdown<String>(
+          AppDropdown<bool>(
             label: l10n.onboardingVolunteerLabel,
             hintText: l10n.selectOptionHint,
-            value: profile.volunteerCoordinator.isNotEmpty
-                ? profile.volunteerCoordinator
-                : null,
-            items: const ['SIM', 'NAO'],
-            itemLabelBuilder: (item) => item == 'SIM' ? 'Sim' : 'Não',
+            value: profile.wantsToCoordinate,
+            items: const [true, false],
+            itemLabelBuilder: (value) => value
+                ? l10n.onboardingYes
+                : l10n.onboardingNo,
             onChanged: (val) =>
-                onChanged(profile.copyWith(volunteerCoordinator: val)),
+                onChanged(profile.copyWith(wantsToCoordinate: val)),
           ),
-
           const Gap16(),
           AppTextField(
             label: l10n.onboardingBookIndicationLabel,

@@ -806,6 +806,36 @@ abstract class AppLocalizations {
   /// **'Região'**
   String get onboardingRegionLabel;
 
+  /// Dica de seleção de região
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma região'**
+  String get onboardingRegionHint;
+
+  /// Dica exibida quando a cidade selecionada não tem zonas cadastradas
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta cidade ainda não tem regiões cadastradas'**
+  String get onboardingNoZonesHint;
+
+  /// Aviso de validação quando cidade ou região não foram escolhidas
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione a cidade e a região para continuar.'**
+  String get onboardingLocationRequired;
+
+  /// Opção afirmativa dos selects do onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get onboardingYes;
+
+  /// Opção negativa dos selects do onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get onboardingNo;
+
   /// Rótulo profissão
   ///
   /// In pt, this message translates to:
@@ -889,6 +919,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Pronta para o próximo capítulo?'**
   String get onboardingWelcomeButton;
+
+  /// Aviso quando o refresh do perfil falha na tela final
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível concluir o cadastro. Tente novamente.'**
+  String get onboardingFinishError;
 
   /// Dica genérica de seleção em dropdown
   ///
