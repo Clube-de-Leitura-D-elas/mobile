@@ -508,6 +508,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
 
   @override
+  String get onboardingFinishError =>
+      'Não foi possível concluir o cadastro. Tente novamente.';
+
+  @override
   String get selectOptionHint => 'Selecione';
 
   @override
@@ -1776,6 +1780,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get onboardingFinishError =>
+      'Não foi possível concluir o cadastro. Tente novamente.';
 
   @override
   String get selectOptionHint => 'Selecione';

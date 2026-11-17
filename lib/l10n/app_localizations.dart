@@ -932,6 +932,12 @@ abstract class AppLocalizations {
   /// **'Pronta para o próximo capítulo?'**
   String get onboardingWelcomeButton;
 
+  /// Aviso quando o refresh do perfil falha na tela final
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível concluir o cadastro. Tente novamente.'**
+  String get onboardingFinishError;
+
   /// Dica genérica de seleção em dropdown
   ///
   /// In pt, this message translates to:

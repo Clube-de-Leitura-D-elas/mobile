@@ -192,6 +192,7 @@
   "onboardingWelcomeTitle": "Seja Bem-vinda",
   "onboardingWelcomeSubtitle": "Sua inscrição foi realizada com sucesso!",
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
+  "onboardingFinishError": "Não foi possível concluir o cadastro. Tente novamente.",
   "selectOptionHint": "Selecione",
   "myGroupsTitle": "Meus grupos",
   "searchGroupPlaceholder": "Buscar grupo",

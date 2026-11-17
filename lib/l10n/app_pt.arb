@@ -542,6 +542,8 @@
     "@onboardingWelcomeSubtitle": { "description": "Subtítulo de boas-vindas" },
     "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
     "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
+    "onboardingFinishError": "Não foi possível concluir o cadastro. Tente novamente.",
+    "@onboardingFinishError": { "description": "Aviso quando o refresh do perfil falha na tela final" },
     "selectOptionHint": "Selecione",
     "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
 

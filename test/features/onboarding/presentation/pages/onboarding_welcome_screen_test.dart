@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cupertino_ui/cupertino_ui.dart'
     show GlobalCupertinoLocalizations;
@@ -96,5 +98,34 @@ void main() {
     verify(() => sessionCubit.refreshProfileSilently()).called(1);
     expect(find.text('Home'), findsNothing);
     expect(find.byType(OnboardingWelcomeScreen), findsOneWidget);
+    expect(
+      find.text('Não foi possível concluir o cadastro. Tente novamente.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('disables the button while refreshing', (tester) async {
+    final completer = Completer<bool>();
+    when(() => sessionCubit.refreshProfileSilently()).thenAnswer(
+      (_) => completer.future,
+    );
+
+    final router = buildRouter();
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(buildSubject(router));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Pronta para o próximo capítulo?'));
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    await tester.tap(find.byType(AppButton));
+    await tester.pump();
+    verify(() => sessionCubit.refreshProfileSilently()).called(1);
+
+    completer.complete(true);
+    await tester.pumpAndSettle();
+    expect(find.text('Home'), findsOneWidget);
   });
 }

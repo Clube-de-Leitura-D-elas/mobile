@@ -6,8 +6,34 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/home/presentation/routes/home_routes.dart';
 
-class OnboardingWelcomeScreen extends StatelessWidget {
+class OnboardingWelcomeScreen extends StatefulWidget {
   const OnboardingWelcomeScreen({super.key});
+
+  @override
+  State<OnboardingWelcomeScreen> createState() =>
+      _OnboardingWelcomeScreenState();
+}
+
+class _OnboardingWelcomeScreenState extends State<OnboardingWelcomeScreen> {
+  bool _submitting = false;
+
+  Future<void> _finish() async {
+    if (_submitting) return;
+
+    setState(() => _submitting = true);
+    final authenticated = await context
+        .read<SessionCubit>()
+        .refreshProfileSilently();
+    if (!mounted) return;
+
+    if (authenticated) {
+      context.go(HomeRoutes.home);
+      return;
+    }
+
+    setState(() => _submitting = false);
+    context.showErrorToast(context.l10n.onboardingFinishError);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +73,8 @@ class OnboardingWelcomeScreen extends StatelessWidget {
               const Spacer(),
               AppButton.primary(
                 label: l10n.onboardingWelcomeButton,
-                onPressed: () async {
-                  final authenticated = await context
-                      .read<SessionCubit>()
-                      .refreshProfileSilently();
-                  if (authenticated && context.mounted) {
-                    context.go(HomeRoutes.home);
-                  }
-                },
+                isLoading: _submitting,
+                onPressed: _submitting ? null : _finish,
               ),
               SizedBox(height: spacing.s24),
             ],
