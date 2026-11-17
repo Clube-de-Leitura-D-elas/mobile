@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
-import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
@@ -167,6 +167,33 @@ void main() {
           reviewsPage: 2,
           hasMoreReviews: false,
         ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'keeps the current reviews when loading the next page fails generically',
+      setUp: () {
+        stubPage(
+          1,
+          _details(reviews: [_review('r1'), _review('r2')], hasMore: true),
+        );
+        when(
+          () => repository.getBookDetails(bookId: 'b1', reviewsPage: 2),
+        ).thenAnswer((_) async => const Failure(BookDetailsLoadFailure()));
+      },
+      build: build,
+      act: (cubit) async {
+        await cubit.load('b1');
+        await cubit.loadMoreReviews();
+      },
+      skip: 2,
+      expect: () => [
+        loaded(
+          _details(reviews: [_review('r1'), _review('r2')], hasMore: true),
+        ).copyWith(isLoadingMoreReviews: true),
+        loaded(
+          _details(reviews: [_review('r1'), _review('r2')], hasMore: true),
+        ).copyWith(isLoadingMoreReviews: false, loadMoreReviewsFailed: true),
       ],
     );
 

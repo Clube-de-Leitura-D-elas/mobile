@@ -175,23 +175,26 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
         );
         return true;
       case Failure(:final failure):
+        final alreadyRecommended = failure is BookAlreadyRecommendedFailure;
         emit(
           state.copyWith(
             isRecommending: false,
-            notice: failure is BookAlreadyRecommendedFailure
+            notice: alreadyRecommended
                 ? BookDetailsNotice.recommendationAlreadyExists
                 : BookDetailsNotice.recommendationFailed,
-            recommendationGroups: [
-              for (final group in state.recommendationGroups)
-                group.id == groupId
-                    ? BookRecommendationGroup(
-                        id: group.id,
-                        name: group.name,
-                        photoUrl: group.photoUrl,
-                        alreadyRecommended: true,
-                      )
-                    : group,
-            ],
+            recommendationGroups: alreadyRecommended
+                ? [
+                    for (final group in state.recommendationGroups)
+                      group.id == groupId
+                          ? BookRecommendationGroup(
+                              id: group.id,
+                              name: group.name,
+                              photoUrl: group.photoUrl,
+                              alreadyRecommended: true,
+                            )
+                          : group,
+                  ]
+                : state.recommendationGroups,
           ),
         );
         return false;

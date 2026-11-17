@@ -2540,6 +2540,12 @@ abstract class AppLocalizations {
   /// **'Grupos'**
   String get searchTabGroups;
 
+  /// Nome de exibição de um grupo a partir do número.
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupNameLabel(Object number);
+
   /// Título da aba de busca de grupos.
   ///
   /// In pt, this message translates to:

@@ -1981,6 +1981,10 @@
   "@searchTabGroups": {
     "description": "Aba da busca com os grupos."
   },
+  "groupNameLabel": "Grupo {number}",
+  "@groupNameLabel": {
+    "description": "Nome de exibição de um grupo a partir do número."
+  },
   "groupSearchTitle": "Encontre seu grupo ideal",
   "@groupSearchTitle": {
     "description": "Título da aba de busca de grupos."

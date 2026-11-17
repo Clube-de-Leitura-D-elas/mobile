@@ -1501,6 +1501,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get searchTabGroups => 'Grupos';
 
   @override
+  String groupNameLabel(Object number) {
+    return 'Grupo $number';
+  }
+
+  @override
   String get groupSearchTitle => 'Encontre seu grupo ideal';
 
   @override
