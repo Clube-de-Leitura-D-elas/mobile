@@ -46,7 +46,7 @@ class _JoinRequestsAccessButtonState extends State<JoinRequestsAccessButton> {
           padding: EdgeInsets.only(top: context.spacing.s16),
           child: AppButton.secondary(
             label: context.l10n.groupJoinRequestsAccess(state.requests.length),
-            size: AppButtonSize.lg,
+            size: AppButtonSize.sm,
             onPressed: _open,
           ),
         );

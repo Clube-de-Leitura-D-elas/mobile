@@ -216,6 +216,20 @@ void main() {
       expect(inCard(1, find.text('Solicitar entrada')), findsNothing);
     });
 
+    testWidgets('clicking the group card opens its details', (tester) async {
+      stubSearch(pageOf([searchGroup(1)]));
+
+      await pumpView(tester);
+      await tester.pumpAndSettle();
+      await tester.tap(inCard(1, find.text('Grupo 1')));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('destino: /group-public?group_id=${searchGroupId(1)}'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('"Ver detalhes" of a member opens the member page', (
       tester,
     ) async {
@@ -263,7 +277,8 @@ void main() {
       expect(inCard(1, find.text('Solicitar entrada')), findsOneWidget);
     });
 
-    testWidgets('card and confirmation buttons have a 48 touch target', (
+    testWidgets('card buttons use the compact height and confirmation buttons '
+        'have a 48 touch target', (
       tester,
     ) async {
       stubSearch(
@@ -277,10 +292,10 @@ void main() {
       await tester.pumpAndSettle();
 
       for (final label in ['Solicitar entrada', 'Pedir novamente']) {
-        expect(
-          tester.getSize(find.widgetWithText(AppButton, label)).height,
-          greaterThanOrEqualTo(48),
-        );
+        final height = tester
+            .getSize(find.widgetWithText(AppButton, label))
+            .height;
+        expect(height, 32);
       }
 
       await tester.tap(find.text('Solicitar entrada'));
