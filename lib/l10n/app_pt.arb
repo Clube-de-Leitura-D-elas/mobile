@@ -2077,6 +2077,15 @@
       }
     }
   },
+  "groupSearchCardSemantic": "Abrir detalhes do Grupo {number}",
+  "@groupSearchCardSemantic": {
+    "description": "Rótulo acessível da área clicável do card de grupo na busca.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "groupJoinRequestsAccess": "Pedidos de entrada ({count})",
   "@groupJoinRequestsAccess": {
     "description": "Botão no detalhe do grupo, só para a coordenadora, com a quantidade de pedidos pendentes.",

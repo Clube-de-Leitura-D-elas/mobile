@@ -2684,6 +2684,12 @@ abstract class AppLocalizations {
   /// **'Ver detalhes do Grupo {number}'**
   String groupSearchSeeDetailsSemantic(int number);
 
+  /// Rótulo acessível da área clicável do card de grupo na busca.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir detalhes do Grupo {number}'**
+  String groupSearchCardSemantic(int number);
+
   /// Botão no detalhe do grupo, só para a coordenadora, com a quantidade de pedidos pendentes.
   ///
   /// In pt, this message translates to:
