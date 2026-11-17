@@ -98,7 +98,7 @@ void main() {
     );
     expect(
       tester.getSemantics(find.text('Ver mais')),
-      containsSemantics(
+      isSemantics(
         label: 'Ver mais',
         isButton: true,
         hasExpandedState: true,

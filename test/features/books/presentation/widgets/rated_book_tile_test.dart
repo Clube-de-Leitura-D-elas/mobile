@@ -52,12 +52,28 @@ void main() {
 
     testWidgets('clamps a long comment to three lines', (tester) async {
       await tester.pumpWidget(buildWidget(tBook));
+      final lineHeight = tester
+          .getSize(find.text('Livro fantástico, adorei a leitura.'))
+          .height;
 
-      final comment = tester.widget<Text>(
-        find.text('Livro fantástico, adorei a leitura.'),
+      final longComment = List.filled(20, 'Livro fantástico.').join(' ');
+      await tester.pumpWidget(
+        buildWidget(
+          RatedBook(
+            id: tBook.id,
+            bookId: tBook.bookId,
+            title: tBook.title,
+            author: tBook.author,
+            rating: tBook.rating,
+            comment: longComment,
+          ),
+        ),
       );
-      expect(comment.maxLines, 3);
-      expect(comment.overflow, TextOverflow.ellipsis);
+
+      expect(
+        tester.getSize(find.text(longComment)).height,
+        moreOrLessEquals(lineHeight * 3, epsilon: 1),
+      );
     });
 
     testWidgets('hides comment when null or empty', (tester) async {

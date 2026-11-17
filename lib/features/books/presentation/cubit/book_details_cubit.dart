@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 
@@ -158,6 +159,13 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
           case Failure():
             emit(
               state.copyWith(
+                details: state.details?.withMyReview(
+                  MyBookReviewEntity(
+                    rating: rating,
+                    commentary: commentary,
+                    evaluatedAt: DateTime.now(),
+                  ),
+                ),
                 isSubmittingReview: false,
                 isLoadingMoreReviews: false,
                 notice: BookDetailsNotice.reviewSaved,

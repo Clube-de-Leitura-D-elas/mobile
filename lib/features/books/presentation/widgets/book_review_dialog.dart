@@ -53,6 +53,11 @@ class _BookReviewDialogState extends State<BookReviewDialog> {
         return PopScope(
           canPop: !isSubmitting,
           child: AppDialog(
+            // Com a margem padrão, as 5 estrelas de 48dp não cabem em 360dp.
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: context.spacing.s16,
+              vertical: context.spacing.s24,
+            ),
             title: l10n.bookReviewDialogTitle,
             onClose: () {
               if (!isSubmitting) {

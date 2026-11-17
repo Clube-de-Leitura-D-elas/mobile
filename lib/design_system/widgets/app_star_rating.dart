@@ -52,6 +52,9 @@ class AppStarRating extends StatelessWidget {
   /// Creates five tappable stars for collecting an integer rating (1–5).
   ///
   /// Pass `onChanged: null` to disable interaction.
+  ///
+  /// Mede a largura disponível com `LayoutBuilder`, então não funciona dentro
+  /// de `IntrinsicWidth`/`IntrinsicHeight`.
   const AppStarRating.input({
     super.key,
     required int rating,
@@ -237,7 +240,7 @@ class _InputStarRating extends StatelessWidget {
                     starValue: starValue,
                     isFilled: isFilled,
                     starSize: layout.starSize,
-                    hitSize: layout.hitSize,
+                    hitWidth: layout.hitWidth,
                     filled: filled,
                     empty: empty,
                     isEnabled: isEnabled,
@@ -257,11 +260,12 @@ class _InputStarRating extends StatelessWidget {
 }
 
 /// Medidas das estrelas de input que cabem em [maxWidth]: primeiro reduz o
-/// espaço entre elas e, se ainda não couber, a área de toque e o ícone.
+/// espaço entre elas e, se ainda não couber, a largura da área de toque e o
+/// ícone. A altura do alvo fica sempre em 48.
 class _InputLayout {
   const _InputLayout({
     required this.starSize,
-    required this.hitSize,
+    required this.hitWidth,
     required this.gap,
   });
 
@@ -275,14 +279,14 @@ class _InputLayout {
     final gaps = count - 1;
     final natural = count * hitSize + gaps * gap;
     if (!maxWidth.isFinite || natural <= maxWidth) {
-      return _InputLayout(starSize: starSize, hitSize: hitSize, gap: gap);
+      return _InputLayout(starSize: starSize, hitWidth: hitSize, gap: gap);
     }
 
     final hitsWidth = count * hitSize;
     if (hitsWidth <= maxWidth) {
       return _InputLayout(
         starSize: starSize,
-        hitSize: hitSize,
+        hitWidth: hitSize,
         gap: gaps > 0 ? (maxWidth - hitsWidth) / gaps : 0,
       );
     }
@@ -290,13 +294,13 @@ class _InputLayout {
     final fittedHit = maxWidth / count;
     return _InputLayout(
       starSize: starSize < fittedHit ? starSize : fittedHit,
-      hitSize: fittedHit,
+      hitWidth: fittedHit,
       gap: 0,
     );
   }
 
   final double starSize;
-  final double hitSize;
+  final double hitWidth;
   final double gap;
 }
 
@@ -305,7 +309,7 @@ class _StarButton extends StatelessWidget {
     required this.starValue,
     required this.isFilled,
     required this.starSize,
-    required this.hitSize,
+    required this.hitWidth,
     required this.filled,
     required this.empty,
     required this.isEnabled,
@@ -316,7 +320,7 @@ class _StarButton extends StatelessWidget {
   final int starValue;
   final bool isFilled;
   final double starSize;
-  final double hitSize;
+  final double hitWidth;
   final Color filled;
   final Color empty;
   final bool isEnabled;
@@ -332,14 +336,14 @@ class _StarButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(hitSize / 2),
+        borderRadius: BorderRadius.circular(minHitSize / 2),
         splashColor: isEnabled ? splashColor : Colors.transparent,
         highlightColor: isEnabled
             ? splashColor.withValues(alpha: 0.35)
             : Colors.transparent,
         child: SizedBox(
-          width: hitSize,
-          height: hitSize,
+          width: hitWidth,
+          height: minHitSize,
           child: Center(
             child: Icon(
               isFilled ? Icons.star_rounded : Icons.star_outline_rounded,

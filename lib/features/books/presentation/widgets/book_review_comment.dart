@@ -22,7 +22,9 @@ class _BookReviewCommentState extends State<BookReviewComment> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final typography = context.typography;
-    final style = typography.bodySmall.copyWith(color: colors.textDefault);
+    final style = DefaultTextStyle.of(
+      context,
+    ).style.merge(typography.bodySmall.copyWith(color: colors.textDefault));
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -31,6 +33,8 @@ class _BookReviewCommentState extends State<BookReviewComment> {
           maxLines: BookReviewComment.collapsedMaxLines,
           textDirection: Directionality.of(context),
           textScaler: MediaQuery.textScalerOf(context),
+          locale: Localizations.maybeLocaleOf(context),
+          textHeightBehavior: DefaultTextHeightBehavior.maybeOf(context),
         )..layout(maxWidth: constraints.maxWidth);
         final overflows = painter.didExceedMaxLines;
         painter.dispose();

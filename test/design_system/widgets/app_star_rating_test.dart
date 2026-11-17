@@ -210,14 +210,14 @@ void main() {
       expect(tester.getSize(find.byType(InkWell).first), const Size(48, 48));
     });
 
-    testWidgets('shrinks tap targets when even 5 x 48dp does not fit', (
+    testWidgets('narrows tap targets, keeping 48dp of height, as last resort', (
       tester,
     ) async {
       await pumpInputWithWidth(tester, 200);
 
       expect(tester.takeException(), isNull);
       expect(rowWidth(tester), lessThanOrEqualTo(200));
-      expect(tester.getSize(find.byType(InkWell).first), const Size(40, 40));
+      expect(tester.getSize(find.byType(InkWell).first), const Size(40, 48));
       final icon = tester.widget<Icon>(find.byIcon(Icons.star_rounded).first);
       expect(icon.size, 36);
     });
