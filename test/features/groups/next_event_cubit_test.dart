@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_state.dart';
@@ -30,7 +31,7 @@ void main() {
     build: () {
       when(
         () => mockRepository.getNextEvent('group-1'),
-      ).thenAnswer((_) async => Success(event));
+      ).thenAnswer((_) async => Success(NextEventResult.loaded(event)));
       return NextEventCubit(groupRepository: mockRepository);
     },
     act: (cubit) => cubit.load('group-1'),
@@ -42,7 +43,7 @@ void main() {
     build: () {
       when(
         () => mockRepository.getNextEvent('group-1'),
-      ).thenAnswer((_) async => const Success(null));
+      ).thenAnswer((_) async => const Success(NextEventResult.empty()));
       return NextEventCubit(groupRepository: mockRepository);
     },
     act: (cubit) => cubit.load('group-1'),
@@ -69,7 +70,7 @@ void main() {
   );
 
   test('does not emit after being closed during load', () async {
-    final response = Completer<Result<NextEventEntity?, GroupFailure>>();
+    final response = Completer<Result<NextEventResult, GroupFailure>>();
     when(
       () => mockRepository.getNextEvent('group-1'),
     ).thenAnswer((_) => response.future);
@@ -80,7 +81,7 @@ void main() {
 
     final load = cubit.load('group-1');
     await cubit.close();
-    response.complete(Success(event));
+    response.complete(Success(NextEventResult.loaded(event)));
     await load;
     await subscription.cancel();
 
@@ -94,7 +95,7 @@ void main() {
       when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
         (_) async => calls++ == 0
             ? const Failure(GroupNetworkFailure())
-            : const Success(null),
+            : const Success(NextEventResult.empty()),
       );
       return NextEventCubit(groupRepository: mockRepository);
     },
@@ -107,6 +108,23 @@ void main() {
       const NextEventError(GroupNetworkFailure()),
       const NextEventLoading(),
       const NextEventEmpty(),
+    ],
+  );
+
+  blocTest<NextEventCubit, NextEventState>(
+    'emits in preparation when a draft meeting exists',
+    build: () {
+      when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+        (_) async => const Success(
+          NextEventResult.inPreparation(meetingId: 'meeting-draft'),
+        ),
+      );
+      return NextEventCubit(groupRepository: mockRepository);
+    },
+    act: (cubit) => cubit.load('group-1'),
+    expect: () => [
+      const NextEventLoading(),
+      const NextEventInPreparation('meeting-draft'),
     ],
   );
 }

@@ -18,6 +18,7 @@ import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
 import 'package:mobile/features/groups/domain/repository/group_participants_repository.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
@@ -27,6 +28,7 @@ import 'package:mobile/features/groups/presentation/pages/group_details_page.dar
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
+import 'package:mobile/features/groups/presentation/widgets/pending_raffle_button.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -77,7 +79,7 @@ void main() {
     );
     when(
       () => mockRepository.getNextEvent('group-1'),
-    ).thenAnswer((_) async => const Success(null));
+    ).thenAnswer((_) async => const Success(NextEventResult.empty()));
     serviceLocator.allowReassignment = true;
     if (serviceLocator.isRegistered<GroupRepository>()) {
       serviceLocator.unregister<GroupRepository>();
@@ -217,7 +219,7 @@ void main() {
     when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
       (_) async => calls++ == 0
           ? const Failure(GroupNetworkFailure())
-          : const Success(null),
+          : const Success(NextEventResult.empty()),
     );
 
     await tester.pumpWidget(buildSubject());
@@ -249,6 +251,23 @@ void main() {
     await tester.tap(find.text('Sair'));
 
     verify(() => sessionCubit.logOut()).called(1);
+  });
+
+  testWidgets('shows when the next meeting is still in preparation', (
+    tester,
+  ) async {
+    stubLoadedGroup();
+    when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
+      (_) async => const Success(
+        NextEventResult.inPreparation(meetingId: 'draft-meeting'),
+      ),
+    );
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Encontro em preparação'), findsOneWidget);
+    expect(find.text('Nenhum próximo evento agendado'), findsNothing);
   });
 
   testWidgets('hides retry when the next event is forbidden', (tester) async {
@@ -329,12 +348,14 @@ void main() {
     ).thenAnswer((_) async => const Success(group));
     when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
       (_) async => Success(
-        NextEventEntity(
-          location: 'Casa da Fernanda',
-          date: DateTime.utc(2026, 10, 13, 22),
-          hostName: 'Fernanda Vargas',
-          bookTitle: 'Ponciá Vicêncio',
-          bookCoverUrl: 'https://example.com/book-cover.jpg',
+        NextEventResult.loaded(
+          NextEventEntity(
+            location: 'Casa da Fernanda',
+            date: DateTime.utc(2026, 10, 13, 22),
+            hostName: 'Fernanda Vargas',
+            bookTitle: 'Ponciá Vicêncio',
+            bookCoverUrl: 'https://example.com/book-cover.jpg',
+          ),
         ),
       ),
     );
@@ -361,12 +382,14 @@ void main() {
     ).thenAnswer((_) async => const Success(group));
     when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
       (_) async => Success(
-        NextEventEntity(
-          location: 'Casa da Fernanda',
-          date: DateTime.utc(2026, 10, 13, 22),
-          hostName: 'Fernanda Vargas',
-          bookTitle: 'Ponciá Vicêncio',
-          bookCoverUrl: '',
+        NextEventResult.loaded(
+          NextEventEntity(
+            location: 'Casa da Fernanda',
+            date: DateTime.utc(2026, 10, 13, 22),
+            hostName: 'Fernanda Vargas',
+            bookTitle: 'Ponciá Vicêncio',
+            bookCoverUrl: '',
+          ),
         ),
       ),
     );
@@ -392,10 +415,12 @@ void main() {
     ).thenAnswer((_) async => const Success(group));
     when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
       (_) async => Success(
-        NextEventEntity(
-          location: 'Casa da Fernanda',
-          date: DateTime.utc(2026, 10, 13, 22),
-          hostName: 'Fernanda Vargas',
+        NextEventResult.loaded(
+          NextEventEntity(
+            location: 'Casa da Fernanda',
+            date: DateTime.utc(2026, 10, 13, 22),
+            hostName: 'Fernanda Vargas',
+          ),
         ),
       ),
     );
@@ -421,11 +446,13 @@ void main() {
     ).thenAnswer((_) async => const Success(group));
     when(() => mockRepository.getNextEvent('group-1')).thenAnswer(
       (_) async => Success(
-        NextEventEntity(
-          id: 'meeting-1',
-          location: 'Casa da Fernanda',
-          date: DateTime.utc(2026, 10, 13, 22),
-          hostName: 'Fernanda Vargas',
+        NextEventResult.loaded(
+          NextEventEntity(
+            id: 'meeting-1',
+            location: 'Casa da Fernanda',
+            date: DateTime.utc(2026, 10, 13, 22),
+            hostName: 'Fernanda Vargas',
+          ),
         ),
       ),
     );
@@ -514,7 +541,7 @@ void main() {
     ).thenAnswer((_) async => const Success(group));
     when(
       () => mockRepository.getNextEvent(joinGroupId),
-    ).thenAnswer((_) async => const Success(null));
+    ).thenAnswer((_) async => const Success(NextEventResult.empty()));
     when(
       () => mockParticipantsRepository.getParticipants(joinGroupId),
     ).thenAnswer((_) async => const Success([]));
@@ -785,9 +812,10 @@ void main() {
         },
       );
 
-      expect(find.text('Sorteio Inaugural'), findsOneWidget);
+      expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
+      expect(find.byType(PendingRaffleButton), findsOneWidget);
 
-      await tester.tap(find.text('Sorteio Inaugural'));
+      await tester.tap(find.text('Realizar sorteio inaugural'));
       await tester.pumpAndSettle();
 
       expect(find.text('raffle_preparation: $joinGroupId:'), findsOneWidget);
@@ -824,14 +852,12 @@ void main() {
         },
       );
 
-      expect(find.text('Realizar sorteio'), findsOneWidget);
-      await tester.tap(find.text('Realizar sorteio'));
+      expect(find.text('Realizar sorteio pendente'), findsOneWidget);
+      expect(find.byType(PendingRaffleButton), findsOneWidget);
+      await tester.tap(find.text('Realizar sorteio pendente'));
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('raffle_preparation: $joinGroupId:m-1'),
-        findsOneWidget,
-      );
+      expect(find.text('raffle_preparation: $joinGroupId:m-1'), findsOneWidget);
 
       router.pop();
       await tester.pumpAndSettle();

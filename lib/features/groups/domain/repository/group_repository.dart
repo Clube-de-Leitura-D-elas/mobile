@@ -11,7 +11,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_invitation_status
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
-import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
 import 'package:mobile/features/groups/domain/entities/place_suggestion_entity.dart';
 
 abstract class GroupRepository {
@@ -29,8 +29,8 @@ abstract class GroupRepository {
     String meetingId,
   );
 
-  /// Retorna o próximo evento agendado do grupo, ou null se não houver.
-  Future<Result<NextEventEntity?, GroupFailure>> getNextEvent(String groupId);
+  /// Retorna o estado do próximo encontro, inclusive quando está em preparação.
+  Future<Result<NextEventResult, GroupFailure>> getNextEvent(String groupId);
 
   Future<Result<void, GroupFailure>> setMeetingInvitationResponse(
     String meetingId,

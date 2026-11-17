@@ -2739,6 +2739,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get raffleOpenMeetingAlreadyExistsError =>
       'O grupo já possui um encontro em andamento.';
+
+  @override
   String get meetingTasksCoordinatorLabel => 'VOCÊ É COORDENADORA DESTE GRUPO';
 
   @override

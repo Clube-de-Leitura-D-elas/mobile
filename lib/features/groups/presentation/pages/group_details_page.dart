@@ -15,11 +15,10 @@ import 'package:mobile/features/groups/presentation/routes/group_route_paths.dar
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
+import 'package:mobile/features/groups/presentation/widgets/pending_raffle_button.dart';
 import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
-import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 
@@ -57,11 +56,8 @@ class GroupDetailsPage extends StatelessWidget {
                 : null,
             whatsappUrl: group.whatsappUrl,
             raffleAction: group.pendingRaffle != null
-                ? AppButton.primary(
-                    label:
-                        group.pendingRaffle!.type == PendingRaffleType.inaugural
-                        ? context.l10n.raffleInauguralTitle
-                        : context.l10n.rafflePreparationTitle,
+                ? PendingRaffleButton(
+                    pendingRaffle: group.pendingRaffle!,
                     onPressed: () async {
                       await context.push(
                         RaffleRoutes.preparation,
@@ -150,6 +146,7 @@ class GroupDetailsPage extends StatelessWidget {
   GroupNextEventStatus _toWidgetStatus(NextEventState state) {
     return switch (state) {
       NextEventLoading() => GroupNextEventStatus.loading,
+      NextEventInPreparation() => GroupNextEventStatus.inPreparation,
       NextEventEmpty() => GroupNextEventStatus.empty,
       NextEventLoaded() => GroupNextEventStatus.loaded,
       NextEventError() => GroupNextEventStatus.error,

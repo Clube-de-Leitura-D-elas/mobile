@@ -1,4 +1,57 @@
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
+
+class NextEventResponseModel {
+  const NextEventResponseModel({
+    required this.event,
+    required this.isInPreparation,
+    required this.draftMeetingId,
+  });
+
+  factory NextEventResponseModel.fromJson(dynamic json) {
+    if (json is! Map<String, dynamic>) {
+      throw const FormatException('Invalid next event response.');
+    }
+
+    final isInPreparation = json['is_in_preparation'];
+    final draftMeetingId = json['draft_meeting_id'];
+    if (isInPreparation is! bool ||
+        (draftMeetingId != null && draftMeetingId is! String)) {
+      throw const FormatException('Invalid next event response.');
+    }
+    if (isInPreparation && draftMeetingId == null) {
+      throw const FormatException('Missing draft meeting id.');
+    }
+
+    final inner = json['next_event'];
+    final event = inner == null ? null : NextEventModel.fromJson(inner);
+    if (isInPreparation && event != null) {
+      throw const FormatException(
+        'A next event cannot be scheduled and in preparation.',
+      );
+    }
+
+    return NextEventResponseModel(
+      event: event,
+      isInPreparation: isInPreparation,
+      draftMeetingId: draftMeetingId as String?,
+    );
+  }
+
+  final NextEventModel? event;
+  final bool isInPreparation;
+  final String? draftMeetingId;
+
+  NextEventResult toDomain() {
+    if (isInPreparation) {
+      return NextEventResult.inPreparation(meetingId: draftMeetingId!);
+    }
+    final event = this.event;
+    return event == null
+        ? const NextEventResult.empty()
+        : NextEventResult.loaded(event.toDomain());
+  }
+}
 
 class NextEventModel extends NextEventEntity {
   const NextEventModel({
