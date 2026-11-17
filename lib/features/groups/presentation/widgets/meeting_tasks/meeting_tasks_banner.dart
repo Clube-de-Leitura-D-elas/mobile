@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 
 class MeetingTasksBanner extends StatelessWidget {
   const MeetingTasksBanner({super.key, required this.tasks});
@@ -19,6 +20,7 @@ class MeetingTasksBanner extends StatelessWidget {
     final subtitle = published
         ? l10n.meetingTasksPublishedMessage
         : [tasks.bookAuthor, tasks.groupName].nonNulls.join(' · ');
+    final eyebrow = _eyebrow(l10n, tasks);
 
     return Container(
       key: ValueKey(published ? 'banner_published' : 'banner_drawn'),
@@ -33,9 +35,7 @@ class MeetingTasksBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            published
-                ? l10n.meetingTasksPublishedLabel
-                : l10n.meetingTasksDrawnLabel,
+            eyebrow,
             style: typography.caption.copyWith(
               color: accent,
               fontWeight: FontWeight.w700,
@@ -65,4 +65,17 @@ class MeetingTasksBanner extends StatelessWidget {
       ),
     );
   }
+}
+
+String _eyebrow(AppLocalizations l10n, MeetingTasksEntity tasks) {
+  if (tasks.isPublished) {
+    return l10n.meetingTasksPublishedLabel;
+  }
+  if (tasks.isHost) {
+    return l10n.meetingTasksDrawnLabel;
+  }
+  if (tasks.isCoordinator) {
+    return l10n.meetingTasksCoordinatorLabel;
+  }
+  return l10n.meetingTasksDrawnLabel;
 }

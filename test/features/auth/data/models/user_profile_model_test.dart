@@ -78,6 +78,19 @@ void main() {
       expect(profile.createdAt, DateTime.utc(2025, 3, 15, 12, 30));
     });
 
+    test('fromMap parses city and zone objects', () {
+      final profile = UserProfileModel.fromMap({
+        'id': 'p-5',
+        'city': {'id': 'city-1', 'name': 'Porto Alegre'},
+        'zone': {'id': 'zone-1', 'name': 'Zona Sul'},
+      });
+
+      expect(profile.cityId, 'city-1');
+      expect(profile.cityName, 'Porto Alegre');
+      expect(profile.zoneId, 'zone-1');
+      expect(profile.zoneName, 'Zona Sul');
+    });
+
     test('fromMap ignores an invalid created_at', () {
       final profile = UserProfileModel.fromMap({
         'id': 'p-4',

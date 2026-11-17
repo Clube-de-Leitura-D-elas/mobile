@@ -63,6 +63,20 @@ abstract class OnboardingRoutes {
       }
     }
 
+    if (sessionState is AuthenticatedSession) {
+      final cityId = sessionState.profile?.cityId;
+      // Cidade nula é o sinal de revisão pendente. Zona depende da cidade
+      // (nem toda cidade tem zonas), então o formulário valida esse caso.
+      final reviewPending = cityId == null;
+
+      if (reviewPending && !isReview) {
+        return reviewProfile;
+      }
+      if (!reviewPending && isReview) {
+        return '/home';
+      }
+    }
+
     return null;
   }
 }

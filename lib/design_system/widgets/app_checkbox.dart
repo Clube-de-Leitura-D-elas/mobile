@@ -192,14 +192,14 @@ class _CheckboxMark extends StatelessWidget {
 
   Color _fillColor() {
     if (!enabled) {
-      return value ? colors.actionDisabledBg : colors.surfaceDefault;
+      return colors.actionDisabledBg;
     }
     return value ? colors.actionPrimary : colors.surfaceDefault;
   }
 
   Color _borderColor() {
     if (!enabled) {
-      return value ? colors.actionDisabledBg : colors.actionDisabledFg;
+      return colors.actionDisabledFg;
     }
     return value ? colors.actionPrimary : colors.borderStrong;
   }

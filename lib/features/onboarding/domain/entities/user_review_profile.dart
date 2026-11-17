@@ -5,12 +5,14 @@ class UserReviewProfile extends Equatable {
   final String email;
   final String phone;
   final String birthDate;
-  final String city;
-  final String region;
+  final String? cityId;
+  final String cityName;
+  final String? zoneId;
+  final String zoneName;
   final String job;
   final String levelOfEducation;
-  final String otherReadingGroup;
-  final String volunteerCoordinator;
+  final bool? hasOtherReadingGroup;
+  final bool? wantsToCoordinate;
   final String bookIndication;
   final String expectations;
 
@@ -19,12 +21,14 @@ class UserReviewProfile extends Equatable {
     this.email = '',
     this.phone = '',
     this.birthDate = '',
-    this.city = '',
-    this.region = '',
+    this.cityId,
+    this.cityName = '',
+    this.zoneId,
+    this.zoneName = '',
     this.job = '',
     this.levelOfEducation = '',
-    this.otherReadingGroup = '',
-    this.volunteerCoordinator = '',
+    this.hasOtherReadingGroup,
+    this.wantsToCoordinate,
     this.bookIndication = '',
     this.expectations = '',
   });
@@ -34,12 +38,16 @@ class UserReviewProfile extends Equatable {
     String? email,
     String? phone,
     String? birthDate,
-    String? city,
-    String? region,
+    String? cityId,
+    String? cityName,
+    String? zoneId,
+    String? zoneName,
+    bool clearCity = false,
+    bool clearZone = false,
     String? job,
     String? levelOfEducation,
-    String? otherReadingGroup,
-    String? volunteerCoordinator,
+    bool? hasOtherReadingGroup,
+    bool? wantsToCoordinate,
     String? bookIndication,
     String? expectations,
   }) {
@@ -48,12 +56,14 @@ class UserReviewProfile extends Equatable {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       birthDate: birthDate ?? this.birthDate,
-      city: city ?? this.city,
-      region: region ?? this.region,
+      cityId: clearCity ? null : (cityId ?? this.cityId),
+      cityName: clearCity ? '' : (cityName ?? this.cityName),
+      zoneId: clearZone ? null : (zoneId ?? this.zoneId),
+      zoneName: clearZone ? '' : (zoneName ?? this.zoneName),
       job: job ?? this.job,
       levelOfEducation: levelOfEducation ?? this.levelOfEducation,
-      otherReadingGroup: otherReadingGroup ?? this.otherReadingGroup,
-      volunteerCoordinator: volunteerCoordinator ?? this.volunteerCoordinator,
+      hasOtherReadingGroup: hasOtherReadingGroup ?? this.hasOtherReadingGroup,
+      wantsToCoordinate: wantsToCoordinate ?? this.wantsToCoordinate,
       bookIndication: bookIndication ?? this.bookIndication,
       expectations: expectations ?? this.expectations,
     );
@@ -61,17 +71,19 @@ class UserReviewProfile extends Equatable {
 
   @override
   List<Object?> get props => [
-        name,
-        email,
-        phone,
-        birthDate,
-        city,
-        region,
-        job,
-        levelOfEducation,
-        otherReadingGroup,
-        volunteerCoordinator,
-        bookIndication,
-        expectations,
-      ];
+    name,
+    email,
+    phone,
+    birthDate,
+    cityId,
+    cityName,
+    zoneId,
+    zoneName,
+    job,
+    levelOfEducation,
+    hasOtherReadingGroup,
+    wantsToCoordinate,
+    bookIndication,
+    expectations,
+  ];
 }

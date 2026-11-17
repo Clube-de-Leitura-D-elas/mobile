@@ -421,6 +421,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingRegionLabel => 'Região';
 
   @override
+  String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingNoZonesHint =>
+      'Esta cidade ainda não tem regiões cadastradas';
+
+  @override
+  String get onboardingLocationRequired =>
+      'Selecione a cidade e a região para continuar.';
+
+  @override
+  String get onboardingYes => 'Sim';
+
+  @override
+  String get onboardingNo => 'Não';
+
+  @override
   String get onboardingJobLabel => 'Qual sua profissão?';
 
   @override
@@ -466,6 +483,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get onboardingFinishError =>
+      'Não foi possível concluir o cadastro. Tente novamente.';
 
   @override
   String get selectOptionHint => 'Selecione';
@@ -807,6 +828,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get meetingTasksDrawnLabel => 'VOCÊ FOI SORTEADA';
+
+  @override
+  String get meetingTasksCoordinatorLabel => 'VOCÊ É COORDENADORA DESTE GRUPO';
 
   @override
   String get meetingTasksDrawnFallbackTitle => 'Próximo encontro';
@@ -1156,7 +1180,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível carregar mais comentários.';
 
   @override
-  String get bookSearchTitle => 'Busca';
+  String get requiredFieldSemantics => 'Campo obrigatório';
+
+  @override
+  String get bookSearchTitle => 'Catálogo';
 
   @override
   String get bookSearchHint => 'Buscar livro';
@@ -2363,6 +2390,23 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get onboardingRegionLabel => 'Região';
 
   @override
+  String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingNoZonesHint =>
+      'Esta cidade ainda não tem regiões cadastradas';
+
+  @override
+  String get onboardingLocationRequired =>
+      'Selecione a cidade e a região para continuar.';
+
+  @override
+  String get onboardingYes => 'Sim';
+
+  @override
+  String get onboardingNo => 'Não';
+
+  @override
   String get onboardingJobLabel => 'Qual sua profissão?';
 
   @override
@@ -2408,6 +2452,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get onboardingFinishError =>
+      'Não foi possível concluir o cadastro. Tente novamente.';
 
   @override
   String get selectOptionHint => 'Selecione';
@@ -2691,6 +2739,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get raffleOpenMeetingAlreadyExistsError =>
       'O grupo já possui um encontro em andamento.';
+  String get meetingTasksCoordinatorLabel => 'VOCÊ É COORDENADORA DESTE GRUPO';
 
   @override
   String get meetingPhotoPrevious => 'Foto anterior';
@@ -2850,6 +2899,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get bookDetailLoadMoreReviewsError =>
       'Não foi possível carregar mais comentários.';
+
+  @override
+  String get requiredFieldSemantics => 'Campo obrigatório';
+
+  @override
+  String get bookSearchTitle => 'Catálogo';
 
   @override
   String get bookReadingStatusError =>

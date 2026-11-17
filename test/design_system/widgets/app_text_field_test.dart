@@ -89,5 +89,45 @@ void main() {
 
       expect(controller.text, '12/03/2026');
     });
+
+    testWidgets('renders red asterisk when isRequired is true', (tester) async {
+      await tester.pumpWidget(
+        buildTestableWidget(
+          const AppTextField(
+            label: 'Data',
+            isRequired: true,
+          ),
+        ),
+      );
+
+      final textWidget = tester.widget<Text>(find.byType(Text).first);
+      expect(textWidget.textSpan, isNotNull);
+      final textSpan = textWidget.textSpan as TextSpan;
+      expect(textSpan.text, 'Data');
+      expect(textSpan.children, isNotEmpty);
+      final asteriskSpan = textSpan.children!.first as TextSpan;
+      expect(asteriskSpan.text, ' *');
+      expect(asteriskSpan.style?.color, const Color(0xFFD92D20));
+    });
+
+    testWidgets('adds localized required hint to the field semantics label', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        buildTestableWidget(
+          const AppTextField(
+            label: 'Data',
+            isRequired: true,
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSemantics(find.byType(TextField)).label,
+        contains('Data, Campo obrigatório'),
+      );
+      handle.dispose();
+    });
   });
 }

@@ -12,6 +12,7 @@ import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart'
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_state.dart';
 import 'package:mobile/features/raffles/presentation/pages/raffle_preparation_screen.dart';
+import 'package:mobile/features/raffles/presentation/widgets/raffle_participant_tile.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
@@ -209,6 +210,14 @@ void main() {
     expect(find.text('Mariana de Souza'), findsOneWidget);
     expect(find.text('Alana Mendes (Excluída)'), findsOneWidget);
     expect(find.text('Já foi sorteada neste ciclo'), findsOneWidget);
+    expect(
+      _checkboxFill(tester, find.text('Alana Mendes (Excluída)')),
+      AppColorTokens.light.actionDisabledBg,
+    );
+    expect(
+      _checkboxFill(tester, find.text('Beatriz Vasconcellos')),
+      AppColorTokens.light.surfaceDefault,
+    );
 
     // 4. Testar a seleção: Tocar no Checkbox da Beatriz Vasconcellos
     final checkboxBeatriz = find.byType(AppCheckbox).last;
@@ -355,4 +364,19 @@ void main() {
       expect(find.text('open'), findsOneWidget);
     },
   );
+}
+
+Color? _checkboxFill(WidgetTester tester, Finder label) {
+  final tile = find.ancestor(
+    of: label,
+    matching: find.byType(RaffleParticipantTile),
+  );
+  final decoration =
+      tester
+              .widget<DecoratedBox>(
+                find.descendant(of: tile, matching: find.byType(DecoratedBox)),
+              )
+              .decoration
+          as BoxDecoration;
+  return decoration.color;
 }

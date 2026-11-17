@@ -486,6 +486,16 @@
     "@onboardingCityHint": { "description": "Dica de seleção de cidade" },
     "onboardingRegionLabel": "Região",
     "@onboardingRegionLabel": { "description": "Rótulo região" },
+    "onboardingRegionHint": "Selecione uma região",
+    "@onboardingRegionHint": { "description": "Dica de seleção de região" },
+    "onboardingNoZonesHint": "Esta cidade ainda não tem regiões cadastradas",
+    "@onboardingNoZonesHint": { "description": "Dica exibida quando a cidade selecionada não tem zonas cadastradas" },
+    "onboardingLocationRequired": "Selecione a cidade e a região para continuar.",
+    "@onboardingLocationRequired": { "description": "Aviso de validação quando cidade ou região não foram escolhidas" },
+    "onboardingYes": "Sim",
+    "@onboardingYes": { "description": "Opção afirmativa dos selects do onboarding" },
+    "onboardingNo": "Não",
+    "@onboardingNo": { "description": "Opção negativa dos selects do onboarding" },
     "onboardingJobLabel": "Qual sua profissão?",
     "@onboardingJobLabel": { "description": "Rótulo profissão" },
     "onboardingEducationLabel": "Nível de escolaridade",
@@ -514,6 +524,8 @@
     "@onboardingWelcomeSubtitle": { "description": "Subtítulo de boas-vindas" },
     "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
     "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
+    "onboardingFinishError": "Não foi possível concluir o cadastro. Tente novamente.",
+    "@onboardingFinishError": { "description": "Aviso quando o refresh do perfil falha na tela final" },
     "selectOptionHint": "Selecione",
     "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
 
@@ -1095,7 +1107,11 @@
   },
   "meetingTasksDrawnLabel": "VOCÊ FOI SORTEADA",
   "@meetingTasksDrawnLabel": {
-    "description": "Sobretítulo do banner antes de o encontro ser publicado"
+    "description": "Sobretítulo do banner antes de o encontro ser publicado, para a anfitriã"
+  },
+  "meetingTasksCoordinatorLabel": "VOCÊ É COORDENADORA DESTE GRUPO",
+  "@meetingTasksCoordinatorLabel": {
+    "description": "Sobretítulo do banner quando quem abre as tarefas é coordenadora e não é a anfitriã"
   },
   "meetingTasksDrawnFallbackTitle": "Próximo encontro",
   "@meetingTasksDrawnFallbackTitle": {
@@ -1559,9 +1575,13 @@
   "@bookDetailLoadMoreReviewsError": {
     "description": "Erro ao carregar a próxima página de comentários."
   },
-  "bookSearchTitle": "Busca",
+  "requiredFieldSemantics": "Campo obrigatório",
+  "@requiredFieldSemantics": {
+    "description": "Complemento do rótulo semântico de campos obrigatórios para leitores de tela."
+  },
+  "bookSearchTitle": "Catálogo",
   "@bookSearchTitle": {
-    "description": "Título da aba de busca de livros."
+    "description": "Título da aba de catálogo de livros."
   },
   "bookSearchHint": "Buscar livro",
   "@bookSearchHint": {

@@ -48,7 +48,6 @@ class BookSearchScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ScreenHeader.simple(title: l10n.bookSearchTitle),
           Padding(
             padding: EdgeInsets.fromLTRB(
               spacing.s16,
@@ -56,9 +55,25 @@ class BookSearchScreen extends StatelessWidget {
               spacing.s16,
               0,
             ),
-            child: AppSearchField(
-              hintText: l10n.bookSearchHint,
-              onChanged: onQueryChanged,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Semantics(
+                  header: true,
+                  child: Text(
+                    l10n.bookSearchTitle,
+                    style: context.typography.headingH2.copyWith(
+                      color: colors.textDefault,
+                    ),
+                  ),
+                ),
+                SizedBox(height: spacing.s16),
+                AppSearchField(
+                  hintText: l10n.bookSearchHint,
+                  onChanged: onQueryChanged,
+                ),
+              ],
             ),
           ),
           Expanded(

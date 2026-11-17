@@ -169,6 +169,11 @@
   "onboardingCityLabel": "Cidade",
   "onboardingCityHint": "Selecione uma cidade",
   "onboardingRegionLabel": "Região",
+  "onboardingRegionHint": "Selecione uma região",
+  "onboardingNoZonesHint": "Esta cidade ainda não tem regiões cadastradas",
+  "onboardingLocationRequired": "Selecione a cidade e a região para continuar.",
+  "onboardingYes": "Sim",
+  "onboardingNo": "Não",
   "onboardingJobLabel": "Qual sua profissão?",
   "onboardingEducationLabel": "Nível de escolaridade",
   "onboardingEducationHint": "Selecione um nível",
@@ -183,6 +188,7 @@
   "onboardingWelcomeTitle": "Seja Bem-vinda",
   "onboardingWelcomeSubtitle": "Sua inscrição foi realizada com sucesso!",
   "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
+  "onboardingFinishError": "Não foi possível concluir o cadastro. Tente novamente.",
   "selectOptionHint": "Selecione",
   "myGroupsTitle": "Meus grupos",
   "searchGroupPlaceholder": "Buscar grupo",
@@ -262,6 +268,8 @@
   "bookDetailLoadingMoreReviews": "Carregando mais comentários",
   "bookDetailLoadMoreReviewsError": "Não foi possível carregar mais comentários.",
   "bookReadingStatusError": "Não foi possível atualizar o status de leitura.",
+  "bookSearchTitle": "Catálogo",
+  "requiredFieldSemantics": "Campo obrigatório",
   "calendarMonthName": "{month}",
   "calendarMonthSemantic": "{month}",
   "calendarPreviousMonth": "Mês anterior",
@@ -421,5 +429,6 @@
   "seeAllBooks": "Ver todos os livros",
   "ratedBookTileAuthor": "escrito por {author}",
   "ratedBookTileRating": "avaliado com {rating} de 5 estrelas",
-  "ratedBookTileComment": "comentário: {comment}"
+  "ratedBookTileComment": "comentário: {comment}",
+  "meetingTasksCoordinatorLabel": "VOCÊ É COORDENADORA DESTE GRUPO"
 }
