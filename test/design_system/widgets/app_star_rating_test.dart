@@ -168,5 +168,58 @@ void main() {
         expect(find.bySemanticsLabel('$i de 5 estrelas'), findsOneWidget);
       }
     });
+
+    Future<void> pumpInputWithWidth(WidgetTester tester, double width) {
+      return tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: width,
+                child: Center(
+                  child: AppStarRating.input(rating: 3, onChanged: (_) {}),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    double rowWidth(WidgetTester tester) =>
+        tester.getSize(find.byType(Row).first).width;
+
+    testWidgets('keeps 48dp tap targets and the gap when there is room', (
+      tester,
+    ) async {
+      await pumpInputWithWidth(tester, 400);
+
+      expect(tester.takeException(), isNull);
+      expect(rowWidth(tester), 5 * 48 + 4 * 8);
+      expect(tester.getSize(find.byType(InkWell).first), const Size(48, 48));
+    });
+
+    testWidgets('shrinks the gap to fit a narrow dialog without overflow', (
+      tester,
+    ) async {
+      await pumpInputWithWidth(tester, 250);
+
+      expect(tester.takeException(), isNull);
+      expect(rowWidth(tester), lessThanOrEqualTo(250));
+      expect(tester.getSize(find.byType(InkWell).first), const Size(48, 48));
+    });
+
+    testWidgets('shrinks tap targets when even 5 x 48dp does not fit', (
+      tester,
+    ) async {
+      await pumpInputWithWidth(tester, 200);
+
+      expect(tester.takeException(), isNull);
+      expect(rowWidth(tester), lessThanOrEqualTo(200));
+      expect(tester.getSize(find.byType(InkWell).first), const Size(40, 40));
+      final icon = tester.widget<Icon>(find.byIcon(Icons.star_rounded).first);
+      expect(icon.size, 36);
+    });
   });
 }
