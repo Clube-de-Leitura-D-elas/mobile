@@ -190,6 +190,15 @@ void main() {
     double rowWidth(WidgetTester tester) =>
         tester.getSize(find.byType(Wrap)).width;
 
+    void expectSingleRow(WidgetTester tester) {
+      final targets = find.byType(InkWell);
+      expect(targets, findsNWidgets(5));
+      final top = tester.getTopLeft(targets.first).dy;
+      for (final target in targets.evaluate()) {
+        expect(tester.getTopLeft(find.byWidget(target.widget)).dy, top);
+      }
+    }
+
     testWidgets('keeps 48dp tap targets and the gap when there is room', (
       tester,
     ) async {
@@ -208,6 +217,17 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(rowWidth(tester), lessThanOrEqualTo(250));
       expect(tester.getSize(find.byType(InkWell).first), const Size(48, 48));
+      expectSingleRow(tester);
+    });
+
+    testWidgets('keeps one row with no gap when 5 x 48dp fit exactly', (
+      tester,
+    ) async {
+      await pumpInputWithWidth(tester, 240);
+
+      expect(tester.takeException(), isNull);
+      expect(rowWidth(tester), 240);
+      expectSingleRow(tester);
     });
 
     testWidgets('wraps the stars instead of shrinking the 48dp targets', (

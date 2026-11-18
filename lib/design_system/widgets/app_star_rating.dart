@@ -261,7 +261,7 @@ class _InputStarRating extends StatelessWidget {
     if (!maxWidth.isFinite || gaps <= 0) return gap;
     final room = (maxWidth - count * _StarButton.minHitSize) / gaps;
     if (room >= gap) return gap;
-    return room > 0 ? room : gap;
+    return room >= 0 ? room : gap;
   }
 }
 

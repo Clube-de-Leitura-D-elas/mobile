@@ -310,9 +310,18 @@ void main() {
       addTearDown(cubit.close);
       expect(cubit.state.showsTimeFilter, isTrue);
 
+      final states = <CalendarState>[];
+      final subscription = cubit.stream.listen(states.add);
+      addTearDown(subscription.cancel);
+
       clock = DateTime.utc(2026, 9, 1, 15);
       await cubit.refresh();
+      await Future<void>.delayed(Duration.zero);
 
+      expect(
+        states.map((state) => state.status),
+        [CalendarStatus.loaded],
+      );
       expect(cubit.state.today, DateTime(2026, 9, 1));
       expect(cubit.state.showsTimeFilter, isFalse);
       expect(cubit.state.visibleMeetings, containsAll([past, upcoming]));
