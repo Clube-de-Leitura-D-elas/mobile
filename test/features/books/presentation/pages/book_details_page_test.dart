@@ -240,6 +240,52 @@ void main() {
       );
     });
 
+    testWidgets('shows loading when retrying recommendation groups', (
+      tester,
+    ) async {
+      stubDetails(_details());
+
+      final pending =
+          Completer<Result<List<BookRecommendationGroup>, BookFailure>>();
+
+      var calls = 0;
+
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer((_) async {
+        calls++;
+
+        if (calls == 1) {
+          return const Failure(BookDetailsLoadFailure());
+        }
+
+        return pending.future;
+      });
+
+      await pumpPage(tester);
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.widgetWithText(AppButton, 'Tentar novamente'));
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      pending.complete(
+        const Success([
+          BookRecommendationGroup(
+            id: 'g1',
+            name: 'Grupo Aurora',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Grupo Aurora'), findsOneWidget);
+    });
+
     testWidgets('closes the groups dialog after a successful selection', (
       tester,
     ) async {
@@ -267,6 +313,41 @@ void main() {
 
       expect(find.text('Selecione o grupo'), findsNothing);
       expect(find.text('Livro indicado ao Grupo Aurora'), findsOneWidget);
+    });
+
+    testWidgets('keeps the dialog open when recommendation fails', (
+      tester,
+    ) async {
+      stubDetails(_details());
+
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer(
+        (_) async => const Success([
+          BookRecommendationGroup(
+            id: 'g1',
+            name: 'Grupo Aurora',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+
+      when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+      ).thenAnswer((_) async => const Failure(BookRecommendationFailure()));
+
+      await pumpPage(tester);
+
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Grupo Aurora'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Selecione o grupo'), findsOneWidget);
+      expect(find.text('Grupo Aurora'), findsOneWidget);
+      expect(find.text('Não foi possível indicar o livro.'), findsOneWidget);
     });
 
     testWidgets('indicates directly for a preselected group', (tester) async {
@@ -433,6 +514,33 @@ void main() {
       );
     });
 
+    testWidgets('opens an existing review with its previous commentary', (
+      tester,
+    ) async {
+      stubDetails(
+        _details(
+          status: BookReadingStatus.read,
+          myReview: MyBookReviewEntity(
+            rating: 4,
+            commentary: 'Minha avaliação anterior',
+            evaluatedAt: DateTime.utc(2026, 11, 1),
+          ),
+        ),
+      );
+
+      await pumpPage(tester);
+
+      await tester.tap(find.text('Editar avaliação'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Dialog), findsOneWidget);
+
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller?.text,
+        'Minha avaliação anterior',
+      );
+    });
+
     testWidgets('explains a missing synopsis and missing reviews', (
       tester,
     ) async {
@@ -567,6 +675,42 @@ void main() {
       ]);
     });
 
+    testWidgets('shows loading while updating the reading status', (
+      tester,
+    ) async {
+      stubDetails(_details());
+
+      final pending = Completer<Result<BookReadingStatus?, BookFailure>>();
+
+      when(
+        () => repository.setReadingStatus(
+          bookId: 'b1',
+          status: BookReadingStatus.read,
+        ),
+      ).thenAnswer((_) => pending.future);
+
+      await pumpPage(tester);
+
+      await tester.tap(find.text('Marcar como lido'));
+      await tester.pump();
+
+      final header = tester.widget<BookDetailHeader>(
+        find.byType(BookDetailHeader),
+      );
+
+      expect(header.isStatusLoading, isTrue);
+
+      pending.complete(const Success(BookReadingStatus.read));
+      await tester.pumpAndSettle();
+
+      final updatedHeader = tester.widget<BookDetailHeader>(
+        find.byType(BookDetailHeader),
+      );
+
+      expect(updatedHeader.isStatusLoading, isFalse);
+      expect(updatedHeader.status, ReadingStatusChipState.read);
+    });
+
     testWidgets('shows an error toast when the update fails', (tester) async {
       stubDetails(_details());
       when(
@@ -591,6 +735,20 @@ void main() {
   });
 
   group('reviews pagination', () {
+    testWidgets('does not load more reviews when there are none available', (
+      tester,
+    ) async {
+      stubDetails(_details(hasMore: false));
+
+      await pumpPage(tester);
+
+      expect(find.byType(BookReviewTile), findsOneWidget);
+
+      verifyNever(
+        () => repository.getBookDetails(bookId: 'b1', reviewsPage: 2),
+      );
+    });
+
     testWidgets('loads the next page at the end of the list', (tester) async {
       stubDetails(_details(hasMore: true));
       stubDetails(_details(reviews: [_review('r2')], hasMore: false), page: 2);
