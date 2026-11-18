@@ -157,13 +157,31 @@ void main() {
       cubit.selectFilter(CalendarFilter.past);
       expect(cubit.state.visibleMeetings, [past]);
 
-      await cubit.showNextMonth();
+      final states = <CalendarState>[];
+      final subscription = cubit.stream.listen(states.add);
+      addTearDown(subscription.cancel);
+      List<(CalendarMonth, CalendarStatus, CalendarFilter)> emitted() => [
+        for (final state in states) (state.month, state.status, state.filter),
+      ];
 
+      await cubit.showNextMonth();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(emitted(), [
+        (september, CalendarStatus.loading, CalendarFilter.past),
+        (september, CalendarStatus.loaded, CalendarFilter.past),
+      ]);
       expect(cubit.state.showsTimeFilter, isFalse);
       expect(cubit.state.visibleMeetings, [septemberMeeting]);
 
+      states.clear();
       await cubit.showPreviousMonth();
+      await Future<void>.delayed(Duration.zero);
 
+      expect(emitted(), [
+        (august, CalendarStatus.loading, CalendarFilter.past),
+        (august, CalendarStatus.loaded, CalendarFilter.past),
+      ]);
       expect(cubit.state.showsTimeFilter, isTrue);
       expect(cubit.state.visibleMeetings, [past]);
     });
