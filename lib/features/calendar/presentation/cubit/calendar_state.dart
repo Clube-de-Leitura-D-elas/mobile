@@ -82,6 +82,15 @@ class CalendarState extends Equatable {
     return counts;
   }
 
+  /// Próximos e passados só fazem sentido no mês de [today]; nos outros a
+  /// lista é o mês inteiro e os chips não aparecem.
+  bool get showsTimeFilter => month.contains(today);
+
+  /// O [filter] escolhido vale só com os chips à vista. Ele não é zerado ao
+  /// trocar de mês: voltar ao mês atual retoma a escolha.
+  CalendarFilter get effectiveFilter =>
+      showsTimeFilter ? filter : CalendarFilter.all;
+
   /// O que a lista mostra: o dia selecionado tem prioridade sobre o filtro.
   List<CalendarMeetingEntity> get visibleMeetings {
     final day = selectedDay;
@@ -91,7 +100,7 @@ class CalendarState extends Equatable {
           if (meeting.localDate == day) meeting,
       ];
     }
-    return switch (filter) {
+    return switch (effectiveFilter) {
       CalendarFilter.all => [...past, ...upcoming],
       CalendarFilter.upcoming => upcoming,
       CalendarFilter.past => past,

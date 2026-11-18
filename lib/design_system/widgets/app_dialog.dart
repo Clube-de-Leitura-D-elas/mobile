@@ -13,7 +13,8 @@ import 'gap.dart';
 /// ações o rodapé não é renderizado. [onClose] é chamado pelo "x"; por padrão
 /// fecha o dialog.
 /// [child] já fica dentro de um scroll: não passe `ListView` sem
-/// `shrinkWrap`.
+/// `shrinkWrap`. [insetPadding] troca a margem padrão do [Dialog] até a borda
+/// da tela.
 class AppDialog extends StatelessWidget {
   const AppDialog({
     super.key,
@@ -21,16 +22,19 @@ class AppDialog extends StatelessWidget {
     required this.child,
     this.actions = const [],
     this.onClose,
+    this.insetPadding,
   });
 
   final String title;
   final Widget child;
   final List<Widget> actions;
   final VoidCallback? onClose;
+  final EdgeInsets? insetPadding;
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: insetPadding,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       backgroundColor: context.colors.bgDefault,
       child: Padding(

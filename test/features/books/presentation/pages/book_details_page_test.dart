@@ -9,6 +9,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/domain/entities/user_entity.dart';
+import 'package:mobile/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
@@ -121,10 +123,12 @@ void main() {
       locale: const Locale('pt', 'BR'),
       routerConfig: router,
     );
+    final session = sessionCubit ?? MockSessionCubit();
+    if (sessionCubit == null) {
+      when(() => session.state).thenReturn(const GuestSession());
+    }
     await tester.pumpWidget(
-      sessionCubit == null
-          ? app
-          : BlocProvider<SessionCubit>.value(value: sessionCubit, child: app),
+      BlocProvider<SessionCubit>.value(value: session, child: app),
     );
     if (settle) await tester.pumpAndSettle();
   }
@@ -264,6 +268,84 @@ void main() {
         tester.widget<BookDetailHeader>(find.byType(BookDetailHeader)).status,
         ReadingStatusChipState.read,
       );
+    });
+
+    testWidgets('shows the reader own review first, with her name', (
+      tester,
+    ) async {
+      final sessionCubit = MockSessionCubit();
+      when(() => sessionCubit.state).thenReturn(
+        const AuthenticatedSession(
+          user: UserEntity(
+            name: 'Ana Leitora',
+            mail: 'ana@example.com',
+            birthday: '01/01/1990',
+            phoneNumber: '51999999999',
+            instagramUser: '@ana',
+            educationDegree: 'Superior',
+            jobPosition: 'Professora',
+            cityZone: (id: 'z1', name: 'Centro', acronym: 'POA'),
+          ),
+          profile: UserProfileEntity(
+            id: 'p1',
+            name: 'Ana Leitora',
+            email: 'ana@example.com',
+            address: '',
+            phoneNumber: '51999999999',
+            birthday: '01/01/1990',
+            instagram: '@ana',
+            educationDegree: 'Superior',
+            jobPosition: 'Professora',
+            userId: 'u1',
+            isActive: true,
+          ),
+        ),
+      );
+      stubDetails(
+        _details(
+          myReview: MyBookReviewEntity(
+            rating: 4,
+            commentary: 'Meu comentário',
+            evaluatedAt: DateTime.utc(2026, 11, 1),
+          ),
+        ),
+      );
+
+      await pumpPage(tester, sessionCubit: sessionCubit);
+
+      final mine = tester.widget<BookReviewTile>(
+        find.byType(BookReviewTile).first,
+      );
+      expect(mine.name, 'Ana Leitora');
+      expect(mine.rating, 4);
+      expect(mine.comment, 'Meu comentário');
+
+      await tester.scrollUntilVisible(find.text('Leitora r1'), 200);
+      expect(
+        tester.getTopLeft(find.text('Leitora r1')).dy,
+        greaterThan(tester.getTopLeft(find.text('Ana Leitora')).dy),
+      );
+    });
+
+    testWidgets('does not say there are no comments when only hers exists', (
+      tester,
+    ) async {
+      stubDetails(
+        _details(
+          reviews: [],
+          myReview: MyBookReviewEntity(
+            rating: 5,
+            commentary: 'Só o meu',
+            evaluatedAt: DateTime.utc(2026, 11, 1),
+          ),
+        ),
+      );
+
+      await pumpPage(tester);
+
+      expect(find.text('Só o meu'), findsOneWidget);
+      expect(find.text('Você'), findsOneWidget);
+      expect(find.text('Ainda não há comentários'), findsNothing);
     });
 
     testWidgets('explains a missing synopsis and missing reviews', (

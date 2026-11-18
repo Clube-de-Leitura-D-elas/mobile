@@ -347,10 +347,16 @@ void main() {
           cubit.upsertBookReview(rating: 4, commentary: 'Comentário'),
       expect: () => [
         loaded(_details()).copyWith(isSubmittingReview: true),
-        loaded(_details()).copyWith(
-          isSubmittingReview: false,
-          notice: BookDetailsNotice.reviewSaved,
-        ),
+        isA<BookDetailsState>()
+            .having((s) => s.isSubmittingReview, 'isSubmittingReview', false)
+            .having((s) => s.notice, 'notice', BookDetailsNotice.reviewSaved)
+            .having((s) => s.details?.myReview?.rating, 'my rating', 4)
+            .having(
+              (s) => s.details?.myReview?.commentary,
+              'my commentary',
+              'Comentário',
+            )
+            .having((s) => s.reviews, 'reviews', loaded(_details()).reviews),
       ],
     );
 

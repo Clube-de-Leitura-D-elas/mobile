@@ -1519,6 +1519,18 @@
   "@bookReviewCommentHint": {
     "description": "Placeholder do comentário no modal de avaliação."
   },
+  "bookReviewCommentShowMore": "Ver mais",
+  "@bookReviewCommentShowMore": {
+    "description": "Expande um comentário de avaliação longo na tela do livro"
+  },
+  "bookReviewCommentShowLess": "Ver menos",
+  "@bookReviewCommentShowLess": {
+    "description": "Recolhe um comentário de avaliação expandido na tela do livro"
+  },
+  "bookDetailMyReviewFallbackName": "Você",
+  "@bookDetailMyReviewFallbackName": {
+    "description": "Nome na avaliação da própria leitora quando o perfil não está disponível"
+  },
   "bookReviewCancel": "Cancelar",
   "@bookReviewCancel": {
     "description": "Botão para cancelar a avaliação."
