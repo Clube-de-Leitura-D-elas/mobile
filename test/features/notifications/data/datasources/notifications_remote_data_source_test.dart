@@ -89,6 +89,20 @@ void main() {
         ).called(1);
       });
 
+      test('fails without calling the backend on an unsupported platform', () async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+
+        final result = await dataSource.registerDevice('token');
+
+        expect(result, isA<Failure<void, SupabaseFailure>>());
+        verifyNever(
+          () => mockSupabaseService.invokeFunction<dynamic>(
+            functionName: any(named: 'functionName'),
+            body: any(named: 'body'),
+          ),
+        );
+      });
+
       test('propagates SupabaseFailure', () async {
         debugDefaultTargetPlatformOverride = TargetPlatform.android;
         const failure = FunctionSupabaseFailure(message: 'error', code: '500');

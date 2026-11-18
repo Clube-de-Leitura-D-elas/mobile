@@ -78,9 +78,18 @@ class NotificationsRemoteDataSourceImpl
 
   @override
   Future<Result<void, SupabaseFailure>> registerDevice(String token) {
+    final platform = _platform;
+    if (platform == null) {
+      return Future.value(
+        const Failure(
+          FunctionSupabaseFailure(message: 'Plataforma sem suporte a push.'),
+        ),
+      );
+    }
+
     return _invokeDeviceFunction('register-device', {
       'fcm_token': token,
-      'platform': _platform,
+      'platform': platform,
     });
   }
 
@@ -105,9 +114,13 @@ class NotificationsRemoteDataSourceImpl
     };
   }
 
-  /// O backend só aceita `ANDROID` ou `IOS` (contrato do `register-device`).
-  String get _platform =>
-      defaultTargetPlatform == TargetPlatform.iOS ? 'IOS' : 'ANDROID';
+  /// O backend só aceita `ANDROID` ou `IOS` (contrato do `register-device`);
+  /// em outra plataforma (web, desktop) não há o que registrar.
+  String? get _platform => switch (defaultTargetPlatform) {
+    TargetPlatform.android => 'ANDROID',
+    TargetPlatform.iOS => 'IOS',
+    _ => null,
+  };
 
   @override
   Future<Map<String, dynamic>?> getInitialNotificationData() async {
@@ -124,27 +137,26 @@ class NotificationsRemoteDataSourceImpl
   }
 
   @override
-  Stream<Map<String, dynamic>>
-  get onNotificationOpened => _onMessageOpenedApp.map((message) {
-    if (kDebugMode) {
-      debugPrint(
-        '[NotificationsDataSource] Message opened from background: ${message.data}',
-      );
-    }
-    return message.data;
-  });
+  Stream<Map<String, dynamic>> get onNotificationOpened =>
+      _onMessageOpenedApp.map((message) {
+        if (kDebugMode) {
+          debugPrint(
+            '[NotificationsDataSource] Message opened from background: ${message.data}',
+          );
+        }
+        return message.data;
+      });
 
   @override
-  Stream<Map<String, dynamic>> get onForegroundMessage => _onMessage.map((
-    message,
-  ) {
-    if (kDebugMode) {
-      debugPrint(
-        '[NotificationsDataSource] Foreground message received: ${message.data}',
-      );
-    }
-    return message.data;
-  });
+  Stream<Map<String, dynamic>> get onForegroundMessage =>
+      _onMessage.map((message) {
+        if (kDebugMode) {
+          debugPrint(
+            '[NotificationsDataSource] Foreground message received: ${message.data}',
+          );
+        }
+        return message.data;
+      });
 
   @override
   Stream<String> get onTokenRefresh => _messaging.onTokenRefresh;

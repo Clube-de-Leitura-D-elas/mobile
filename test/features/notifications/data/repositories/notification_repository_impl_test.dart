@@ -345,6 +345,36 @@ void main() {
       },
     );
 
+    test(
+      'unregisters the last registered token when the current one is null',
+      () async {
+        when(
+          () => remoteDataSource.requestPermissions(),
+        ).thenAnswer((_) async => FakeNotificationSettings());
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => 'registered-token');
+        when(
+          () => remoteDataSource.registerDevice('registered-token'),
+        ).thenAnswer((_) async => const Success(null));
+        when(
+          () => remoteDataSource.unregisterDevice('registered-token'),
+        ).thenAnswer((_) async => const Success(null));
+        await repository.syncDeviceToken();
+
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => null);
+
+        final result = await repository.clearDeviceToken();
+
+        expect(result, const Success<void, NotificationFailure>(null));
+        verify(
+          () => remoteDataSource.unregisterDevice('registered-token'),
+        ).called(1);
+      },
+    );
+
     test('returns FcmTokenSyncFailure when reading the token throws', () async {
       when(
         () => remoteDataSource.getDeviceToken(),

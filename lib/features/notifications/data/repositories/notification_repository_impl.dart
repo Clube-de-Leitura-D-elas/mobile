@@ -89,15 +89,13 @@ class NotificationRepositoryImpl implements NotificationRepository {
       }
 
       final result = await dataSource.registerDevice(token);
-      return switch (result) {
-        Success() => () {
+      switch (result) {
+        case Success():
           _registeredToken = token;
-          return const Success<void, NotificationFailure>(null);
-        }(),
-        Failure(:final failure) => Failure(
-          _failureFrom(failure, const FcmTokenSyncFailure()),
-        ),
-      };
+          return const Success(null);
+        case Failure(:final failure):
+          return Failure(_failureFrom(failure, const FcmTokenSyncFailure()));
+      }
     } catch (e) {
       if (kDebugMode) {
         debugPrint(
@@ -119,27 +117,32 @@ class NotificationRepositoryImpl implements NotificationRepository {
     // O `unregister-device` precisa do token deste aparelho. Se o FCM falhar
     // ao lê-lo, usa o último registrado; sem nenhum dos dois, o erro sobe como
     // `Failure` para quem chamou não tratar como se tivesse desregistrado.
-    String? token;
+    String? currentToken;
+    var readFailed = false;
     try {
-      token = await dataSource.getDeviceToken();
+      currentToken = await dataSource.getDeviceToken();
     } catch (_) {
-      token = _registeredToken;
-      if (token == null) return const Failure(FcmTokenSyncFailure());
+      readFailed = true;
     }
-    if (token == null || token.isEmpty) token = _registeredToken;
-    if (token == null || token.isEmpty) return const Success(null);
+
+    final token = (currentToken == null || currentToken.isEmpty)
+        ? _registeredToken
+        : currentToken;
+    if (token == null || token.isEmpty) {
+      return readFailed
+          ? const Failure(FcmTokenSyncFailure())
+          : const Success(null);
+    }
 
     try {
       final result = await dataSource.unregisterDevice(token);
-      return switch (result) {
-        Success() => () {
+      switch (result) {
+        case Success():
           _registeredToken = null;
-          return const Success<void, NotificationFailure>(null);
-        }(),
-        Failure(:final failure) => Failure(
-          _failureFrom(failure, const FcmTokenSyncFailure()),
-        ),
-      };
+          return const Success(null);
+        case Failure(:final failure):
+          return Failure(_failureFrom(failure, const FcmTokenSyncFailure()));
+      }
     } catch (_) {
       return const Failure(FcmTokenSyncFailure());
     }
