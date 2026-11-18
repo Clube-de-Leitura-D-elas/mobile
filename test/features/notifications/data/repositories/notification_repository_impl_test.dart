@@ -196,7 +196,7 @@ void main() {
 
   group('syncDeviceToken', () {
     test(
-      'requests permissions once, gets token, and saves it to backend',
+      'requests permissions once, gets token, and registers the device',
       () async {
         when(
           () => remoteDataSource.requestPermissions(),
@@ -205,7 +205,7 @@ void main() {
           () => remoteDataSource.getDeviceToken(),
         ).thenAnswer((_) async => 'valid-fcm-token');
         when(
-          () => remoteDataSource.saveTokenToBackend('valid-fcm-token'),
+          () => remoteDataSource.registerDevice('valid-fcm-token'),
         ).thenAnswer((_) async => const Success(null));
 
         final first = await repository.syncDeviceToken();
@@ -216,7 +216,7 @@ void main() {
         verify(() => remoteDataSource.requestPermissions()).called(1);
         verify(() => remoteDataSource.getDeviceToken()).called(2);
         verify(
-          () => remoteDataSource.saveTokenToBackend('valid-fcm-token'),
+          () => remoteDataSource.registerDevice('valid-fcm-token'),
         ).called(2);
       },
     );
@@ -234,7 +234,7 @@ void main() {
         final result = await repository.syncDeviceToken();
 
         expect(result, const Success<void, NotificationFailure>(null));
-        verifyNever(() => remoteDataSource.saveTokenToBackend(any()));
+        verifyNever(() => remoteDataSource.registerDevice(any()));
       },
     );
 
@@ -257,9 +257,7 @@ void main() {
         when(
           () => remoteDataSource.getDeviceToken(),
         ).thenAnswer((_) async => 'valid-token');
-        when(
-          () => remoteDataSource.saveTokenToBackend('valid-token'),
-        ).thenAnswer(
+        when(() => remoteDataSource.registerDevice('valid-token')).thenAnswer(
           (_) async =>
               const Failure(FunctionSupabaseFailure(message: 'Failed')),
         );
@@ -274,21 +272,39 @@ void main() {
   });
 
   group('clearDeviceToken', () {
-    test('sends null token to backend and returns Success', () async {
+    test('unregisters the current device token and returns Success', () async {
       when(
-        () => remoteDataSource.saveTokenToBackend(null),
+        () => remoteDataSource.getDeviceToken(),
+      ).thenAnswer((_) async => 'current-token');
+      when(
+        () => remoteDataSource.unregisterDevice('current-token'),
       ).thenAnswer((_) async => const Success(null));
 
       final result = await repository.clearDeviceToken();
 
       expect(result, const Success<void, NotificationFailure>(null));
-      verify(() => remoteDataSource.saveTokenToBackend(null)).called(1);
+      verify(
+        () => remoteDataSource.unregisterDevice('current-token'),
+      ).called(1);
+    });
+
+    test('skips the backend call when the device has no token', () async {
+      when(
+        () => remoteDataSource.getDeviceToken(),
+      ).thenAnswer((_) async => null);
+
+      final result = await repository.clearDeviceToken();
+
+      expect(result, const Success<void, NotificationFailure>(null));
+      verifyNever(() => remoteDataSource.unregisterDevice(any()));
     });
 
     test('returns FcmTokenSyncFailure when backend fails', () async {
-      when(() => remoteDataSource.saveTokenToBackend(null)).thenAnswer(
-        (_) async =>
-            const Failure(FunctionSupabaseFailure(message: 'Failed')),
+      when(
+        () => remoteDataSource.getDeviceToken(),
+      ).thenAnswer((_) async => 'current-token');
+      when(() => remoteDataSource.unregisterDevice('current-token')).thenAnswer(
+        (_) async => const Failure(FunctionSupabaseFailure(message: 'Failed')),
       );
 
       final result = await repository.clearDeviceToken();
@@ -297,6 +313,20 @@ void main() {
         result,
         const Failure<void, NotificationFailure>(FcmTokenSyncFailure()),
       );
+    });
+
+    test('returns FcmTokenSyncFailure when reading the token throws', () async {
+      when(
+        () => remoteDataSource.getDeviceToken(),
+      ).thenThrow(Exception('APNs error'));
+
+      final result = await repository.clearDeviceToken();
+
+      expect(
+        result,
+        const Failure<void, NotificationFailure>(FcmTokenSyncFailure()),
+      );
+      verifyNever(() => remoteDataSource.unregisterDevice(any()));
     });
   });
 }

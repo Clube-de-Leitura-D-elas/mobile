@@ -83,7 +83,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
         return const Success(null);
       }
 
-      final result = await dataSource.saveTokenToBackend(token);
+      final result = await dataSource.registerDevice(token);
       return switch (result) {
         Success() => const Success(null),
         Failure(:final failure) => Failure(
@@ -109,7 +109,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     try {
-      final result = await dataSource.saveTokenToBackend(null);
+      // O `unregister-device` precisa do token deste aparelho; sem ele não há
+      // o que desregistrar.
+      final token = await dataSource.getDeviceToken();
+      if (token == null || token.isEmpty) return const Success(null);
+
+      final result = await dataSource.unregisterDevice(token);
       return switch (result) {
         Success() => const Success(null),
         Failure(:final failure) => Failure(

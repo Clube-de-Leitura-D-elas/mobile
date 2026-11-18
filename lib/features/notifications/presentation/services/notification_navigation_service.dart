@@ -48,9 +48,13 @@ class NotificationNavigationService {
     NotificationRepository repository,
     Map<String, dynamic> data,
   ) {
-    final notificationId = (data['notification_id'] ?? data['id'])
-        ?.toString()
-        .trim();
+    // O push do backend manda o id em `notification_target_id`.
+    final notificationId =
+        (data['notification_target_id'] ??
+                data['notification_id'] ??
+                data['id'])
+            ?.toString()
+            .trim();
     if (notificationId != null && notificationId.isNotEmpty) {
       unawaited(repository.markAsRead(notificationId));
     }

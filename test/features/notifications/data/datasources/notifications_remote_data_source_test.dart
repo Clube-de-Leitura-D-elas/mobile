@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_response.dart';
@@ -42,42 +43,103 @@ void main() {
   });
 
   group('NotificationsRemoteDataSourceImpl', () {
-    test(
-      'saveTokenToBackend invokes save-fcm-token with fcm_token in body',
-      () async {
+    group('registerDevice', () {
+      tearDown(() => debugDefaultTargetPlatformOverride = null);
+
+      test('invokes register-device with fcm_token and ANDROID', () async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
         when(
           () => mockSupabaseService.invokeFunction<dynamic>(
-            functionName: 'save-fcm-token',
-            body: {'fcm_token': 'token'},
+            functionName: 'register-device',
+            body: {'fcm_token': 'token', 'platform': 'ANDROID'},
           ),
         ).thenAnswer(
           (_) async => const Success(SupabaseResponse(statusCode: 200)),
         );
 
-        final result = await dataSource.saveTokenToBackend('token');
+        final result = await dataSource.registerDevice('token');
 
         expect(result, const Success<void, SupabaseFailure>(null));
         verify(
           () => mockSupabaseService.invokeFunction<dynamic>(
-            functionName: 'save-fcm-token',
+            functionName: 'register-device',
+            body: {'fcm_token': 'token', 'platform': 'ANDROID'},
+          ),
+        ).called(1);
+      });
+
+      test('sends IOS as platform on iOS', () async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+        when(
+          () => mockSupabaseService.invokeFunction<dynamic>(
+            functionName: 'register-device',
+            body: {'fcm_token': 'token', 'platform': 'IOS'},
+          ),
+        ).thenAnswer(
+          (_) async => const Success(SupabaseResponse(statusCode: 200)),
+        );
+
+        await dataSource.registerDevice('token');
+
+        verify(
+          () => mockSupabaseService.invokeFunction<dynamic>(
+            functionName: 'register-device',
+            body: {'fcm_token': 'token', 'platform': 'IOS'},
+          ),
+        ).called(1);
+      });
+
+      test('propagates SupabaseFailure', () async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
+        const failure = FunctionSupabaseFailure(message: 'error', code: '500');
+        when(
+          () => mockSupabaseService.invokeFunction<dynamic>(
+            functionName: 'register-device',
+            body: {'fcm_token': 'token', 'platform': 'ANDROID'},
+          ),
+        ).thenAnswer((_) async => const Failure(failure));
+
+        final result = await dataSource.registerDevice('token');
+
+        expect(result, const Failure<void, SupabaseFailure>(failure));
+      });
+    });
+
+    group('unregisterDevice', () {
+      test('invokes unregister-device with fcm_token in body', () async {
+        when(
+          () => mockSupabaseService.invokeFunction<dynamic>(
+            functionName: 'unregister-device',
+            body: {'fcm_token': 'token'},
+          ),
+        ).thenAnswer(
+          (_) async => const Success(SupabaseResponse(statusCode: 204)),
+        );
+
+        final result = await dataSource.unregisterDevice('token');
+
+        expect(result, const Success<void, SupabaseFailure>(null));
+        verify(
+          () => mockSupabaseService.invokeFunction<dynamic>(
+            functionName: 'unregister-device',
             body: {'fcm_token': 'token'},
           ),
         ).called(1);
-      },
-    );
+      });
 
-    test('saveTokenToBackend propagates SupabaseFailure', () async {
-      const failure = FunctionSupabaseFailure(message: 'error', code: '500');
-      when(
-        () => mockSupabaseService.invokeFunction<dynamic>(
-          functionName: 'save-fcm-token',
-          body: {'fcm_token': null},
-        ),
-      ).thenAnswer((_) async => const Failure(failure));
+      test('propagates SupabaseFailure', () async {
+        const failure = FunctionSupabaseFailure(message: 'error', code: '500');
+        when(
+          () => mockSupabaseService.invokeFunction<dynamic>(
+            functionName: 'unregister-device',
+            body: {'fcm_token': 'token'},
+          ),
+        ).thenAnswer((_) async => const Failure(failure));
 
-      final result = await dataSource.saveTokenToBackend(null);
+        final result = await dataSource.unregisterDevice('token');
 
-      expect(result, const Failure<void, SupabaseFailure>(failure));
+        expect(result, const Failure<void, SupabaseFailure>(failure));
+      });
     });
 
     test('getDeviceToken returns token from FirebaseMessaging', () async {
@@ -98,7 +160,7 @@ void main() {
     });
 
     test(
-      'requestPermissions requests permission and enables foreground presentation',
+      'requestPermissions requests permission and keeps the system push hidden in foreground',
       () async {
         when(
           () => mockMessaging.requestPermission(
@@ -109,9 +171,9 @@ void main() {
         ).thenAnswer((_) async => FakeNotificationSettings());
         when(
           () => mockMessaging.setForegroundNotificationPresentationOptions(
-            alert: true,
-            badge: true,
-            sound: true,
+            alert: false,
+            badge: false,
+            sound: false,
           ),
         ).thenAnswer((_) async {});
 
@@ -126,9 +188,9 @@ void main() {
         ).called(1);
         verify(
           () => mockMessaging.setForegroundNotificationPresentationOptions(
-            alert: true,
-            badge: true,
-            sound: true,
+            alert: false,
+            badge: false,
+            sound: false,
           ),
         ).called(1);
       },
@@ -162,17 +224,20 @@ void main() {
       },
     );
 
-    test('onNotificationOpened and onForegroundMessage map message data', () async {
-      final openedFuture = dataSource.onNotificationOpened.first;
-      final foregroundFuture = dataSource.onForegroundMessage.first;
+    test(
+      'onNotificationOpened and onForegroundMessage map message data',
+      () async {
+        final openedFuture = dataSource.onNotificationOpened.first;
+        final foregroundFuture = dataSource.onForegroundMessage.first;
 
-      openedController.add(const RemoteMessage(data: {'group_id': 'g-1'}));
-      foregroundController.add(
-        const RemoteMessage(data: {'notification_id': 'n-1'}),
-      );
+        openedController.add(const RemoteMessage(data: {'group_id': 'g-1'}));
+        foregroundController.add(
+          const RemoteMessage(data: {'notification_id': 'n-1'}),
+        );
 
-      expect(await openedFuture, {'group_id': 'g-1'});
-      expect(await foregroundFuture, {'notification_id': 'n-1'});
-    });
+        expect(await openedFuture, {'group_id': 'g-1'});
+        expect(await foregroundFuture, {'notification_id': 'n-1'});
+      },
+    );
   });
 }

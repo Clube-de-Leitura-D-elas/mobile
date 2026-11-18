@@ -196,6 +196,38 @@ void main() {
         verify(() => repository.markAsRead('notif-1')).called(1);
       },
     );
+
+    test(
+      'marks as read using notification_target_id sent by the backend push',
+      () async {
+        final repository = MockNotificationRepository();
+        final openedController =
+            StreamController<Map<String, dynamic>>.broadcast();
+        addTearDown(openedController.close);
+
+        when(
+          () => repository.onNotificationOpened,
+        ).thenAnswer((_) => openedController.stream);
+        when(
+          () => repository.getInitialNotificationData(),
+        ).thenAnswer((_) async => null);
+        when(
+          () => repository.markAsRead('target-7'),
+        ).thenAnswer((_) async => const Success(null));
+
+        await NotificationNavigationService.setupInteractions(repository);
+
+        openedController.add({
+          'notification_target_id': 'target-7',
+          'type': 'DRAW_RESULT',
+          'meeting_id': 'm-1',
+          'group_id': '',
+        });
+        await pumpEventQueue();
+
+        verify(() => repository.markAsRead('target-7')).called(1);
+      },
+    );
   });
 
   group('openNotificationRoute', () {

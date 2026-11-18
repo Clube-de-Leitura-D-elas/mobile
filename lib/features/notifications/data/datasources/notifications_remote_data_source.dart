@@ -7,7 +7,8 @@ import 'package:mobile/core/tools/result.dart';
 abstract class NotificationsRemoteDataSource {
   Future<NotificationSettings> requestPermissions();
   Future<String?> getDeviceToken();
-  Future<Result<void, SupabaseFailure>> saveTokenToBackend(String? token);
+  Future<Result<void, SupabaseFailure>> registerDevice(String token);
+  Future<Result<void, SupabaseFailure>> unregisterDevice(String token);
   Future<Map<String, dynamic>?> getInitialNotificationData();
   Stream<Map<String, dynamic>> get onNotificationOpened;
   Stream<Map<String, dynamic>> get onForegroundMessage;
@@ -47,10 +48,12 @@ class NotificationsRemoteDataSourceImpl
       badge: true,
       sound: true,
     );
+    // Com o app aberto o push do sistema não aparece: só o sino é atualizado
+    // (via `onForegroundMessage`).
     await _messaging.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
+      alert: false,
+      badge: false,
+      sound: false,
     );
     return settings;
   }
@@ -74,11 +77,22 @@ class NotificationsRemoteDataSourceImpl
   }
 
   @override
-  Future<Result<void, SupabaseFailure>> saveTokenToBackend(
-    String? token,
-  ) async {
+  Future<Result<void, SupabaseFailure>> registerDevice(String token) async {
     final result = await _supabaseService.invokeFunction(
-      functionName: 'save-fcm-token',
+      functionName: 'register-device',
+      body: {'fcm_token': token, 'platform': _platform},
+    );
+
+    return switch (result) {
+      Success() => const Success(null),
+      Failure(:final failure) => Failure(failure),
+    };
+  }
+
+  @override
+  Future<Result<void, SupabaseFailure>> unregisterDevice(String token) async {
+    final result = await _supabaseService.invokeFunction(
+      functionName: 'unregister-device',
       body: {'fcm_token': token},
     );
 
@@ -87,6 +101,10 @@ class NotificationsRemoteDataSourceImpl
       Failure(:final failure) => Failure(failure),
     };
   }
+
+  /// O backend só aceita `ANDROID` ou `IOS` (contrato do `register-device`).
+  String get _platform =>
+      defaultTargetPlatform == TargetPlatform.iOS ? 'IOS' : 'ANDROID';
 
   @override
   Future<Map<String, dynamic>?> getInitialNotificationData() async {
@@ -103,26 +121,27 @@ class NotificationsRemoteDataSourceImpl
   }
 
   @override
-  Stream<Map<String, dynamic>> get onNotificationOpened =>
-      _onMessageOpenedApp.map((message) {
-        if (kDebugMode) {
-          debugPrint(
-            '[NotificationsDataSource] Message opened from background: ${message.data}',
-          );
-        }
-        return message.data;
-      });
+  Stream<Map<String, dynamic>>
+  get onNotificationOpened => _onMessageOpenedApp.map((message) {
+    if (kDebugMode) {
+      debugPrint(
+        '[NotificationsDataSource] Message opened from background: ${message.data}',
+      );
+    }
+    return message.data;
+  });
 
   @override
-  Stream<Map<String, dynamic>> get onForegroundMessage =>
-      _onMessage.map((message) {
-        if (kDebugMode) {
-          debugPrint(
-            '[NotificationsDataSource] Foreground message received: ${message.data}',
-          );
-        }
-        return message.data;
-      });
+  Stream<Map<String, dynamic>> get onForegroundMessage => _onMessage.map((
+    message,
+  ) {
+    if (kDebugMode) {
+      debugPrint(
+        '[NotificationsDataSource] Foreground message received: ${message.data}',
+      );
+    }
+    return message.data;
+  });
 
   @override
   Stream<String> get onTokenRefresh => _messaging.onTokenRefresh;
