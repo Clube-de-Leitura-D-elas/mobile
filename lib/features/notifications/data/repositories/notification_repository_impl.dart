@@ -19,6 +19,11 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
   bool _permissionsRequested = false;
 
+  /// Último token registrado no backend. No logout, se o FCM não devolver o
+  /// token atual, é ele que o `unregister-device` usa; sem isso o aparelho
+  /// continuaria registrado e receberia push da conta que saiu.
+  String? _registeredToken;
+
   @override
   Future<Result<NotificationsPageEntity, NotificationFailure>>
   getNotifications({required int page}) async {
@@ -85,7 +90,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       final result = await dataSource.registerDevice(token);
       return switch (result) {
-        Success() => const Success(null),
+        Success() => () {
+          _registeredToken = token;
+          return const Success<void, NotificationFailure>(null);
+        }(),
         Failure(:final failure) => Failure(
           _failureFrom(failure, const FcmTokenSyncFailure()),
         ),
@@ -108,20 +116,31 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return const Failure(FcmTokenSyncFailure());
     }
 
+    // O `unregister-device` precisa do token deste aparelho. Se o FCM falhar
+    // ao lê-lo, usa o último registrado; sem nenhum dos dois, o erro sobe como
+    // `Failure` para quem chamou não tratar como se tivesse desregistrado.
+    String? token;
     try {
-      // O `unregister-device` precisa do token deste aparelho; sem ele não há
-      // o que desregistrar.
-      final token = await dataSource.getDeviceToken();
-      if (token == null || token.isEmpty) return const Success(null);
+      token = await dataSource.getDeviceToken();
+    } catch (_) {
+      token = _registeredToken;
+      if (token == null) return const Failure(FcmTokenSyncFailure());
+    }
+    if (token == null || token.isEmpty) token = _registeredToken;
+    if (token == null || token.isEmpty) return const Success(null);
 
+    try {
       final result = await dataSource.unregisterDevice(token);
       return switch (result) {
-        Success() => const Success(null),
+        Success() => () {
+          _registeredToken = null;
+          return const Success<void, NotificationFailure>(null);
+        }(),
         Failure(:final failure) => Failure(
           _failureFrom(failure, const FcmTokenSyncFailure()),
         ),
       };
-    } catch (e) {
+    } catch (_) {
       return const Failure(FcmTokenSyncFailure());
     }
   }

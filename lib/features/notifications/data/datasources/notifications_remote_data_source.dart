@@ -77,23 +77,26 @@ class NotificationsRemoteDataSourceImpl
   }
 
   @override
-  Future<Result<void, SupabaseFailure>> registerDevice(String token) async {
-    final result = await _supabaseService.invokeFunction(
-      functionName: 'register-device',
-      body: {'fcm_token': token, 'platform': _platform},
-    );
-
-    return switch (result) {
-      Success() => const Success(null),
-      Failure(:final failure) => Failure(failure),
-    };
+  Future<Result<void, SupabaseFailure>> registerDevice(String token) {
+    return _invokeDeviceFunction('register-device', {
+      'fcm_token': token,
+      'platform': _platform,
+    });
   }
 
   @override
-  Future<Result<void, SupabaseFailure>> unregisterDevice(String token) async {
+  Future<Result<void, SupabaseFailure>> unregisterDevice(String token) {
+    return _invokeDeviceFunction('unregister-device', {'fcm_token': token});
+  }
+
+  /// As duas functions de aparelho só devolvem sucesso ou falha, sem corpo útil.
+  Future<Result<void, SupabaseFailure>> _invokeDeviceFunction(
+    String functionName,
+    Map<String, dynamic> body,
+  ) async {
     final result = await _supabaseService.invokeFunction(
-      functionName: 'unregister-device',
-      body: {'fcm_token': token},
+      functionName: functionName,
+      body: body,
     );
 
     return switch (result) {

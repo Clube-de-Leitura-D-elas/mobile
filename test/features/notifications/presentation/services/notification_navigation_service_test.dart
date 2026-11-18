@@ -229,6 +229,60 @@ void main() {
       },
     );
 
+    Future<StreamController<Map<String, dynamic>>> setupOpened(
+      MockNotificationRepository repository,
+      String expectedId,
+    ) async {
+      final openedController =
+          StreamController<Map<String, dynamic>>.broadcast();
+      when(
+        () => repository.onNotificationOpened,
+      ).thenAnswer((_) => openedController.stream);
+      when(
+        () => repository.getInitialNotificationData(),
+      ).thenAnswer((_) async => null);
+      when(
+        () => repository.markAsRead(expectedId),
+      ).thenAnswer((_) async => const Success(null));
+      await NotificationNavigationService.setupInteractions(repository);
+      return openedController;
+    }
+
+    test('skips a blank notification_target_id and uses the next id', () async {
+      final repository = MockNotificationRepository();
+      final controller = await setupOpened(repository, 'notif-1');
+      addTearDown(controller.close);
+
+      controller.add({
+        'notification_target_id': '   ',
+        'notification_id': 'notif-1',
+      });
+      await pumpEventQueue();
+
+      verify(() => repository.markAsRead('notif-1')).called(1);
+      verifyNever(() => repository.markAsRead(''));
+    });
+
+    test(
+      'prefers notification_target_id over notification_id and id',
+      () async {
+        final repository = MockNotificationRepository();
+        final controller = await setupOpened(repository, 'target-1');
+        addTearDown(controller.close);
+
+        controller.add({
+          'notification_target_id': 'target-1',
+          'notification_id': 'notif-1',
+          'id': 'legacy-1',
+        });
+        await pumpEventQueue();
+
+        verify(() => repository.markAsRead('target-1')).called(1);
+        verifyNever(() => repository.markAsRead('notif-1'));
+        verifyNever(() => repository.markAsRead('legacy-1'));
+      },
+    );
+
     test(
       'falls back to id when the push has no other notification id',
       () async {
