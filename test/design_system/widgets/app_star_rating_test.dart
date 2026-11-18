@@ -188,7 +188,7 @@ void main() {
     }
 
     double rowWidth(WidgetTester tester) =>
-        tester.getSize(find.byType(Row).first).width;
+        tester.getSize(find.byType(Wrap)).width;
 
     testWidgets('keeps 48dp tap targets and the gap when there is room', (
       tester,
@@ -210,16 +210,22 @@ void main() {
       expect(tester.getSize(find.byType(InkWell).first), const Size(48, 48));
     });
 
-    testWidgets('narrows tap targets, keeping 48dp of height, as last resort', (
+    testWidgets('wraps the stars instead of shrinking the 48dp targets', (
       tester,
     ) async {
       await pumpInputWithWidth(tester, 200);
 
       expect(tester.takeException(), isNull);
       expect(rowWidth(tester), lessThanOrEqualTo(200));
-      expect(tester.getSize(find.byType(InkWell).first), const Size(40, 48));
-      final icon = tester.widget<Icon>(find.byIcon(Icons.star_rounded).first);
-      expect(icon.size, 36);
+      final targets = find.byType(InkWell);
+      expect(targets, findsNWidgets(5));
+      for (final target in targets.evaluate()) {
+        expect(tester.getSize(find.byWidget(target.widget)), const Size(48, 48));
+      }
+      expect(
+        tester.getTopLeft(targets.last).dy,
+        greaterThan(tester.getTopLeft(targets.first).dy),
+      );
     });
   });
 }

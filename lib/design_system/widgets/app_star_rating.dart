@@ -212,43 +212,35 @@ class _InputStarRating extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final layout = _InputLayout.fit(
-          maxWidth: constraints.maxWidth,
-          count: widget.maxStars,
-          starSize: widget._inputStarSize,
-          gap: widget._inputGap,
-        );
-
-        return Row(
-          mainAxisSize: MainAxisSize.min,
+        // Wrap em vez de Row: se nem 5 alvos de 48dp couberem lado a lado,
+        // as estrelas quebram de linha em vez de encolher o alvo.
+        return Wrap(
+          alignment: WrapAlignment.center,
+          spacing: _fittedGap(
+            maxWidth: constraints.maxWidth,
+            count: widget.maxStars,
+            gap: widget._inputGap,
+          ),
           children: List.generate(widget.maxStars, (i) {
             final starValue = i + 1;
             final isFilled = widget._inputRating >= starValue;
 
-            return Padding(
-              padding: EdgeInsets.only(
-                right: i < widget.maxStars - 1 ? layout.gap : 0,
-              ),
-              child: Semantics(
-                button: true,
-                enabled: isEnabled,
-                selected: isFilled,
-                label: '$starValue de ${widget.maxStars} estrelas',
-                onTap: isEnabled ? () => widget.onChanged!(starValue) : null,
-                child: ExcludeSemantics(
-                  child: _StarButton(
-                    starValue: starValue,
-                    isFilled: isFilled,
-                    starSize: layout.starSize,
-                    hitWidth: layout.hitWidth,
-                    filled: filled,
-                    empty: empty,
-                    isEnabled: isEnabled,
-                    splashColor: colors.surfaceBrandSoft,
-                    onTap: isEnabled
-                        ? () => widget.onChanged!(starValue)
-                        : null,
-                  ),
+            return Semantics(
+              button: true,
+              enabled: isEnabled,
+              selected: isFilled,
+              label: '$starValue de ${widget.maxStars} estrelas',
+              onTap: isEnabled ? () => widget.onChanged!(starValue) : null,
+              child: ExcludeSemantics(
+                child: _StarButton(
+                  starValue: starValue,
+                  isFilled: isFilled,
+                  starSize: widget._inputStarSize,
+                  filled: filled,
+                  empty: empty,
+                  isEnabled: isEnabled,
+                  splashColor: colors.surfaceBrandSoft,
+                  onTap: isEnabled ? () => widget.onChanged!(starValue) : null,
                 ),
               ),
             );
@@ -257,51 +249,20 @@ class _InputStarRating extends StatelessWidget {
       },
     );
   }
-}
 
-/// Medidas das estrelas de input que cabem em [maxWidth]: primeiro reduz o
-/// espaço entre elas e, se ainda não couber, a largura da área de toque e o
-/// ícone. A altura do alvo fica sempre em 48.
-class _InputLayout {
-  const _InputLayout({
-    required this.starSize,
-    required this.hitWidth,
-    required this.gap,
-  });
-
-  factory _InputLayout.fit({
+  /// Espaço entre as estrelas que ainda deixa as [count] numa linha só em
+  /// [maxWidth], sem passar de [gap].
+  static double _fittedGap({
     required double maxWidth,
     required int count,
-    required double starSize,
     required double gap,
   }) {
-    const hitSize = _StarButton.minHitSize;
     final gaps = count - 1;
-    final natural = count * hitSize + gaps * gap;
-    if (!maxWidth.isFinite || natural <= maxWidth) {
-      return _InputLayout(starSize: starSize, hitWidth: hitSize, gap: gap);
-    }
-
-    final hitsWidth = count * hitSize;
-    if (hitsWidth <= maxWidth) {
-      return _InputLayout(
-        starSize: starSize,
-        hitWidth: hitSize,
-        gap: gaps > 0 ? (maxWidth - hitsWidth) / gaps : 0,
-      );
-    }
-
-    final fittedHit = maxWidth / count;
-    return _InputLayout(
-      starSize: starSize < fittedHit ? starSize : fittedHit,
-      hitWidth: fittedHit,
-      gap: 0,
-    );
+    if (!maxWidth.isFinite || gaps <= 0) return gap;
+    final room = (maxWidth - count * _StarButton.minHitSize) / gaps;
+    if (room >= gap) return gap;
+    return room > 0 ? room : gap;
   }
-
-  final double starSize;
-  final double hitWidth;
-  final double gap;
 }
 
 class _StarButton extends StatelessWidget {
@@ -309,7 +270,6 @@ class _StarButton extends StatelessWidget {
     required this.starValue,
     required this.isFilled,
     required this.starSize,
-    required this.hitWidth,
     required this.filled,
     required this.empty,
     required this.isEnabled,
@@ -320,14 +280,13 @@ class _StarButton extends StatelessWidget {
   final int starValue;
   final bool isFilled;
   final double starSize;
-  final double hitWidth;
   final Color filled;
   final Color empty;
   final bool isEnabled;
   final Color splashColor;
   final VoidCallback? onTap;
 
-  /// Alvo de toque padrão (48 dp); só encolhe quando a linha não cabe.
+  /// Alvo de toque mínimo (48 dp).
   static const double minHitSize = 48.0;
 
   @override
@@ -342,7 +301,7 @@ class _StarButton extends StatelessWidget {
             ? splashColor.withValues(alpha: 0.35)
             : Colors.transparent,
         child: SizedBox(
-          width: hitWidth,
+          width: minHitSize,
           height: minHitSize,
           child: Center(
             child: Icon(

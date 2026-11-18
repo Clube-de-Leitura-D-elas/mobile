@@ -299,6 +299,25 @@ void main() {
   });
 
   group('filters and day selection', () {
+    test('a silent refresh after the month turns hides the time filter', () async {
+      var clock = now;
+      stubMonth(august, Success([july, past, upcoming]));
+      final cubit = CalendarCubit(
+        repository: repository,
+        citiesRepository: citiesRepository,
+        now: () => clock,
+      )..emit(loadedAugust.copyWith(filter: CalendarFilter.past));
+      addTearDown(cubit.close);
+      expect(cubit.state.showsTimeFilter, isTrue);
+
+      clock = DateTime.utc(2026, 9, 1, 15);
+      await cubit.refresh();
+
+      expect(cubit.state.today, DateTime(2026, 9, 1));
+      expect(cubit.state.showsTimeFilter, isFalse);
+      expect(cubit.state.visibleMeetings, containsAll([past, upcoming]));
+    });
+
     blocTest<CalendarCubit, CalendarState>(
       'filters the list',
       build: buildCubit,
