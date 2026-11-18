@@ -228,6 +228,33 @@ void main() {
         verify(() => repository.markAsRead('target-7')).called(1);
       },
     );
+
+    test(
+      'falls back to id when the push has no other notification id',
+      () async {
+        final repository = MockNotificationRepository();
+        final openedController =
+            StreamController<Map<String, dynamic>>.broadcast();
+        addTearDown(openedController.close);
+
+        when(
+          () => repository.onNotificationOpened,
+        ).thenAnswer((_) => openedController.stream);
+        when(
+          () => repository.getInitialNotificationData(),
+        ).thenAnswer((_) async => null);
+        when(
+          () => repository.markAsRead('legacy-3'),
+        ).thenAnswer((_) async => const Success(null));
+
+        await NotificationNavigationService.setupInteractions(repository);
+
+        openedController.add({'id': 'legacy-3', 'group_id': 'g-1'});
+        await pumpEventQueue();
+
+        verify(() => repository.markAsRead('legacy-3')).called(1);
+      },
+    );
   });
 
   group('openNotificationRoute', () {
