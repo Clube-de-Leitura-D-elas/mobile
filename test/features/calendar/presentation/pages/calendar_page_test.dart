@@ -353,6 +353,56 @@ void main() {
       );
     });
 
+    testWidgets('hides the chips and lists every meeting of a future or '
+        'past month', (tester) async {
+      final september = calendarMeeting(
+        'sep-late',
+        day: DateTime(2026, 9, 3),
+        groupNumber: 11,
+      );
+      final july = calendarMeeting('jul', day: DateTime(2026, 7, 8));
+      stubMonth(const CalendarMonth(2026, 9), Success([september]));
+      stubMonth(const CalendarMonth(2026, 7), Success([july]));
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Eventos passados'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Próximo mês'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Setembro 2026'), findsOneWidget);
+      expect(find.text('Todos'), findsNothing);
+      expect(find.textContaining('Próximos eventos'), findsNothing);
+      expect(find.text('Eventos passados'), findsNothing);
+      expect(tileOf('sep-late'), findsOneWidget);
+      expect(find.text('Nenhum encontro neste mês.'), findsNothing);
+
+      await tester.tap(find.byTooltip('Mês anterior'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Mês anterior'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Julho 2026'), findsOneWidget);
+      expect(find.text('Todos'), findsNothing);
+      expect(tileOf('jul'), findsOneWidget);
+    });
+
+    testWidgets('an empty future month with "past" active shows the month '
+        'message', (tester) async {
+      stubMonth(const CalendarMonth(2026, 9), const Success([]));
+      await pumpPage(tester);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Eventos passados'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Próximo mês'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nenhum encontro neste mês.'), findsOneWidget);
+      expect(find.text('Nenhum encontro passado neste mês.'), findsNothing);
+    });
+
     testWidgets('loads the next month with its grid range', (tester) async {
       const september = CalendarMonth(2026, 9);
       stubMonth(september, const Success([]));

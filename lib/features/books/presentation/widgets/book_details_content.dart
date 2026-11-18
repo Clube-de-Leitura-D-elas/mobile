@@ -2,16 +2,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
-import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
 import 'package:mobile/features/books/presentation/widgets/group_select_tile.dart';
-import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
 class BookDetailsContent extends StatelessWidget {
   const BookDetailsContent({
@@ -37,6 +40,7 @@ class BookDetailsContent extends StatelessWidget {
     final spacing = context.spacing;
     final cubit = context.read<BookDetailsCubit>();
     final reviews = state.reviews;
+    final myReview = details.myReview;
 
     return CustomScrollView(
       slivers: [
@@ -68,7 +72,13 @@ class BookDetailsContent extends StatelessWidget {
               SizedBox(height: spacing.s24),
               _SectionTitle(context.l10n.bookDetailReviewsTitle),
               SizedBox(height: spacing.s12),
-              if (reviews.isEmpty)
+              // O backend devolve a avaliação da leitora em `my_review`, fora
+              // da lista paginada das outras.
+              if (myReview != null) ...[
+                _MyReviewTile(review: myReview),
+                if (reviews.isNotEmpty) SizedBox(height: spacing.s16),
+              ],
+              if (reviews.isEmpty && myReview == null)
                 Text(
                   context.l10n.bookDetailNoReviews,
                   style: context.typography.bodyDefault.copyWith(
@@ -277,6 +287,30 @@ class _RecommendationGroupTile extends StatelessWidget {
           Navigator.of(context).pop();
         }
       },
+    );
+  }
+}
+
+class _MyReviewTile extends StatelessWidget {
+  const _MyReviewTile({required this.review});
+
+  final MyBookReviewEntity review;
+
+  @override
+  Widget build(BuildContext context) {
+    final session = context.select<SessionCubit, AuthenticatedSession?>((
+      cubit,
+    ) {
+      final state = cubit.state;
+      return state is AuthenticatedSession ? state : null;
+    });
+
+    return BookReviewTile(
+      key: const ValueKey('book-review-mine'),
+      name: session?.user.name ?? context.l10n.bookDetailMyReviewFallbackName,
+      photoUrl: session?.profile?.photoUrl,
+      rating: review.rating.toDouble(),
+      comment: review.commentary ?? '',
     );
   }
 }

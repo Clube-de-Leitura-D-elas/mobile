@@ -13,6 +13,7 @@ import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_invitation_status.dart';
+import 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 import 'package:mobile/features/groups/presentation/routes/group_routes.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_group_card.dart';
@@ -775,6 +776,116 @@ void main() {
 
         expect(find.text('Minhas tarefas'), findsNothing);
         expect(find.byType(AppMeetingResponseButtons), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'renders inaugural raffle button in tasksOnly and triggers callback',
+      (tester) async {
+        var pressed = false;
+        await tester.pumpWidget(
+          _wrap(
+            AppGroupCard(
+              groupId: 'group-8',
+              groupName: 'Grupo 8',
+              participantsCount: 5,
+              cityState: 'Porto Alegre, RS',
+              tasksOnly: true,
+              pendingRaffle: const PendingRaffle(
+                type: PendingRaffleType.inaugural,
+                groupId: 'group-8',
+              ),
+              onPendingRafflePressed: () => pressed = true,
+            ),
+          ),
+        );
+
+        expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
+        await tester.tap(find.text('Realizar sorteio inaugural'));
+        expect(pressed, isTrue);
+      },
+    );
+
+    testWidgets(
+      'renders pending raffle button in tasksOnly and triggers callback',
+      (tester) async {
+        var pressed = false;
+        await tester.pumpWidget(
+          _wrap(
+            AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 10,
+              cityState: 'Porto Alegre, RS',
+              tasksOnly: true,
+              pendingRaffle: const PendingRaffle(
+                type: PendingRaffleType.pending,
+                groupId: 'group-1',
+                meetingId: 'meeting-1',
+              ),
+              onPendingRafflePressed: () => pressed = true,
+            ),
+          ),
+        );
+
+        expect(find.text('Realizar sorteio pendente'), findsOneWidget);
+        await tester.tap(find.text('Realizar sorteio pendente'));
+        expect(pressed, isTrue);
+      },
+    );
+
+    testWidgets(
+      'renders inaugural raffle button in normal list when nextMeeting is null',
+      (tester) async {
+        var pressed = false;
+        await tester.pumpWidget(
+          _wrap(
+            AppGroupCard(
+              groupId: 'group-8',
+              groupName: 'Grupo 8',
+              participantsCount: 5,
+              cityState: 'Porto Alegre, RS',
+              tasksOnly: false,
+              pendingRaffle: const PendingRaffle(
+                type: PendingRaffleType.inaugural,
+                groupId: 'group-8',
+              ),
+              onPendingRafflePressed: () => pressed = true,
+            ),
+          ),
+        );
+
+        expect(find.text('Realizar sorteio inaugural'), findsOneWidget);
+        await tester.tap(find.text('Realizar sorteio inaugural'));
+        expect(pressed, isTrue);
+      },
+    );
+
+    testWidgets(
+      'renders pending raffle button in normal list when nextMeeting is null',
+      (tester) async {
+        var pressed = false;
+        await tester.pumpWidget(
+          _wrap(
+            AppGroupCard(
+              groupId: 'group-1',
+              groupName: 'Grupo 1',
+              participantsCount: 10,
+              cityState: 'Porto Alegre, RS',
+              tasksOnly: false,
+              pendingRaffle: const PendingRaffle(
+                type: PendingRaffleType.pending,
+                groupId: 'group-1',
+                meetingId: 'meeting-1',
+              ),
+              onPendingRafflePressed: () => pressed = true,
+            ),
+          ),
+        );
+
+        expect(find.text('Realizar sorteio pendente'), findsOneWidget);
+        await tester.tap(find.text('Realizar sorteio pendente'));
+        expect(pressed, isTrue);
       },
     );
 

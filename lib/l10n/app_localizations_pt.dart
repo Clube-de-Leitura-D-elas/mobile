@@ -421,6 +421,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingRegionLabel => 'Região';
 
   @override
+  String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingNoZonesHint =>
+      'Esta cidade ainda não tem regiões cadastradas';
+
+  @override
+  String get onboardingLocationRequired =>
+      'Selecione a cidade e a região para continuar.';
+
+  @override
+  String get onboardingYes => 'Sim';
+
+  @override
+  String get onboardingNo => 'Não';
+
+  @override
   String get onboardingJobLabel => 'Qual sua profissão?';
 
   @override
@@ -466,6 +483,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get onboardingFinishError =>
+      'Não foi possível concluir o cadastro. Tente novamente.';
 
   @override
   String get selectOptionHint => 'Selecione';
@@ -775,6 +796,26 @@ class AppLocalizationsPt extends AppLocalizations {
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
 
   @override
+  String get raffleInauguralTitle => 'Sorteio Inaugural';
+
+  @override
+  String get raffleInauguralSubtitle =>
+      'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.';
+
+  @override
+  String get raffleMeetingInPreparation => 'Encontro em preparação';
+
+  @override
+  String get homePendingTasksRaffleInaugural => 'Realizar sorteio inaugural';
+
+  @override
+  String get homePendingTasksRafflePending => 'Realizar sorteio pendente';
+
+  @override
+  String get raffleOpenMeetingAlreadyExistsError =>
+      'O grupo já possui um encontro em andamento.';
+
+  @override
   String groupMeetingMyTasksProgress(int done, int total) {
     return '$done de $total tarefas concluídas';
   }
@@ -787,6 +828,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get meetingTasksDrawnLabel => 'VOCÊ FOI SORTEADA';
+
+  @override
+  String get meetingTasksCoordinatorLabel => 'VOCÊ É COORDENADORA DESTE GRUPO';
 
   @override
   String get meetingTasksDrawnFallbackTitle => 'Próximo encontro';
@@ -1091,6 +1135,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get bookReviewCommentHint => 'Digite sua resposta';
+
+  @override
+  String get bookReviewCommentShowMore => 'Ver mais';
+
+  @override
+  String get bookReviewCommentShowLess => 'Ver menos';
+
+  @override
+  String get bookDetailMyReviewFallbackName => 'Você';
 
   @override
   String get bookReviewCancel => 'Cancelar';
@@ -2374,6 +2427,23 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get onboardingRegionLabel => 'Região';
 
   @override
+  String get onboardingRegionHint => 'Selecione uma região';
+
+  @override
+  String get onboardingNoZonesHint =>
+      'Esta cidade ainda não tem regiões cadastradas';
+
+  @override
+  String get onboardingLocationRequired =>
+      'Selecione a cidade e a região para continuar.';
+
+  @override
+  String get onboardingYes => 'Sim';
+
+  @override
+  String get onboardingNo => 'Não';
+
+  @override
   String get onboardingJobLabel => 'Qual sua profissão?';
 
   @override
@@ -2419,6 +2489,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingWelcomeButton => 'Pronta para o próximo capítulo?';
+
+  @override
+  String get onboardingFinishError =>
+      'Não foi possível concluir o cadastro. Tente novamente.';
 
   @override
   String get selectOptionHint => 'Selecione';
@@ -2684,6 +2758,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
 
   @override
+  String get raffleInauguralTitle => 'Sorteio Inaugural';
+
+  @override
+  String get raffleInauguralSubtitle =>
+      'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.';
+
+  @override
+  String get raffleMeetingInPreparation => 'Encontro em preparação';
+
+  @override
+  String get homePendingTasksRaffleInaugural => 'Realizar sorteio inaugural';
+
+  @override
+  String get homePendingTasksRafflePending => 'Realizar sorteio pendente';
+
+  @override
+  String get raffleOpenMeetingAlreadyExistsError =>
+      'O grupo já possui um encontro em andamento.';
+
+  @override
+  String get meetingTasksCoordinatorLabel => 'VOCÊ É COORDENADORA DESTE GRUPO';
+
+  @override
   String get meetingPhotoPrevious => 'Foto anterior';
 
   @override
@@ -2798,6 +2895,15 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get bookReviewCommentHint => 'Digite sua resposta';
+
+  @override
+  String get bookReviewCommentShowMore => 'Ver mais';
+
+  @override
+  String get bookReviewCommentShowLess => 'Ver menos';
+
+  @override
+  String get bookDetailMyReviewFallbackName => 'Você';
 
   @override
   String get bookReviewCancel => 'Cancelar';

@@ -168,5 +168,84 @@ void main() {
         expect(find.bySemanticsLabel('$i de 5 estrelas'), findsOneWidget);
       }
     });
+
+    Future<void> pumpInputWithWidth(WidgetTester tester, double width) {
+      return tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: width,
+                child: Center(
+                  child: AppStarRating.input(rating: 3, onChanged: (_) {}),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    double rowWidth(WidgetTester tester) =>
+        tester.getSize(find.byType(Wrap)).width;
+
+    void expectSingleRow(WidgetTester tester) {
+      final targets = find.byType(InkWell);
+      expect(targets, findsNWidgets(5));
+      final top = tester.getTopLeft(targets.first).dy;
+      for (final target in targets.evaluate()) {
+        expect(tester.getTopLeft(find.byWidget(target.widget)).dy, top);
+      }
+    }
+
+    testWidgets('keeps 48dp tap targets and the gap when there is room', (
+      tester,
+    ) async {
+      await pumpInputWithWidth(tester, 400);
+
+      expect(tester.takeException(), isNull);
+      expect(rowWidth(tester), 5 * 48 + 4 * 8);
+      expect(tester.getSize(find.byType(InkWell).first), const Size(48, 48));
+    });
+
+    testWidgets('shrinks the gap to fit a narrow dialog without overflow', (
+      tester,
+    ) async {
+      await pumpInputWithWidth(tester, 250);
+
+      expect(tester.takeException(), isNull);
+      expect(rowWidth(tester), lessThanOrEqualTo(250));
+      expect(tester.getSize(find.byType(InkWell).first), const Size(48, 48));
+      expectSingleRow(tester);
+    });
+
+    testWidgets('keeps one row with no gap when 5 x 48dp fit exactly', (
+      tester,
+    ) async {
+      await pumpInputWithWidth(tester, 240);
+
+      expect(tester.takeException(), isNull);
+      expect(rowWidth(tester), 240);
+      expectSingleRow(tester);
+    });
+
+    testWidgets('wraps the stars instead of shrinking the 48dp targets', (
+      tester,
+    ) async {
+      await pumpInputWithWidth(tester, 200);
+
+      expect(tester.takeException(), isNull);
+      expect(rowWidth(tester), lessThanOrEqualTo(200));
+      final targets = find.byType(InkWell);
+      expect(targets, findsNWidgets(5));
+      for (final target in targets.evaluate()) {
+        expect(tester.getSize(find.byWidget(target.widget)), const Size(48, 48));
+      }
+      expect(
+        tester.getTopLeft(targets.last).dy,
+        greaterThan(tester.getTopLeft(targets.first).dy),
+      );
+    });
   });
 }

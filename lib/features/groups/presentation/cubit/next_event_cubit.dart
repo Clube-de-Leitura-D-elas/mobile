@@ -24,10 +24,12 @@ class NextEventCubit extends Cubit<NextEventState> {
       case Failure(:final failure):
         emit(NextEventError(failure));
       case Success(:final data):
-        if (data == null) {
+        if (data.isInPreparation) {
+          emit(NextEventInPreparation(data.draftMeetingId!));
+        } else if (data.isEmpty) {
           emit(const NextEventEmpty());
         } else {
-          emit(NextEventLoaded(data));
+          emit(NextEventLoaded(data.event!));
         }
     }
   }

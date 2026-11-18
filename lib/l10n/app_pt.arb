@@ -486,6 +486,16 @@
     "@onboardingCityHint": { "description": "Dica de seleção de cidade" },
     "onboardingRegionLabel": "Região",
     "@onboardingRegionLabel": { "description": "Rótulo região" },
+    "onboardingRegionHint": "Selecione uma região",
+    "@onboardingRegionHint": { "description": "Dica de seleção de região" },
+    "onboardingNoZonesHint": "Esta cidade ainda não tem regiões cadastradas",
+    "@onboardingNoZonesHint": { "description": "Dica exibida quando a cidade selecionada não tem zonas cadastradas" },
+    "onboardingLocationRequired": "Selecione a cidade e a região para continuar.",
+    "@onboardingLocationRequired": { "description": "Aviso de validação quando cidade ou região não foram escolhidas" },
+    "onboardingYes": "Sim",
+    "@onboardingYes": { "description": "Opção afirmativa dos selects do onboarding" },
+    "onboardingNo": "Não",
+    "@onboardingNo": { "description": "Opção negativa dos selects do onboarding" },
     "onboardingJobLabel": "Qual sua profissão?",
     "@onboardingJobLabel": { "description": "Rótulo profissão" },
     "onboardingEducationLabel": "Nível de escolaridade",
@@ -514,6 +524,8 @@
     "@onboardingWelcomeSubtitle": { "description": "Subtítulo de boas-vindas" },
     "onboardingWelcomeButton": "Pronta para o próximo capítulo?",
     "@onboardingWelcomeButton": { "description": "Botão concluir onboarding" },
+    "onboardingFinishError": "Não foi possível concluir o cadastro. Tente novamente.",
+    "@onboardingFinishError": { "description": "Aviso quando o refresh do perfil falha na tela final" },
     "selectOptionHint": "Selecione",
     "@selectOptionHint": { "description": "Dica genérica de seleção em dropdown" },
 
@@ -1052,6 +1064,30 @@
   "@raffleSavedSuccessToast": {
     "description": "Mensagem de sucesso após registrar o sorteio e definir a nova anfitriã"
   },
+  "raffleInauguralTitle": "Sorteio Inaugural",
+  "@raffleInauguralTitle": {
+    "description": "Título da tela de sorteio inaugural do grupo"
+  },
+  "raffleInauguralSubtitle": "Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.",
+  "@raffleInauguralSubtitle": {
+    "description": "Subtítulo da tela de preparação do sorteio inaugural"
+  },
+  "raffleMeetingInPreparation": "Encontro em preparação",
+  "@raffleMeetingInPreparation": {
+    "description": "Texto informando que há um encontro em preparação pela anfitriã"
+  },
+  "homePendingTasksRaffleInaugural": "Realizar sorteio inaugural",
+  "@homePendingTasksRaffleInaugural": {
+    "description": "Ação no card de tarefas para o sorteio inaugural"
+  },
+  "homePendingTasksRafflePending": "Realizar sorteio pendente",
+  "@homePendingTasksRafflePending": {
+    "description": "Ação no card de tarefas para sorteio pendente"
+  },
+  "raffleOpenMeetingAlreadyExistsError": "O grupo já possui um encontro em andamento.",
+  "@raffleOpenMeetingAlreadyExistsError": {
+    "description": "Erro quando tenta realizar sorteio mas o grupo já tem encontro aberto"
+  },
 
   "groupMeetingMyTasksProgress": "{done} de {total} tarefas concluídas",
   "@groupMeetingMyTasksProgress": {
@@ -1071,7 +1107,11 @@
   },
   "meetingTasksDrawnLabel": "VOCÊ FOI SORTEADA",
   "@meetingTasksDrawnLabel": {
-    "description": "Sobretítulo do banner antes de o encontro ser publicado"
+    "description": "Sobretítulo do banner antes de o encontro ser publicado, para a anfitriã"
+  },
+  "meetingTasksCoordinatorLabel": "VOCÊ É COORDENADORA DESTE GRUPO",
+  "@meetingTasksCoordinatorLabel": {
+    "description": "Sobretítulo do banner quando quem abre as tarefas é coordenadora e não é a anfitriã"
   },
   "meetingTasksDrawnFallbackTitle": "Próximo encontro",
   "@meetingTasksDrawnFallbackTitle": {
@@ -1478,6 +1518,18 @@
   "bookReviewCommentHint": "Digite sua resposta",
   "@bookReviewCommentHint": {
     "description": "Placeholder do comentário no modal de avaliação."
+  },
+  "bookReviewCommentShowMore": "Ver mais",
+  "@bookReviewCommentShowMore": {
+    "description": "Expande um comentário de avaliação longo na tela do livro"
+  },
+  "bookReviewCommentShowLess": "Ver menos",
+  "@bookReviewCommentShowLess": {
+    "description": "Recolhe um comentário de avaliação expandido na tela do livro"
+  },
+  "bookDetailMyReviewFallbackName": "Você",
+  "@bookDetailMyReviewFallbackName": {
+    "description": "Nome na avaliação da própria leitora quando o perfil não está disponível"
   },
   "bookReviewCancel": "Cancelar",
   "@bookReviewCancel": {

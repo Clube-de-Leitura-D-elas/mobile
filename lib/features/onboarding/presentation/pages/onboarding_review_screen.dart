@@ -6,6 +6,8 @@ import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/domain/entities/user_failure.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/user_failure_message.dart';
+import 'package:mobile/features/onboarding/domain/entities/city.dart';
+import 'package:mobile/features/onboarding/domain/entities/user_review_profile.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_cubit.dart';
 import 'package:mobile/features/onboarding/presentation/cubit/onboarding_review_state.dart';
 import 'package:mobile/features/onboarding/presentation/routes/onboarding_routes.dart';
@@ -23,6 +25,10 @@ class OnboardingReviewScreen extends StatefulWidget {
 class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
   late final PageController _pageController;
 
+  /// Uma única tentativa extra de sair da tela depois do sucesso. Sem o limite,
+  /// um guard que ainda devolvesse para cá criaria um loop de redirecionamento.
+  bool _retriedNavigation = false;
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +42,33 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
   }
 
   void _onPageChanged(int page, BuildContext context) {
+    final currentState = context.read<OnboardingReviewCubit>().state;
+    if (page > 0 &&
+        currentState is OnboardingReviewFormState &&
+        !_isLocationValid(currentState)) {
+      context.showErrorToast(context.l10n.onboardingLocationRequired);
+      _pageController.animateToPage(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      return;
+    }
     context.read<OnboardingReviewCubit>().goToStep(page);
+  }
+
+  City? _selectedCity(UserReviewProfile profile, List<City> cities) {
+    for (final city in cities) {
+      if (city.id == profile.cityId) return city;
+    }
+    return null;
+  }
+
+  bool _isLocationValid(OnboardingReviewFormState state) {
+    final city = _selectedCity(state.profile, state.cities);
+    if (city == null) return false;
+    if (city.zones.isEmpty) return true;
+    return city.zones.any((zone) => zone.id == state.profile.zoneId);
   }
 
   @override
@@ -52,7 +84,18 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
         child: BlocConsumer<OnboardingReviewCubit, OnboardingReviewState>(
           listener: (context, state) {
             if (state is OnboardingReviewSuccess) {
-              context.read<SessionCubit>().refreshProfile();
+              final profile = state.profile;
+              // Cidade é o que libera a revisão; zona pode ser nula quando a
+              // cidade não tem zonas cadastradas. Exigir as duas aqui deixava a
+              // sessão com `cityId` nulo e o guard devolvia para esta tela.
+              if (profile.cityId != null) {
+                context.read<SessionCubit>().updateProfileLocation(
+                  cityId: profile.cityId,
+                  cityName: profile.cityName,
+                  zoneId: profile.zoneId,
+                  zoneName: profile.zoneName,
+                );
+              }
               context.go(OnboardingRoutes.welcome);
               return;
             }
@@ -117,6 +160,7 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
                       children: [
                         ReviewStepOneForm(
                           profile: state.profile,
+                          cities: state.cities,
                           onChanged: (p) =>
                               context.read<OnboardingReviewCubit>().updateProfile(p),
                         ),
@@ -158,6 +202,12 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
                             onPressed: state.isSubmitting
                                 ? null
                                 : () {
+                                    if (!_isLocationValid(state)) {
+                                      context.showErrorToast(
+                                        l10n.onboardingLocationRequired,
+                                      );
+                                      return;
+                                    }
                                     if (step < 2) {
                                       _pageController.nextPage(
                                         duration: const Duration(milliseconds: 300),
@@ -176,6 +226,19 @@ class _OnboardingReviewScreenState extends State<OnboardingReviewScreen> {
                   ),
                 ],
               );
+            }
+
+            if (state is OnboardingReviewSuccess) {
+              // A navegação acontece no listener. Se o guard devolver a leitora
+              // para cá, o estado continua `Success` e o listener não dispara
+              // de novo: sem este retry a tela ficaria girando para sempre.
+              if (!_retriedNavigation) {
+                _retriedNavigation = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (context.mounted) context.go(OnboardingRoutes.welcome);
+                });
+              }
+              return const Center(child: CircularProgressIndicator());
             }
 
             return const SizedBox.shrink();

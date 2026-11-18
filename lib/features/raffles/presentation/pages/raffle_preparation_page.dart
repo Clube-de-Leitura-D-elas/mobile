@@ -7,12 +7,14 @@ import 'package:mobile/features/raffles/presentation/pages/raffle_preparation_sc
 
 class RafflePreparationPage extends StatelessWidget {
   final String meetingId;
+  final String? groupId;
   final String meetingTitle;
   final List<RaffleParticipant>? participants;
 
   const RafflePreparationPage({
     super.key,
-    required this.meetingId,
+    this.meetingId = '',
+    this.groupId,
     this.meetingTitle = '',
     this.participants,
   });
@@ -23,15 +25,18 @@ class RafflePreparationPage extends StatelessWidget {
       create: (context) {
         final cubit = serviceLocator<RafflePreparationCubit>();
         final known = participants;
+        final isInaugural =
+            meetingId.isEmpty && groupId != null && groupId!.isNotEmpty;
         if (known != null) {
-          cubit.setParticipants(known);
+          cubit.setParticipants(known, isInaugural: isInaugural);
         } else {
-          cubit.loadEligibleParticipants(meetingId);
+          cubit.loadEligibleParticipants(meetingId, groupId);
         }
         return cubit;
       },
       child: RafflePreparationScreen(
         meetingId: meetingId,
+        groupId: groupId,
         meetingTitle: meetingTitle,
       ),
     );

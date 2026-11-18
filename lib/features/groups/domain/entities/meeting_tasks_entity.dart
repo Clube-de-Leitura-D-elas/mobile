@@ -33,6 +33,8 @@ class MeetingTasksEntity extends Equatable {
     required this.canManageTasks,
     required this.canConclude,
     this.canRaffle = false,
+    this.isHost = true,
+    this.isCoordinator = false,
     required this.schedule,
     required this.record,
     this.bookTitle,
@@ -50,6 +52,13 @@ class MeetingTasksEntity extends Equatable {
   /// Encerrado e sem sorteio gravado: a anfitriã ou a coordenação ainda
   /// pode (re)abrir o sorteio.
   final bool canRaffle;
+
+  /// Quem acessa é a anfitriã deste encontro. Ausente no JSON antigo: o
+  /// banner continua o texto de anfitriã.
+  final bool isHost;
+
+  /// Quem acessa é coordenadora do grupo, tenha ou não o outro papel.
+  final bool isCoordinator;
   final MeetingScheduleTask schedule;
   final MeetingRecordTask record;
 
@@ -77,6 +86,8 @@ class MeetingTasksEntity extends Equatable {
     canManageTasks,
     canConclude,
     canRaffle,
+    isHost,
+    isCoordinator,
     schedule,
     record,
     bookTitle,

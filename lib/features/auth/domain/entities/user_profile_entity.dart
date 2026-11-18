@@ -14,6 +14,10 @@ class UserProfileEntity extends Equatable {
   final bool isActive;
   final DateTime? createdAt;
   final String? photoUrl;
+  final String? cityId;
+  final String cityName;
+  final String? zoneId;
+  final String zoneName;
 
   const UserProfileEntity({
     required this.id,
@@ -29,9 +33,19 @@ class UserProfileEntity extends Equatable {
     required this.isActive,
     this.createdAt,
     this.photoUrl,
+    this.cityId,
+    this.cityName = '',
+    this.zoneId,
+    this.zoneName = '',
   });
 
-  UserProfileEntity copyWith({String? photoUrl}) {
+  UserProfileEntity copyWith({
+    String? photoUrl,
+    String? cityId,
+    String? cityName,
+    String? zoneId,
+    String? zoneName,
+  }) {
     return UserProfileEntity(
       id: id,
       name: name,
@@ -46,6 +60,10 @@ class UserProfileEntity extends Equatable {
       isActive: isActive,
       createdAt: createdAt,
       photoUrl: photoUrl ?? this.photoUrl,
+      cityId: cityId ?? this.cityId,
+      cityName: cityName ?? this.cityName,
+      zoneId: zoneId ?? this.zoneId,
+      zoneName: zoneName ?? this.zoneName,
     );
   }
 
@@ -64,5 +82,9 @@ class UserProfileEntity extends Equatable {
     isActive,
     createdAt,
     photoUrl,
+    cityId,
+    cityName,
+    zoneId,
+    zoneName,
   ];
 }

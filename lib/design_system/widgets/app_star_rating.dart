@@ -52,6 +52,9 @@ class AppStarRating extends StatelessWidget {
   /// Creates five tappable stars for collecting an integer rating (1–5).
   ///
   /// Pass `onChanged: null` to disable interaction.
+  ///
+  /// Mede a largura disponível com `LayoutBuilder`, então não funciona dentro
+  /// de `IntrinsicWidth`/`IntrinsicHeight`.
   const AppStarRating.input({
     super.key,
     required int rating,
@@ -205,42 +208,60 @@ class _InputStarRating extends StatelessWidget {
     final colors = AppColorTokens.of(context);
     final filled = widget.filledColor ?? colors.actionPrimary;
     final empty = widget.emptyColor ?? colors.borderStrong;
-    final starSize = widget._inputStarSize;
-    final gap = widget._inputGap;
     final isEnabled = widget.onChanged != null;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(widget.maxStars, (i) {
-        final starValue = i + 1;
-        final isFilled = widget._inputRating >= starValue;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Wrap em vez de Row: se nem 5 alvos de 48dp couberem lado a lado,
+        // as estrelas quebram de linha em vez de encolher o alvo.
+        return Wrap(
+          alignment: WrapAlignment.center,
+          spacing: _fittedGap(
+            maxWidth: constraints.maxWidth,
+            count: widget.maxStars,
+            gap: widget._inputGap,
+          ),
+          children: List.generate(widget.maxStars, (i) {
+            final starValue = i + 1;
+            final isFilled = widget._inputRating >= starValue;
 
-        return Padding(
-          padding: EdgeInsets.only(
-            right: i < widget.maxStars - 1 ? gap : 0,
-          ),
-          child: Semantics(
-            button: true,
-            enabled: isEnabled,
-            selected: isFilled,
-            label: '$starValue de ${widget.maxStars} estrelas',
-            onTap: isEnabled ? () => widget.onChanged!(starValue) : null,
-            child: ExcludeSemantics(
-              child: _StarButton(
-                starValue: starValue,
-                isFilled: isFilled,
-                starSize: starSize,
-                filled: filled,
-                empty: empty,
-                isEnabled: isEnabled,
-                splashColor: colors.surfaceBrandSoft,
-                onTap: isEnabled ? () => widget.onChanged!(starValue) : null,
+            return Semantics(
+              button: true,
+              enabled: isEnabled,
+              selected: isFilled,
+              label: '$starValue de ${widget.maxStars} estrelas',
+              onTap: isEnabled ? () => widget.onChanged!(starValue) : null,
+              child: ExcludeSemantics(
+                child: _StarButton(
+                  starValue: starValue,
+                  isFilled: isFilled,
+                  starSize: widget._inputStarSize,
+                  filled: filled,
+                  empty: empty,
+                  isEnabled: isEnabled,
+                  splashColor: colors.surfaceBrandSoft,
+                  onTap: isEnabled ? () => widget.onChanged!(starValue) : null,
+                ),
               ),
-            ),
-          ),
+            );
+          }),
         );
-      }),
+      },
     );
+  }
+
+  /// Espaço entre as estrelas que ainda deixa as [count] numa linha só em
+  /// [maxWidth], sem passar de [gap].
+  static double _fittedGap({
+    required double maxWidth,
+    required int count,
+    required double gap,
+  }) {
+    final gaps = count - 1;
+    if (!maxWidth.isFinite || gaps <= 0) return gap;
+    final room = (maxWidth - count * _StarButton.minHitSize) / gaps;
+    if (room >= gap) return gap;
+    return room >= 0 ? room : gap;
   }
 }
 
@@ -265,8 +286,8 @@ class _StarButton extends StatelessWidget {
   final Color splashColor;
   final VoidCallback? onTap;
 
-  /// Minimum tap target (48 dp) so the widget is comfortable to tap.
-  static const double _hitSize = 48.0;
+  /// Alvo de toque mínimo (48 dp).
+  static const double minHitSize = 48.0;
 
   @override
   Widget build(BuildContext context) {
@@ -274,14 +295,14 @@ class _StarButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(_hitSize / 2),
+        borderRadius: BorderRadius.circular(minHitSize / 2),
         splashColor: isEnabled ? splashColor : Colors.transparent,
         highlightColor: isEnabled
             ? splashColor.withValues(alpha: 0.35)
             : Colors.transparent,
         child: SizedBox(
-          width: _hitSize,
-          height: _hitSize,
+          width: minHitSize,
+          height: minHitSize,
           child: Center(
             child: Icon(
               isFilled ? Icons.star_rounded : Icons.star_outline_rounded,

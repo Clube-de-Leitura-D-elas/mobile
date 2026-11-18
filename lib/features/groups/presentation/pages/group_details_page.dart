@@ -21,6 +21,8 @@ import 'package:mobile/features/groups/presentation/routes/group_route_paths.dar
 import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
+import 'package:mobile/features/groups/presentation/widgets/pending_raffle_button.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   const GroupDetailsPage({super.key, required this.groupId});
@@ -62,6 +64,27 @@ class GroupDetailsPage extends StatelessWidget {
                 groupName: context.l10n.groupNameLabel(group.name),
               ),
             ),
+            raffleAction: group.pendingRaffle != null
+                ? PendingRaffleButton(
+                    pendingRaffle: group.pendingRaffle!,
+                    onPressed: () async {
+                      await context.push(
+                        RaffleRoutes.preparation,
+                        extra: {
+                          'group_id': group.pendingRaffle!.groupId,
+                          if (group.pendingRaffle!.meetingId != null)
+                            'meeting_id': group.pendingRaffle!.meetingId,
+                        },
+                      );
+                      if (context.mounted) {
+                        await Future.wait([
+                          context.read<GroupDetailsCubit>().refresh(),
+                          context.read<NextEventCubit>().load(groupId),
+                        ]);
+                      }
+                    },
+                  )
+                : null,
             nextEvent: BlocBuilder<NextEventCubit, NextEventState>(
               builder: (context, nextEventState) {
                 final meetingId = nextEventState is NextEventLoaded
@@ -132,6 +155,7 @@ class GroupDetailsPage extends StatelessWidget {
   GroupNextEventStatus _toWidgetStatus(NextEventState state) {
     return switch (state) {
       NextEventLoading() => GroupNextEventStatus.loading,
+      NextEventInPreparation() => GroupNextEventStatus.inPreparation,
       NextEventEmpty() => GroupNextEventStatus.empty,
       NextEventLoaded() => GroupNextEventStatus.loaded,
       NextEventError() => GroupNextEventStatus.error,

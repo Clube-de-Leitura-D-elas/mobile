@@ -270,6 +270,14 @@ void main() {
         ),
         const RaffleMeetingNotEndedFailure(),
       ),
+      '409 meeting already open': (
+        remote(
+          SupabaseFailureKind.conflict,
+          code: '409',
+          message: 'group already has an open meeting',
+        ),
+        const RaffleOpenMeetingAlreadyExistsFailure(),
+      ),
       '409 book already drawn': (
         remote(
           SupabaseFailureKind.conflict,

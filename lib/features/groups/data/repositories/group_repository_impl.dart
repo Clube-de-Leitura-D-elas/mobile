@@ -25,7 +25,7 @@ import 'package:mobile/features/groups/domain/entities/meeting_invitation_status
 import 'package:mobile/features/groups/domain/entities/meeting_photo_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_photos_entity.dart';
 import 'package:mobile/features/groups/domain/entities/meeting_tasks_entity.dart';
-import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
 import 'package:mobile/features/groups/domain/entities/place_suggestion_entity.dart';
 import 'package:mobile/features/groups/domain/repository/group_repository.dart';
 
@@ -133,13 +133,14 @@ class GroupRepositoryImpl implements GroupRepository {
   }
 
   @override
-  Future<Result<NextEventEntity?, GroupFailure>> getNextEvent(
+  Future<Result<NextEventResult, GroupFailure>> getNextEvent(
     String groupId,
   ) async {
-    final result = await supabaseService.invokeFunction<NextEventModel?>(
+    final result =
+        await supabaseService.invokeFunction<NextEventResponseModel>(
       functionName:
           'get-group-next-event?group_id=${Uri.encodeQueryComponent(groupId)}',
-      decoder: NextEventModel.fromEnvelope,
+      decoder: NextEventResponseModel.fromJson,
     );
 
     switch (result) {
@@ -148,7 +149,11 @@ class GroupRepositoryImpl implements GroupRepository {
           groupFailureFrom(failure, const GroupNextEventFailure()),
         );
       case Success(:final data):
-        return Success(data.data?.toDomain());
+        final response = data.data;
+        if (response == null) {
+          return const Failure(GroupNextEventFailure());
+        }
+        return Success(response.toDomain());
     }
   }
 

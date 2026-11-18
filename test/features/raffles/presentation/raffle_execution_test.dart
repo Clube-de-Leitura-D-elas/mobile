@@ -43,7 +43,8 @@ class MockRaffleExecutionCubit extends Cubit<RaffleExecutionState>
 
   @override
   Future<void> load(
-    String meetingId, {
+    String? meetingId, {
+    String? groupId,
     String? meetingTitle,
     List<RaffleParticipant>? participants,
   }) async {}

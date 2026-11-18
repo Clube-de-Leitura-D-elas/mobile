@@ -16,6 +16,15 @@ platform :ios do
       app_identifier: "com.clubedeleituradelas.app"
     )
 
+    # Configura assinatura manual no projeto Xcode para o archive usar o perfil da App Store
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Runner.xcodeproj",
+      targets: ["Runner"],
+      code_sign_identity: "Apple Distribution",
+      profile_name: ENV["SIGH_NAME"] || "Clube de Leitura Delas AppStore"
+    )
+
     # Gera o IPA pronto para distribuição
     build_app(
       workspace: "Runner.xcworkspace",

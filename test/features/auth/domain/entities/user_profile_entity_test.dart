@@ -48,6 +48,20 @@ void main() {
     test('keeps the current photo when none is given', () {
       expect(profile.copyWith(), profile);
     });
+
+    test('replaces city and zone', () {
+      final updated = profile.copyWith(
+        cityId: 'city-1',
+        cityName: 'Porto Alegre',
+        zoneId: 'zone-1',
+        zoneName: 'Zona Sul',
+      );
+
+      expect(updated.cityId, 'city-1');
+      expect(updated.cityName, 'Porto Alegre');
+      expect(updated.zoneId, 'zone-1');
+      expect(updated.zoneName, 'Zona Sul');
+    });
   });
 
   test('profiles with different photos are not equal', () {

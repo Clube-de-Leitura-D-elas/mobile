@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/books/presentation/widgets/book_review_comment.dart';
 import 'package:mobile/features/groups/presentation/widgets/app_participant_avatar.dart';
 
 /// Avaliação na tela de detalhes: avatar, nome, nota e comentário.
@@ -56,10 +57,7 @@ class BookReviewTile extends StatelessWidget {
         ),
         if (comment.isNotEmpty) ...[
           SizedBox(height: spacing.s8),
-          Text(
-            comment,
-            style: typography.bodySmall.copyWith(color: colors.textDefault),
-          ),
+          BookReviewComment(comment),
         ],
       ],
     );

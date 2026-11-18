@@ -63,6 +63,10 @@ void main() {
     jobPosition: 'Dev',
     userId: 'user-1',
     isActive: true,
+    cityId: 'city-1',
+    cityName: 'Porto Alegre',
+    zoneId: 'zone-1',
+    zoneName: 'Zona Sul',
   );
 
   setUp(() {

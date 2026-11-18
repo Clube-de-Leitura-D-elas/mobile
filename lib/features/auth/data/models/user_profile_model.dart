@@ -15,6 +15,9 @@ class UserProfileModel {
   }
 
   static UserProfileEntity fromMap(Map<String, dynamic> map) {
+    final city = map['city'] as Map<String, dynamic>?;
+    final zone = map['zone'] as Map<String, dynamic>?;
+
     return UserProfileEntity(
       id: map['id'] as String? ?? '',
       name: map['name'] as String? ?? '',
@@ -29,6 +32,10 @@ class UserProfileModel {
       isActive: map['is_Active'] as bool? ?? map['is_active'] as bool? ?? true,
       createdAt: DateTime.tryParse(map['created_at'] as String? ?? ''),
       photoUrl: map['photo_url'] as String?,
+      cityId: map['city_id'] as String? ?? city?['id'] as String?,
+      cityName: city?['name'] as String? ?? '',
+      zoneId: map['zone_id'] as String? ?? zone?['id'] as String?,
+      zoneName: zone?['name'] as String? ?? '',
     );
   }
 }

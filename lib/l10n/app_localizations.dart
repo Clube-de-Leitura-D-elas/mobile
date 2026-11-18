@@ -806,6 +806,36 @@ abstract class AppLocalizations {
   /// **'Região'**
   String get onboardingRegionLabel;
 
+  /// Dica de seleção de região
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma região'**
+  String get onboardingRegionHint;
+
+  /// Dica exibida quando a cidade selecionada não tem zonas cadastradas
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta cidade ainda não tem regiões cadastradas'**
+  String get onboardingNoZonesHint;
+
+  /// Aviso de validação quando cidade ou região não foram escolhidas
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione a cidade e a região para continuar.'**
+  String get onboardingLocationRequired;
+
+  /// Opção afirmativa dos selects do onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get onboardingYes;
+
+  /// Opção negativa dos selects do onboarding
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get onboardingNo;
+
   /// Rótulo profissão
   ///
   /// In pt, this message translates to:
@@ -889,6 +919,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Pronta para o próximo capítulo?'**
   String get onboardingWelcomeButton;
+
+  /// Aviso quando o refresh do perfil falha na tela final
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível concluir o cadastro. Tente novamente.'**
+  String get onboardingFinishError;
 
   /// Dica genérica de seleção em dropdown
   ///
@@ -1424,6 +1460,42 @@ abstract class AppLocalizations {
   /// **'Sorteio registrado com sucesso! Nova anfitriã definida.'**
   String get raffleSavedSuccessToast;
 
+  /// Título da tela de sorteio inaugural do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio Inaugural'**
+  String get raffleInauguralTitle;
+
+  /// Subtítulo da tela de preparação do sorteio inaugural
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.'**
+  String get raffleInauguralSubtitle;
+
+  /// Texto informando que há um encontro em preparação pela anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro em preparação'**
+  String get raffleMeetingInPreparation;
+
+  /// Ação no card de tarefas para o sorteio inaugural
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar sorteio inaugural'**
+  String get homePendingTasksRaffleInaugural;
+
+  /// Ação no card de tarefas para sorteio pendente
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar sorteio pendente'**
+  String get homePendingTasksRafflePending;
+
+  /// Erro quando tenta realizar sorteio mas o grupo já tem encontro aberto
+  ///
+  /// In pt, this message translates to:
+  /// **'O grupo já possui um encontro em andamento.'**
+  String get raffleOpenMeetingAlreadyExistsError;
+
   /// Descrição de acessibilidade do contador de tarefas da anfitriã no card do grupo
   ///
   /// In pt, this message translates to:
@@ -1442,11 +1514,17 @@ abstract class AppLocalizations {
   /// **'Encontro inválido.'**
   String get meetingTasksInvalidMeeting;
 
-  /// Sobretítulo do banner antes de o encontro ser publicado
+  /// Sobretítulo do banner antes de o encontro ser publicado, para a anfitriã
   ///
   /// In pt, this message translates to:
   /// **'VOCÊ FOI SORTEADA'**
   String get meetingTasksDrawnLabel;
+
+  /// Sobretítulo do banner quando quem abre as tarefas é coordenadora e não é a anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'VOCÊ É COORDENADORA DESTE GRUPO'**
+  String get meetingTasksCoordinatorLabel;
 
   /// Título do banner quando o livro do encontro não é conhecido
   ///
@@ -1933,6 +2011,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Digite sua resposta'**
   String get bookReviewCommentHint;
+
+  /// Expande um comentário de avaliação longo na tela do livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver mais'**
+  String get bookReviewCommentShowMore;
+
+  /// Recolhe um comentário de avaliação expandido na tela do livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver menos'**
+  String get bookReviewCommentShowLess;
+
+  /// Nome na avaliação da própria leitora quando o perfil não está disponível
+  ///
+  /// In pt, this message translates to:
+  /// **'Você'**
+  String get bookDetailMyReviewFallbackName;
 
   /// Botão para cancelar a avaliação.
   ///
