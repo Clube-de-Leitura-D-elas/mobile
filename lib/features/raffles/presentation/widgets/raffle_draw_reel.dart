@@ -79,7 +79,7 @@ class _RaffleDrawReelState extends State<RaffleDrawReel>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _precacheCovers();
-      if (MediaQuery.disableAnimationsOf(context)) {
+      if (_prefersReducedMotion(context)) {
         setState(() => _motionless = true);
         _revealWithoutMotion();
       } else {
@@ -87,6 +87,12 @@ class _RaffleDrawReelState extends State<RaffleDrawReel>
       }
     });
   }
+
+  /// No iOS, "Reduzir movimento" chega só em `reduceMotion`, sem ligar
+  /// `disableAnimations`.
+  static bool _prefersReducedMotion(BuildContext context) =>
+      MediaQuery.disableAnimationsOf(context) ||
+      View.of(context).platformDispatcher.accessibilityFeatures.reduceMotion;
 
   @override
   void didChangeDependencies() {

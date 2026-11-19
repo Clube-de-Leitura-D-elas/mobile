@@ -206,4 +206,42 @@ void main() {
     expect(find.byType(RaffleBookCover), findsNWidgets(3));
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('keeps swapping cards while the server has not answered', (
+    tester,
+  ) async {
+    await tester.pumpWidget(build(onRevealed: () {}));
+    await tester.pump();
+
+    final seen = <String>{};
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 70));
+      seen.addAll(
+        tester
+            .widgetList<Text>(find.textContaining('indicado por'))
+            .map((text) => text.data!),
+      );
+    }
+
+    expect(seen.length, greaterThan(1));
+  });
+
+  testWidgets('honours the iOS reduce motion setting', (tester) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(reduceMotion: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+
+    var revealed = 0;
+    await tester.pumpWidget(build(onRevealed: () => revealed++));
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    await tester.pumpWidget(
+      build(winnerId: 'p2', onRevealed: () => revealed++),
+    );
+    await tester.pump();
+
+    expect(revealed, 1);
+    expect(find.text('Torto Arado'), findsOneWidget);
+  });
 }

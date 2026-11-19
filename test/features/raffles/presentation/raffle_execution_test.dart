@@ -3,6 +3,7 @@ import 'package:cupertino_ui/cupertino_ui.dart'
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart'
     show GlobalWidgetsLocalizations;
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/features/raffles/domain/entities/raffle_failure.dart';
@@ -496,5 +497,48 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.tap(find.text('Sortear livro'));
     expect(cubit.drawCalled, isTrue);
+  });
+
+  testWidgets('nao vibra nem clica durante a saida da roleta apos falha', (
+    tester,
+  ) async {
+    final feedback = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        if (call.method == 'HapticFeedback.vibrate' ||
+            call.method == 'SystemSound.play') {
+          feedback.add(call.method);
+        }
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+
+    const ready = RaffleExecutionReady(
+      meetingId: tMeetingId,
+      meetingTitle: tMeetingTitle,
+      eligibleParticipants: tParticipants,
+    );
+    final cubit = MockRaffleExecutionCubit(ready);
+    await tester.pumpWidget(buildWidget(cubit));
+    cubit.push(ready.copyWith(isDrawing: true));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(feedback, isNotEmpty);
+
+    cubit.emitError();
+    await tester.pump();
+    feedback.clear();
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+
+    expect(feedback, isEmpty);
   });
 }

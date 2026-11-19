@@ -168,7 +168,13 @@ Widget _outgoingInert(Widget? current, List<Widget> previous) {
     alignment: Alignment.center,
     children: [
       for (final child in previous)
-        IgnorePointer(child: TickerMode(enabled: false, child: child)),
+        IgnorePointer(
+          child: ExcludeFocus(
+            child: ExcludeSemantics(
+              child: TickerMode(enabled: false, child: child),
+            ),
+          ),
+        ),
       ?current,
     ],
   );

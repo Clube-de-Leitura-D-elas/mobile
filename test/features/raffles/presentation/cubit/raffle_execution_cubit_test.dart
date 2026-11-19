@@ -312,6 +312,27 @@ void main() {
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'ignora segundo toque em sortear enquanto o primeiro ainda roda',
+      build: () => RaffleExecutionCubit(repository: mockRepository),
+      seed: () => const RaffleExecutionReady(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        eligibleParticipants: [tParticipant, tParticipant2],
+        isDrawing: true,
+      ),
+      act: (cubit) => cubit.draw(),
+      expect: () => const <RaffleExecutionState>[],
+      verify: (_) {
+        verifyNever(
+          () => mockRepository.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        );
+      },
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
       'ignora novo sorteio enquanto o anterior ainda esta em andamento',
       build: () => RaffleExecutionCubit(repository: mockRepository),
       seed: () => const RaffleExecutionResultLoaded(
