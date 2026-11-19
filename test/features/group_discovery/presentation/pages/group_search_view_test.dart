@@ -277,8 +277,8 @@ void main() {
       expect(inCard(1, find.text('Solicitar entrada')), findsOneWidget);
     });
 
-    testWidgets('card buttons use the compact height and confirmation buttons '
-        'have a 48 touch target', (
+    testWidgets('card buttons keep the compact visual height with a 48 touch '
+        'target, and confirmation buttons are 48 tall', (
       tester,
     ) async {
       stubSearch(
@@ -292,10 +292,13 @@ void main() {
       await tester.pumpAndSettle();
 
       for (final label in ['Solicitar entrada', 'Pedir novamente']) {
-        final height = tester
-            .getSize(find.widgetWithText(AppButton, label))
-            .height;
-        expect(height, 32);
+        final button = find.widgetWithText(AppButton, label);
+        final visual = find.descendant(
+          of: button,
+          matching: find.byType(Material),
+        );
+        expect(tester.getSize(visual).height, 32);
+        expect(tester.getSize(button).height, greaterThanOrEqualTo(48));
       }
 
       await tester.tap(find.text('Solicitar entrada'));

@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/design_system/design_system.dart';
 
+Finder visualOf(Finder button) => find.descendant(of: button, matching: find.byType(Material));
+
 void main() {
   group('AppButton', () {
     testWidgets('Primary button renders label and triggers onPressed callback via InkWell', (tester) async {
@@ -67,7 +69,8 @@ void main() {
         ),
       );
 
-      expect(tester.getSize(find.widgetWithText(AppButton, 'Sm')).height, 32.0);
+      expect(tester.getSize(visualOf(find.widgetWithText(AppButton, 'Sm'))).height, 32.0);
+      expect(tester.getSize(find.widgetWithText(AppButton, 'Sm')).height, 48.0);
       expect(tester.getSize(find.widgetWithText(AppButton, 'Md')).height, 40.0);
       expect(tester.getSize(find.widgetWithText(AppButton, 'Lg')).height, 56.0);
     });
@@ -281,7 +284,7 @@ void main() {
         );
 
         await pump(AppButtonSize.sm);
-        expect(tester.getSize(find.byType(AppButton)).height, 32.0);
+        expect(tester.getSize(visualOf(find.byType(AppButton))).height, 32.0);
 
         await pump(AppButtonSize.md);
         expect(tester.getSize(find.byType(AppButton)), const Size(64.0 + 2 * 32, 40));
@@ -358,9 +361,12 @@ void main() {
 
       // 'Confirmar' (144) quebra em mais linhas com o padding de 32 do que com
       // o de 16 num botão de 100: a altura denuncia qual padding foi usado.
-      for (final tight in [true, false]) {
-        testWidgets('dry layout, baseline e altura intrínseca batem com o layout real (largura ${tight ? 'imposta' : 'frouxa'})', (tester) async {
-          final button = AppButton.primary(label: 'Confirmar', onPressed: () {});
+      for (final (size, tight) in [
+        for (final size in [AppButtonSize.md, AppButtonSize.sm])
+          for (final tight in [true, false]) (size, tight),
+      ]) {
+        testWidgets('dry layout, baseline e altura intrínseca batem com o layout real (${size.name}, largura ${tight ? 'imposta' : 'frouxa'})', (tester) async {
+          final button = AppButton.primary(label: 'Confirmar', size: size, onPressed: () {});
           await tester.pumpWidget(
             MaterialApp(
               theme: AppTheme.light,
@@ -389,6 +395,137 @@ void main() {
           expect(box.getMaxIntrinsicHeight(100), greaterThanOrEqualTo(box.size.height));
         });
       }
+    });
+
+    group('alvo de toque do sm', () {
+      Future<void> pumpSm(
+        WidgetTester tester, {
+        VoidCallback? onPressed,
+        bool isLoading = false,
+      }) {
+        return tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: Center(
+                child: AppButton.primary(
+                  label: 'Entrar',
+                  size: AppButtonSize.sm,
+                  isLoading: isLoading,
+                  onPressed: onPressed,
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+
+      Offset topPaddingOf(WidgetTester tester) {
+        final rect = tester.getRect(find.byType(AppButton));
+        return Offset(rect.center.dx, rect.top + 2);
+      }
+
+      testWidgets('mantém a altura visual de 32 com área de toque de pelo menos 48x48', (tester) async {
+        final handle = tester.ensureSemantics();
+        await pumpSm(tester, onPressed: () {});
+
+        expect(tester.getSize(visualOf(find.byType(AppButton))).height, 32.0);
+        final touchArea = tester.getSize(find.byType(AppButton));
+        expect(touchArea.height, greaterThanOrEqualTo(48.0));
+        expect(touchArea.width, greaterThanOrEqualTo(48.0));
+        await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+        await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
+        handle.dispose();
+      });
+
+      testWidgets('toque no padding em volta do botão visível dispara o onPressed', (tester) async {
+        var pressed = 0;
+        await pumpSm(tester, onPressed: () => pressed++);
+
+        final position = topPaddingOf(tester);
+        expect(tester.getRect(visualOf(find.byType(AppButton))).contains(position), isFalse);
+
+        await tester.tapAt(position);
+        expect(pressed, 1);
+      });
+
+      testWidgets('toque fora da área de toque não dispara o onPressed', (tester) async {
+        var pressed = 0;
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: Align(
+                alignment: Alignment.topLeft,
+                child: Row(
+                  children: [
+                    AppButton.primary(label: 'Entrar', size: AppButtonSize.sm, onPressed: () => pressed++),
+                    const SizedBox(width: 200, height: 48),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final rect = tester.getRect(find.byType(AppButton));
+        await tester.tapAt(Offset(rect.right + 100, rect.center.dy));
+        await tester.tapAt(Offset(rect.center.dx, rect.bottom + 4));
+        expect(pressed, 0);
+      });
+
+      testWidgets('carregando não responde no padding', (tester) async {
+        var pressed = 0;
+        await pumpSm(tester, onPressed: () => pressed++);
+        await tester.tapAt(topPaddingOf(tester));
+        expect(pressed, 1);
+
+        await pumpSm(tester, onPressed: () => pressed++, isLoading: true);
+        await tester.tapAt(topPaddingOf(tester));
+        expect(pressed, 1);
+      });
+
+      testWidgets('a área de toque é um único nó de semântica, do tamanho dela', (tester) async {
+        final handle = tester.ensureSemantics();
+        await pumpSm(tester, onPressed: () {});
+
+        final node = tester.getSemantics(find.byType(AppButton));
+        expect(tester.getSemantics(find.byType(InkWell)).id, node.id);
+        expect(node.rect.height, greaterThanOrEqualTo(48.0));
+        expect(
+          node,
+          matchesSemantics(
+            isButton: true,
+            hasEnabledState: true,
+            isEnabled: true,
+            hasTapAction: true,
+            isFocusable: true,
+            hasFocusAction: true,
+          ),
+        );
+        handle.dispose();
+      });
+
+      testWidgets('md e lg não ganham padding de toque', (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: Column(
+                children: [
+                  AppButton.primary(label: 'Md', onPressed: () {}),
+                  AppButton.primary(label: 'Lg', size: AppButtonSize.lg, onPressed: () {}),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        for (final label in ['Md', 'Lg']) {
+          final button = find.widgetWithText(AppButton, label);
+          expect(tester.getSize(button), tester.getSize(visualOf(button)));
+        }
+      });
     });
   });
 }

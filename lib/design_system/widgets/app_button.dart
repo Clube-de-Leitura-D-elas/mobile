@@ -19,6 +19,7 @@ enum AppButtonSize { sm, md, lg }
 /// Implements Primary, Secondary, Ghost, and Danger variants in Sm (32px),
 /// Md (40px), and Lg (56px) sizes, with pill border radius (999px) and
 /// native Material [InkWell] ripple splash on press (without hover state).
+/// Sm keeps a 48x48 touch target around the 32px visible button.
 class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
@@ -97,6 +98,7 @@ class AppButton extends StatelessWidget {
   }
 
   static const double _borderWidth = 1.0;
+  static const double _minTapTargetSize = 48.0;
 
   EdgeInsets _tightWidthPadding(double horizontal) {
     if (_padding.left <= horizontal) {
@@ -194,42 +196,51 @@ class AppButton extends StatelessWidget {
 
     // Altura mínima, não fixa: com fonte grande ou label longo o botão cresce
     // em vez de cortar a segunda linha do texto.
-    return Container(
+    final Widget button = Container(
       constraints: BoxConstraints(minHeight: _height),
       decoration: BoxDecoration(borderRadius: borderRadius, border: border),
       child: Material(
         color: backgroundColor,
         borderRadius: borderRadius,
         clipBehavior: Clip.antiAlias,
-        child: Semantics(
-          button: true,
-          enabled: _isEnabled,
-          label: label,
-          child: InkWell(
-            borderRadius: borderRadius,
-            splashColor: splashColor,
-            highlightColor: splashColor.withValues(alpha: 0.1),
-            onTap: _isEnabled ? onPressed : null,
-            child: _ButtonPadding(
-              padding: _withoutBorder(_padding, border),
-              tightWidthPadding: _withoutBorder(
-                _tightWidthPadding(context.spacing.s16),
-                border,
-              ),
-              child: DefaultTextStyle(
-                style: textStyle.copyWith(color: foregroundColor),
-                child: IconTheme(
-                  data: IconThemeData(
-                    color: foregroundColor,
-                    size: textStyle.fontSize,
-                  ),
-                  child: _buildChild(context, foregroundColor),
+        child: InkWell(
+          borderRadius: borderRadius,
+          splashColor: splashColor,
+          highlightColor: splashColor.withValues(alpha: 0.1),
+          onTap: _isEnabled ? onPressed : null,
+          child: _ButtonPadding(
+            padding: _withoutBorder(_padding, border),
+            tightWidthPadding: _withoutBorder(
+              _tightWidthPadding(context.spacing.s16),
+              border,
+            ),
+            child: DefaultTextStyle(
+              style: textStyle.copyWith(color: foregroundColor),
+              child: IconTheme(
+                data: IconThemeData(
+                  color: foregroundColor,
+                  size: textStyle.fontSize,
                 ),
+                child: _buildChild(context, foregroundColor),
               ),
             ),
           ),
         ),
       ),
+    );
+
+    // O Semantics fica por fora do alvo de toque para o nó acessível ter a
+    // mesma área que responde ao toque.
+    return Semantics(
+      button: true,
+      enabled: _isEnabled,
+      label: label,
+      child: size == AppButtonSize.sm
+          ? _TapTargetPadding(
+              minSize: const Size.square(_minTapTargetSize),
+              child: button,
+            )
+          : button,
     );
   }
 
@@ -415,5 +426,136 @@ class _RenderButtonPadding extends RenderShiftedBox {
     size = constraints.constrain(
       Size(p.horizontal + child.size.width, p.vertical + child.size.height),
     );
+  }
+}
+
+/// Alvo de toque mínimo em volta do botão visível, como o
+/// `MaterialTapTargetSize.padded` do Material: o toque na sobra é repassado ao
+/// centro do botão.
+class _TapTargetPadding extends SingleChildRenderObjectWidget {
+  const _TapTargetPadding({required this.minSize, super.child});
+
+  final Size minSize;
+
+  @override
+  _RenderTapTargetPadding createRenderObject(BuildContext context) {
+    return _RenderTapTargetPadding(minSize);
+  }
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderTapTargetPadding renderObject,
+  ) {
+    renderObject.minSize = minSize;
+  }
+}
+
+class _RenderTapTargetPadding extends RenderShiftedBox {
+  _RenderTapTargetPadding(this._minSize) : super(null);
+
+  Size _minSize;
+  Size get minSize => _minSize;
+  set minSize(Size value) {
+    if (_minSize == value) {
+      return;
+    }
+    _minSize = value;
+    markNeedsLayout();
+  }
+
+  @override
+  double computeMinIntrinsicWidth(double height) {
+    final childWidth = child?.getMinIntrinsicWidth(height) ?? 0;
+    return math.max(childWidth, _minSize.width);
+  }
+
+  @override
+  double computeMaxIntrinsicWidth(double height) {
+    final childWidth = child?.getMaxIntrinsicWidth(height) ?? 0;
+    return math.max(childWidth, _minSize.width);
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) {
+    final childHeight = child?.getMinIntrinsicHeight(width) ?? 0;
+    return math.max(childHeight, _minSize.height);
+  }
+
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    final childHeight = child?.getMaxIntrinsicHeight(width) ?? 0;
+    return math.max(childHeight, _minSize.height);
+  }
+
+  Size _sizeFor(BoxConstraints constraints, Size childSize) {
+    return constraints.constrain(
+      Size(
+        math.max(childSize.width, _minSize.width),
+        math.max(childSize.height, _minSize.height),
+      ),
+    );
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final childSize = child?.getDryLayout(constraints) ?? Size.zero;
+    return _sizeFor(constraints, childSize);
+  }
+
+  @override
+  double? computeDryBaseline(
+    BoxConstraints constraints,
+    TextBaseline baseline,
+  ) {
+    final child = this.child;
+    final childBaseline = child?.getDryBaseline(constraints, baseline);
+    if (child == null || childBaseline == null) {
+      return null;
+    }
+    final childSize = child.getDryLayout(constraints);
+    final offset = Alignment.center.alongOffset(
+      _sizeFor(constraints, childSize) - childSize as Offset,
+    );
+    return childBaseline + offset.dy;
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = _sizeFor(constraints, Size.zero);
+      return;
+    }
+    child.layout(constraints, parentUsesSize: true);
+    size = _sizeFor(constraints, child.size);
+    (child.parentData! as BoxParentData).offset = Alignment.center.alongOffset(
+      size - child.size as Offset,
+    );
+  }
+
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    if (super.hitTest(result, position: position)) {
+      return true;
+    }
+    final child = this.child;
+    // Hoje o Semantics em volta já barra toques fora; sem esta checagem, se ele
+    // sair daqui, Row e Stack desviariam para o botão toques fora dele.
+    if (child == null || !size.contains(position)) {
+      return false;
+    }
+    final center = child.size.center(Offset.zero);
+    return result.addWithRawTransform(
+      transform: MatrixUtils.forceToPoint(center),
+      position: center,
+      hitTest: (result, position) => child.hitTest(result, position: center),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<Size>('minSize', _minSize));
   }
 }
