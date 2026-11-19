@@ -29,30 +29,20 @@ class GroupIdentity extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Text(
-                name,
-                key: const ValueKey('group-name'),
-                style: text.headingH2.copyWith(color: colors.textDefault),
-              ),
-            ),
-            SizedBox(width: spacing.s8),
-            Expanded(
-              child: Wrap(
-                key: const ValueKey('group-genres'),
-                alignment: WrapAlignment.end,
-                spacing: spacing.s8,
-                runSpacing: spacing.s8,
-                children: [
-                  for (final genre in genres) AppTag(label: genre),
-                ],
-              ),
-            ),
-          ],
+        Text(
+          name,
+          key: const ValueKey('group-name'),
+          style: text.headingH2.copyWith(color: colors.textDefault),
         ),
+        if (genres.isNotEmpty) ...[
+          SizedBox(height: spacing.s8),
+          Wrap(
+            key: const ValueKey('group-genres'),
+            spacing: spacing.s8,
+            runSpacing: spacing.s8,
+            children: [for (final genre in genres) AppTag(label: genre)],
+          ),
+        ],
         SizedBox(height: spacing.s8),
         LayoutBuilder(
           builder: (context, constraints) => Wrap(

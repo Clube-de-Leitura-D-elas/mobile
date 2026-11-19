@@ -1388,11 +1388,29 @@ abstract class AppLocalizations {
   /// **'Sorteio do Livro - {month}'**
   String raffleBookDrawTitle(String month);
 
-  /// Texto do botão central principal para realizar o sorteio
+  /// Texto do botão principal que inicia o sorteio
   ///
   /// In pt, this message translates to:
-  /// **'SORTEAR'**
+  /// **'Sortear livro'**
   String get raffleDrawButton;
+
+  /// Texto acima da roleta enquanto os livros indicados giram durante o sorteio
+  ///
+  /// In pt, this message translates to:
+  /// **'Embaralhando as indicações…'**
+  String get raffleShufflingLabel;
+
+  /// Texto acima da roleta quando ela para no livro sorteado
+  ///
+  /// In pt, this message translates to:
+  /// **'Temos um livro!'**
+  String get raffleRevealLabel;
+
+  /// Legenda do livro na roleta do sorteio com quem o indicou
+  ///
+  /// In pt, this message translates to:
+  /// **'indicado por {name}'**
+  String raffleReelIndicatedBy(String name);
 
   /// Texto informativo no rodapé sobre a aleatoriedade do sorteio
   ///
