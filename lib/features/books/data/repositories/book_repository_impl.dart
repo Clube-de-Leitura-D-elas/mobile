@@ -12,6 +12,7 @@ import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/rated_book.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -162,24 +163,41 @@ class BookRepositoryImpl implements BookRepository {
   }
 
   @override
-  Future<Result<void, BookFailure>> recommendBook({
+  Future<Result<BookRecommendationOutcome, BookFailure>> recommendBook({
     required String bookId,
     required String groupId,
   }) async {
-    final result = await supabaseService.invokeFunction<void>(
-      functionName: 'recommend-book',
-      body: {'book_id': bookId, 'group_id': groupId},
-    );
+    final result = await supabaseService
+        .invokeFunction<BookRecommendationOutcome>(
+          functionName: 'recommend-book',
+          body: {'book_id': bookId, 'group_id': groupId},
+          decoder: (json) {
+            if (json is Map<String, dynamic> && json['replaced'] == true) {
+              return BookRecommendationOutcome.replaced;
+            }
+            return BookRecommendationOutcome.created;
+          },
+        );
 
     switch (result) {
-      case Success():
-        return const Success(null);
+      case Success(:final data):
+        return Success(data.data ?? BookRecommendationOutcome.created);
       case Failure(:final failure):
         if (failure.kind == SupabaseFailureKind.conflict) {
           return const Failure(BookAlreadyRecommendedFailure());
         }
+        if (failure.kind == SupabaseFailureKind.forbidden &&
+            _isHostNotEligible(failure)) {
+          return const Failure(BookRecommendationHostBlockedFailure());
+        }
         return Failure(_failureFrom(failure, const BookRecommendationFailure()));
     }
+  }
+
+  bool _isHostNotEligible(SupabaseFailure failure) {
+    final details = failure.details;
+    return failure.message == 'host_not_eligible' ||
+        (details is Map && details['error'] == 'host_not_eligible');
   }
 
   @override

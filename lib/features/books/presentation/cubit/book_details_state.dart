@@ -12,6 +12,8 @@ enum RecommendationGroupsStatus { idle, loading, loaded, error }
 enum BookDetailsNotice {
   readingStatusFailed,
   recommendationSucceeded,
+  recommendationReplaced,
+  recommendationHostBlocked,
   reviewSaved,
   recommendationAlreadyExists,
   recommendationFailed,

@@ -3,6 +3,7 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
@@ -179,11 +180,13 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
     if (isClosed) return false;
 
     switch (result) {
-      case Success():
+      case Success(:final data):
         emit(
           state.copyWith(
             isRecommending: false,
-            notice: BookDetailsNotice.recommendationSucceeded,
+            notice: data == BookRecommendationOutcome.replaced
+                ? BookDetailsNotice.recommendationReplaced
+                : BookDetailsNotice.recommendationSucceeded,
             recommendedGroupName: groupName,
             recommendationGroups: _markGroupRecommended(groupId),
           ),
@@ -191,12 +194,17 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
         return true;
       case Failure(:final failure):
         final alreadyRecommended = failure is BookAlreadyRecommendedFailure;
+        final notice = switch (failure) {
+          BookAlreadyRecommendedFailure() =>
+            BookDetailsNotice.recommendationAlreadyExists,
+          BookRecommendationHostBlockedFailure() =>
+            BookDetailsNotice.recommendationHostBlocked,
+          _ => BookDetailsNotice.recommendationFailed,
+        };
         emit(
           state.copyWith(
             isRecommending: false,
-            notice: alreadyRecommended
-                ? BookDetailsNotice.recommendationAlreadyExists
-                : BookDetailsNotice.recommendationFailed,
+            notice: notice,
             recommendationGroups: alreadyRecommended
                 ? _markGroupRecommended(groupId)
                 : state.recommendationGroups,

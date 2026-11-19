@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -10,6 +12,7 @@ import 'package:mobile/features/books/presentation/book_failure_message.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_details_content.dart';
+import 'package:mobile/features/books/presentation/widgets/book_recommendation_blocked_dialog.dart';
 import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
 export 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart'
@@ -106,6 +109,13 @@ class BookDetailsPage extends StatelessWidget {
         if (groupName != null && groupName.isNotEmpty) {
           context.showSuccessToast(l10n.bookRecommendationSuccess(groupName));
         }
+      case BookDetailsNotice.recommendationReplaced:
+        final groupName = state.recommendedGroupName;
+        if (groupName != null && groupName.isNotEmpty) {
+          context.showSuccessToast(l10n.bookRecommendationReplaced(groupName));
+        }
+      case BookDetailsNotice.recommendationHostBlocked:
+        unawaited(BookRecommendationBlockedDialog.show(context));
       case BookDetailsNotice.recommendationAlreadyExists:
         context.showInfoToast(l10n.bookRecommendationAlreadyExists);
       case BookDetailsNotice.recommendationFailed:

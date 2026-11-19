@@ -16,6 +16,7 @@ import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
@@ -385,7 +386,9 @@ void main() {
       );
       when(
         () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
-      ).thenAnswer((_) async => const Success(null));
+      ).thenAnswer(
+        (_) async => const Success(BookRecommendationOutcome.created),
+      );
 
       await pumpPage(tester);
       await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
@@ -396,6 +399,85 @@ void main() {
       expect(find.text('Selecione o grupo'), findsNothing);
       expect(find.text('Livro indicado ao Grupo Aurora'), findsOneWidget);
     });
+
+    testWidgets(
+      'shows update toast and closes dialog when replacing active recommendation',
+      (tester) async {
+        stubDetails(_details());
+        when(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).thenAnswer(
+          (_) async => const Success([
+            BookRecommendationGroup(
+              id: 'g1',
+              number: 1,
+              name: 'Grupo 1',
+              alreadyRecommended: false,
+            ),
+          ]),
+        );
+        when(
+          () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+        ).thenAnswer(
+          (_) async => const Success(BookRecommendationOutcome.replaced),
+        );
+
+        await pumpPage(tester);
+        await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Grupo 1'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Selecione o grupo'), findsNothing);
+        expect(find.text('Indicação atualizada para o Grupo 1'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'opens informative modal and preserves groups dialog when reader is blocked by host rotation',
+      (tester) async {
+        stubDetails(_details());
+        when(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).thenAnswer(
+          (_) async => const Success([
+            BookRecommendationGroup(
+              id: 'g1',
+              number: 1,
+              name: 'Grupo 1',
+              alreadyRecommended: false,
+              canRecommend: false,
+            ),
+          ]),
+        );
+        when(
+          () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+        ).thenAnswer(
+          (_) async => const Failure(BookRecommendationHostBlockedFailure()),
+        );
+
+        await pumpPage(tester);
+        await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Grupo 1'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Indicação indisponível'), findsOneWidget);
+        expect(
+          find.text(
+            'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Entendi'), findsOneWidget);
+
+        await tester.tap(find.text('Entendi'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Indicação indisponível'), findsNothing);
+        expect(find.text('Selecione o grupo'), findsOneWidget);
+      },
+    );
 
     testWidgets('keeps the dialog open when recommendation fails', (
       tester,
@@ -454,7 +536,8 @@ void main() {
             ),
           ]),
         );
-        final pending = Completer<Result<void, BookFailure>>();
+        final pending =
+            Completer<Result<BookRecommendationOutcome, BookFailure>>();
         when(
           () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
         ).thenAnswer((_) => pending.future);
@@ -482,7 +565,7 @@ void main() {
         await tester.pump();
         expect(find.text('Selecione o grupo'), findsOneWidget);
 
-        pending.complete(const Success(null));
+        pending.complete(const Success(BookRecommendationOutcome.created));
         await tester.pumpAndSettle();
 
         expect(find.text('Selecione o grupo'), findsNothing);
@@ -492,7 +575,8 @@ void main() {
 
     testWidgets('indicates directly for a preselected group', (tester) async {
       stubDetails(_details());
-      final pending = Completer<Result<void, BookFailure>>();
+      final pending =
+          Completer<Result<BookRecommendationOutcome, BookFailure>>();
       when(
         () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
       ).thenAnswer((_) => pending.future);
@@ -520,7 +604,7 @@ void main() {
         findsOneWidget,
       );
 
-      pending.complete(const Success(null));
+      pending.complete(const Success(BookRecommendationOutcome.created));
       await tester.pumpAndSettle();
 
       verify(
@@ -529,6 +613,43 @@ void main() {
       expect(find.text('Livro indicado ao Grupo Aurora'), findsOneWidget);
       expect(button(tester, 'Indicar').isLoading, isFalse);
     });
+
+    testWidgets(
+      'opens informative modal when preselected group blocks host',
+      (tester) async {
+        stubDetails(_details());
+        when(
+          () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+        ).thenAnswer(
+          (_) async => const Failure(BookRecommendationHostBlockedFailure()),
+        );
+
+        await pumpPage(
+          tester,
+          recommendationTarget: const BookRecommendationTarget(
+            groupId: 'g1',
+            groupName: 'Grupo Aurora',
+          ),
+        );
+        await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Indicação indisponível'), findsOneWidget);
+        expect(
+          find.text(
+            'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Entendi'), findsOneWidget);
+
+        await tester.tap(find.text('Entendi'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Indicação indisponível'), findsNothing);
+        expect(find.widgetWithText(AppButton, 'Indicar'), findsOneWidget);
+      },
+    );
 
     testWidgets('shows an info toast when the book was already indicated', (
       tester,

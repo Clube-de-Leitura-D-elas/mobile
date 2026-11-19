@@ -10,6 +10,7 @@ void main() {
       'name': 'Grupo 1',
       'photo_url': 'https://example.com/group.jpg',
       'already_recommended': true,
+      'can_recommend': false,
     });
 
     expect(model.id, 'g1');
@@ -17,6 +18,7 @@ void main() {
     expect(model.name, 'Grupo 1');
     expect(model.photoUrl, 'https://example.com/group.jpg');
     expect(model.alreadyRecommended, isTrue);
+    expect(model.canRecommend, isFalse);
     expect(
       model.toDomain(),
       const BookRecommendationGroup(
@@ -25,8 +27,28 @@ void main() {
         name: 'Grupo 1',
         photoUrl: 'https://example.com/group.jpg',
         alreadyRecommended: true,
+        canRecommend: false,
       ),
     );
+  });
+
+  test('defaults canRecommend to true when can_recommend is omitted or null', () {
+    final omitted = BookRecommendationGroupModel.fromJson(const {
+      'group_id': 'g1',
+      'name': 'Grupo Aurora',
+      'photo_url': null,
+      'already_recommended': false,
+    });
+    final explicitNull = BookRecommendationGroupModel.fromJson(const {
+      'group_id': 'g2',
+      'name': 'Grupo Sol',
+      'photo_url': null,
+      'already_recommended': false,
+      'can_recommend': null,
+    });
+
+    expect(omitted.canRecommend, isTrue);
+    expect(explicitNull.canRecommend, isTrue);
   });
 
   test('parses a group list response', () {
@@ -102,6 +124,15 @@ void main() {
         'name': 'Grupo',
         'photo_url': 42,
         'already_recommended': false,
+      }),
+      throwsFormatException,
+    );
+    expect(
+      () => BookRecommendationGroupModel.fromJson(const {
+        'group_id': 'g1',
+        'name': 'Grupo',
+        'already_recommended': false,
+        'can_recommend': 'true',
       }),
       throwsFormatException,
     );

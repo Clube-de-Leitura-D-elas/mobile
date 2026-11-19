@@ -7,6 +7,7 @@ class BookRecommendationGroupModel extends BookRecommendationGroup {
     required super.name,
     super.photoUrl,
     required super.alreadyRecommended,
+    super.canRecommend = true,
   });
 
   factory BookRecommendationGroupModel.fromJson(dynamic json) {
@@ -19,11 +20,13 @@ class BookRecommendationGroupModel extends BookRecommendationGroup {
     final name = json['name'];
     final photoUrl = json['photo_url'];
     final alreadyRecommended = json['already_recommended'];
+    final canRecommend = json['can_recommend'];
     if (id is! String ||
         (number != null && number is! int) ||
         name is! String ||
         (photoUrl != null && photoUrl is! String) ||
-        alreadyRecommended is! bool) {
+        alreadyRecommended is! bool ||
+        (canRecommend != null && canRecommend is! bool)) {
       throw const FormatException('Invalid recommendation group.');
     }
 
@@ -33,6 +36,7 @@ class BookRecommendationGroupModel extends BookRecommendationGroup {
       name: name,
       photoUrl: photoUrl as String?,
       alreadyRecommended: alreadyRecommended,
+      canRecommend: canRecommend as bool? ?? true,
     );
   }
 
@@ -51,5 +55,6 @@ class BookRecommendationGroupModel extends BookRecommendationGroup {
     name: name,
     photoUrl: photoUrl,
     alreadyRecommended: alreadyRecommended,
+    canRecommend: canRecommend,
   );
 }

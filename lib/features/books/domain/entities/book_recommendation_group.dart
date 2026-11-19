@@ -7,6 +7,7 @@ class BookRecommendationGroup extends Equatable {
     required this.name,
     this.photoUrl,
     required this.alreadyRecommended,
+    this.canRecommend = true,
   });
 
   final String id;
@@ -14,17 +15,29 @@ class BookRecommendationGroup extends Equatable {
   final String name;
   final String? photoUrl;
   final bool alreadyRecommended;
+  final bool canRecommend;
 
-  BookRecommendationGroup copyWith({bool? alreadyRecommended}) {
+  BookRecommendationGroup copyWith({
+    bool? alreadyRecommended,
+    bool? canRecommend,
+  }) {
     return BookRecommendationGroup(
       id: id,
       number: number,
       name: name,
       photoUrl: photoUrl,
       alreadyRecommended: alreadyRecommended ?? this.alreadyRecommended,
+      canRecommend: canRecommend ?? this.canRecommend,
     );
   }
 
   @override
-  List<Object?> get props => [id, number, name, photoUrl, alreadyRecommended];
+  List<Object?> get props => [
+    id,
+    number,
+    name,
+    photoUrl,
+    alreadyRecommended,
+    canRecommend,
+  ];
 }

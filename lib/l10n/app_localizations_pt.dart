@@ -1184,6 +1184,21 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String bookRecommendationReplaced(Object groupName) {
+    return 'Indicação atualizada para o $groupName';
+  }
+
+  @override
+  String get bookRecommendationHostBlocked =>
+      'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.';
+
+  @override
+  String get bookRecommendationHostBlockedTitle => 'Indicação indisponível';
+
+  @override
+  String get bookRecommendationHostBlockedAction => 'Entendi';
+
+  @override
   String bookRecommendationSearchTitle(Object groupName) {
     return 'Indicar para $groupName';
   }
@@ -2947,6 +2962,21 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String bookRecommendationSuccess(Object groupName) {
     return 'Livro indicado ao $groupName';
   }
+
+  @override
+  String bookRecommendationReplaced(Object groupName) {
+    return 'Indicação atualizada para o $groupName';
+  }
+
+  @override
+  String get bookRecommendationHostBlocked =>
+      'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.';
+
+  @override
+  String get bookRecommendationHostBlockedTitle => 'Indicação indisponível';
+
+  @override
+  String get bookRecommendationHostBlockedAction => 'Entendi';
 
   @override
   String bookRecommendationSearchTitle(Object groupName) {

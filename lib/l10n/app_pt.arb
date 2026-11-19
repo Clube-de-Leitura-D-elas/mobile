@@ -1578,6 +1578,25 @@
       "groupName": {}
     }
   },
+  "bookRecommendationReplaced": "Indicação atualizada para o {groupName}",
+  "@bookRecommendationReplaced": {
+    "description": "Confirmação da substituição da indicação ativa de livro para o grupo.",
+    "placeholders": {
+      "groupName": {}
+    }
+  },
+  "bookRecommendationHostBlocked": "Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.",
+  "@bookRecommendationHostBlocked": {
+    "description": "Aviso exibido quando uma leitora já sorteada ou anfitriã tenta indicar um livro no grupo."
+  },
+  "bookRecommendationHostBlockedTitle": "Indicação indisponível",
+  "@bookRecommendationHostBlockedTitle": {
+    "description": "Título do modal exibido quando a leitora não pode indicar livro no grupo."
+  },
+  "bookRecommendationHostBlockedAction": "Entendi",
+  "@bookRecommendationHostBlockedAction": {
+    "description": "Botão de confirmação para fechar o modal de indicação indisponível."
+  },
   "bookRecommendationSearchTitle": "Indicar para {groupName}",
   "@bookRecommendationSearchTitle": {
     "description": "Cabeçalho da busca quando a leitora escolhe um livro para indicar a um grupo.",
