@@ -5,6 +5,7 @@ import 'package:mobile/core/supabase/supabase_response.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
+import 'package:mobile/features/notifications/data/datasources/registered_token_store.dart';
 import 'package:mobile/features/notifications/data/models/notifications_page_model.dart';
 import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
@@ -19,17 +20,33 @@ class MockNotificationsRemoteDataSource extends Mock
 
 class FakeNotificationSettings extends Fake implements NotificationSettings {}
 
+class FakeRegisteredTokenStore implements RegisteredTokenStore {
+  String? token;
+
+  @override
+  Future<String?> read() async => token;
+
+  @override
+  Future<void> save(String token) async => this.token = token;
+
+  @override
+  Future<void> clear() async => token = null;
+}
+
 void main() {
   late MockSupabaseService service;
   late MockNotificationsRemoteDataSource remoteDataSource;
+  late FakeRegisteredTokenStore tokenStore;
   late NotificationRepositoryImpl repository;
 
   setUp(() {
     service = MockSupabaseService();
     remoteDataSource = MockNotificationsRemoteDataSource();
+    tokenStore = FakeRegisteredTokenStore();
     repository = NotificationRepositoryImpl(
       supabaseService: service,
       remoteDataSource: remoteDataSource,
+      registeredTokenStore: tokenStore,
     );
   });
 
@@ -352,9 +369,7 @@ void main() {
         when(
           () => remoteDataSource.getDeviceToken(),
         ).thenAnswer((_) async => 'token-b');
-        when(
-          () => remoteDataSource.unregisterDevice('token-a'),
-        ).thenAnswer(
+        when(() => remoteDataSource.unregisterDevice('token-a')).thenAnswer(
           (_) async =>
               const Failure(FunctionSupabaseFailure(message: 'Failed')),
         );
@@ -454,6 +469,70 @@ void main() {
         ).called(1);
       },
     );
+
+    test(
+      'persists the token on register and clears it after unregister',
+      () async {
+        when(
+          () => remoteDataSource.requestPermissions(),
+        ).thenAnswer((_) async => FakeNotificationSettings());
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => 'token-a');
+        when(
+          () => remoteDataSource.registerDevice('token-a'),
+        ).thenAnswer((_) async => const Success(null));
+        when(
+          () => remoteDataSource.unregisterDevice('token-a'),
+        ).thenAnswer((_) async => const Success(null));
+
+        await repository.syncDeviceToken();
+        expect(tokenStore.token, 'token-a');
+
+        await repository.clearDeviceToken();
+        expect(tokenStore.token, isNull);
+      },
+    );
+
+    test(
+      'does not persist the token when the backend refuses to register it',
+      () async {
+        when(
+          () => remoteDataSource.requestPermissions(),
+        ).thenAnswer((_) async => FakeNotificationSettings());
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => 'token-a');
+        when(() => remoteDataSource.registerDevice('token-a')).thenAnswer(
+          (_) async =>
+              const Failure(FunctionSupabaseFailure(message: 'Failed')),
+        );
+
+        await repository.syncDeviceToken();
+
+        expect(tokenStore.token, isNull);
+      },
+    );
+
+    test('unregisters a token persisted by a previous app run', () async {
+      // Simula o app reaberto: nada foi registrado nesta execução e o FCM
+      // ainda não devolve o token (APNs não pronto).
+      tokenStore.token = 'persisted-token';
+      when(
+        () => remoteDataSource.getDeviceToken(),
+      ).thenAnswer((_) async => null);
+      when(
+        () => remoteDataSource.unregisterDevice('persisted-token'),
+      ).thenAnswer((_) async => const Success(null));
+
+      final result = await repository.clearDeviceToken();
+
+      expect(result, const Success<void, NotificationFailure>(null));
+      verify(
+        () => remoteDataSource.unregisterDevice('persisted-token'),
+      ).called(1);
+      expect(tokenStore.token, isNull);
+    });
 
     test('returns FcmTokenSyncFailure when reading the token throws', () async {
       when(

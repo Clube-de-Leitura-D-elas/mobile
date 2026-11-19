@@ -3,6 +3,7 @@ import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
+import 'package:mobile/features/notifications/data/datasources/registered_token_store.dart';
 import 'package:mobile/features/notifications/data/models/notifications_page_model.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
 import 'package:mobile/features/notifications/domain/entities/notifications_page_entity.dart';
@@ -11,18 +12,20 @@ import 'package:mobile/features/notifications/domain/repository/notification_rep
 class NotificationRepositoryImpl implements NotificationRepository {
   NotificationRepositoryImpl({
     required this.supabaseService,
+    required this.registeredTokenStore,
     this.remoteDataSource,
   });
 
   final SupabaseService supabaseService;
   final NotificationsRemoteDataSource? remoteDataSource;
 
-  bool _permissionsRequested = false;
+  /// Último token registrado no backend, guardado em disco. No logout, se o
+  /// FCM não devolver o token atual (ou devolver outro, após uma rotação cujo
+  /// re-sync falhou), é ele que o `unregister-device` também usa; sem isso o
+  /// aparelho continuaria registrado e receberia push da conta que saiu.
+  final RegisteredTokenStore registeredTokenStore;
 
-  /// Último token registrado no backend. No logout, se o FCM não devolver o
-  /// token atual, é ele que o `unregister-device` usa; sem isso o aparelho
-  /// continuaria registrado e receberia push da conta que saiu.
-  String? _registeredToken;
+  bool _permissionsRequested = false;
 
   @override
   Future<Result<NotificationsPageEntity, NotificationFailure>>
@@ -91,7 +94,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       final result = await dataSource.registerDevice(token);
       switch (result) {
         case Success():
-          _registeredToken = token;
+          await registeredTokenStore.save(token);
           return const Success(null);
         case Failure(:final failure):
           return Failure(_failureFrom(failure, const FcmTokenSyncFailure()));
@@ -125,16 +128,15 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     // Desregistra os dois: se o FCM rotacionou o token e o re-sync falhou, o
     // que está no backend é o antigo, e o atual não está lá.
-    final registeredToken = _registeredToken;
+    final registeredToken = await registeredTokenStore.read();
     final tokens = <String>{
       if (currentToken != null && currentToken.isNotEmpty) currentToken,
       if (registeredToken != null && registeredToken.isNotEmpty)
         registeredToken,
     };
 
-    // Sem nenhum token não dá para confirmar que o aparelho saiu do backend
-    // (o token só vive em memória e o do APNs pode não estar pronto), então
-    // não vale `Success`.
+    // Sem nenhum token (o FCM não devolveu e nada foi registrado antes) não dá
+    // para confirmar que o aparelho saiu do backend, então não vale `Success`.
     if (tokens.isEmpty) return const Failure(FcmTokenSyncFailure());
 
     Failure<void, NotificationFailure>? firstFailure;
@@ -143,7 +145,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
         final result = await dataSource.unregisterDevice(token);
         switch (result) {
           case Success():
-            if (token == registeredToken) _registeredToken = null;
+            if (token == registeredToken) await registeredTokenStore.clear();
           case Failure(:final failure):
             firstFailure ??= Failure(
               _failureFrom(failure, const FcmTokenSyncFailure()),
