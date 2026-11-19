@@ -826,6 +826,38 @@ void main() {
   );
 
   testWidgets(
+    'keeps recommend book button enabled and navigates to search even when canRecommendBook is false',
+    (tester) async {
+      await pumpDetails(
+        tester,
+        afterStubs: () {
+          when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+            (_) async => const Success(
+              GroupDetailsEntity(
+                name: '45',
+                genres: ['Ficção'],
+                participantCount: 5,
+                city: 'Porto Alegre',
+                stateCode: 'RS',
+                canRecommendBook: false,
+              ),
+            ),
+          );
+        },
+      );
+
+      final buttonFinder = find.text('Indicar livro');
+      expect(buttonFinder, findsOneWidget);
+
+      await tester.ensureVisible(buttonFinder);
+      await tester.tap(buttonFinder);
+      await tester.pumpAndSettle();
+
+      expect(find.text('busca: Grupo 45'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
     'renders inaugural raffle action button and navigates to preparation route',
     (tester) async {
       final router = await pumpDetails(

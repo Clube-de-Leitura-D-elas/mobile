@@ -13,6 +13,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
     super.pendingRaffle,
     super.hasOpenMeeting,
     super.openMeetingStatus,
+    super.canRecommendBook = true,
   });
 
   factory GroupDetailsModel.fromJson(dynamic json) {
@@ -30,6 +31,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
     final pendingRaffle = PendingRaffleModel.fromJson(json['pending_raffle']);
     final hasOpenMeeting = json['has_open_meeting'] as bool? ?? false;
     final openMeetingStatus = json['open_meeting_status'] as String?;
+    final canRecommendBook = json['can_recommend_book'];
 
     if (name is! String ||
         genres is! List ||
@@ -38,7 +40,8 @@ class GroupDetailsModel extends GroupDetailsEntity {
         (city != null && city is! String) ||
         (stateCode != null && stateCode is! String) ||
         (coverImageUrl != null && coverImageUrl is! String) ||
-        (whatsappUrl != null && whatsappUrl is! String)) {
+        (whatsappUrl != null && whatsappUrl is! String) ||
+        (canRecommendBook != null && canRecommendBook is! bool)) {
       throw const FormatException('Invalid group details response.');
     }
 
@@ -53,6 +56,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
       pendingRaffle: pendingRaffle,
       hasOpenMeeting: hasOpenMeeting,
       openMeetingStatus: openMeetingStatus,
+      canRecommendBook: canRecommendBook as bool? ?? true,
     );
   }
 
@@ -68,6 +72,7 @@ class GroupDetailsModel extends GroupDetailsEntity {
       pendingRaffle: pendingRaffle,
       hasOpenMeeting: hasOpenMeeting,
       openMeetingStatus: openMeetingStatus,
+      canRecommendBook: canRecommendBook,
     );
   }
 }
