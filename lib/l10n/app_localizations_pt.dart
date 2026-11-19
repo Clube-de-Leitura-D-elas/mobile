@@ -1161,6 +1161,49 @@ class AppLocalizationsPt extends AppLocalizations {
   String get bookDetailRecommendButton => 'Indicar';
 
   @override
+  String get bookRecommendationGroupsTitle => 'Selecione o grupo';
+
+  @override
+  String get bookRecommendationGroupsEmpty =>
+      'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get bookRecommendationGroupsError =>
+      'Não foi possível carregar os grupos.';
+
+  @override
+  String get bookRecommendationError => 'Não foi possível indicar o livro.';
+
+  @override
+  String get bookRecommendationAlreadyExists =>
+      'Este livro já foi indicado para este grupo.';
+
+  @override
+  String bookRecommendationSuccess(Object groupName) {
+    return 'Livro indicado ao $groupName';
+  }
+
+  @override
+  String bookRecommendationReplaced(Object groupName) {
+    return 'Indicação atualizada para o $groupName';
+  }
+
+  @override
+  String get bookRecommendationHostBlocked =>
+      'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.';
+
+  @override
+  String get bookRecommendationHostBlockedTitle => 'Indicação indisponível';
+
+  @override
+  String get bookRecommendationHostBlockedAction => 'Entendi';
+
+  @override
+  String bookRecommendationSearchTitle(Object groupName) {
+    return 'Indicar para $groupName';
+  }
+
+  @override
   String get bookDetailSynopsisTitle => 'Sinopse';
 
   @override
@@ -1529,6 +1572,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get searchTabGroups => 'Grupos';
+
+  @override
+  String groupNameLabel(Object number) {
+    return 'Grupo $number';
+  }
 
   @override
   String get groupSearchTitle => 'Encontre seu grupo ideal';
@@ -2893,6 +2941,49 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get bookDetailRecommendButton => 'Indicar';
 
   @override
+  String get bookRecommendationGroupsTitle => 'Selecione o grupo';
+
+  @override
+  String get bookRecommendationGroupsEmpty =>
+      'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get bookRecommendationGroupsError =>
+      'Não foi possível carregar os grupos.';
+
+  @override
+  String get bookRecommendationError => 'Não foi possível indicar o livro.';
+
+  @override
+  String get bookRecommendationAlreadyExists =>
+      'Este livro já foi indicado para este grupo.';
+
+  @override
+  String bookRecommendationSuccess(Object groupName) {
+    return 'Livro indicado ao $groupName';
+  }
+
+  @override
+  String bookRecommendationReplaced(Object groupName) {
+    return 'Indicação atualizada para o $groupName';
+  }
+
+  @override
+  String get bookRecommendationHostBlocked =>
+      'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.';
+
+  @override
+  String get bookRecommendationHostBlockedTitle => 'Indicação indisponível';
+
+  @override
+  String get bookRecommendationHostBlockedAction => 'Entendi';
+
+  @override
+  String bookRecommendationSearchTitle(Object groupName) {
+    return 'Indicar para $groupName';
+  }
+
+  @override
   String get bookDetailSynopsisTitle => 'Sinopse';
 
   @override
@@ -3144,6 +3235,11 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get searchTabGroups => 'Grupos';
+
+  @override
+  String groupNameLabel(Object number) {
+    return 'Grupo $number';
+  }
 
   @override
   String get groupSearchTitle => 'Encontre seu grupo ideal';

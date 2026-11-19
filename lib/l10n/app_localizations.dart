@@ -2060,6 +2060,72 @@ abstract class AppLocalizations {
   /// **'Indicar'**
   String get bookDetailRecommendButton;
 
+  /// Título do modal de grupos que podem receber a indicação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione o grupo'**
+  String get bookRecommendationGroupsTitle;
+
+  /// Estado vazio quando não há grupos para indicar o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo.'**
+  String get bookRecommendationGroupsEmpty;
+
+  /// Falha ao carregar os grupos para indicação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os grupos.'**
+  String get bookRecommendationGroupsError;
+
+  /// Falha genérica ao indicar o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível indicar o livro.'**
+  String get bookRecommendationError;
+
+  /// Indicação recusada porque o livro já foi indicado para o grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este livro já foi indicado para este grupo.'**
+  String get bookRecommendationAlreadyExists;
+
+  /// Confirmação da indicação de livro para o grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro indicado ao {groupName}'**
+  String bookRecommendationSuccess(Object groupName);
+
+  /// Confirmação da substituição da indicação ativa de livro para o grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicação atualizada para o {groupName}'**
+  String bookRecommendationReplaced(Object groupName);
+
+  /// Aviso exibido quando uma leitora já sorteada ou anfitriã tenta indicar um livro no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.'**
+  String get bookRecommendationHostBlocked;
+
+  /// Título do modal exibido quando a leitora não pode indicar livro no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicação indisponível'**
+  String get bookRecommendationHostBlockedTitle;
+
+  /// Botão de confirmação para fechar o modal de indicação indisponível.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendi'**
+  String get bookRecommendationHostBlockedAction;
+
+  /// Cabeçalho da busca quando a leitora escolhe um livro para indicar a um grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar para {groupName}'**
+  String bookRecommendationSearchTitle(Object groupName);
+
   /// Título da seção de sinopse no detalhe do livro.
   ///
   /// In pt, this message translates to:
@@ -2599,6 +2665,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Grupos'**
   String get searchTabGroups;
+
+  /// Nome de exibição de um grupo a partir do número.
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupNameLabel(Object number);
 
   /// Título da aba de busca de grupos.
   ///

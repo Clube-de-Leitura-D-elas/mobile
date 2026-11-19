@@ -3,6 +3,8 @@ import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/rated_book.dart';
 
 abstract class BookRepository {
@@ -23,6 +25,14 @@ abstract class BookRepository {
   Future<Result<BookReadingStatus?, BookFailure>> setReadingStatus({
     required String bookId,
     required BookReadingStatus? status,
+  });
+
+  Future<Result<List<BookRecommendationGroup>, BookFailure>>
+  getBookRecommendationGroups({required String bookId});
+
+  Future<Result<BookRecommendationOutcome, BookFailure>> recommendBook({
+    required String bookId,
+    required String groupId,
   });
 
   Future<Result<List<RatedBook>, BookFailure>> getRatedBooks({

@@ -5,6 +5,7 @@ import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/group_discovery/presentation/cubit/group_search_cubit.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
@@ -32,7 +33,7 @@ abstract class QuickAccessRoutes {
   static List<RouteBase> get routes => [
     _tab(
       QuickAccessItem.search,
-      () => MultiBlocProvider(
+      (state) => MultiBlocProvider(
         providers: [
           BlocProvider(
             create: (_) => serviceLocator<BookSearchCubit>()..load(),
@@ -42,30 +43,37 @@ abstract class QuickAccessRoutes {
             create: (_) => serviceLocator<GroupSearchCubit>()..load(),
           ),
         ],
-        child: const SearchPage(),
+        child: SearchPage(
+          recommendationTarget: state.extra is BookRecommendationTarget
+              ? state.extra as BookRecommendationTarget
+              : null,
+        ),
       ),
     ),
     _tab(
       QuickAccessItem.calendar,
-      () => BlocProvider(
+      (_) => BlocProvider(
         create: (_) => serviceLocator<CalendarCubit>()..load(),
         child: const CalendarPage(),
       ),
     ),
     _tab(
       QuickAccessItem.profile,
-      () => BlocProvider(
+      (_) => BlocProvider(
         create: (_) => serviceLocator<ProfileSummaryCubit>()..load(),
         child: const ProfilePage(),
       ),
     ),
   ];
 
-  static GoRoute _tab(QuickAccessItem item, Widget Function() page) {
+  static GoRoute _tab(
+    QuickAccessItem item,
+    Widget Function(GoRouterState state) page,
+  ) {
     return GoRoute(
       path: pathFor(item),
       pageBuilder: (context, state) =>
-          AppPageTransitions.createFadePage(state: state, child: page()),
+          AppPageTransitions.createFadePage(state: state, child: page(state)),
     );
   }
 }

@@ -1,12 +1,17 @@
 import 'dart:async';
 
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/group_join_requests/domain/entities/group_join_request_entity.dart';
 import 'package:mobile/features/group_join_requests/domain/entities/group_join_requests_failure.dart';
 import 'package:mobile/features/group_join_requests/domain/repository/group_join_requests_repository.dart';
@@ -15,7 +20,6 @@ import 'package:mobile/features/group_join_requests/presentation/routes/group_jo
 import 'package:mobile/features/groups/domain/entities/group_details_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_failure.dart';
-import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/features/groups/domain/entities/group_participant_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
@@ -29,11 +33,9 @@ import 'package:mobile/features/groups/presentation/pages/group_details_screen.d
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/pending_raffle_button.dart';
+import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:bloc_test/bloc_test.dart';
-import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 
 class MockGroupRepository extends Mock implements GroupRepository {}
 
@@ -338,6 +340,20 @@ void main() {
     expect(screen.whatsappUrl, 'https://chat.whatsapp.com/ABC123xyz');
   });
 
+  testWidgets('wires the recommend book action on the loaded group', (
+    tester,
+  ) async {
+    stubLoadedGroup();
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final screen = tester.widget<GroupDetailsScreen>(
+      find.byType(GroupDetailsScreen),
+    );
+    expect(screen.onRecommendBook, isNotNull);
+  });
+
   testWidgets('Given a next event with a book cover, '
       'When the page loads, '
       'Then GroupNextEvent receives the book title and a network cover', (
@@ -593,6 +609,14 @@ void main() {
           builder: (_, state) => Scaffold(body: Text('pedidos: ${state.uri}')),
         ),
         GoRoute(
+          path: QuickAccessRoutes.search,
+          builder: (_, state) => Scaffold(
+            body: Text(
+              'busca: ${(state.extra as BookRecommendationTarget).groupName}',
+            ),
+          ),
+        ),
+        GoRoute(
           path: RaffleRoutes.preparation,
           builder: (_, state) {
             final extra = state.extra as Map<String, dynamic>?;
@@ -785,6 +809,51 @@ void main() {
       expect(find.text('Grupo 45'), findsOneWidget);
       expect(find.text('Pedidos de entrada (1)'), findsOneWidget);
       expect(requestCalls, 2);
+    },
+  );
+
+  testWidgets(
+    'opens book search with the current group as recommendation target',
+    (tester) async {
+      await pumpDetails(tester);
+
+      await tester.ensureVisible(find.text('Indicar livro'));
+      await tester.tap(find.text('Indicar livro'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('busca: Grupo 45'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'keeps recommend book button enabled and navigates to search even when canRecommendBook is false',
+    (tester) async {
+      await pumpDetails(
+        tester,
+        afterStubs: () {
+          when(() => mockRepository.getGroupDetails(joinGroupId)).thenAnswer(
+            (_) async => const Success(
+              GroupDetailsEntity(
+                name: '45',
+                genres: ['Ficção'],
+                participantCount: 5,
+                city: 'Porto Alegre',
+                stateCode: 'RS',
+                canRecommendBook: false,
+              ),
+            ),
+          );
+        },
+      );
+
+      final buttonFinder = find.text('Indicar livro');
+      expect(buttonFinder, findsOneWidget);
+
+      await tester.ensureVisible(buttonFinder);
+      await tester.tap(buttonFinder);
+      await tester.pumpAndSettle();
+
+      expect(find.text('busca: Grupo 45'), findsOneWidget);
     },
   );
 

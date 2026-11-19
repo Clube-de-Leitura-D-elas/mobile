@@ -1,25 +1,27 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mobile/core/extensions/build_context_l10n.dart';
+import 'package:mobile/core/routes/quick_access_routes.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/group_join_requests/presentation/cubit/group_join_requests_cubit.dart';
 import 'package:mobile/features/group_join_requests/presentation/routes/group_join_requests_route_paths.dart';
 import 'package:mobile/features/group_join_requests/presentation/widgets/join_requests_access_button.dart';
+import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_details_state.dart';
 import 'package:mobile/features/groups/presentation/cubit/group_participants_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_cubit.dart';
 import 'package:mobile/features/groups/presentation/cubit/next_event_state.dart';
+import 'package:mobile/features/groups/presentation/group_failure_message.dart';
 import 'package:mobile/features/groups/presentation/pages/group_details_screen.dart';
 import 'package:mobile/features/groups/presentation/routes/group_route_paths.dart';
+import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/group_next_event.dart';
 import 'package:mobile/features/groups/presentation/widgets/participants/group_participants_content.dart';
-import 'package:mobile/features/groups/presentation/widgets/group_error_state.dart';
 import 'package:mobile/features/groups/presentation/widgets/pending_raffle_button.dart';
-import 'package:mobile/features/groups/presentation/group_failure_message.dart';
-import 'package:mobile/core/extensions/build_context_l10n.dart';
-import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:mobile/features/groups/domain/entities/group_failure.dart';
 import 'package:mobile/features/raffles/presentation/routes/raffle_routes.dart';
 
 class GroupDetailsPage extends StatelessWidget {
@@ -46,7 +48,7 @@ class GroupDetailsPage extends StatelessWidget {
             ),
           ),
           GroupDetailsLoaded(:final group) => GroupDetailsScreen(
-            name: 'Grupo ${group.name}',
+            name: context.l10n.groupNameLabel(group.name),
             genres: group.genres,
             participantCount: group.participantCount,
             city: group.city,
@@ -55,6 +57,13 @@ class GroupDetailsPage extends StatelessWidget {
                 ? NetworkImage(group.coverImageUrl!)
                 : null,
             whatsappUrl: group.whatsappUrl,
+            onRecommendBook: () => context.push(
+              QuickAccessRoutes.search,
+              extra: BookRecommendationTarget(
+                groupId: groupId,
+                groupName: context.l10n.groupNameLabel(group.name),
+              ),
+            ),
             raffleAction: group.pendingRaffle != null
                 ? PendingRaffleButton(
                     pendingRaffle: group.pendingRaffle!,

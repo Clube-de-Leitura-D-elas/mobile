@@ -1,12 +1,24 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 
 enum BookDetailsStatus { loading, loaded, error, notFound }
 
+enum RecommendationGroupsStatus { idle, loading, loaded, error }
+
 /// Aviso pontual para a tela mostrar como toast.
-enum BookDetailsNotice { readingStatusFailed, reviewSaved, reviewFailed }
+enum BookDetailsNotice {
+  readingStatusFailed,
+  recommendationSucceeded,
+  recommendationReplaced,
+  recommendationHostBlocked,
+  reviewSaved,
+  recommendationAlreadyExists,
+  recommendationFailed,
+  reviewFailed,
+}
 
 class BookDetailsState extends Equatable {
   final BookDetailsStatus status;
@@ -22,6 +34,13 @@ class BookDetailsState extends Equatable {
   final bool isUpdatingStatus;
   final bool isSubmittingReview;
   final BookDetailsNotice? notice;
+  final List<BookRecommendationGroup> recommendationGroups;
+  final RecommendationGroupsStatus recommendationGroupsStatus;
+  final bool isRecommending;
+  final String? recommendedGroupName;
+
+  bool get isLoadingRecommendationGroups =>
+      recommendationGroupsStatus == RecommendationGroupsStatus.loading;
 
   const BookDetailsState({
     this.status = BookDetailsStatus.loading,
@@ -35,6 +54,10 @@ class BookDetailsState extends Equatable {
     this.isUpdatingStatus = false,
     this.isSubmittingReview = false,
     this.notice,
+    this.recommendationGroups = const [],
+    this.recommendationGroupsStatus = RecommendationGroupsStatus.idle,
+    this.isRecommending = false,
+    this.recommendedGroupName,
   });
 
   /// O aviso vale só para a emissão em que aparece: sem [notice], ele é limpo.
@@ -48,6 +71,10 @@ class BookDetailsState extends Equatable {
     bool? isUpdatingStatus,
     bool? isSubmittingReview,
     BookDetailsNotice? notice,
+    List<BookRecommendationGroup>? recommendationGroups,
+    RecommendationGroupsStatus? recommendationGroupsStatus,
+    bool? isRecommending,
+    String? recommendedGroupName,
   }) {
     return BookDetailsState(
       status: status,
@@ -62,6 +89,11 @@ class BookDetailsState extends Equatable {
       isUpdatingStatus: isUpdatingStatus ?? this.isUpdatingStatus,
       isSubmittingReview: isSubmittingReview ?? this.isSubmittingReview,
       notice: notice,
+      recommendationGroups: recommendationGroups ?? this.recommendationGroups,
+      recommendationGroupsStatus:
+          recommendationGroupsStatus ?? this.recommendationGroupsStatus,
+      isRecommending: isRecommending ?? this.isRecommending,
+      recommendedGroupName: recommendedGroupName ?? this.recommendedGroupName,
     );
   }
 
@@ -78,5 +110,9 @@ class BookDetailsState extends Equatable {
     isUpdatingStatus,
     isSubmittingReview,
     notice,
+    recommendationGroups,
+    recommendationGroupsStatus,
+    isRecommending,
+    recommendedGroupName,
   ];
 }

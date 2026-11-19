@@ -14,6 +14,7 @@ import 'package:mobile/features/books/presentation/cubit/rated_books_cubit.dart'
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
 import 'package:mobile/features/books/presentation/pages/rated_books_screen.dart';
 import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/books/presentation/routes/book_routes.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
@@ -124,9 +125,7 @@ void main() {
   });
 
   testWidgets('/books/rated loads rated books screen', (tester) async {
-    when(
-      () => repository.getRatedBooks(page: 1, limit: 10),
-    ).thenAnswer(
+    when(() => repository.getRatedBooks(page: 1, limit: 10)).thenAnswer(
       (_) async => const Success([
         RatedBook(
           id: 'r1',
@@ -161,5 +160,55 @@ void main() {
     expect(find.byType(RatedBooksScreen), findsOneWidget);
     expect(find.text('Livro Avaliado'), findsOneWidget);
     verify(() => repository.getRatedBooks(page: 1, limit: 10)).called(1);
+  });
+
+  testWidgets('hands the recommendation target from extra to the page', (
+    tester,
+  ) async {
+    when(() => repository.getBookDetails(bookId: 'b-42')).thenAnswer(
+      (_) async => const Success(
+        BookDetailsEntity(
+          id: 'b-42',
+          title: 'Dom Casmurro',
+          author: 'Machado de Assis',
+          genre: '',
+          publisher: '',
+          ratingsCount: 0,
+        ),
+      ),
+    );
+
+    final router = GoRouter(routes: BookRoutes.routes);
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        theme: AppTheme.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('pt', 'BR'),
+        routerConfig: router,
+      ),
+    );
+    router.go(
+      BookRoutePaths.detailsFor('b-42'),
+      extra: const BookDetailsRouteExtra(
+        recommendationTarget: BookRecommendationTarget(
+          groupId: 'g1',
+          groupName: 'Grupo Aurora',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester
+          .widget<BookDetailsPage>(find.byType(BookDetailsPage))
+          .recommendationTarget,
+      const BookRecommendationTarget(groupId: 'g1', groupName: 'Grupo Aurora'),
+    );
   });
 }

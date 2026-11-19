@@ -7,9 +7,12 @@ import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart'
 import 'package:mobile/features/books/presentation/cubit/book_search_state.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_screen.dart';
 import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
 class BookSearchPage extends StatelessWidget {
-  const BookSearchPage({super.key});
+  const BookSearchPage({super.key, this.recommendationTarget});
+
+  final BookRecommendationTarget? recommendationTarget;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,10 @@ class BookSearchPage extends StatelessWidget {
               onStatusTap: cubit.toggleStatus,
               onBookTap: (bookId) => context.push(
                 BookRoutePaths.detailsFor(bookId),
-                extra: cubit.statusSyncFor(bookId),
+                extra: BookDetailsRouteExtra(
+                  onReadingStatusChanged: cubit.statusSyncFor(bookId),
+                  recommendationTarget: recommendationTarget,
+                ),
               ),
             );
           },

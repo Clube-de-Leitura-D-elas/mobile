@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
@@ -122,6 +124,93 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
             isUpdatingStatus: false,
           ),
         );
+    }
+  }
+
+  Future<void> loadRecommendationGroups() async {
+    if (state.isLoadingRecommendationGroups || state.details == null) return;
+    emit(
+      state.copyWith(
+        recommendationGroupsStatus: RecommendationGroupsStatus.loading,
+      ),
+    );
+    final result = await repository.getBookRecommendationGroups(
+      bookId: state.details!.id,
+    );
+    if (isClosed) return;
+
+    switch (result) {
+      case Failure():
+        emit(
+          state.copyWith(
+            recommendationGroupsStatus: RecommendationGroupsStatus.error,
+          ),
+        );
+      case Success(:final data):
+        emit(
+          state.copyWith(
+            recommendationGroups: data,
+            recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          ),
+        );
+    }
+  }
+
+  List<BookRecommendationGroup> _markGroupRecommended(String groupId) {
+    return [
+      for (final group in state.recommendationGroups)
+        group.id == groupId
+            ? group.copyWith(alreadyRecommended: true)
+            : group,
+    ];
+  }
+
+  Future<bool> recommendBook({
+    required String groupId,
+    required String groupName,
+  }) async {
+    final details = state.details;
+    if (details == null || state.isRecommending) return false;
+    emit(state.copyWith(isRecommending: true));
+
+    final result = await repository.recommendBook(
+      bookId: details.id,
+      groupId: groupId,
+    );
+    if (isClosed) return false;
+
+    switch (result) {
+      case Success(:final data):
+        emit(
+          state.copyWith(
+            isRecommending: false,
+            notice: data == BookRecommendationOutcome.replaced
+                ? BookDetailsNotice.recommendationReplaced
+                : BookDetailsNotice.recommendationSucceeded,
+            recommendedGroupName: groupName,
+            recommendationGroups: _markGroupRecommended(groupId),
+          ),
+        );
+        return true;
+      case Failure(:final failure):
+        final alreadyRecommended = failure is BookAlreadyRecommendedFailure;
+        final notice = switch (failure) {
+          BookAlreadyRecommendedFailure() =>
+            BookDetailsNotice.recommendationAlreadyExists,
+          BookRecommendationHostBlockedFailure() =>
+            BookDetailsNotice.recommendationHostBlocked,
+          _ => BookDetailsNotice.recommendationFailed,
+        };
+        emit(
+          state.copyWith(
+            isRecommending: false,
+            notice: notice,
+            recommendationGroups: alreadyRecommended
+                ? _markGroupRecommended(groupId)
+                : state.recommendationGroups,
+          ),
+        );
+        return false;
     }
   }
 

@@ -94,6 +94,33 @@ void main() {
       expect(domain.pendingRaffle?.type.name, 'pending');
       expect(domain.hasOpenMeeting, isTrue);
       expect(domain.openMeetingStatus, 'CREATED');
+      expect(domain.canRecommendBook, isTrue);
+    });
+
+    test('parses can_recommend_book when true, false, or omitted', () {
+      final jsonFalse = Map<String, dynamic>.from(validJson)
+        ..['can_recommend_book'] = false;
+      final modelFalse = GroupDetailsModel.fromJson(jsonFalse);
+      expect(modelFalse.canRecommendBook, isFalse);
+      expect(modelFalse.toDomain().canRecommendBook, isFalse);
+
+      final jsonTrue = Map<String, dynamic>.from(validJson)
+        ..['can_recommend_book'] = true;
+      expect(GroupDetailsModel.fromJson(jsonTrue).canRecommendBook, isTrue);
+
+      final jsonOmitted = Map<String, dynamic>.from(validJson)
+        ..remove('can_recommend_book');
+      expect(GroupDetailsModel.fromJson(jsonOmitted).canRecommendBook, isTrue);
+    });
+
+    test('throws FormatException when can_recommend_book is not a bool', () {
+      final jsonInvalid = Map<String, dynamic>.from(validJson)
+        ..['can_recommend_book'] = 'false';
+
+      expect(
+        () => GroupDetailsModel.fromJson(jsonInvalid),
+        throwsFormatException,
+      );
     });
 
     test('ignores invalid or null pending_raffle', () {

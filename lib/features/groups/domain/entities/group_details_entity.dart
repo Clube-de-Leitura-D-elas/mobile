@@ -12,6 +12,7 @@ class GroupDetailsEntity extends Equatable {
   final PendingRaffle? pendingRaffle;
   final bool hasOpenMeeting;
   final String? openMeetingStatus;
+  final bool canRecommendBook;
 
   const GroupDetailsEntity({
     required this.name,
@@ -24,6 +25,7 @@ class GroupDetailsEntity extends Equatable {
     this.pendingRaffle,
     this.hasOpenMeeting = false,
     this.openMeetingStatus,
+    this.canRecommendBook = true,
   });
 
   @override
@@ -38,5 +40,6 @@ class GroupDetailsEntity extends Equatable {
     pendingRaffle,
     hasOpenMeeting,
     openMeetingStatus,
+    canRecommendBook,
   ];
 }

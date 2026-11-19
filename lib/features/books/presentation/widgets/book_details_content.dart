@@ -9,14 +9,21 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
+import 'package:mobile/features/books/presentation/widgets/book_recommendation_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
 
 class BookDetailsContent extends StatelessWidget {
-  const BookDetailsContent({super.key, required this.state});
+  const BookDetailsContent({
+    super.key,
+    required this.state,
+    this.recommendationTarget,
+  });
 
   final BookDetailsState state;
+  final BookRecommendationTarget? recommendationTarget;
 
   static ReadingStatusChipState chipStateFor(BookReadingStatus? status) {
     return switch (status) {
@@ -56,7 +63,12 @@ class BookDetailsContent extends StatelessWidget {
           ),
           sliver: SliverList.list(
             children: [
-              _BookActions(details: details),
+              _BookActions(
+                details: details,
+                recommendationTarget: recommendationTarget,
+                isLoadingGroups: state.isLoadingRecommendationGroups,
+                isRecommending: state.isRecommending,
+              ),
               ..._synopsis(context, details.synopsis),
               SizedBox(height: spacing.s24),
               _SectionTitle(context.l10n.bookDetailReviewsTitle),
@@ -131,9 +143,17 @@ class BookDetailsContent extends StatelessWidget {
 }
 
 class _BookActions extends StatelessWidget {
-  const _BookActions({required this.details});
+  const _BookActions({
+    required this.details,
+    required this.recommendationTarget,
+    required this.isLoadingGroups,
+    required this.isRecommending,
+  });
 
   final BookDetailsEntity details;
+  final BookRecommendationTarget? recommendationTarget;
+  final bool isLoadingGroups;
+  final bool isRecommending;
 
   @override
   Widget build(BuildContext context) {
@@ -153,11 +173,18 @@ class _BookActions extends StatelessWidget {
         ),
         SizedBox(width: context.spacing.s16),
         Expanded(
-          // TODO(CLU-272): abrir o modal Selecione o grupo (recommend-book).
           child: AppButton.primary(
             label: l10n.bookDetailRecommendButton,
             size: AppButtonSize.lg,
-            onPressed: null,
+            isLoading: recommendationTarget != null && isRecommending,
+            onPressed: isLoadingGroups || isRecommending
+                ? null
+                : recommendationTarget == null
+                ? () => BookRecommendationDialog.show(context)
+                : () => context.read<BookDetailsCubit>().recommendBook(
+                    groupId: recommendationTarget!.groupId,
+                    groupName: recommendationTarget!.groupName,
+                  ),
           ),
         ),
       ],

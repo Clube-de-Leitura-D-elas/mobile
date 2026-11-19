@@ -13,6 +13,7 @@ import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_page.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/calendar/domain/repository/calendar_repository.dart';
 import 'package:mobile/features/calendar/presentation/cubit/calendar_cubit.dart';
 import 'package:mobile/features/calendar/presentation/pages/calendar_page.dart';
@@ -237,6 +238,24 @@ void main() {
         expect(find.byType(BookSearchPage), findsOneWidget);
         expect(find.byType(ProfilePage), findsNothing);
         expectSelected(QuickAccessItem.search);
+
+        router.go(
+          '/search',
+          extra: const BookRecommendationTarget(
+            groupId: 'group-1',
+            groupName: 'Grupo 1',
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Indicar para Grupo 1'), findsOneWidget);
+        expect(find.byTooltip('Voltar'), findsOneWidget);
+        expect(
+          tester
+              .widget<BookSearchPage>(find.byType(BookSearchPage))
+              .recommendationTarget
+              ?.groupId,
+          'group-1',
+        );
 
         await tester.tap(find.text('Grupos'));
         await tester.pumpAndSettle();
