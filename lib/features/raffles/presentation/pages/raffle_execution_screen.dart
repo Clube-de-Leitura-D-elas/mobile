@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
@@ -6,8 +7,11 @@ import 'package:mobile/features/raffles/presentation/widgets/raffle_error_state.
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_state.dart';
 import 'package:mobile/features/raffles/presentation/pages/raffle_result_screen.dart';
+import 'package:mobile/features/raffles/presentation/widgets/raffle_draw_reel.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_result.dart';
 
-class RaffleExecutionScreen extends StatelessWidget {
+class RaffleExecutionScreen extends StatefulWidget {
   final String meetingId;
   final String meetingTitle;
 
@@ -18,85 +22,140 @@ class RaffleExecutionScreen extends StatelessWidget {
   });
 
   @override
+  State<RaffleExecutionScreen> createState() => _RaffleExecutionScreenState();
+}
+
+class _RaffleExecutionScreenState extends State<RaffleExecutionScreen> {
+  /// Indicações girando na roleta; nulo quando não há sorteio em andamento.
+  List<RaffleParticipant>? _reelPool;
+
+  /// Resultado na tela quando o "Sortear novamente" foi tocado. Enquanto o
+  /// estado ainda mostra esse resultado, o novo sorteio não voltou.
+  RaffleResult? _resultBeforeDraw;
+
+  void _startReel(List<RaffleParticipant> pool, {RaffleResult? previous}) {
+    setState(() {
+      _reelPool = pool;
+      _resultBeforeDraw = previous;
+    });
+  }
+
+  void _stopReel() {
+    if (_reelPool == null) return;
+    setState(() {
+      _reelPool = null;
+      _resultBeforeDraw = null;
+    });
+  }
+
+  /// Vencedora a revelar, `''` enquanto o servidor sorteia, ou nulo quando a
+  /// roleta não deve aparecer neste estado.
+  String? _reelWinnerFor(RaffleExecutionState state) {
+    if (_reelPool == null) return null;
+    if (state is RaffleExecutionReady && state.isDrawing) return '';
+    if (state is RaffleExecutionResultLoaded && !state.isPersisted) {
+      return state.result == _resultBeforeDraw ? '' : state.result.winnerId;
+    }
+    return null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colors = context.colors;
 
-    return Scaffold(
-      backgroundColor: colors.bgDefault,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(56),
-        child: BlocBuilder<RaffleExecutionCubit, RaffleExecutionState>(
-          builder: (context, state) => ScreenHeader.back(
-            title: state is RaffleExecutionResultLoaded
-                ? context.l10n.raffleResultTitle
-                : context.l10n.raffleDrawScreenTitle,
+    return BlocConsumer<RaffleExecutionCubit, RaffleExecutionState>(
+      listener: (context, state) {
+        if (state is RaffleExecutionReady && state.isDrawing) {
+          _startReel(state.eligibleParticipants);
+        } else if (state is RaffleExecutionError ||
+            state is RaffleExecutionNoEligible) {
+          _stopReel();
+        }
+        if (state is RaffleExecutionSuccess) {
+          context.showAppToast(context.l10n.raffleSavedSuccessToast);
+          Navigator.of(context).pop();
+        }
+      },
+      builder: (context, state) {
+        final reelWinner = _reelWinnerFor(state);
+        final pool = _reelPool;
+        final Widget body;
+
+        if (reelWinner != null && pool != null && pool.isNotEmpty) {
+          body = RaffleDrawReel(
+            key: ValueKey(_resultBeforeDraw),
+            participants: pool,
+            winnerId: reelWinner.isEmpty ? null : reelWinner,
+            onRevealed: _stopReel,
+          );
+        } else if (state is RaffleExecutionLoading) {
+          body = Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(colors.actionPrimary),
+            ),
+          );
+        } else if (state is RaffleExecutionResultLoaded) {
+          body = RaffleResultScreen(
+            result: state.result,
+            isPersisted: state.isPersisted,
+            isSubmitting: state.isSubmitting,
+            canDrawAgain: state.eligibleParticipants.isNotEmpty,
+            onDrawAgain: () {
+              _startReel(state.eligibleParticipants, previous: state.result);
+              context.read<RaffleExecutionCubit>().draw();
+            },
+            onFinish: () {
+              if (state.isPersisted) {
+                Navigator.of(context).pop();
+              } else {
+                context.read<RaffleExecutionCubit>().confirmResult();
+              }
+            },
+          );
+        } else if (state is RaffleExecutionNoEligible) {
+          body = _NoEligibleView(
+            meetingTitle: state.meetingTitle.isNotEmpty
+                ? state.meetingTitle
+                : widget.meetingTitle,
+          );
+        } else if (state is RaffleExecutionReady) {
+          body = _ReadyDrawView(
+            state: state,
+            onDraw: () => context.read<RaffleExecutionCubit>().draw(),
+          );
+        } else if (state is RaffleExecutionError) {
+          body = RaffleErrorState(
+            failure: state.failure,
+            onRetry: () => context.read<RaffleExecutionCubit>().retry(),
+          );
+        } else {
+          body = const SizedBox.shrink();
+        }
+
+        final showsResult =
+            reelWinner == null && state is RaffleExecutionResultLoaded;
+
+        return Scaffold(
+          backgroundColor: colors.bgDefault,
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(56),
+            child: ScreenHeader.back(
+              title: showsResult
+                  ? context.l10n.raffleResultTitle
+                  : context.l10n.raffleDrawScreenTitle,
+            ),
           ),
-        ),
-      ),
-      body: SafeArea(
-        child: BlocConsumer<RaffleExecutionCubit, RaffleExecutionState>(
-          listener: (context, state) {
-            if (state is RaffleExecutionSuccess) {
-              context.showAppToast(context.l10n.raffleSavedSuccessToast);
-              Navigator.of(context).pop();
-            }
-          },
-          builder: (context, state) {
-            if (state is RaffleExecutionLoading) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    colors.actionPrimary,
-                  ),
-                ),
-              );
-            }
-
-            if (state is RaffleExecutionResultLoaded) {
-              return RaffleResultScreen(
-                result: state.result,
-                isPersisted: state.isPersisted,
-                isSubmitting: state.isSubmitting,
-                canDrawAgain: state.eligibleParticipants.isNotEmpty,
-                onDrawAgain: () {
-                  context.read<RaffleExecutionCubit>().draw();
-                },
-                onFinish: () {
-                  if (state.isPersisted) {
-                    Navigator.of(context).pop();
-                  } else {
-                    context.read<RaffleExecutionCubit>().confirmResult();
-                  }
-                },
-              );
-            }
-
-            if (state is RaffleExecutionNoEligible) {
-              return _NoEligibleView(
-                meetingTitle: state.meetingTitle.isNotEmpty
-                    ? state.meetingTitle
-                    : meetingTitle,
-              );
-            }
-
-            if (state is RaffleExecutionReady) {
-              return _ReadyDrawView(
-                state: state,
-                onDraw: () => context.read<RaffleExecutionCubit>().draw(),
-              );
-            }
-
-            if (state is RaffleExecutionError) {
-              return RaffleErrorState(
-                failure: state.failure,
-                onRetry: () => context.read<RaffleExecutionCubit>().retry(),
-              );
-            }
-
-            return const SizedBox.shrink();
-          },
-        ),
-      ),
+          body: SafeArea(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 350),
+              child: KeyedSubtree(
+                key: ValueKey(reelWinner != null ? 'reel' : state.runtimeType),
+                child: body,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -150,7 +209,7 @@ class _ReadyDrawView extends StatelessWidget {
           ),
           const Spacer(),
           Center(
-            child: _DrawCircleButton(isDrawing: state.isDrawing, onTap: onDraw),
+            child: RaffleCoverFan(participants: state.eligibleParticipants),
           ),
           const Spacer(),
           Text(
@@ -161,62 +220,17 @@ class _ReadyDrawView extends StatelessWidget {
               height: 1.4,
             ),
           ),
-          const Gap24(),
+          const Gap16(),
+          AppButton.primary(
+            label: context.l10n.raffleDrawButton,
+            isLoading: state.isDrawing,
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              onDraw();
+            },
+          ),
+          const Gap16(),
         ],
-      ),
-    );
-  }
-}
-
-class _DrawCircleButton extends StatelessWidget {
-  final bool isDrawing;
-  final VoidCallback onTap;
-
-  const _DrawCircleButton({required this.isDrawing, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final typography = context.typography;
-
-    return Semantics(
-      button: true,
-      label: context.l10n.raffleDrawButton,
-      child: GestureDetector(
-        onTap: isDrawing ? null : onTap,
-        child: Container(
-          width: 260,
-          height: 260,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: colors.bgDefault,
-            border: Border.all(color: colors.actionPrimary, width: 2.0),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.25),
-                offset: Offset(0, 4),
-                blurRadius: 4,
-              ),
-            ],
-          ),
-          child: Center(
-            child: isDrawing
-                ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      colors.actionPrimary,
-                    ),
-                  )
-                : Text(
-                    context.l10n.raffleDrawButton,
-                    textAlign: TextAlign.center,
-                    style: typography.headingH1.copyWith(
-                      color: colors.actionPrimary,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-          ),
-        ),
       ),
     );
   }

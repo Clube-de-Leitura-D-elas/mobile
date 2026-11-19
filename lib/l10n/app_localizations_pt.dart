@@ -756,7 +756,18 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get raffleDrawButton => 'SORTEAR';
+  String get raffleDrawButton => 'Sortear livro';
+
+  @override
+  String get raffleShufflingLabel => 'Embaralhando as indicações…';
+
+  @override
+  String get raffleRevealLabel => 'Temos um livro!';
+
+  @override
+  String raffleReelIndicatedBy(String name) {
+    return 'indicado por $name';
+  }
 
   @override
   String get raffleDisclaimer =>
@@ -2738,7 +2749,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get raffleDrawButton => 'SORTEAR';
+  String get raffleDrawButton => 'Sortear livro';
+
+  @override
+  String get raffleShufflingLabel => 'Embaralhando as indicações…';
+
+  @override
+  String get raffleRevealLabel => 'Temos um livro!';
+
+  @override
+  String raffleReelIndicatedBy(String name) {
+    return 'indicado por $name';
+  }
 
   @override
   String get raffleDisclaimer =>

@@ -65,7 +65,7 @@ void main() {
 
     final titleBounds = tester.getRect(find.text('Grupo 1'));
     final firstTagBounds = tester.getRect(find.text('Ficção'));
-    expect(firstTagBounds.left, greaterThan(titleBounds.right));
+    expect(firstTagBounds.top, greaterThan(titleBounds.bottom));
 
     final participantsBounds = tester.getRect(find.text('34 participantes'));
     final locationBounds = tester.getRect(find.text('Porto Alegre, RS').first);
@@ -203,7 +203,38 @@ void main() {
       final genresBounds = tester.getRect(
         find.byKey(const ValueKey('group-genres')),
       );
-      expect(genresBounds.top, lessThanOrEqualTo(nameBounds.bottom));
+      expect(genresBounds.top, greaterThanOrEqualTo(nameBounds.bottom));
+    },
+  );
+
+  testWidgets(
+    'given two genres, when rendered, then tags sit side by side below the name',
+    (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          const GroupDetailsScreen(
+            name: 'Grupo 1',
+            genres: ['Romance', 'Clássico'],
+            participantCount: 5,
+            city: 'Porto Alegre',
+            stateCode: 'RS',
+          ),
+        ),
+      );
+
+      final nameBounds = tester.getRect(
+        find.byKey(const ValueKey('group-name')),
+      );
+      final romance = tester.getRect(find.text('Romance'));
+      final classico = tester.getRect(find.text('Clássico'));
+
+      expect(romance.top, greaterThanOrEqualTo(nameBounds.bottom));
+      expect(classico.top, romance.top);
+      expect(classico.left, greaterThan(romance.right));
+      expect(
+        tester.getRect(find.byKey(const ValueKey('group-genres'))).left,
+        nameBounds.left,
+      );
     },
   );
 

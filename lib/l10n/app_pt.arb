@@ -1016,9 +1016,26 @@
       }
     }
   },
-  "raffleDrawButton": "SORTEAR",
+  "raffleDrawButton": "Sortear livro",
   "@raffleDrawButton": {
-    "description": "Texto do botão central principal para realizar o sorteio"
+    "description": "Texto do botão principal que inicia o sorteio"
+  },
+  "raffleShufflingLabel": "Embaralhando as indicações…",
+  "@raffleShufflingLabel": {
+    "description": "Texto acima da roleta enquanto os livros indicados giram durante o sorteio"
+  },
+  "raffleRevealLabel": "Temos um livro!",
+  "@raffleRevealLabel": {
+    "description": "Texto acima da roleta quando ela para no livro sorteado"
+  },
+  "raffleReelIndicatedBy": "indicado por {name}",
+  "@raffleReelIndicatedBy": {
+    "description": "Legenda do livro na roleta do sorteio com quem o indicou",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "raffleDisclaimer": "O sorteio é automático e aleatório.\nA participação é voluntária.",
   "@raffleDisclaimer": {

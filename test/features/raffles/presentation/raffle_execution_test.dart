@@ -39,6 +39,8 @@ class MockRaffleExecutionCubit extends Cubit<RaffleExecutionState>
 
   void emitError() => emit(const RaffleExecutionError(RaffleServerFailure()));
 
+  void push(RaffleExecutionState state) => emit(state);
+
   void emitSuccess(RaffleResult result) => emit(RaffleExecutionSuccess(result));
 
   @override
@@ -73,6 +75,20 @@ void main() {
     ),
   ];
 
+  const tParticipantsSecond = RaffleParticipant(
+    id: 'p2',
+    name: 'Mariana de Souza',
+    hasAttended: true,
+    bookTitle: 'Dom Casmurro',
+  );
+
+  const tSecondResult = RaffleResult(
+    meetingId: tMeetingId,
+    winnerId: 'p2',
+    winnerName: 'Mariana de Souza',
+    bookTitle: 'Dom Casmurro',
+  );
+
   const tResult = RaffleResult(
     meetingId: tMeetingId,
     winnerId: 'p1',
@@ -106,7 +122,7 @@ void main() {
   }
 
   testWidgets(
-    'deve renderizar a tela pronta com o botao SORTEAR e disparar draw ao tocar',
+    'deve renderizar a tela pronta com o botao Sortear livro e disparar draw ao tocar',
     (tester) async {
       final cubit = MockRaffleExecutionCubit(
         const RaffleExecutionReady(
@@ -122,9 +138,9 @@ void main() {
       expect(find.text('Realizar Sorteio'), findsOneWidget);
       expect(find.text('Sorteio do Livro - Julho'), findsOneWidget);
       expect(find.text('2 participantes'), findsOneWidget);
-      expect(find.text('SORTEAR'), findsOneWidget);
+      expect(find.text('Sortear livro'), findsOneWidget);
 
-      final sortearButton = find.text('SORTEAR');
+      final sortearButton = find.text('Sortear livro');
       await tester.tap(sortearButton);
       await tester.pumpAndSettle();
 
@@ -287,7 +303,7 @@ void main() {
     await tester.pumpWidget(buildWidget(cubit));
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    expect(find.text('SORTEAR'), findsNothing);
+    expect(find.text('Sortear livro'), findsNothing);
     expect(cubit.drawCalled, isFalse);
   });
 
@@ -326,4 +342,101 @@ void main() {
       expect(find.text('Voltar'), findsOneWidget);
     },
   );
+
+  Future<void> pumpUntilFound(WidgetTester tester, Finder finder) async {
+    for (var i = 0; i < 200 && finder.evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+  }
+
+  testWidgets(
+    'gira a roleta durante o sorteio e so mostra o resultado depois de parar',
+    (tester) async {
+      const ready = RaffleExecutionReady(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        eligibleParticipants: tParticipants,
+      );
+      final cubit = MockRaffleExecutionCubit(ready);
+      await tester.pumpWidget(buildWidget(cubit));
+
+      cubit.push(ready.copyWith(isDrawing: true));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('Embaralhando as indicações…'), findsOneWidget);
+      expect(find.text('Realizar Sorteio'), findsOneWidget);
+
+      cubit.push(
+        const RaffleExecutionResultLoaded(
+          meetingId: tMeetingId,
+          meetingTitle: tMeetingTitle,
+          result: tResult,
+          eligibleParticipants: [],
+        ),
+      );
+      await tester.pump();
+      expect(find.text('Livro sorteado'), findsNothing);
+
+      await pumpUntilFound(tester, find.text('Temos um livro!'));
+      expect(find.text('indicado por Ana Beatriz'), findsOneWidget);
+
+      await pumpUntilFound(tester, find.text('Livro sorteado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Resultado do Sorteio'), findsOneWidget);
+      expect(find.text('Temos um livro!'), findsNothing);
+    },
+  );
+
+  testWidgets('gira a roleta no sortear novamente ate o novo resultado', (
+    tester,
+  ) async {
+    final cubit = MockRaffleExecutionCubit(
+      const RaffleExecutionResultLoaded(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        result: tResult,
+        eligibleParticipants: [tParticipantsSecond],
+      ),
+    );
+    await tester.pumpWidget(buildWidget(cubit));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Sortear novamente'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(cubit.drawCalled, isTrue);
+    expect(find.text('Embaralhando as indicações…'), findsOneWidget);
+    expect(find.text('Livro sorteado'), findsNothing);
+
+    cubit.push(
+      const RaffleExecutionResultLoaded(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        result: tSecondResult,
+      ),
+    );
+    await pumpUntilFound(tester, find.text('Livro sorteado'));
+    await tester.pumpAndSettle();
+    expect(find.text('Resultado do Sorteio'), findsOneWidget);
+    expect(find.text('Mariana de Souza'), findsOneWidget);
+  });
+
+  testWidgets('para a roleta e mostra o erro quando o sorteio falha', (
+    tester,
+  ) async {
+    const ready = RaffleExecutionReady(
+      meetingId: tMeetingId,
+      meetingTitle: tMeetingTitle,
+      eligibleParticipants: tParticipants,
+    );
+    final cubit = MockRaffleExecutionCubit(ready);
+    await tester.pumpWidget(buildWidget(cubit));
+
+    cubit.push(ready.copyWith(isDrawing: true));
+    await tester.pump(const Duration(milliseconds: 300));
+    cubit.emitError();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Embaralhando as indicações…'), findsNothing);
+    expect(find.text('Tentar novamente'), findsOneWidget);
+  });
 }
