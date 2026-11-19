@@ -1,23 +1,72 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/books/data/models/book_recommendation_group_model.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 
 void main() {
   test('parses and maps a recommendation group', () {
     final model = BookRecommendationGroupModel.fromJson(const {
       'group_id': 'g1',
-      'name': 'Grupo Aurora',
+      'number': 1,
+      'name': 'Grupo 1',
       'photo_url': 'https://example.com/group.jpg',
       'already_recommended': true,
     });
 
     expect(model.id, 'g1');
-    expect(model.name, 'Grupo Aurora');
+    expect(model.number, 1);
+    expect(model.name, 'Grupo 1');
     expect(model.photoUrl, 'https://example.com/group.jpg');
     expect(model.alreadyRecommended, isTrue);
-    expect(model.toDomain().id, 'g1');
+    expect(
+      model.toDomain(),
+      const BookRecommendationGroup(
+        id: 'g1',
+        number: 1,
+        name: 'Grupo 1',
+        photoUrl: 'https://example.com/group.jpg',
+        alreadyRecommended: true,
+      ),
+    );
   });
 
-  test('parses a group without a photo', () {
+  test('parses a group list response', () {
+    final models = BookRecommendationGroupModel.listFromJson(const {
+      'items': [
+        {
+          'group_id': 'g1',
+          'number': 1,
+          'name': 'Grupo 1',
+          'photo_url': null,
+          'already_recommended': false,
+        },
+        {
+          'group_id': 'g2',
+          'number': 2,
+          'name': 'Grupo 2',
+          'photo_url': 'https://example.com/g2.jpg',
+          'already_recommended': true,
+        },
+      ],
+    });
+
+    expect(models.map((m) => m.toDomain()).toList(), const [
+      BookRecommendationGroup(
+        id: 'g1',
+        number: 1,
+        name: 'Grupo 1',
+        alreadyRecommended: false,
+      ),
+      BookRecommendationGroup(
+        id: 'g2',
+        number: 2,
+        name: 'Grupo 2',
+        photoUrl: 'https://example.com/g2.jpg',
+        alreadyRecommended: true,
+      ),
+    ]);
+  });
+
+  test('parses a group without a photo or number', () {
     final model = BookRecommendationGroupModel.fromJson(const {
       'group_id': 'g1',
       'name': 'Grupo Aurora',
@@ -26,6 +75,7 @@ void main() {
     });
 
     expect(model.photoUrl, isNull);
+    expect(model.number, isNull);
   });
 
   test('rejects invalid group payloads', () {
@@ -35,6 +85,15 @@ void main() {
     );
     expect(
       () => BookRecommendationGroupModel.fromJson('invalid'),
+      throwsFormatException,
+    );
+    expect(
+      () => BookRecommendationGroupModel.fromJson(const {
+        'group_id': 'g1',
+        'number': '1',
+        'name': 'Grupo',
+        'already_recommended': false,
+      }),
       throwsFormatException,
     );
     expect(

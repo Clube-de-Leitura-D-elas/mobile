@@ -13,6 +13,24 @@ void main() {
     expect(target.groupName, 'Grupo Aurora');
   });
 
+  test('supports value equality via Equatable', () {
+    final first = BookRecommendationTarget(
+      groupId: 'g1',
+      groupName: String.fromCharCodes('Grupo Aurora'.codeUnits),
+    );
+    final second = BookRecommendationTarget(
+      groupId: 'g1',
+      groupName: String.fromCharCodes('Grupo Aurora'.codeUnits),
+    );
+    const different = BookRecommendationTarget(
+      groupId: 'g2',
+      groupName: 'Grupo Aurora',
+    );
+
+    expect(first, equals(second));
+    expect(first, isNot(equals(different)));
+  });
+
   test('stores optional route extras', () {
     void onStatusChanged(BookReadingStatus? status, {required bool isWrite}) {}
 

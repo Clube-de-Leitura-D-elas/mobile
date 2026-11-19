@@ -52,9 +52,7 @@ class RatedBooksCubit extends Cubit<RatedBooksState> {
     // Salva a geração atual antes de iniciar a busca
     final currentGeneration = _generation;
 
-    emit(
-      currentState.copyWith(isLoadingMore: true, clearLoadMoreFailure: true),
-    );
+    emit(currentState.copyWith(isLoadingMore: true, clearLoadMoreFailure: true));
 
     final nextPage = currentState.currentPage + 1;
     final result = await bookRepository.getRatedBooks(
@@ -90,7 +88,10 @@ class RatedBooksCubit extends Cubit<RatedBooksState> {
       case Failure(:final failure):
         // Mantém os livros já carregados, desativa o loading e registra a falha no estado
         emit(
-          currentState.copyWith(isLoadingMore: false, loadMoreFailure: failure),
+          currentState.copyWith(
+            isLoadingMore: false,
+            loadMoreFailure: failure,
+          ),
         );
     }
   }

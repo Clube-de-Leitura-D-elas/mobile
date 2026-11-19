@@ -3,6 +3,7 @@ import 'package:mobile/features/books/domain/entities/book_recommendation_group.
 class BookRecommendationGroupModel extends BookRecommendationGroup {
   const BookRecommendationGroupModel({
     required super.id,
+    super.number,
     required super.name,
     super.photoUrl,
     required super.alreadyRecommended,
@@ -14,10 +15,12 @@ class BookRecommendationGroupModel extends BookRecommendationGroup {
     }
 
     final id = json['group_id'];
+    final number = json['number'];
     final name = json['name'];
     final photoUrl = json['photo_url'];
     final alreadyRecommended = json['already_recommended'];
     if (id is! String ||
+        (number != null && number is! int) ||
         name is! String ||
         (photoUrl != null && photoUrl is! String) ||
         alreadyRecommended is! bool) {
@@ -26,6 +29,7 @@ class BookRecommendationGroupModel extends BookRecommendationGroup {
 
     return BookRecommendationGroupModel(
       id: id,
+      number: number as int?,
       name: name,
       photoUrl: photoUrl as String?,
       alreadyRecommended: alreadyRecommended,
@@ -43,6 +47,7 @@ class BookRecommendationGroupModel extends BookRecommendationGroup {
 
   BookRecommendationGroup toDomain() => BookRecommendationGroup(
     id: id,
+    number: number,
     name: name,
     photoUrl: photoUrl,
     alreadyRecommended: alreadyRecommended,

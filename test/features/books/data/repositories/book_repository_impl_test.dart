@@ -547,12 +547,34 @@ void main() {
         const Success<List<BookRecommendationGroup>, BookFailure>([
           BookRecommendationGroup(
             id: 'group-1',
+            number: 1,
             name: 'Grupo 1',
             alreadyRecommended: false,
           ),
         ]),
       );
     });
+
+    test(
+      'returns BookRecommendationGroupsFailure when payload data is null',
+      () async {
+        when(
+          () => supabase.invokeFunction<List<BookRecommendationGroupModel>>(
+            functionName: 'get-book-recommendation-groups',
+            method: HttpMethod.get,
+            queryParameters: const {'bookId': 'book-1'},
+            decoder: any(named: 'decoder'),
+          ),
+        ).thenAnswer((_) async => const Success(SupabaseResponse()));
+
+        expect(
+          await repository.getBookRecommendationGroups(bookId: 'book-1'),
+          const Failure<List<BookRecommendationGroup>, BookFailure>(
+            BookRecommendationGroupsFailure(),
+          ),
+        );
+      },
+    );
 
     test('posts the book and group ids to recommend-book', () async {
       when(

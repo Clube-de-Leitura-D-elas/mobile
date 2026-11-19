@@ -8,7 +8,11 @@ class RatedBookTile extends StatelessWidget {
   final RatedBook book;
   final VoidCallback? onTap;
 
-  const RatedBookTile({super.key, required this.book, this.onTap});
+  const RatedBookTile({
+    super.key,
+    required this.book,
+    this.onTap,
+  });
 
   String _buildSemanticLabel(BuildContext context) {
     final l10n = context.l10n;

@@ -23,6 +23,13 @@ class SearchPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         backgroundColor: colors.bgDefault,
+        appBar: recommendationTarget != null
+            ? ScreenHeader.back(
+                title: l10n.bookRecommendationSearchTitle(
+                  recommendationTarget!.groupName,
+                ),
+              )
+            : null,
         body: SafeArea(
           child: Column(
             children: [

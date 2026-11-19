@@ -462,28 +462,29 @@ void main() {
       expect(returns, 1);
     });
 
-    testWidgets('tocar em Ver todos os livros abre a lista e avisa ao voltar', (
-      tester,
-    ) async {
-      var returns = 0;
-      final router = await pumpWithRouter(tester, onReturn: () => returns++);
+    testWidgets(
+      'tocar em Ver todos os livros abre a lista e avisa ao voltar',
+      (tester) async {
+        var returns = 0;
+        final router = await pumpWithRouter(tester, onReturn: () => returns++);
 
-      final seeAllButton = find.widgetWithText(
-        AppButton,
-        'Ver todos os livros',
-      );
-      await tester.ensureVisible(seeAllButton);
-      await tester.pumpAndSettle();
+        final seeAllButton = find.widgetWithText(
+          AppButton,
+          'Ver todos os livros',
+        );
+        await tester.ensureVisible(seeAllButton);
+        await tester.pumpAndSettle();
 
-      await tester.tap(seeAllButton);
-      await tester.pumpAndSettle();
+        await tester.tap(seeAllButton);
+        await tester.pumpAndSettle();
 
-      expect(find.text('livros avaliados'), findsOneWidget);
-      expect(returns, 0);
+        expect(find.text('livros avaliados'), findsOneWidget);
+        expect(returns, 0);
 
-      router.pop();
-      await tester.pumpAndSettle();
-      expect(returns, 1);
-    });
+        router.pop();
+        await tester.pumpAndSettle();
+        expect(returns, 1);
+      },
+    );
   });
 }

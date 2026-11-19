@@ -72,9 +72,7 @@ void main() {
       expect(list.length, 1);
       expect(list.first.title, 'Harry Potter e a Pedra Filosofal');
 
-      final wrappedList = RatedBookModel.listFromJson({
-        'books': [jsonMap],
-      });
+      final wrappedList = RatedBookModel.listFromJson({'books': [jsonMap]});
       expect(wrappedList.length, 1);
       expect(wrappedList.first.title, 'Harry Potter e a Pedra Filosofal');
 

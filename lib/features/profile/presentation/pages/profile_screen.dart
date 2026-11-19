@@ -96,7 +96,6 @@ class _SummarySections extends StatelessWidget {
     await context.push<Object?>(BookRoutePaths.ratedBooks);
     onReturn?.call();
   }
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.spacing;

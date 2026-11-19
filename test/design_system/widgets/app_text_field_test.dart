@@ -27,7 +27,10 @@ void main() {
     testWidgets('renders label and hintText correctly', (tester) async {
       await tester.pumpWidget(
         buildTestableWidget(
-          const AppTextField(label: 'E-mail', hintText: 'seu@email.com'),
+          const AppTextField(
+            label: 'E-mail',
+            hintText: 'seu@email.com',
+          ),
         ),
       );
 
@@ -38,32 +41,37 @@ void main() {
     testWidgets('displays errorText when provided', (tester) async {
       await tester.pumpWidget(
         buildTestableWidget(
-          const AppTextField(label: 'E-mail', errorText: 'Campo obrigatório'),
+          const AppTextField(
+            label: 'E-mail',
+            errorText: 'Campo obrigatório',
+          ),
         ),
       );
 
       expect(find.text('Campo obrigatório'), findsOneWidget);
     });
 
-    testWidgets(
-      'toggles obscure text visibility when eye suffix icon is tapped',
-      (tester) async {
-        await tester.pumpWidget(
-          buildTestableWidget(
-            const AppTextField(label: 'Senha', obscureText: true),
+    testWidgets('toggles obscure text visibility when eye suffix icon is tapped', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildTestableWidget(
+          const AppTextField(
+            label: 'Senha',
+            obscureText: true,
           ),
-        );
+        ),
+      );
 
-        expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
-        expect(find.byTooltip('Mostrar senha'), findsOneWidget);
+      expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
+      expect(find.byTooltip('Mostrar senha'), findsOneWidget);
 
-        await tester.tap(find.byIcon(Icons.visibility_outlined));
-        await tester.pump();
+      await tester.tap(find.byIcon(Icons.visibility_outlined));
+      await tester.pump();
 
-        expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
-        expect(find.byTooltip('Ocultar senha'), findsOneWidget);
-      },
-    );
+      expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
+      expect(find.byTooltip('Ocultar senha'), findsOneWidget);
+    });
 
     testWidgets('applies the given input formatters', (tester) async {
       final controller = TextEditingController();
@@ -85,7 +93,10 @@ void main() {
     testWidgets('renders red asterisk when isRequired is true', (tester) async {
       await tester.pumpWidget(
         buildTestableWidget(
-          const AppTextField(label: 'Data', isRequired: true),
+          const AppTextField(
+            label: 'Data',
+            isRequired: true,
+          ),
         ),
       );
 
@@ -105,7 +116,10 @@ void main() {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
         buildTestableWidget(
-          const AppTextField(label: 'Data', isRequired: true),
+          const AppTextField(
+            label: 'Data',
+            isRequired: true,
+          ),
         ),
       );
 

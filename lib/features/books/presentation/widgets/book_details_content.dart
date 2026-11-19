@@ -6,15 +6,14 @@ import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
-import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
+import 'package:mobile/features/books/presentation/widgets/book_recommendation_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
-import 'package:mobile/features/books/presentation/widgets/group_select_tile.dart';
 
 class BookDetailsContent extends StatelessWidget {
   const BookDetailsContent({
@@ -67,6 +66,8 @@ class BookDetailsContent extends StatelessWidget {
               _BookActions(
                 details: details,
                 recommendationTarget: recommendationTarget,
+                isLoadingGroups: state.isLoadingRecommendationGroups,
+                isRecommending: state.isRecommending,
               ),
               ..._synopsis(context, details.synopsis),
               SizedBox(height: spacing.s24),
@@ -145,23 +146,14 @@ class _BookActions extends StatelessWidget {
   const _BookActions({
     required this.details,
     required this.recommendationTarget,
+    required this.isLoadingGroups,
+    required this.isRecommending,
   });
 
   final BookDetailsEntity details;
   final BookRecommendationTarget? recommendationTarget;
-
-  Future<void> _openRecommendationDialog(BuildContext context) async {
-    final cubit = context.read<BookDetailsCubit>();
-    await cubit.loadRecommendationGroups();
-    if (!context.mounted) return;
-    await showDialog<void>(
-      context: context,
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: const _RecommendationGroupsDialog(),
-      ),
-    );
-  }
+  final bool isLoadingGroups;
+  final bool isRecommending;
 
   @override
   Widget build(BuildContext context) {
@@ -184,8 +176,11 @@ class _BookActions extends StatelessWidget {
           child: AppButton.primary(
             label: l10n.bookDetailRecommendButton,
             size: AppButtonSize.lg,
-            onPressed: recommendationTarget == null
-                ? () => _openRecommendationDialog(context)
+            isLoading: recommendationTarget != null && isRecommending,
+            onPressed: isLoadingGroups || isRecommending
+                ? null
+                : recommendationTarget == null
+                ? () => BookRecommendationDialog.show(context)
                 : () => context.read<BookDetailsCubit>().recommendBook(
                     groupId: recommendationTarget!.groupId,
                     groupName: recommendationTarget!.groupName,
@@ -193,100 +188,6 @@ class _BookActions extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _RecommendationGroupsDialog extends StatelessWidget {
-  const _RecommendationGroupsDialog();
-
-  @override
-  Widget build(BuildContext context) {
-    return AppDialog(
-      title: context.l10n.bookRecommendationGroupsTitle,
-      child: BlocBuilder<BookDetailsCubit, BookDetailsState>(
-        builder: (context, state) {
-          if (state.isLoadingRecommendationGroups) {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: context.spacing.s24),
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: context.colors.actionPrimary,
-                ),
-              ),
-            );
-          }
-          if (state.notice == BookDetailsNotice.recommendationGroupsFailed) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  context.l10n.bookRecommendationGroupsError,
-                  style: context.typography.bodyDefault.copyWith(
-                    color: context.colors.textMuted,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: context.spacing.s16),
-                AppButton.secondary(
-                  label: context.l10n.errorRetryButton,
-                  size: AppButtonSize.lg,
-                  onPressed: context
-                      .read<BookDetailsCubit>()
-                      .loadRecommendationGroups,
-                ),
-              ],
-            );
-          }
-          if (state.recommendationGroups.isEmpty) {
-            return Text(
-              context.l10n.bookRecommendationGroupsEmpty,
-              style: context.typography.bodyDefault.copyWith(
-                color: context.colors.textMuted,
-              ),
-            );
-          }
-
-          return Column(
-            children: [
-              for (
-                var index = 0;
-                index < state.recommendationGroups.length;
-                index++
-              ) ...[
-                if (index > 0) SizedBox(height: context.spacing.s16),
-                _RecommendationGroupTile(
-                  group: state.recommendationGroups[index],
-                ),
-              ],
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _RecommendationGroupTile extends StatelessWidget {
-  const _RecommendationGroupTile({required this.group});
-
-  final BookRecommendationGroup group;
-
-  @override
-  Widget build(BuildContext context) {
-    return GroupSelectTile(
-      key: ValueKey(group.id),
-      name: group.name,
-      photoUrl: group.photoUrl,
-      alreadySuggested: group.alreadyRecommended,
-      onTap: () async {
-        final recommended = await context
-            .read<BookDetailsCubit>()
-            .recommendBook(groupId: group.id, groupName: group.name);
-        if (recommended && context.mounted) {
-          Navigator.of(context).pop();
-        }
-      },
     );
   }
 }

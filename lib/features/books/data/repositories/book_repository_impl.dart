@@ -132,15 +132,14 @@ class BookRepositoryImpl implements BookRepository {
     switch (result) {
       case Failure(:final failure):
         return Failure(
-          _recommendationFailureFrom(
-            failure,
-            const BookRecommendationGroupsFailure(),
-          ),
+          _failureFrom(failure, const BookRecommendationGroupsFailure()),
         );
       case Success(:final data):
-        return Success(
-          data.data?.map((group) => group.toDomain()).toList() ?? const [],
-        );
+        final groups = data.data;
+        if (groups == null) {
+          return const Failure(BookRecommendationGroupsFailure());
+        }
+        return Success(groups.map((group) => group.toDomain()).toList());
     }
   }
 
@@ -179,27 +178,8 @@ class BookRepositoryImpl implements BookRepository {
         if (failure.kind == SupabaseFailureKind.conflict) {
           return const Failure(BookAlreadyRecommendedFailure());
         }
-        return Failure(
-          _recommendationFailureFrom(
-            failure,
-            const BookRecommendationFailure(),
-          ),
-        );
+        return Failure(_failureFrom(failure, const BookRecommendationFailure()));
     }
-  }
-
-  BookFailure _recommendationFailureFrom(
-    SupabaseFailure failure,
-    BookFailure fallback,
-  ) {
-    debugPrint(
-      '[BookRecommendationFailure] ${failure.message} (${failure.code})',
-    );
-    return switch (failure.kind) {
-      SupabaseFailureKind.network => const BookNetworkFailure(),
-      SupabaseFailureKind.unauthorized => const BookSessionExpiredFailure(),
-      _ => fallback,
-    };
   }
 
   @override

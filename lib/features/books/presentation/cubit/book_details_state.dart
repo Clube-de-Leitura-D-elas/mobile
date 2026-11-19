@@ -6,6 +6,8 @@ import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 
 enum BookDetailsStatus { loading, loaded, error, notFound }
 
+enum RecommendationGroupsStatus { idle, loading, loaded, error }
+
 /// Aviso pontual para a tela mostrar como toast.
 enum BookDetailsNotice {
   readingStatusFailed,
@@ -13,7 +15,6 @@ enum BookDetailsNotice {
   reviewSaved,
   recommendationAlreadyExists,
   recommendationFailed,
-  recommendationGroupsFailed,
   reviewFailed,
 }
 
@@ -32,9 +33,12 @@ class BookDetailsState extends Equatable {
   final bool isSubmittingReview;
   final BookDetailsNotice? notice;
   final List<BookRecommendationGroup> recommendationGroups;
-  final bool isLoadingRecommendationGroups;
+  final RecommendationGroupsStatus recommendationGroupsStatus;
   final bool isRecommending;
   final String? recommendedGroupName;
+
+  bool get isLoadingRecommendationGroups =>
+      recommendationGroupsStatus == RecommendationGroupsStatus.loading;
 
   const BookDetailsState({
     this.status = BookDetailsStatus.loading,
@@ -49,7 +53,7 @@ class BookDetailsState extends Equatable {
     this.isSubmittingReview = false,
     this.notice,
     this.recommendationGroups = const [],
-    this.isLoadingRecommendationGroups = false,
+    this.recommendationGroupsStatus = RecommendationGroupsStatus.idle,
     this.isRecommending = false,
     this.recommendedGroupName,
   });
@@ -66,7 +70,7 @@ class BookDetailsState extends Equatable {
     bool? isSubmittingReview,
     BookDetailsNotice? notice,
     List<BookRecommendationGroup>? recommendationGroups,
-    bool? isLoadingRecommendationGroups,
+    RecommendationGroupsStatus? recommendationGroupsStatus,
     bool? isRecommending,
     String? recommendedGroupName,
   }) {
@@ -84,8 +88,8 @@ class BookDetailsState extends Equatable {
       isSubmittingReview: isSubmittingReview ?? this.isSubmittingReview,
       notice: notice,
       recommendationGroups: recommendationGroups ?? this.recommendationGroups,
-      isLoadingRecommendationGroups:
-          isLoadingRecommendationGroups ?? this.isLoadingRecommendationGroups,
+      recommendationGroupsStatus:
+          recommendationGroupsStatus ?? this.recommendationGroupsStatus,
       isRecommending: isRecommending ?? this.isRecommending,
       recommendedGroupName: recommendedGroupName ?? this.recommendedGroupName,
     );
@@ -105,7 +109,7 @@ class BookDetailsState extends Equatable {
     isSubmittingReview,
     notice,
     recommendationGroups,
-    isLoadingRecommendationGroups,
+    recommendationGroupsStatus,
     isRecommending,
     recommendedGroupName,
   ];

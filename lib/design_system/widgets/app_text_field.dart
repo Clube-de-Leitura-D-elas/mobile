@@ -6,7 +6,10 @@ import '../tokens/typography_tokens.dart';
 import 'gap.dart';
 
 /// Input field size enum matching Figma specs (Md: 40px, Lg: 56px).
-enum AppTextFieldSize { md, lg }
+enum AppTextFieldSize {
+  md,
+  lg,
+}
 
 /// Mobile-first input field component for Clube de Leitura D'Elas.
 ///
@@ -61,6 +64,7 @@ class AppTextField extends StatefulWidget {
   final AppTextFieldSize size;
   final String? Function(String?)? validator;
 
+
   @override
   State<AppTextField> createState() => _AppTextFieldState();
 }
@@ -73,8 +77,8 @@ class _AppTextFieldState extends State<AppTextField> {
   void initState() {
     super.initState();
     _isObscured = widget.obscureText;
-    _effectiveController =
-        widget.controller ?? TextEditingController(text: widget.initialValue);
+    _effectiveController = widget.controller ??
+        TextEditingController(text: widget.initialValue);
   }
 
   @override
@@ -84,6 +88,7 @@ class _AppTextFieldState extends State<AppTextField> {
     }
     super.dispose();
   }
+
 
   double get _height {
     switch (widget.size) {
@@ -150,11 +155,9 @@ class _AppTextFieldState extends State<AppTextField> {
     }
 
     final requiredHint = widget.isRequired
-        ? (Localizations.of<AppLocalizations>(
-                context,
-                AppLocalizations,
-              )?.requiredFieldSemantics ??
-              'Campo obrigatório')
+        ? (Localizations.of<AppLocalizations>(context, AppLocalizations)
+                ?.requiredFieldSemantics ??
+            'Campo obrigatório')
         : null;
     final semanticsLabel = requiredHint == null
         ? null
@@ -220,19 +223,16 @@ class _AppTextFieldState extends State<AppTextField> {
                       color: colors.textMuted,
                     ),
                     filled: true,
-                    fillColor: widget.enabled
-                        ? colors.bgDefault
-                        : colors.surfaceSunken,
+                    fillColor:
+                        widget.enabled ? colors.bgDefault : colors.surfaceSunken,
                     contentPadding: _contentPadding,
                     border: baseBorder,
                     enabledBorder: hasError ? errorBorder : baseBorder,
                     focusedBorder: hasError ? errorBorder : focusedBorder,
                     disabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide(
-                        color: colors.actionDisabledBg,
-                        width: 1.0,
-                      ),
+                      borderSide:
+                          BorderSide(color: colors.actionDisabledBg, width: 1.0),
                     ),
                     isDense: true,
                     prefixIcon: widget.prefixIcon,

@@ -67,7 +67,10 @@ void main() {
   testWidgets('renders screen header with Catálogo and headingH2 style', (
     tester,
   ) async {
-    await pumpScreen(tester, state: const BookSearchState());
+    await pumpScreen(
+      tester,
+      state: const BookSearchState(),
+    );
 
     expect(find.text('Catálogo'), findsOneWidget);
     final textWidget = tester.widget<Text>(find.text('Catálogo'));

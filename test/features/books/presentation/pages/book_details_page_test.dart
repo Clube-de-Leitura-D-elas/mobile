@@ -23,6 +23,7 @@ import 'package:mobile/features/books/presentation/pages/book_details_page.dart'
 import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
+import 'package:mobile/features/books/presentation/widgets/group_select_tile.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -184,6 +185,12 @@ void main() {
             name: 'Grupo Aurora',
             alreadyRecommended: false,
           ),
+          BookRecommendationGroup(
+            id: 'g2',
+            number: 7,
+            name: 'Raw Backend Name',
+            alreadyRecommended: false,
+          ),
         ]),
       );
 
@@ -193,10 +200,41 @@ void main() {
 
       expect(find.text('Selecione o grupo'), findsOneWidget);
       expect(find.text('Grupo Aurora'), findsOneWidget);
+      expect(find.text('Grupo 7'), findsOneWidget);
       verify(
         () => repository.getBookRecommendationGroups(bookId: 'b1'),
       ).called(1);
     });
+
+    testWidgets(
+      'opens dialog immediately on first tap and prevents duplicate dialogs on double tap',
+      (tester) async {
+        stubDetails(_details());
+        final pending =
+            Completer<Result<List<BookRecommendationGroup>, BookFailure>>();
+        when(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).thenAnswer((_) => pending.future);
+
+        await pumpPage(tester);
+        final recommendFinder = find.widgetWithText(AppButton, 'Indicar');
+        await tester.tap(recommendFinder);
+        await tester.pump();
+        await tester.tap(recommendFinder, warnIfMissed: false);
+        await tester.pump(const Duration(milliseconds: 200));
+
+        expect(find.byType(Dialog), findsOneWidget);
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        expect(find.bySemanticsLabel('Carregando grupos'), findsOneWidget);
+        expect(button(tester, 'Indicar').onPressed, isNull);
+        verify(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).called(1);
+
+        pending.complete(const Success([]));
+        await tester.pumpAndSettle();
+      },
+    );
 
     testWidgets(
       'shows an empty state when there are no recommendation groups',
@@ -231,18 +269,58 @@ void main() {
       await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
       await tester.pump();
 
+      expect(find.byType(Dialog), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
       pending.complete(const Failure(BookDetailsLoadFailure()));
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('Não foi possível carregar os grupos.'),
-        findsAtLeastNWidgets(1),
-      );
+      expect(find.text('Não foi possível carregar os grupos.'), findsOneWidget);
       expect(
         find.widgetWithText(AppButton, 'Tentar novamente'),
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'keeps recommendation error visible across unrelated cubit emissions',
+      (tester) async {
+        stubDetails(_details());
+        when(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).thenAnswer((_) async => const Failure(BookDetailsLoadFailure()));
+        when(
+          () => repository.setReadingStatus(
+            bookId: 'b1',
+            status: BookReadingStatus.read,
+          ),
+        ).thenAnswer((_) async => const Success(BookReadingStatus.read));
+
+        await pumpPage(tester);
+        await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.widgetWithText(AppButton, 'Tentar novamente'),
+          findsOneWidget,
+        );
+
+        await tester
+            .element(find.byType(Dialog))
+            .read<BookDetailsCubit>()
+            .toggleReadingStatus();
+        await tester.pumpAndSettle();
+
+        expect(
+          find.widgetWithText(AppButton, 'Tentar novamente'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Você ainda não participa de nenhum grupo.'),
+          findsNothing,
+        );
+      },
+    );
 
     testWidgets('shows loading when retrying recommendation groups', (
       tester,
@@ -354,11 +432,70 @@ void main() {
       expect(find.text('Não foi possível indicar o livro.'), findsOneWidget);
     });
 
+    testWidgets(
+      'disables dialog tiles and closing while recommending in modal',
+      (tester) async {
+        stubDetails(_details());
+        when(
+          () => repository.getBookRecommendationGroups(bookId: 'b1'),
+        ).thenAnswer(
+          (_) async => const Success([
+            BookRecommendationGroup(
+              id: 'g1',
+              number: 1,
+              name: 'Grupo 1',
+              alreadyRecommended: false,
+            ),
+            BookRecommendationGroup(
+              id: 'g2',
+              number: 2,
+              name: 'Grupo 2',
+              alreadyRecommended: false,
+            ),
+          ]),
+        );
+        final pending = Completer<Result<void, BookFailure>>();
+        when(
+          () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
+        ).thenAnswer((_) => pending.future);
+
+        await pumpPage(tester);
+        await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Grupo 1'));
+        await tester.pump();
+
+        final tiles = tester
+            .widgetList<GroupSelectTile>(find.byType(GroupSelectTile))
+            .toList();
+        expect(tiles.every((tile) => tile.onTap == null), isTrue);
+
+        final popScope = tester.widget<PopScope<dynamic>>(
+          find.byWidgetPredicate(
+            (w) => w is PopScope && w.child is AppDialog,
+          ),
+        );
+        expect(popScope.canPop, isFalse);
+
+        await tester.tap(find.byTooltip('Fechar'));
+        await tester.pump();
+        expect(find.text('Selecione o grupo'), findsOneWidget);
+
+        pending.complete(const Success(null));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Selecione o grupo'), findsNothing);
+        expect(find.text('Livro indicado ao Grupo 1'), findsOneWidget);
+      },
+    );
+
     testWidgets('indicates directly for a preselected group', (tester) async {
       stubDetails(_details());
+      final pending = Completer<Result<void, BookFailure>>();
       when(
         () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
-      ).thenAnswer((_) async => const Success(null));
+      ).thenAnswer((_) => pending.future);
 
       await pumpPage(
         tester,
@@ -368,12 +505,29 @@ void main() {
         ),
       );
       await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pump();
+
+      final recommendBtnFinder = find.byWidgetPredicate(
+        (w) => w is AppButton && w.label == 'Indicar',
+      );
+      final loadingBtn = tester.widget<AppButton>(recommendBtnFinder);
+      expect(loadingBtn.isLoading, isTrue);
+      expect(
+        find.descendant(
+          of: recommendBtnFinder,
+          matching: find.byType(CircularProgressIndicator),
+        ),
+        findsOneWidget,
+      );
+
+      pending.complete(const Success(null));
       await tester.pumpAndSettle();
 
       verify(
         () => repository.recommendBook(bookId: 'b1', groupId: 'g1'),
       ).called(1);
       expect(find.text('Livro indicado ao Grupo Aurora'), findsOneWidget);
+      expect(button(tester, 'Indicar').isLoading, isFalse);
     });
 
     testWidgets('shows an info toast when the book was already indicated', (

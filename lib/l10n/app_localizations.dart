@@ -2096,6 +2096,12 @@ abstract class AppLocalizations {
   /// **'Livro indicado ao {groupName}'**
   String bookRecommendationSuccess(Object groupName);
 
+  /// Cabeçalho da busca quando a leitora escolhe um livro para indicar a um grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar para {groupName}'**
+  String bookRecommendationSearchTitle(Object groupName);
+
   /// Título da seção de sinopse no detalhe do livro.
   ///
   /// In pt, this message translates to:

@@ -78,6 +78,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
           ),
         );
       case Success(:final data):
+        // Avaliação nova desloca as páginas e pode repetir uma já carregada.
         final loadedIds = state.reviews.map((review) => review.id).toSet();
         emit(
           state.copyWith(
@@ -127,7 +128,11 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
 
   Future<void> loadRecommendationGroups() async {
     if (state.isLoadingRecommendationGroups || state.details == null) return;
-    emit(state.copyWith(isLoadingRecommendationGroups: true, notice: null));
+    emit(
+      state.copyWith(
+        recommendationGroupsStatus: RecommendationGroupsStatus.loading,
+      ),
+    );
     final result = await repository.getBookRecommendationGroups(
       bookId: state.details!.id,
     );
@@ -137,18 +142,26 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
       case Failure():
         emit(
           state.copyWith(
-            isLoadingRecommendationGroups: false,
-            notice: BookDetailsNotice.recommendationGroupsFailed,
+            recommendationGroupsStatus: RecommendationGroupsStatus.error,
           ),
         );
       case Success(:final data):
         emit(
           state.copyWith(
             recommendationGroups: data,
-            isLoadingRecommendationGroups: false,
+            recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
           ),
         );
     }
+  }
+
+  List<BookRecommendationGroup> _markGroupRecommended(String groupId) {
+    return [
+      for (final group in state.recommendationGroups)
+        group.id == groupId
+            ? group.copyWith(alreadyRecommended: true)
+            : group,
+    ];
   }
 
   Future<bool> recommendBook({
@@ -157,7 +170,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
   }) async {
     final details = state.details;
     if (details == null || state.isRecommending) return false;
-    emit(state.copyWith(isRecommending: true, notice: null));
+    emit(state.copyWith(isRecommending: true));
 
     final result = await repository.recommendBook(
       bookId: details.id,
@@ -172,6 +185,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
             isRecommending: false,
             notice: BookDetailsNotice.recommendationSucceeded,
             recommendedGroupName: groupName,
+            recommendationGroups: _markGroupRecommended(groupId),
           ),
         );
         return true;
@@ -184,17 +198,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
                 ? BookDetailsNotice.recommendationAlreadyExists
                 : BookDetailsNotice.recommendationFailed,
             recommendationGroups: alreadyRecommended
-                ? [
-                    for (final group in state.recommendationGroups)
-                      group.id == groupId
-                          ? BookRecommendationGroup(
-                              id: group.id,
-                              name: group.name,
-                              photoUrl: group.photoUrl,
-                              alreadyRecommended: true,
-                            )
-                          : group,
-                  ]
+                ? _markGroupRecommended(groupId)
                 : state.recommendationGroups,
           ),
         );

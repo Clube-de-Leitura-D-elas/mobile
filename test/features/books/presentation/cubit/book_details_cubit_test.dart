@@ -458,6 +458,7 @@ void main() {
   group('recommendation', () {
     const group = BookRecommendationGroup(
       id: 'group-1',
+      number: 1,
       name: 'Grupo 1',
       alreadyRecommended: false,
     );
@@ -471,9 +472,45 @@ void main() {
       build: build,
       act: (cubit) => cubit.loadRecommendationGroups(),
       expect: () => [
-        loaded(_details()).copyWith(isLoadingRecommendationGroups: true),
-        loaded(_details()).copyWith(recommendationGroups: const [group]),
+        loaded(_details()).copyWith(
+          recommendationGroupsStatus: RecommendationGroupsStatus.loading,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+        ),
       ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'emits error status without notice when loading groups fails',
+      setUp: () => when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer((_) async => const Failure(BookRecommendationGroupsFailure())),
+      seed: () => loaded(_details()),
+      build: build,
+      act: (cubit) => cubit.loadRecommendationGroups(),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroupsStatus: RecommendationGroupsStatus.loading,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroupsStatus: RecommendationGroupsStatus.error,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'ignores duplicate group load while already loading',
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroupsStatus: RecommendationGroupsStatus.loading,
+      ),
+      build: build,
+      act: (cubit) => cubit.loadRecommendationGroups(),
+      expect: () => const <BookDetailsState>[],
+      verify: (_) => verifyNever(
+        () => repository.getBookRecommendationGroups(bookId: any(named: 'bookId')),
+      ),
     );
 
     blocTest<BookDetailsCubit, BookDetailsState>(
@@ -481,44 +518,107 @@ void main() {
       setUp: () => when(
         () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
       ).thenAnswer((_) async => const Failure(BookAlreadyRecommendedFailure())),
-      seed: () =>
-          loaded(_details()).copyWith(recommendationGroups: const [group]),
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroups: const [group],
+        recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+      ),
       build: build,
       act: (cubit) =>
           cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
       expect: () => [
-        loaded(
-          _details(),
-        ).copyWith(recommendationGroups: const [group], isRecommending: true),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          isRecommending: true,
+        ),
         loaded(_details()).copyWith(
           recommendationGroups: const [
             BookRecommendationGroup(
               id: 'group-1',
+              number: 1,
               name: 'Grupo 1',
               alreadyRecommended: true,
             ),
           ],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
           notice: BookDetailsNotice.recommendationAlreadyExists,
         ),
       ],
     );
 
     blocTest<BookDetailsCubit, BookDetailsState>(
-      'raises a success notice after recommending a book',
+      'keeps recommendation groups unchanged on generic recommend failure',
       setUp: () => when(
         () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
-      ).thenAnswer((_) async => const Success(null)),
-      seed: () => loaded(_details()),
+      ).thenAnswer((_) async => const Failure(BookNetworkFailure())),
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroups: const [group],
+        recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+      ),
       build: build,
       act: (cubit) =>
           cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
       expect: () => [
-        loaded(_details()).copyWith(isRecommending: true),
         loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          isRecommending: true,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          notice: BookDetailsNotice.recommendationFailed,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'raises a success notice and marks the group after recommending a book',
+      setUp: () => when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer((_) async => const Success(null)),
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroups: const [group],
+        recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+      ),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          isRecommending: true,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [
+            BookRecommendationGroup(
+              id: 'group-1',
+              number: 1,
+              name: 'Grupo 1',
+              alreadyRecommended: true,
+            ),
+          ],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
           notice: BookDetailsNotice.recommendationSucceeded,
           recommendedGroupName: 'Grupo 1',
         ),
       ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'ignores concurrent recommendation while submitting',
+      seed: () => loaded(_details()).copyWith(isRecommending: true),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => const <BookDetailsState>[],
+      verify: (_) => verifyNever(
+        () => repository.recommendBook(
+          bookId: any(named: 'bookId'),
+          groupId: any(named: 'groupId'),
+        ),
+      ),
     );
   });
 }

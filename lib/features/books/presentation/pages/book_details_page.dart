@@ -6,18 +6,14 @@ import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
-import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/presentation/book_failure_message.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_details_content.dart';
 import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
-/// Avisa quem abriu os detalhes (a busca) sobre o status do livro.
-/// [isWrite] é `true` quando a leitora mudou o status aqui e `false` quando os
-/// detalhes só carregaram o que o backend tem.
-typedef ReadingStatusChanged =
-    void Function(BookReadingStatus? status, {required bool isWrite});
+export 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart'
+    show ReadingStatusChanged;
 
 class BookDetailsPage extends StatelessWidget {
   const BookDetailsPage({
@@ -58,28 +54,7 @@ class BookDetailsPage extends StatelessWidget {
       child: BlocConsumer<BookDetailsCubit, BookDetailsState>(
         listenWhen: (previous, current) =>
             current.notice != null && previous.notice != current.notice,
-        listener: (context, state) => switch (state.notice) {
-          BookDetailsNotice.readingStatusFailed => context.showErrorToast(
-            l10n.bookReadingStatusError,
-          ),
-          BookDetailsNotice.recommendationSucceeded => context.showSuccessToast(
-            l10n.bookRecommendationSuccess(state.recommendedGroupName ?? ''),
-          ),
-          BookDetailsNotice.recommendationAlreadyExists =>
-            context.showInfoToast(l10n.bookRecommendationAlreadyExists),
-          BookDetailsNotice.recommendationGroupsFailed =>
-            context.showErrorToast(l10n.bookRecommendationGroupsError),
-          BookDetailsNotice.recommendationFailed => context.showErrorToast(
-            l10n.bookRecommendationError,
-          ),
-          BookDetailsNotice.reviewSaved => context.showSuccessToast(
-            l10n.bookReviewSuccess,
-          ),
-          BookDetailsNotice.reviewFailed => context.showErrorToast(
-            l10n.bookReviewError,
-          ),
-          null => null,
-        },
+        listener: _handleNotice,
         builder: (context, state) {
           final cubit = context.read<BookDetailsCubit>();
           final isLoaded = state.status == BookDetailsStatus.loaded;
@@ -119,6 +94,29 @@ class BookDetailsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _handleNotice(BuildContext context, BookDetailsState state) {
+    final l10n = context.l10n;
+    switch (state.notice) {
+      case BookDetailsNotice.readingStatusFailed:
+        context.showErrorToast(l10n.bookReadingStatusError);
+      case BookDetailsNotice.recommendationSucceeded:
+        final groupName = state.recommendedGroupName;
+        if (groupName != null && groupName.isNotEmpty) {
+          context.showSuccessToast(l10n.bookRecommendationSuccess(groupName));
+        }
+      case BookDetailsNotice.recommendationAlreadyExists:
+        context.showInfoToast(l10n.bookRecommendationAlreadyExists);
+      case BookDetailsNotice.recommendationFailed:
+        context.showErrorToast(l10n.bookRecommendationError);
+      case BookDetailsNotice.reviewSaved:
+        context.showSuccessToast(l10n.bookReviewSuccess);
+      case BookDetailsNotice.reviewFailed:
+        context.showErrorToast(l10n.bookReviewError);
+      case null:
+        break;
+    }
   }
 
   // A aba Busca aparece selecionada, mas esta tela está empilhada sobre ela.

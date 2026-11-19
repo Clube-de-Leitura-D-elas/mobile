@@ -1,6 +1,13 @@
+import 'package:equatable/equatable.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 
-class BookRecommendationTarget {
+/// Avisa quem abriu os detalhes (a busca) sobre o status do livro.
+/// [isWrite] é `true` quando a leitora mudou o status aqui e `false` quando os
+/// detalhes só carregaram o que o backend tem.
+typedef ReadingStatusChanged =
+    void Function(BookReadingStatus? status, {required bool isWrite});
+
+class BookRecommendationTarget extends Equatable {
   const BookRecommendationTarget({
     required this.groupId,
     required this.groupName,
@@ -8,6 +15,9 @@ class BookRecommendationTarget {
 
   final String groupId;
   final String groupName;
+
+  @override
+  List<Object?> get props => [groupId, groupName];
 }
 
 class BookDetailsRouteExtra {
@@ -16,7 +26,6 @@ class BookDetailsRouteExtra {
     this.recommendationTarget,
   });
 
-  final void Function(BookReadingStatus? status, {required bool isWrite})?
-  onReadingStatusChanged;
+  final ReadingStatusChanged? onReadingStatusChanged;
   final BookRecommendationTarget? recommendationTarget;
 }

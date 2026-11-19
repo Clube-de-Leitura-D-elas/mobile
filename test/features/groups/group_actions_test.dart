@@ -41,6 +41,18 @@ void main() {
     );
 
     testWidgets(
+      'given null onRecommendBook, when rendered, then recommend button is disabled',
+      (tester) async {
+        await tester.pumpWidget(buildSubject(const GroupActions()));
+
+        final recommendButton = tester.widget<AppButton>(
+          find.widgetWithText(AppButton, 'Indicar livro'),
+        );
+        expect(recommendButton.onPressed, isNull);
+      },
+    );
+
+    testWidgets(
       'given empty whatsappUrl, when rendered, then whatsapp button is disabled',
       (tester) async {
         await tester.pumpWidget(

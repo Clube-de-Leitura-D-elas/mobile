@@ -1184,6 +1184,11 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String bookRecommendationSearchTitle(Object groupName) {
+    return 'Indicar para $groupName';
+  }
+
+  @override
   String get bookDetailSynopsisTitle => 'Sinopse';
 
   @override
@@ -2944,6 +2949,11 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String bookRecommendationSearchTitle(Object groupName) {
+    return 'Indicar para $groupName';
+  }
+
+  @override
   String get bookDetailSynopsisTitle => 'Sinopse';
 
   @override
@@ -3195,6 +3205,11 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get searchTabGroups => 'Grupos';
+
+  @override
+  String groupNameLabel(Object number) {
+    return 'Grupo $number';
+  }
 
   @override
   String get groupSearchTitle => 'Encontre seu grupo ideal';

@@ -247,6 +247,8 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
+        expect(find.text('Indicar para Grupo 1'), findsOneWidget);
+        expect(find.byTooltip('Voltar'), findsOneWidget);
         expect(
           tester
               .widget<BookSearchPage>(find.byType(BookSearchPage))

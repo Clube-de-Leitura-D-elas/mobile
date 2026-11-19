@@ -1578,6 +1578,13 @@
       "groupName": {}
     }
   },
+  "bookRecommendationSearchTitle": "Indicar para {groupName}",
+  "@bookRecommendationSearchTitle": {
+    "description": "Cabeçalho da busca quando a leitora escolhe um livro para indicar a um grupo.",
+    "placeholders": {
+      "groupName": {}
+    }
+  },
   "bookDetailSynopsisTitle": "Sinopse",
   "@bookDetailSynopsisTitle": {
     "description": "Título da seção de sinopse no detalhe do livro."
@@ -2035,7 +2042,10 @@
   },
   "groupNameLabel": "Grupo {number}",
   "@groupNameLabel": {
-    "description": "Nome de exibição de um grupo a partir do número."
+    "description": "Nome de exibição de um grupo a partir do número.",
+    "placeholders": {
+      "number": {}
+    }
   },
   "groupSearchTitle": "Encontre seu grupo ideal",
   "@groupSearchTitle": {
