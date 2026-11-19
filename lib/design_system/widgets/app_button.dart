@@ -98,7 +98,6 @@ class AppButton extends StatelessWidget {
   }
 
   static const double _borderWidth = 1.0;
-  static const double _minTapTargetSize = 48.0;
 
   EdgeInsets _tightWidthPadding(double horizontal) {
     if (_padding.left <= horizontal) {
@@ -236,10 +235,7 @@ class AppButton extends StatelessWidget {
       enabled: _isEnabled,
       label: label,
       child: size == AppButtonSize.sm
-          ? _TapTargetPadding(
-              minSize: const Size.square(_minTapTargetSize),
-              child: button,
-            )
+          ? _TapTargetPadding(child: button)
           : button,
     );
   }
@@ -429,78 +425,68 @@ class _RenderButtonPadding extends RenderShiftedBox {
   }
 }
 
-/// Alvo de toque mínimo em volta do botão visível, como o
+/// Alvo de toque mínimo de 48x48 em volta do botão visível, como o
 /// `MaterialTapTargetSize.padded` do Material: o toque na sobra é repassado ao
 /// centro do botão.
 class _TapTargetPadding extends SingleChildRenderObjectWidget {
-  const _TapTargetPadding({required this.minSize, super.child});
-
-  final Size minSize;
+  const _TapTargetPadding({required Widget super.child});
 
   @override
   _RenderTapTargetPadding createRenderObject(BuildContext context) {
-    return _RenderTapTargetPadding(minSize);
-  }
-
-  @override
-  void updateRenderObject(
-    BuildContext context,
-    _RenderTapTargetPadding renderObject,
-  ) {
-    renderObject.minSize = minSize;
+    return _RenderTapTargetPadding();
   }
 }
 
 class _RenderTapTargetPadding extends RenderShiftedBox {
-  _RenderTapTargetPadding(this._minSize) : super(null);
+  _RenderTapTargetPadding() : super(null);
 
-  Size _minSize;
-  Size get minSize => _minSize;
-  set minSize(Size value) {
-    if (_minSize == value) {
-      return;
-    }
-    _minSize = value;
-    markNeedsLayout();
-  }
+  static const double _minSize = 48.0;
+
+  RenderBox get _child => child!;
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    final childWidth = child?.getMinIntrinsicWidth(height) ?? 0;
-    return math.max(childWidth, _minSize.width);
+    return math.max(_child.getMinIntrinsicWidth(height), _minSize);
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    final childWidth = child?.getMaxIntrinsicWidth(height) ?? 0;
-    return math.max(childWidth, _minSize.width);
+    return math.max(_child.getMaxIntrinsicWidth(height), _minSize);
   }
 
   @override
   double computeMinIntrinsicHeight(double width) {
-    final childHeight = child?.getMinIntrinsicHeight(width) ?? 0;
-    return math.max(childHeight, _minSize.height);
+    return math.max(_child.getMinIntrinsicHeight(width), _minSize);
   }
 
   @override
   double computeMaxIntrinsicHeight(double width) {
-    final childHeight = child?.getMaxIntrinsicHeight(width) ?? 0;
-    return math.max(childHeight, _minSize.height);
+    return math.max(_child.getMaxIntrinsicHeight(width), _minSize);
+  }
+
+  // Altura imposta de até 48 (ex.: IntrinsicHeight, que mede 48 aqui) é
+  // absorvida pelo padding; acima disso o botão visível estica.
+  BoxConstraints _childConstraints(BoxConstraints constraints) {
+    return constraints.minHeight <= _minSize
+        ? constraints.copyWith(minHeight: 0)
+        : constraints;
   }
 
   Size _sizeFor(BoxConstraints constraints, Size childSize) {
     return constraints.constrain(
       Size(
-        math.max(childSize.width, _minSize.width),
-        math.max(childSize.height, _minSize.height),
+        math.max(childSize.width, _minSize),
+        math.max(childSize.height, _minSize),
       ),
     );
   }
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
-    final childSize = child?.getDryLayout(constraints) ?? Size.zero;
-    return _sizeFor(constraints, childSize);
+    return _sizeFor(
+      constraints,
+      _child.getDryLayout(_childConstraints(constraints)),
+    );
   }
 
   @override
@@ -508,12 +494,12 @@ class _RenderTapTargetPadding extends RenderShiftedBox {
     BoxConstraints constraints,
     TextBaseline baseline,
   ) {
-    final child = this.child;
-    final childBaseline = child?.getDryBaseline(constraints, baseline);
-    if (child == null || childBaseline == null) {
+    final childConstraints = _childConstraints(constraints);
+    final childBaseline = _child.getDryBaseline(childConstraints, baseline);
+    if (childBaseline == null) {
       return null;
     }
-    final childSize = child.getDryLayout(constraints);
+    final childSize = _child.getDryLayout(childConstraints);
     final offset = Alignment.center.alongOffset(
       _sizeFor(constraints, childSize) - childSize as Offset,
     );
@@ -522,15 +508,10 @@ class _RenderTapTargetPadding extends RenderShiftedBox {
 
   @override
   void performLayout() {
-    final child = this.child;
-    if (child == null) {
-      size = _sizeFor(constraints, Size.zero);
-      return;
-    }
-    child.layout(constraints, parentUsesSize: true);
-    size = _sizeFor(constraints, child.size);
-    (child.parentData! as BoxParentData).offset = Alignment.center.alongOffset(
-      size - child.size as Offset,
+    _child.layout(_childConstraints(constraints), parentUsesSize: true);
+    size = _sizeFor(constraints, _child.size);
+    (_child.parentData! as BoxParentData).offset = Alignment.center.alongOffset(
+      size - _child.size as Offset,
     );
   }
 
@@ -539,23 +520,16 @@ class _RenderTapTargetPadding extends RenderShiftedBox {
     if (super.hitTest(result, position: position)) {
       return true;
     }
-    final child = this.child;
     // Hoje o Semantics em volta já barra toques fora; sem esta checagem, se ele
     // sair daqui, Row e Stack desviariam para o botão toques fora dele.
-    if (child == null || !size.contains(position)) {
+    if (!size.contains(position)) {
       return false;
     }
-    final center = child.size.center(Offset.zero);
+    final center = _child.size.center(Offset.zero);
     return result.addWithRawTransform(
       transform: MatrixUtils.forceToPoint(center),
       position: center,
-      hitTest: (result, position) => child.hitTest(result, position: center),
+      hitTest: (result, position) => _child.hitTest(result, position: center),
     );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<Size>('minSize', _minSize));
   }
 }

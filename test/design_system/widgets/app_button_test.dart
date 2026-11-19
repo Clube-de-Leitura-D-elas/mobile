@@ -506,6 +506,103 @@ void main() {
         handle.dispose();
       });
 
+      testWidgets('dentro de IntrinsicHeight mantém o visual de 32 e o alvo de 48', (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: Center(
+                child: IntrinsicHeight(
+                  child: AppButton.primary(label: 'Sair', size: AppButtonSize.sm, onPressed: () {}),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.getSize(visualOf(find.byType(AppButton))).height, 32.0);
+        expect(tester.getSize(find.byType(AppButton)).height, 48.0);
+        final box = tester.renderObject<RenderBox>(find.byType(AppButton));
+        expect(box.getDryLayout(box.constraints), box.size);
+        final labelTop = tester.getTopLeft(find.text('Sair')).dy - tester.getTopLeft(find.byType(AppButton)).dy;
+        final paragraph = tester.renderObject<RenderParagraph>(find.text('Sair'));
+        expect(
+          box.getDryBaseline(box.constraints, TextBaseline.alphabetic),
+          labelTop + paragraph.getDryBaseline(paragraph.constraints, TextBaseline.alphabetic)!,
+        );
+      });
+
+      testWidgets('altura imposta acima de 48 estica o botão visível', (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  height: 60,
+                  child: AppButton.primary(label: 'Sair', size: AppButtonSize.sm, onPressed: () {}),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.getSize(visualOf(find.byType(AppButton))).height, 60.0);
+      });
+
+      testWidgets('com fonte grande o botão visível cresce além de 48 e o alvo acompanha', (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: MediaQuery(
+              data: const MediaQueryData(textScaler: TextScaler.linear(3)),
+              child: Scaffold(
+                body: Center(
+                  child: IntrinsicHeight(
+                    child: AppButton.primary(label: 'Sair', size: AppButtonSize.sm, onPressed: () {}),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final visual = tester.getSize(visualOf(find.byType(AppButton))).height;
+        expect(visual, greaterThan(48.0));
+        expect(tester.getSize(find.byType(AppButton)).height, visual);
+      });
+
+      testWidgets('a largura intrínseca bate com o layout e não fica abaixo de 48', (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppButton.primary(label: 'Sair', size: AppButtonSize.sm, onPressed: () {}),
+                    // Sem label, o visível fica só com os 32 de padding horizontal.
+                    AppButton.primary(label: '', size: AppButtonSize.sm, onPressed: () {}),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final buttons = find.byType(AppButton);
+        final wide = tester.renderObject<RenderBox>(buttons.first);
+        expect(wide.getMinIntrinsicWidth(double.infinity), wide.size.width);
+        expect(wide.getMaxIntrinsicWidth(double.infinity), wide.size.width);
+
+        final narrow = tester.renderObject<RenderBox>(buttons.last);
+        expect(tester.getSize(visualOf(buttons.last)).width, 32.0);
+        expect(narrow.size.width, 48.0);
+        expect(narrow.getMinIntrinsicWidth(double.infinity), 48.0);
+        expect(narrow.getMaxIntrinsicWidth(double.infinity), 48.0);
+      });
+
       testWidgets('md e lg não ganham padding de toque', (tester) async {
         await tester.pumpWidget(
           MaterialApp(
