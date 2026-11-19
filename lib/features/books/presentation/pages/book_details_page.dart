@@ -57,7 +57,11 @@ class BookDetailsPage extends StatelessWidget {
       child: BlocConsumer<BookDetailsCubit, BookDetailsState>(
         listenWhen: (previous, current) =>
             current.notice != null && previous.notice != current.notice,
-        listener: _handleNotice,
+        listener: (context, state) => _handleNotice(
+          context,
+          state.notice!,
+          state.recommendedGroupName,
+        ),
         builder: (context, state) {
           final cubit = context.read<BookDetailsCubit>();
           final isLoaded = state.status == BookDetailsStatus.loaded;
@@ -99,20 +103,26 @@ class BookDetailsPage extends StatelessWidget {
     );
   }
 
-  void _handleNotice(BuildContext context, BookDetailsState state) {
+  void _handleNotice(
+    BuildContext context,
+    BookDetailsNotice notice,
+    String? recommendedGroupName,
+  ) {
     final l10n = context.l10n;
-    switch (state.notice) {
+    switch (notice) {
       case BookDetailsNotice.readingStatusFailed:
         context.showErrorToast(l10n.bookReadingStatusError);
       case BookDetailsNotice.recommendationSucceeded:
-        final groupName = state.recommendedGroupName;
-        if (groupName != null && groupName.isNotEmpty) {
-          context.showSuccessToast(l10n.bookRecommendationSuccess(groupName));
+        if (recommendedGroupName != null && recommendedGroupName.isNotEmpty) {
+          context.showSuccessToast(
+            l10n.bookRecommendationSuccess(recommendedGroupName),
+          );
         }
       case BookDetailsNotice.recommendationReplaced:
-        final groupName = state.recommendedGroupName;
-        if (groupName != null && groupName.isNotEmpty) {
-          context.showSuccessToast(l10n.bookRecommendationReplaced(groupName));
+        if (recommendedGroupName != null && recommendedGroupName.isNotEmpty) {
+          context.showSuccessToast(
+            l10n.bookRecommendationReplaced(recommendedGroupName),
+          );
         }
       case BookDetailsNotice.recommendationHostBlocked:
         unawaited(BookRecommendationBlockedDialog.show(context));
@@ -124,8 +134,6 @@ class BookDetailsPage extends StatelessWidget {
         context.showSuccessToast(l10n.bookReviewSuccess);
       case BookDetailsNotice.reviewFailed:
         context.showErrorToast(l10n.bookReviewError);
-      case null:
-        break;
     }
   }
 

@@ -152,4 +152,28 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test('copies BookRecommendationGroup with and without overrides', () {
+    const original = BookRecommendationGroup(
+      id: 'g1',
+      number: 1,
+      name: 'Grupo 1',
+      photoUrl: 'https://example.com/g1.jpg',
+      alreadyRecommended: false,
+      canRecommend: true,
+    );
+
+    expect(original.copyWith(), original);
+    expect(
+      original.copyWith(alreadyRecommended: true, canRecommend: false),
+      const BookRecommendationGroup(
+        id: 'g1',
+        number: 1,
+        name: 'Grupo 1',
+        photoUrl: 'https://example.com/g1.jpg',
+        alreadyRecommended: true,
+        canRecommend: false,
+      ),
+    );
+  });
 }

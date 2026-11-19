@@ -479,6 +479,34 @@ void main() {
       },
     );
 
+    testWidgets('closes the groups dialog when tapping close while idle', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer(
+        (_) async => const Success([
+          BookRecommendationGroup(
+            id: 'g1',
+            number: 1,
+            name: 'Grupo 1',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+
+      await pumpPage(tester);
+      await tester.tap(find.widgetWithText(AppButton, 'Indicar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Selecione o grupo'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Fechar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Selecione o grupo'), findsNothing);
+    });
+
     testWidgets('keeps the dialog open when recommendation fails', (
       tester,
     ) async {
@@ -757,6 +785,31 @@ void main() {
       ).called(1);
       expect(find.text('Avaliar livro'), findsNothing);
       expect(find.text('Já lido'), findsOneWidget);
+    });
+
+    testWidgets('shows an error toast when saving a review fails', (
+      tester,
+    ) async {
+      stubDetails(_details());
+      when(
+        () => repository.upsertBookReview(
+          bookId: 'b1',
+          rating: 5,
+          commentary: null,
+        ),
+      ).thenAnswer((_) async => const Failure(BookReviewFailure()));
+
+      await pumpPage(tester);
+      await tester.tap(find.text('Avaliar'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.bySemanticsLabel('5 de 5 estrelas'));
+      await tester.pump();
+      await tester.tap(find.widgetWithText(AppButton, 'Concluir'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Não foi possível salvar sua avaliação.'), findsOneWidget);
+      expect(find.text('Avaliar livro'), findsOneWidget);
     });
 
     testWidgets('meets the 48px touch target on the actions', (tester) async {
