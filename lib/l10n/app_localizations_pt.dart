@@ -1666,6 +1666,11 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String groupSearchCardSemantic(int number) {
+    return 'Abrir detalhes do Grupo $number';
+  }
+
+  @override
   String groupJoinRequestsAccess(int count) {
     return 'Pedidos de entrada ($count)';
   }
@@ -3337,6 +3342,11 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String groupSearchSeeDetailsSemantic(int number) {
     return 'Ver detalhes do Grupo $number';
+  }
+
+  @override
+  String groupSearchCardSemantic(int number) {
+    return 'Abrir detalhes do Grupo $number';
   }
 
   @override

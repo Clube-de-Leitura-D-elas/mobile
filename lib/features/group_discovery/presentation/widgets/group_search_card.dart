@@ -30,68 +30,82 @@ class GroupSearchCard extends StatelessWidget {
     final l10n = context.l10n;
     final cityState = group.cityState;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExcludeSemantics(
-              child: AppGroupAvatar(
-                photoUrl: group.photoUrl,
-                diameter: _avatarSize,
-              ),
-            ),
-            SizedBox(width: spacing.s12),
-            // Nome, participantes e cidade lidos juntos; o link e o botão
-            // ficam fora para continuarem acionáveis.
-            Expanded(
-              child: MergeSemantics(
-                child: LayoutBuilder(
-                  builder: (context, constraints) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Semantics(
-                        header: true,
-                        child: Text(
-                          l10n.groupDetailsNumberLabel(group.number),
-                          style: typography.headingH3.copyWith(
-                            color: colors.textDefault,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: spacing.s4),
-                      GroupMetadata(
-                        icon: AppIcons.group,
-                        label: l10n.groupParticipantsCount(
-                          group.participantCount,
-                        ),
-                        maxWidth: constraints.maxWidth,
-                      ),
-                      if (cityState != null) ...[
-                        SizedBox(height: spacing.s4),
-                        GroupMetadata(
-                          icon: AppIcons.location,
-                          label: cityState,
-                          maxWidth: constraints.maxWidth,
-                        ),
-                      ],
-                    ],
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: spacing.s4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Só o cabeçalho é clicável; a seção de participação fica de fora.
+          Semantics(
+            container: true,
+            button: true,
+            label: l10n.groupSearchCardSemantic(group.number),
+            onTap: onOpenDetails,
+            child: InkWell(
+              onTap: onOpenDetails,
+              borderRadius: BorderRadius.circular(AppCard.borderRadius),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExcludeSemantics(
+                    child: AppGroupAvatar(
+                      photoUrl: group.photoUrl,
+                      diameter: _avatarSize,
+                    ),
                   ),
-                ),
+                  SizedBox(width: spacing.s12),
+                  // Nome, participantes e cidade lidos juntos; o link fica
+                  // fora para continuar acionável.
+                  Expanded(
+                    child: MergeSemantics(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Semantics(
+                              header: true,
+                              child: Text(
+                                l10n.groupDetailsNumberLabel(group.number),
+                                style: typography.headingH3.copyWith(
+                                  color: colors.textDefault,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: spacing.s4),
+                            GroupMetadata(
+                              icon: AppIcons.group,
+                              label: l10n.groupParticipantsCount(
+                                group.participantCount,
+                              ),
+                              maxWidth: constraints.maxWidth,
+                            ),
+                            if (cityState != null) ...[
+                              SizedBox(height: spacing.s4),
+                              GroupMetadata(
+                                icon: AppIcons.location,
+                                label: cityState,
+                                maxWidth: constraints.maxWidth,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: spacing.s8),
+                  _SeeDetailsLink(number: group.number, onTap: onOpenDetails),
+                ],
               ),
             ),
-            SizedBox(width: spacing.s8),
-            _SeeDetailsLink(number: group.number, onTap: onOpenDetails),
-          ],
-        ),
-        SizedBox(height: spacing.s12),
-        PublicGroupMembershipSection(
-          status: group.membershipStatus,
-          isRequesting: isRequesting,
-          onRequestJoin: onRequestJoin,
-        ),
-      ],
+          ),
+          SizedBox(height: spacing.s12),
+          PublicGroupMembershipSection(
+            status: group.membershipStatus,
+            isRequesting: isRequesting,
+            onRequestJoin: onRequestJoin,
+          ),
+        ],
+      ),
     );
   }
 }

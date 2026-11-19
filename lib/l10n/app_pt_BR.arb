@@ -358,6 +358,7 @@
   "groupSearchEnd": "Você chegou ao fim da lista.",
   "groupSearchSeeDetails": "Ver detalhes",
   "groupSearchSeeDetailsSemantic": "Ver detalhes do Grupo {number}",
+  "groupSearchCardSemantic": "Abrir detalhes do Grupo {number}",
   "groupJoinRequestsAccess": "Pedidos de entrada ({count})",
   "groupJoinRequestsTitle": "Pedidos de entrada",
   "groupJoinRequestsLoading": "Carregando pedidos de entrada",

@@ -20,7 +20,7 @@ class PublicGroupMembershipSection extends StatelessWidget {
     required this.isRequesting,
     required this.onRequestJoin,
     this.onOpenMemberDetails,
-    this.buttonSize = AppButtonSize.lg,
+    this.buttonSize = AppButtonSize.sm,
   });
 
   @override
