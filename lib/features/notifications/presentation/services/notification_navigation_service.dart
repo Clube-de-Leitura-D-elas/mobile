@@ -48,10 +48,14 @@ class NotificationNavigationService {
     NotificationRepository repository,
     Map<String, dynamic> data,
   ) {
-    final notificationId = (data['notification_id'] ?? data['id'])
-        ?.toString()
-        .trim();
-    if (notificationId != null && notificationId.isNotEmpty) {
+    // O push do backend manda o id em `notification_target_id`. Valor em
+    // branco conta como ausente, para cair no próximo campo.
+    final notificationId =
+        [data['notification_target_id'], data['notification_id'], data['id']]
+            .map((value) => value?.toString().trim())
+            .nonNulls
+            .firstWhere((value) => value.isNotEmpty, orElse: () => '');
+    if (notificationId.isNotEmpty) {
       unawaited(repository.markAsRead(notificationId));
     }
   }

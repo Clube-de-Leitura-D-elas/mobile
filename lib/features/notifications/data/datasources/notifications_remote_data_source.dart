@@ -7,7 +7,8 @@ import 'package:mobile/core/tools/result.dart';
 abstract class NotificationsRemoteDataSource {
   Future<NotificationSettings> requestPermissions();
   Future<String?> getDeviceToken();
-  Future<Result<void, SupabaseFailure>> saveTokenToBackend(String? token);
+  Future<Result<void, SupabaseFailure>> registerDevice(String token);
+  Future<Result<void, SupabaseFailure>> unregisterDevice(String token);
   Future<Map<String, dynamic>?> getInitialNotificationData();
   Stream<Map<String, dynamic>> get onNotificationOpened;
   Stream<Map<String, dynamic>> get onForegroundMessage;
@@ -47,10 +48,12 @@ class NotificationsRemoteDataSourceImpl
       badge: true,
       sound: true,
     );
+    // Com o app aberto o push do sistema não aparece: só o sino é atualizado
+    // (via `onForegroundMessage`).
     await _messaging.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
+      alert: false,
+      badge: false,
+      sound: false,
     );
     return settings;
   }
@@ -100,22 +103,35 @@ class NotificationsRemoteDataSourceImpl
   }
 
   @override
-  Future<Result<void, SupabaseFailure>> saveTokenToBackend(
-    String? token,
-  ) async {
-    if (token == null || token.trim().isEmpty) {
-      return const Success(null);
+  Future<Result<void, SupabaseFailure>> registerDevice(String token) {
+    final platform = _platform;
+    if (platform == null) {
+      return Future.value(
+        const Failure(
+          FunctionSupabaseFailure(message: 'Plataforma sem suporte a push.'),
+        ),
+      );
     }
 
-    final platform =
-        defaultTargetPlatform == TargetPlatform.iOS ? 'IOS' : 'ANDROID';
+    return _invokeDeviceFunction('register-device', {
+      'fcm_token': token,
+      'platform': platform,
+    });
+  }
 
+  @override
+  Future<Result<void, SupabaseFailure>> unregisterDevice(String token) {
+    return _invokeDeviceFunction('unregister-device', {'fcm_token': token});
+  }
+
+  /// As duas functions de aparelho só devolvem sucesso ou falha, sem corpo útil.
+  Future<Result<void, SupabaseFailure>> _invokeDeviceFunction(
+    String functionName,
+    Map<String, dynamic> body,
+  ) async {
     final result = await _supabaseService.invokeFunction(
-      functionName: 'register-device',
-      body: {
-        'fcm_token': token,
-        'platform': platform,
-      },
+      functionName: functionName,
+      body: body,
     );
 
     return switch (result) {
@@ -123,6 +139,14 @@ class NotificationsRemoteDataSourceImpl
       Failure(:final failure) => Failure(failure),
     };
   }
+
+  /// O backend só aceita `ANDROID` ou `IOS` (contrato do `register-device`);
+  /// em outra plataforma (web, desktop) não há o que registrar.
+  String? get _platform => switch (defaultTargetPlatform) {
+    TargetPlatform.android => 'ANDROID',
+    TargetPlatform.iOS => 'IOS',
+    _ => null,
+  };
 
   @override
   Future<Map<String, dynamic>?> getInitialNotificationData() async {
