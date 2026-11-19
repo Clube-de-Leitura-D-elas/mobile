@@ -117,44 +117,55 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return const Failure(FcmTokenSyncFailure());
     }
 
-    // O `unregister-device` precisa do token deste aparelho. Se o FCM falhar
-    // ao lê-lo, ainda dá para usar o último registrado.
+    // Desregistra todo token conhecido: o guardado e o atual do FCM. Se o FCM
+    // rotacionou o token e o re-sync falhou, o que está no backend é o antigo.
+    Failure<void, NotificationFailure>? firstFailure;
+    var attempted = false;
+
+    Future<bool> unregister(String token) async {
+      attempted = true;
+      try {
+        final result = await dataSource.unregisterDevice(token);
+        switch (result) {
+          case Success():
+            return true;
+          case Failure(:final failure):
+            firstFailure ??= Failure(
+              _failureFrom(failure, const FcmTokenSyncFailure()),
+            );
+            return false;
+        }
+      } catch (_) {
+        firstFailure ??= const Failure(FcmTokenSyncFailure());
+        return false;
+      }
+    }
+
+    // O guardado vem primeiro: é local e rápido. O `getDeviceToken` pode
+    // esperar o APNs por alguns segundos no iOS, e o logout limita o tempo
+    // desta chamada; depois disso a sessão já se foi e o backend recusaria.
+    final registeredToken = await registeredTokenStore.read();
+    if (registeredToken != null && registeredToken.isNotEmpty) {
+      if (await unregister(registeredToken)) {
+        await registeredTokenStore.clear();
+      }
+    }
+
     String? currentToken;
     try {
       currentToken = await dataSource.getDeviceToken();
     } catch (_) {
       currentToken = null;
     }
-
-    // Desregistra os dois: se o FCM rotacionou o token e o re-sync falhou, o
-    // que está no backend é o antigo, e o atual não está lá.
-    final registeredToken = await registeredTokenStore.read();
-    final tokens = <String>{
-      if (currentToken != null && currentToken.isNotEmpty) currentToken,
-      if (registeredToken != null && registeredToken.isNotEmpty)
-        registeredToken,
-    };
-
-    // Sem nenhum token (o FCM não devolveu e nada foi registrado antes) não dá
-    // para confirmar que o aparelho saiu do backend, então não vale `Success`.
-    if (tokens.isEmpty) return const Failure(FcmTokenSyncFailure());
-
-    Failure<void, NotificationFailure>? firstFailure;
-    for (final token in tokens) {
-      try {
-        final result = await dataSource.unregisterDevice(token);
-        switch (result) {
-          case Success():
-            if (token == registeredToken) await registeredTokenStore.clear();
-          case Failure(:final failure):
-            firstFailure ??= Failure(
-              _failureFrom(failure, const FcmTokenSyncFailure()),
-            );
-        }
-      } catch (_) {
-        firstFailure ??= const Failure(FcmTokenSyncFailure());
-      }
+    if (currentToken != null &&
+        currentToken.isNotEmpty &&
+        currentToken != registeredToken) {
+      await unregister(currentToken);
     }
+
+    // Sem nenhum token (nada guardado e o FCM não devolveu) não dá para
+    // confirmar que o aparelho saiu do backend, então não vale `Success`.
+    if (!attempted) return const Failure(FcmTokenSyncFailure());
     return firstFailure ?? const Success(null);
   }
 
