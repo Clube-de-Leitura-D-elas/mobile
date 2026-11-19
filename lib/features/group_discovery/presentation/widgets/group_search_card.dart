@@ -30,20 +30,21 @@ class GroupSearchCard extends StatelessWidget {
     final l10n = context.l10n;
     final cityState = group.cityState;
 
-    return Semantics(
-      container: true,
-      button: true,
-      label: l10n.groupSearchCardSemantic(group.number),
-      onTap: onOpenDetails,
-      child: InkWell(
-        onTap: onOpenDetails,
-        borderRadius: BorderRadius.circular(AppCard.borderRadius),
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: spacing.s4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: spacing.s4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Só o cabeçalho é clicável; a seção de participação fica de fora.
+          Semantics(
+            container: true,
+            button: true,
+            label: l10n.groupSearchCardSemantic(group.number),
+            onTap: onOpenDetails,
+            child: InkWell(
+              onTap: onOpenDetails,
+              borderRadius: BorderRadius.circular(AppCard.borderRadius),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ExcludeSemantics(
@@ -53,8 +54,8 @@ class GroupSearchCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: spacing.s12),
-                  // Nome, participantes e cidade lidos juntos; o link e o botão
-                  // ficam fora para continuarem acionáveis.
+                  // Nome, participantes e cidade lidos juntos; o link fica
+                  // fora para continuar acionável.
                   Expanded(
                     child: MergeSemantics(
                       child: LayoutBuilder(
@@ -95,15 +96,15 @@ class GroupSearchCard extends StatelessWidget {
                   _SeeDetailsLink(number: group.number, onTap: onOpenDetails),
                 ],
               ),
-              SizedBox(height: spacing.s12),
-              PublicGroupMembershipSection(
-                status: group.membershipStatus,
-                isRequesting: isRequesting,
-                onRequestJoin: onRequestJoin,
-              ),
-            ],
+            ),
           ),
-        ),
+          SizedBox(height: spacing.s12),
+          PublicGroupMembershipSection(
+            status: group.membershipStatus,
+            isRequesting: isRequesting,
+            onRequestJoin: onRequestJoin,
+          ),
+        ],
       ),
     );
   }
