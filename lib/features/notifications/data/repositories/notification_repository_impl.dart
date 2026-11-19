@@ -115,37 +115,45 @@ class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     // O `unregister-device` precisa do token deste aparelho. Se o FCM falhar
-    // ao lê-lo, usa o último registrado; sem nenhum dos dois, o erro sobe como
-    // `Failure` para quem chamou não tratar como se tivesse desregistrado.
+    // ao lê-lo, ainda dá para usar o último registrado.
     String? currentToken;
-    var readFailed = false;
     try {
       currentToken = await dataSource.getDeviceToken();
     } catch (_) {
-      readFailed = true;
+      currentToken = null;
     }
 
-    final token = (currentToken == null || currentToken.isEmpty)
-        ? _registeredToken
-        : currentToken;
-    if (token == null || token.isEmpty) {
-      return readFailed
-          ? const Failure(FcmTokenSyncFailure())
-          : const Success(null);
-    }
+    // Desregistra os dois: se o FCM rotacionou o token e o re-sync falhou, o
+    // que está no backend é o antigo, e o atual não está lá.
+    final registeredToken = _registeredToken;
+    final tokens = <String>{
+      if (currentToken != null && currentToken.isNotEmpty) currentToken,
+      if (registeredToken != null && registeredToken.isNotEmpty)
+        registeredToken,
+    };
 
-    try {
-      final result = await dataSource.unregisterDevice(token);
-      switch (result) {
-        case Success():
-          _registeredToken = null;
-          return const Success(null);
-        case Failure(:final failure):
-          return Failure(_failureFrom(failure, const FcmTokenSyncFailure()));
+    // Sem nenhum token não dá para confirmar que o aparelho saiu do backend
+    // (o token só vive em memória e o do APNs pode não estar pronto), então
+    // não vale `Success`.
+    if (tokens.isEmpty) return const Failure(FcmTokenSyncFailure());
+
+    Failure<void, NotificationFailure>? firstFailure;
+    for (final token in tokens) {
+      try {
+        final result = await dataSource.unregisterDevice(token);
+        switch (result) {
+          case Success():
+            if (token == registeredToken) _registeredToken = null;
+          case Failure(:final failure):
+            firstFailure ??= Failure(
+              _failureFrom(failure, const FcmTokenSyncFailure()),
+            );
+        }
+      } catch (_) {
+        firstFailure ??= const Failure(FcmTokenSyncFailure());
       }
-    } catch (_) {
-      return const Failure(FcmTokenSyncFailure());
     }
+    return firstFailure ?? const Success(null);
   }
 
   @override

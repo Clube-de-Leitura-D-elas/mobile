@@ -288,16 +288,96 @@ void main() {
       ).called(1);
     });
 
-    test('skips the backend call when the device has no token', () async {
-      when(
-        () => remoteDataSource.getDeviceToken(),
-      ).thenAnswer((_) async => null);
+    test(
+      'returns FcmTokenSyncFailure and skips the backend when there is no token to unregister',
+      () async {
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => null);
 
-      final result = await repository.clearDeviceToken();
+        final result = await repository.clearDeviceToken();
 
-      expect(result, const Success<void, NotificationFailure>(null));
-      verifyNever(() => remoteDataSource.unregisterDevice(any()));
-    });
+        expect(
+          result,
+          const Failure<void, NotificationFailure>(FcmTokenSyncFailure()),
+        );
+        verifyNever(() => remoteDataSource.unregisterDevice(any()));
+      },
+    );
+
+    test(
+      'unregisters both the current and the last registered token when they differ',
+      () async {
+        when(
+          () => remoteDataSource.requestPermissions(),
+        ).thenAnswer((_) async => FakeNotificationSettings());
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => 'token-a');
+        when(
+          () => remoteDataSource.registerDevice('token-a'),
+        ).thenAnswer((_) async => const Success(null));
+        when(
+          () => remoteDataSource.unregisterDevice(any()),
+        ).thenAnswer((_) async => const Success(null));
+        await repository.syncDeviceToken();
+
+        // O FCM rotacionou para `token-b` e o re-sync não chegou ao backend.
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => 'token-b');
+
+        final result = await repository.clearDeviceToken();
+
+        expect(result, const Success<void, NotificationFailure>(null));
+        verify(() => remoteDataSource.unregisterDevice('token-a')).called(1);
+        verify(() => remoteDataSource.unregisterDevice('token-b')).called(1);
+      },
+    );
+
+    test(
+      'keeps the registered token and reports Failure when only one unregister fails',
+      () async {
+        when(
+          () => remoteDataSource.requestPermissions(),
+        ).thenAnswer((_) async => FakeNotificationSettings());
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => 'token-a');
+        when(
+          () => remoteDataSource.registerDevice('token-a'),
+        ).thenAnswer((_) async => const Success(null));
+        await repository.syncDeviceToken();
+
+        when(
+          () => remoteDataSource.getDeviceToken(),
+        ).thenAnswer((_) async => 'token-b');
+        when(
+          () => remoteDataSource.unregisterDevice('token-a'),
+        ).thenAnswer(
+          (_) async =>
+              const Failure(FunctionSupabaseFailure(message: 'Failed')),
+        );
+        when(
+          () => remoteDataSource.unregisterDevice('token-b'),
+        ).thenAnswer((_) async => const Success(null));
+
+        final first = await repository.clearDeviceToken();
+        expect(
+          first,
+          const Failure<void, NotificationFailure>(FcmTokenSyncFailure()),
+        );
+
+        // A nova tentativa ainda conhece o `token-a`, que não saiu do backend.
+        when(
+          () => remoteDataSource.unregisterDevice('token-a'),
+        ).thenAnswer((_) async => const Success(null));
+        final second = await repository.clearDeviceToken();
+
+        expect(second, const Success<void, NotificationFailure>(null));
+        verify(() => remoteDataSource.unregisterDevice('token-a')).called(2);
+      },
+    );
 
     test('returns FcmTokenSyncFailure when backend fails', () async {
       when(
