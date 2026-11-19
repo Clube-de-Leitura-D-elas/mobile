@@ -120,6 +120,19 @@ void main() {
     expect(find.text('Nenhum próximo evento agendado'), findsOneWidget);
   });
 
+  testWidgets('renders the meeting in preparation state', (tester) async {
+    await tester.pumpWidget(
+      buildSubject(
+        const GroupNextEvent(
+          status: GroupNextEventStatus.inPreparation,
+        ),
+      ),
+    );
+
+    expect(find.text('Encontro em preparação'), findsOneWidget);
+    expect(find.text('Nenhum próximo evento agendado'), findsNothing);
+  });
+
   testWidgets('renders the generic localized error state', (tester) async {
     await tester.pumpWidget(
       buildSubject(const GroupNextEvent(status: GroupNextEventStatus.error)),

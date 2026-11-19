@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -6,22 +8,25 @@ import 'package:mobile/core/routes/quick_access_routes.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
-import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/presentation/book_failure_message.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 import 'package:mobile/features/books/presentation/widgets/book_details_content.dart';
+import 'package:mobile/features/books/presentation/widgets/book_recommendation_blocked_dialog.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
-/// Avisa quem abriu os detalhes (a busca) sobre o status do livro.
-/// [isWrite] é `true` quando a leitora mudou o status aqui e `false` quando os
-/// detalhes só carregaram o que o backend tem.
-typedef ReadingStatusChanged =
-    void Function(BookReadingStatus? status, {required bool isWrite});
+export 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart'
+    show ReadingStatusChanged;
 
 class BookDetailsPage extends StatelessWidget {
-  const BookDetailsPage({super.key, this.onReadingStatusChanged});
+  const BookDetailsPage({
+    super.key,
+    this.onReadingStatusChanged,
+    this.recommendationTarget,
+  });
 
   final ReadingStatusChanged? onReadingStatusChanged;
+  final BookRecommendationTarget? recommendationTarget;
 
   @override
   Widget build(BuildContext context) {
@@ -52,18 +57,11 @@ class BookDetailsPage extends StatelessWidget {
       child: BlocConsumer<BookDetailsCubit, BookDetailsState>(
         listenWhen: (previous, current) =>
             current.notice != null && previous.notice != current.notice,
-        listener: (context, state) => switch (state.notice) {
-          BookDetailsNotice.readingStatusFailed => context.showErrorToast(
-            l10n.bookReadingStatusError,
-          ),
-          BookDetailsNotice.reviewSaved => context.showSuccessToast(
-            l10n.bookReviewSuccess,
-          ),
-          BookDetailsNotice.reviewFailed => context.showErrorToast(
-            l10n.bookReviewError,
-          ),
-          null => null,
-        },
+        listener: (context, state) => _handleNotice(
+          context,
+          state.notice!,
+          state.recommendedGroupName,
+        ),
         builder: (context, state) {
           final cubit = context.read<BookDetailsCubit>();
           final isLoaded = state.status == BookDetailsStatus.loaded;
@@ -90,7 +88,10 @@ class BookDetailsPage extends StatelessWidget {
               BookDetailsStatus.notFound => AppErrorState(
                 message: l10n.bookDetailNotFound,
               ),
-              BookDetailsStatus.loaded => BookDetailsContent(state: state),
+              BookDetailsStatus.loaded => BookDetailsContent(
+                state: state,
+                recommendationTarget: recommendationTarget,
+              ),
             },
             bottomNavigationBar: BottomNavigationBarWidget(
               currentIndex: QuickAccessItem.search.index,
@@ -100,6 +101,40 @@ class BookDetailsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _handleNotice(
+    BuildContext context,
+    BookDetailsNotice notice,
+    String? recommendedGroupName,
+  ) {
+    final l10n = context.l10n;
+    switch (notice) {
+      case BookDetailsNotice.readingStatusFailed:
+        context.showErrorToast(l10n.bookReadingStatusError);
+      case BookDetailsNotice.recommendationSucceeded:
+        if (recommendedGroupName != null && recommendedGroupName.isNotEmpty) {
+          context.showSuccessToast(
+            l10n.bookRecommendationSuccess(recommendedGroupName),
+          );
+        }
+      case BookDetailsNotice.recommendationReplaced:
+        if (recommendedGroupName != null && recommendedGroupName.isNotEmpty) {
+          context.showSuccessToast(
+            l10n.bookRecommendationReplaced(recommendedGroupName),
+          );
+        }
+      case BookDetailsNotice.recommendationHostBlocked:
+        unawaited(BookRecommendationBlockedDialog.show(context));
+      case BookDetailsNotice.recommendationAlreadyExists:
+        context.showInfoToast(l10n.bookRecommendationAlreadyExists);
+      case BookDetailsNotice.recommendationFailed:
+        context.showErrorToast(l10n.bookRecommendationError);
+      case BookDetailsNotice.reviewSaved:
+        context.showSuccessToast(l10n.bookReviewSuccess);
+      case BookDetailsNotice.reviewFailed:
+        context.showErrorToast(l10n.bookReviewError);
+    }
   }
 
   // A aba Busca aparece selecionada, mas esta tela está empilhada sobre ela.

@@ -24,6 +24,7 @@ class GroupDetailsScreen extends StatefulWidget {
     this.whatsappUrl,
     this.nextEventCount,
     this.nextEvent = const GroupNextEvent(),
+    this.raffleAction,
     this.participantsContent,
     this.onRecommendBook,
     this.onEventHistoryPressed,
@@ -39,6 +40,7 @@ class GroupDetailsScreen extends StatefulWidget {
   final String? whatsappUrl;
   final int? nextEventCount;
   final Widget nextEvent;
+  final Widget? raffleAction;
   final Widget? participantsContent;
   final VoidCallback? onRecommendBook;
   final VoidCallback? onEventHistoryPressed;
@@ -97,7 +99,13 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                     onToggle: () => setState(
                       () => _nextEventExpanded = !_nextEventExpanded,
                     ),
-                    children: [widget.nextEvent],
+                    children: [
+                      if (widget.raffleAction != null) ...[
+                        widget.raffleAction!,
+                        SizedBox(height: spacing.s16),
+                      ],
+                      widget.nextEvent,
+                    ],
                   ),
                   SizedBox(height: spacing.s24),
                   GroupSection(

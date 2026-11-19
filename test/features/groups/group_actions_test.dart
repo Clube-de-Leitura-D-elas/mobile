@@ -20,7 +20,10 @@ void main() {
     testWidgets(
       'given null whatsappUrl, when rendered, then whatsapp button is disabled',
       (tester) async {
-        await tester.pumpWidget(buildSubject(const GroupActions()));
+        var tapped = false;
+        await tester.pumpWidget(
+          buildSubject(GroupActions(onRecommendBook: () => tapped = true)),
+        );
 
         final button = tester.widget<AppButton>(
           find.widgetWithText(AppButton, 'Abrir Whatsapp'),
@@ -33,6 +36,19 @@ void main() {
         expect(recommendButton.onPressed, isNotNull);
         await tester.tap(find.text('Indicar livro'));
         await tester.pump();
+        expect(tapped, isTrue);
+      },
+    );
+
+    testWidgets(
+      'given null onRecommendBook, when rendered, then recommend button is disabled',
+      (tester) async {
+        await tester.pumpWidget(buildSubject(const GroupActions()));
+
+        final recommendButton = tester.widget<AppButton>(
+          find.widgetWithText(AppButton, 'Indicar livro'),
+        );
+        expect(recommendButton.onPressed, isNull);
       },
     );
 

@@ -2,18 +2,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 import 'package:mobile/features/books/presentation/widgets/book_detail_header.dart';
+import 'package:mobile/features/books/presentation/widgets/book_recommendation_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_dialog.dart';
 import 'package:mobile/features/books/presentation/widgets/book_review_tile.dart';
 
 class BookDetailsContent extends StatelessWidget {
-  const BookDetailsContent({super.key, required this.state});
+  const BookDetailsContent({
+    super.key,
+    required this.state,
+    this.recommendationTarget,
+  });
 
   final BookDetailsState state;
+  final BookRecommendationTarget? recommendationTarget;
 
   static ReadingStatusChipState chipStateFor(BookReadingStatus? status) {
     return switch (status) {
@@ -29,6 +39,7 @@ class BookDetailsContent extends StatelessWidget {
     final spacing = context.spacing;
     final cubit = context.read<BookDetailsCubit>();
     final reviews = state.reviews;
+    final myReview = details.myReview;
 
     return CustomScrollView(
       slivers: [
@@ -52,12 +63,23 @@ class BookDetailsContent extends StatelessWidget {
           ),
           sliver: SliverList.list(
             children: [
-              _BookActions(details: details),
+              _BookActions(
+                details: details,
+                recommendationTarget: recommendationTarget,
+                isLoadingGroups: state.isLoadingRecommendationGroups,
+                isRecommending: state.isRecommending,
+              ),
               ..._synopsis(context, details.synopsis),
               SizedBox(height: spacing.s24),
               _SectionTitle(context.l10n.bookDetailReviewsTitle),
               SizedBox(height: spacing.s12),
-              if (reviews.isEmpty)
+              // O backend devolve a avaliação da leitora em `my_review`, fora
+              // da lista paginada das outras.
+              if (myReview != null) ...[
+                _MyReviewTile(review: myReview),
+                if (reviews.isNotEmpty) SizedBox(height: spacing.s16),
+              ],
+              if (reviews.isEmpty && myReview == null)
                 Text(
                   context.l10n.bookDetailNoReviews,
                   style: context.typography.bodyDefault.copyWith(
@@ -121,9 +143,17 @@ class BookDetailsContent extends StatelessWidget {
 }
 
 class _BookActions extends StatelessWidget {
-  const _BookActions({required this.details});
+  const _BookActions({
+    required this.details,
+    required this.recommendationTarget,
+    required this.isLoadingGroups,
+    required this.isRecommending,
+  });
 
   final BookDetailsEntity details;
+  final BookRecommendationTarget? recommendationTarget;
+  final bool isLoadingGroups;
+  final bool isRecommending;
 
   @override
   Widget build(BuildContext context) {
@@ -143,14 +173,45 @@ class _BookActions extends StatelessWidget {
         ),
         SizedBox(width: context.spacing.s16),
         Expanded(
-          // TODO(CLU-272): abrir o modal Selecione o grupo (recommend-book).
           child: AppButton.primary(
             label: l10n.bookDetailRecommendButton,
             size: AppButtonSize.lg,
-            onPressed: null,
+            isLoading: recommendationTarget != null && isRecommending,
+            onPressed: isLoadingGroups || isRecommending
+                ? null
+                : recommendationTarget == null
+                ? () => BookRecommendationDialog.show(context)
+                : () => context.read<BookDetailsCubit>().recommendBook(
+                    groupId: recommendationTarget!.groupId,
+                    groupName: recommendationTarget!.groupName,
+                  ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MyReviewTile extends StatelessWidget {
+  const _MyReviewTile({required this.review});
+
+  final MyBookReviewEntity review;
+
+  @override
+  Widget build(BuildContext context) {
+    final session = context.select<SessionCubit, AuthenticatedSession?>((
+      cubit,
+    ) {
+      final state = cubit.state;
+      return state is AuthenticatedSession ? state : null;
+    });
+
+    return BookReviewTile(
+      key: const ValueKey('book-review-mine'),
+      name: session?.user.name ?? context.l10n.bookDetailMyReviewFallbackName,
+      photoUrl: session?.profile?.photoUrl,
+      rating: review.rating.toDouble(),
+      comment: review.commentary ?? '',
     );
   }
 }

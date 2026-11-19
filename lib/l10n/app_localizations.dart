@@ -1460,6 +1460,42 @@ abstract class AppLocalizations {
   /// **'Sorteio registrado com sucesso! Nova anfitriã definida.'**
   String get raffleSavedSuccessToast;
 
+  /// Título da tela de sorteio inaugural do grupo
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio Inaugural'**
+  String get raffleInauguralTitle;
+
+  /// Subtítulo da tela de preparação do sorteio inaugural
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.'**
+  String get raffleInauguralSubtitle;
+
+  /// Texto informando que há um encontro em preparação pela anfitriã
+  ///
+  /// In pt, this message translates to:
+  /// **'Encontro em preparação'**
+  String get raffleMeetingInPreparation;
+
+  /// Ação no card de tarefas para o sorteio inaugural
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar sorteio inaugural'**
+  String get homePendingTasksRaffleInaugural;
+
+  /// Ação no card de tarefas para sorteio pendente
+  ///
+  /// In pt, this message translates to:
+  /// **'Realizar sorteio pendente'**
+  String get homePendingTasksRafflePending;
+
+  /// Erro quando tenta realizar sorteio mas o grupo já tem encontro aberto
+  ///
+  /// In pt, this message translates to:
+  /// **'O grupo já possui um encontro em andamento.'**
+  String get raffleOpenMeetingAlreadyExistsError;
+
   /// Descrição de acessibilidade do contador de tarefas da anfitriã no card do grupo
   ///
   /// In pt, this message translates to:
@@ -1976,6 +2012,24 @@ abstract class AppLocalizations {
   /// **'Digite sua resposta'**
   String get bookReviewCommentHint;
 
+  /// Expande um comentário de avaliação longo na tela do livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver mais'**
+  String get bookReviewCommentShowMore;
+
+  /// Recolhe um comentário de avaliação expandido na tela do livro
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver menos'**
+  String get bookReviewCommentShowLess;
+
+  /// Nome na avaliação da própria leitora quando o perfil não está disponível
+  ///
+  /// In pt, this message translates to:
+  /// **'Você'**
+  String get bookDetailMyReviewFallbackName;
+
   /// Botão para cancelar a avaliação.
   ///
   /// In pt, this message translates to:
@@ -2005,6 +2059,72 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Indicar'**
   String get bookDetailRecommendButton;
+
+  /// Título do modal de grupos que podem receber a indicação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione o grupo'**
+  String get bookRecommendationGroupsTitle;
+
+  /// Estado vazio quando não há grupos para indicar o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você ainda não participa de nenhum grupo.'**
+  String get bookRecommendationGroupsEmpty;
+
+  /// Falha ao carregar os grupos para indicação.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível carregar os grupos.'**
+  String get bookRecommendationGroupsError;
+
+  /// Falha genérica ao indicar o livro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível indicar o livro.'**
+  String get bookRecommendationError;
+
+  /// Indicação recusada porque o livro já foi indicado para o grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este livro já foi indicado para este grupo.'**
+  String get bookRecommendationAlreadyExists;
+
+  /// Confirmação da indicação de livro para o grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livro indicado ao {groupName}'**
+  String bookRecommendationSuccess(Object groupName);
+
+  /// Confirmação da substituição da indicação ativa de livro para o grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicação atualizada para o {groupName}'**
+  String bookRecommendationReplaced(Object groupName);
+
+  /// Aviso exibido quando uma leitora já sorteada ou anfitriã tenta indicar um livro no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.'**
+  String get bookRecommendationHostBlocked;
+
+  /// Título do modal exibido quando a leitora não pode indicar livro no grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicação indisponível'**
+  String get bookRecommendationHostBlockedTitle;
+
+  /// Botão de confirmação para fechar o modal de indicação indisponível.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendi'**
+  String get bookRecommendationHostBlockedAction;
+
+  /// Cabeçalho da busca quando a leitora escolhe um livro para indicar a um grupo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar para {groupName}'**
+  String bookRecommendationSearchTitle(Object groupName);
 
   /// Título da seção de sinopse no detalhe do livro.
   ///
@@ -2545,6 +2665,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Grupos'**
   String get searchTabGroups;
+
+  /// Nome de exibição de um grupo a partir do número.
+  ///
+  /// In pt, this message translates to:
+  /// **'Grupo {number}'**
+  String groupNameLabel(Object number);
 
   /// Título da aba de busca de grupos.
   ///

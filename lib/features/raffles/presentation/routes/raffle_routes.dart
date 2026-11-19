@@ -15,6 +15,7 @@ abstract class RaffleRoutes {
       pageBuilder: (context, state) {
         final extra = state.extra;
         String meetingId = '';
+        String? groupId;
         String meetingTitle = '';
         List<RaffleParticipant>? participants;
 
@@ -22,11 +23,13 @@ abstract class RaffleRoutes {
           meetingId = extra;
         } else if (extra is Map<String, dynamic>) {
           meetingId = extra['meeting_id'] as String? ?? '';
+          groupId = extra['group_id'] as String?;
           meetingTitle = extra['meeting_title'] as String? ?? '';
           participants = (extra['participants'] as List?)
               ?.cast<RaffleParticipant>();
         } else {
           meetingId = state.uri.queryParameters['meeting_id'] ?? '';
+          groupId = state.uri.queryParameters['group_id'];
           meetingTitle = state.uri.queryParameters['meeting_title'] ?? '';
         }
 
@@ -34,6 +37,7 @@ abstract class RaffleRoutes {
           state: state,
           child: RafflePreparationPage(
             meetingId: meetingId,
+            groupId: groupId,
             meetingTitle: meetingTitle,
             participants: participants,
           ),
@@ -45,6 +49,7 @@ abstract class RaffleRoutes {
       pageBuilder: (context, state) {
         final extra = state.extra;
         String meetingId = '';
+        String? groupId;
         String meetingTitle = '';
         List<RaffleParticipant>? participants;
 
@@ -52,11 +57,13 @@ abstract class RaffleRoutes {
           meetingId = extra;
         } else if (extra is Map<String, dynamic>) {
           meetingId = extra['meeting_id'] as String? ?? '';
+          groupId = extra['group_id'] as String?;
           meetingTitle = extra['meeting_title'] as String? ?? '';
           participants = (extra['participants'] as List?)
               ?.cast<RaffleParticipant>();
         } else {
           meetingId = state.uri.queryParameters['meeting_id'] ?? '';
+          groupId = state.uri.queryParameters['group_id'];
           meetingTitle = state.uri.queryParameters['meeting_title'] ?? '';
         }
 
@@ -64,6 +71,7 @@ abstract class RaffleRoutes {
           state: state,
           child: RaffleExecutionPage(
             meetingId: meetingId,
+            groupId: groupId,
             meetingTitle: meetingTitle,
             participants: participants,
           ),

@@ -43,12 +43,12 @@ void main() {
 
   group('NotificationsRemoteDataSourceImpl', () {
     test(
-      'saveTokenToBackend invokes save-fcm-token with fcm_token in body',
+      'saveTokenToBackend invokes register-device with fcm_token and platform in body',
       () async {
         when(
           () => mockSupabaseService.invokeFunction<dynamic>(
-            functionName: 'save-fcm-token',
-            body: {'fcm_token': 'token'},
+            functionName: 'register-device',
+            body: {'fcm_token': 'token', 'platform': 'ANDROID'},
           ),
         ).thenAnswer(
           (_) async => const Success(SupabaseResponse(statusCode: 200)),
@@ -59,10 +59,25 @@ void main() {
         expect(result, const Success<void, SupabaseFailure>(null));
         verify(
           () => mockSupabaseService.invokeFunction<dynamic>(
-            functionName: 'save-fcm-token',
-            body: {'fcm_token': 'token'},
+            functionName: 'register-device',
+            body: {'fcm_token': 'token', 'platform': 'ANDROID'},
           ),
         ).called(1);
+      },
+    );
+
+    test(
+      'saveTokenToBackend returns Success without calling backend when token is null or empty',
+      () async {
+        final result = await dataSource.saveTokenToBackend(null);
+
+        expect(result, const Success<void, SupabaseFailure>(null));
+        verifyNever(
+          () => mockSupabaseService.invokeFunction<dynamic>(
+            functionName: any(named: 'functionName'),
+            body: any(named: 'body'),
+          ),
+        );
       },
     );
 
@@ -70,12 +85,12 @@ void main() {
       const failure = FunctionSupabaseFailure(message: 'error', code: '500');
       when(
         () => mockSupabaseService.invokeFunction<dynamic>(
-          functionName: 'save-fcm-token',
-          body: {'fcm_token': null},
+          functionName: 'register-device',
+          body: {'fcm_token': 'token', 'platform': 'ANDROID'},
         ),
       ).thenAnswer((_) async => const Failure(failure));
 
-      final result = await dataSource.saveTokenToBackend(null);
+      final result = await dataSource.saveTokenToBackend('token');
 
       expect(result, const Failure<void, SupabaseFailure>(failure));
     });

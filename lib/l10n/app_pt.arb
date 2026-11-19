@@ -1064,6 +1064,30 @@
   "@raffleSavedSuccessToast": {
     "description": "Mensagem de sucesso após registrar o sorteio e definir a nova anfitriã"
   },
+  "raffleInauguralTitle": "Sorteio Inaugural",
+  "@raffleInauguralTitle": {
+    "description": "Título da tela de sorteio inaugural do grupo"
+  },
+  "raffleInauguralSubtitle": "Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.",
+  "@raffleInauguralSubtitle": {
+    "description": "Subtítulo da tela de preparação do sorteio inaugural"
+  },
+  "raffleMeetingInPreparation": "Encontro em preparação",
+  "@raffleMeetingInPreparation": {
+    "description": "Texto informando que há um encontro em preparação pela anfitriã"
+  },
+  "homePendingTasksRaffleInaugural": "Realizar sorteio inaugural",
+  "@homePendingTasksRaffleInaugural": {
+    "description": "Ação no card de tarefas para o sorteio inaugural"
+  },
+  "homePendingTasksRafflePending": "Realizar sorteio pendente",
+  "@homePendingTasksRafflePending": {
+    "description": "Ação no card de tarefas para sorteio pendente"
+  },
+  "raffleOpenMeetingAlreadyExistsError": "O grupo já possui um encontro em andamento.",
+  "@raffleOpenMeetingAlreadyExistsError": {
+    "description": "Erro quando tenta realizar sorteio mas o grupo já tem encontro aberto"
+  },
 
   "groupMeetingMyTasksProgress": "{done} de {total} tarefas concluídas",
   "@groupMeetingMyTasksProgress": {
@@ -1495,6 +1519,18 @@
   "@bookReviewCommentHint": {
     "description": "Placeholder do comentário no modal de avaliação."
   },
+  "bookReviewCommentShowMore": "Ver mais",
+  "@bookReviewCommentShowMore": {
+    "description": "Expande um comentário de avaliação longo na tela do livro"
+  },
+  "bookReviewCommentShowLess": "Ver menos",
+  "@bookReviewCommentShowLess": {
+    "description": "Recolhe um comentário de avaliação expandido na tela do livro"
+  },
+  "bookDetailMyReviewFallbackName": "Você",
+  "@bookDetailMyReviewFallbackName": {
+    "description": "Nome na avaliação da própria leitora quando o perfil não está disponível"
+  },
   "bookReviewCancel": "Cancelar",
   "@bookReviewCancel": {
     "description": "Botão para cancelar a avaliação."
@@ -1514,6 +1550,59 @@
   "bookDetailRecommendButton": "Indicar",
   "@bookDetailRecommendButton": {
     "description": "Botão para indicar o livro a um grupo."
+  },
+  "bookRecommendationGroupsTitle": "Selecione o grupo",
+  "@bookRecommendationGroupsTitle": {
+    "description": "Título do modal de grupos que podem receber a indicação."
+  },
+  "bookRecommendationGroupsEmpty": "Você ainda não participa de nenhum grupo.",
+  "@bookRecommendationGroupsEmpty": {
+    "description": "Estado vazio quando não há grupos para indicar o livro."
+  },
+  "bookRecommendationGroupsError": "Não foi possível carregar os grupos.",
+  "@bookRecommendationGroupsError": {
+    "description": "Falha ao carregar os grupos para indicação."
+  },
+  "bookRecommendationError": "Não foi possível indicar o livro.",
+  "@bookRecommendationError": {
+    "description": "Falha genérica ao indicar o livro."
+  },
+  "bookRecommendationAlreadyExists": "Este livro já foi indicado para este grupo.",
+  "@bookRecommendationAlreadyExists": {
+    "description": "Indicação recusada porque o livro já foi indicado para o grupo."
+  },
+  "bookRecommendationSuccess": "Livro indicado ao {groupName}",
+  "@bookRecommendationSuccess": {
+    "description": "Confirmação da indicação de livro para o grupo.",
+    "placeholders": {
+      "groupName": {}
+    }
+  },
+  "bookRecommendationReplaced": "Indicação atualizada para o {groupName}",
+  "@bookRecommendationReplaced": {
+    "description": "Confirmação da substituição da indicação ativa de livro para o grupo.",
+    "placeholders": {
+      "groupName": {}
+    }
+  },
+  "bookRecommendationHostBlocked": "Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.",
+  "@bookRecommendationHostBlocked": {
+    "description": "Aviso exibido quando uma leitora já sorteada ou anfitriã tenta indicar um livro no grupo."
+  },
+  "bookRecommendationHostBlockedTitle": "Indicação indisponível",
+  "@bookRecommendationHostBlockedTitle": {
+    "description": "Título do modal exibido quando a leitora não pode indicar livro no grupo."
+  },
+  "bookRecommendationHostBlockedAction": "Entendi",
+  "@bookRecommendationHostBlockedAction": {
+    "description": "Botão de confirmação para fechar o modal de indicação indisponível."
+  },
+  "bookRecommendationSearchTitle": "Indicar para {groupName}",
+  "@bookRecommendationSearchTitle": {
+    "description": "Cabeçalho da busca quando a leitora escolhe um livro para indicar a um grupo.",
+    "placeholders": {
+      "groupName": {}
+    }
   },
   "bookDetailSynopsisTitle": "Sinopse",
   "@bookDetailSynopsisTitle": {
@@ -1969,6 +2058,13 @@
   "searchTabGroups": "Grupos",
   "@searchTabGroups": {
     "description": "Aba da busca com os grupos."
+  },
+  "groupNameLabel": "Grupo {number}",
+  "@groupNameLabel": {
+    "description": "Nome de exibição de um grupo a partir do número.",
+    "placeholders": {
+      "number": {}
+    }
   },
   "groupSearchTitle": "Encontre seu grupo ideal",
   "@groupSearchTitle": {

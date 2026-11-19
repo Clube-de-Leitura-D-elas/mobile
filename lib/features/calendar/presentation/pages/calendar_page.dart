@@ -161,7 +161,7 @@ class _CalendarContent extends StatelessWidget {
                     day: selectedDay,
                     onClear: cubit.clearSelectedDay,
                   )
-                : state.status == CalendarStatus.loaded
+                : state.status == CalendarStatus.loaded && state.showsTimeFilter
                 ? CalendarFilterChips(
                     selected: state.filter,
                     upcomingCount: state.upcoming.length,
@@ -272,7 +272,7 @@ class _CalendarContent extends StatelessWidget {
   String _emptyMessage(BuildContext context) {
     final l10n = context.l10n;
     if (state.selectedDay != null) return l10n.calendarEmptyDay;
-    return switch (state.filter) {
+    return switch (state.effectiveFilter) {
       CalendarFilter.all => l10n.calendarEmptyMonth,
       CalendarFilter.upcoming => l10n.calendarEmptyUpcoming,
       CalendarFilter.past => l10n.calendarEmptyPast,

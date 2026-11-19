@@ -8,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/raffles/domain/entities/raffle_participant.dart';
 import 'package:mobile/features/raffles/domain/repository/raffle_repository.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_execution_cubit.dart';
 import 'package:mobile/features/raffles/presentation/cubit/raffle_preparation_cubit.dart';
@@ -92,6 +93,57 @@ void main() {
     );
     expect(page.meetingId, 'meeting-456');
   });
+
+  testWidgets(
+    'RaffleRoutes navega para RafflePreparationPage com extra Map contendo group_id e participants',
+    (tester) async {
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, _) => const Scaffold(body: Text('root')),
+          ),
+          ...RaffleRoutes.routes,
+        ],
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.light,
+          locale: const Locale('pt', 'BR'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          routerConfig: router,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      router.go(
+        RaffleRoutes.preparation,
+        extra: {
+          'group_id': 'g-inaugural',
+          'participants': [
+            const RaffleParticipant(id: 'p1', name: 'Ana', hasAttended: true),
+          ],
+        },
+      );
+      await tester.pumpAndSettle();
+
+      final page = tester.widget<RafflePreparationPage>(
+        find.byType(RafflePreparationPage),
+      );
+      expect(page.groupId, 'g-inaugural');
+      expect(page.participants, hasLength(1));
+      expect(find.text('Sorteio Inaugural'), findsOneWidget);
+    },
+  );
 
   testWidgets(
     'RaffleRoutes navega para RafflePreparationPage com query parameter',

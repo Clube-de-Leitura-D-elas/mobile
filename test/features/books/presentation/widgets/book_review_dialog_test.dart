@@ -95,6 +95,26 @@ void main() {
     );
   });
 
+  testWidgets('fits the stars with 48dp tap targets on a 360dp phone', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 780);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await pumpDialog(tester);
+
+    expect(tester.takeException(), isNull);
+    final targets = find.descendant(
+      of: find.byType(AppStarRating),
+      matching: find.byType(InkWell),
+    );
+    expect(targets, findsNWidgets(5));
+    for (final target in targets.evaluate()) {
+      expect(tester.getSize(find.byWidget(target.widget)), const Size(48, 48));
+    }
+  });
+
   testWidgets('pre-fills rating and commentary when editing', (tester) async {
     await pumpDialog(
       tester,

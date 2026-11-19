@@ -47,6 +47,22 @@ class BookNotFoundFailure extends BookFailure {
   const BookNotFoundFailure() : super(message: '');
 }
 
+class BookRecommendationGroupsFailure extends BookFailure {
+  const BookRecommendationGroupsFailure() : super(message: '');
+}
+
+class BookRecommendationFailure extends BookFailure {
+  const BookRecommendationFailure() : super(message: '');
+}
+
+class BookAlreadyRecommendedFailure extends BookFailure {
+  const BookAlreadyRecommendedFailure() : super(message: '');
+}
+
+class BookRecommendationHostBlockedFailure extends BookFailure {
+  const BookRecommendationHostBlockedFailure() : super(message: '');
+}
+
 /// Falha ao carregar a lista de livros avaliados. O texto vem do l10n.
 class RatedBooksLoadFailure extends BookFailure {
   const RatedBooksLoadFailure() : super(message: '');

@@ -265,7 +265,7 @@ class CalendarCubit extends Cubit<CalendarState> {
         emit(
           CalendarState(
             month: month,
-            today: state.today,
+            today: saoPauloDayOf(now),
             filter: state.filter,
             selectedDay: state.selectedDay,
             status: CalendarStatus.error,
@@ -288,7 +288,7 @@ class CalendarCubit extends Cubit<CalendarState> {
         emit(
           CalendarState(
             month: month,
-            today: state.today,
+            today: saoPauloDayOf(now),
             filter: state.filter,
             selectedDay: state.selectedDay,
             status: CalendarStatus.loaded,

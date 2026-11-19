@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/groups/data/models/next_event_model.dart';
 import 'package:mobile/features/groups/domain/entities/next_event_entity.dart';
+import 'package:mobile/features/groups/domain/entities/next_event_result.dart';
 
 void main() {
   const validInnerJson = {
@@ -10,6 +11,40 @@ void main() {
   };
 
   const validEnvelope = {'next_event': validInnerJson};
+
+  test('maps an event in preparation from the response envelope', () {
+    final result = NextEventResponseModel.fromJson(const {
+      'next_event': null,
+      'is_in_preparation': true,
+      'draft_meeting_id': 'meeting-draft',
+    }).toDomain();
+
+    expect(
+      result,
+      const NextEventResult.inPreparation(meetingId: 'meeting-draft'),
+    );
+  });
+
+  test('maps an empty response envelope to an empty result', () {
+    final result = NextEventResponseModel.fromJson(const {
+      'next_event': null,
+      'is_in_preparation': false,
+      'draft_meeting_id': null,
+    }).toDomain();
+
+    expect(result, const NextEventResult.empty());
+  });
+
+  test('throws when an in-preparation response has no meeting id', () {
+    expect(
+      () => NextEventResponseModel.fromJson(const {
+        'next_event': null,
+        'is_in_preparation': true,
+        'draft_meeting_id': null,
+      }),
+      throwsA(isA<FormatException>()),
+    );
+  });
 
   // ── fromEnvelope ──────────────────────────────────────────────────────────
 

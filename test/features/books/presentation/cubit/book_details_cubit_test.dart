@@ -5,8 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
-import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
+import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
@@ -166,6 +168,33 @@ void main() {
           reviewsPage: 2,
           hasMoreReviews: false,
         ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'keeps the current reviews when loading the next page fails generically',
+      setUp: () {
+        stubPage(
+          1,
+          _details(reviews: [_review('r1'), _review('r2')], hasMore: true),
+        );
+        when(
+          () => repository.getBookDetails(bookId: 'b1', reviewsPage: 2),
+        ).thenAnswer((_) async => const Failure(BookDetailsLoadFailure()));
+      },
+      build: build,
+      act: (cubit) async {
+        await cubit.load('b1');
+        await cubit.loadMoreReviews();
+      },
+      skip: 2,
+      expect: () => [
+        loaded(
+          _details(reviews: [_review('r1'), _review('r2')], hasMore: true),
+        ).copyWith(isLoadingMoreReviews: true),
+        loaded(
+          _details(reviews: [_review('r1'), _review('r2')], hasMore: true),
+        ).copyWith(isLoadingMoreReviews: false, loadMoreReviewsFailed: true),
       ],
     );
 
@@ -347,10 +376,16 @@ void main() {
           cubit.upsertBookReview(rating: 4, commentary: 'Comentário'),
       expect: () => [
         loaded(_details()).copyWith(isSubmittingReview: true),
-        loaded(_details()).copyWith(
-          isSubmittingReview: false,
-          notice: BookDetailsNotice.reviewSaved,
-        ),
+        isA<BookDetailsState>()
+            .having((s) => s.isSubmittingReview, 'isSubmittingReview', false)
+            .having((s) => s.notice, 'notice', BookDetailsNotice.reviewSaved)
+            .having((s) => s.details?.myReview?.rating, 'my rating', 4)
+            .having(
+              (s) => s.details?.myReview?.commentary,
+              'my commentary',
+              'Comentário',
+            )
+            .having((s) => s.reviews, 'reviews', loaded(_details()).reviews),
       ],
     );
 
@@ -389,10 +424,9 @@ void main() {
       skip: 2,
       expect: () => [
         loaded(_details(hasMore: true)).copyWith(isLoadingMoreReviews: true),
-        loaded(_details(hasMore: true)).copyWith(
-          isLoadingMoreReviews: true,
-          isSubmittingReview: true,
-        ),
+        loaded(
+          _details(hasMore: true),
+        ).copyWith(isLoadingMoreReviews: true, isSubmittingReview: true),
         loaded(
           _details(status: BookReadingStatus.read),
         ).copyWith(notice: BookDetailsNotice.reviewSaved),
@@ -417,6 +451,237 @@ void main() {
           bookId: any(named: 'bookId'),
           rating: any(named: 'rating'),
           commentary: any(named: 'commentary'),
+        ),
+      ),
+    );
+  });
+
+  group('recommendation', () {
+    const group = BookRecommendationGroup(
+      id: 'group-1',
+      number: 1,
+      name: 'Grupo 1',
+      alreadyRecommended: false,
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'loads the groups available for the book',
+      setUp: () => when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer((_) async => const Success([group])),
+      seed: () => loaded(_details()),
+      build: build,
+      act: (cubit) => cubit.loadRecommendationGroups(),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroupsStatus: RecommendationGroupsStatus.loading,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'emits error status without notice when loading groups fails',
+      setUp: () => when(
+        () => repository.getBookRecommendationGroups(bookId: 'b1'),
+      ).thenAnswer((_) async => const Failure(BookRecommendationGroupsFailure())),
+      seed: () => loaded(_details()),
+      build: build,
+      act: (cubit) => cubit.loadRecommendationGroups(),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroupsStatus: RecommendationGroupsStatus.loading,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroupsStatus: RecommendationGroupsStatus.error,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'ignores duplicate group load while already loading',
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroupsStatus: RecommendationGroupsStatus.loading,
+      ),
+      build: build,
+      act: (cubit) => cubit.loadRecommendationGroups(),
+      expect: () => const <BookDetailsState>[],
+      verify: (_) => verifyNever(
+        () => repository.getBookRecommendationGroups(bookId: any(named: 'bookId')),
+      ),
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'marks a conflict as already recommended',
+      setUp: () => when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer((_) async => const Failure(BookAlreadyRecommendedFailure())),
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroups: const [group],
+        recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+      ),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          isRecommending: true,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [
+            BookRecommendationGroup(
+              id: 'group-1',
+              number: 1,
+              name: 'Grupo 1',
+              alreadyRecommended: true,
+            ),
+          ],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          notice: BookDetailsNotice.recommendationAlreadyExists,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'keeps recommendation groups unchanged on generic recommend failure',
+      setUp: () => when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer((_) async => const Failure(BookNetworkFailure())),
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroups: const [group],
+        recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+      ),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          isRecommending: true,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          notice: BookDetailsNotice.recommendationFailed,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'raises a success notice and marks the group after recommending a book',
+      setUp: () => when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer((_) async => const Success(BookRecommendationOutcome.created)),
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroups: const [group],
+        recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+      ),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          isRecommending: true,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [
+            BookRecommendationGroup(
+              id: 'group-1',
+              number: 1,
+              name: 'Grupo 1',
+              alreadyRecommended: true,
+            ),
+          ],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          notice: BookDetailsNotice.recommendationSucceeded,
+          recommendedGroupName: 'Grupo 1',
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'raises a replaced notice and marks the group when replacing a recommendation',
+      setUp: () => when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer(
+        (_) async => const Success(BookRecommendationOutcome.replaced),
+      ),
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroups: const [group],
+        recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+      ),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          isRecommending: true,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [
+            BookRecommendationGroup(
+              id: 'group-1',
+              number: 1,
+              name: 'Grupo 1',
+              alreadyRecommended: true,
+            ),
+          ],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          notice: BookDetailsNotice.recommendationReplaced,
+          recommendedGroupName: 'Grupo 1',
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'raises host blocked notice and keeps groups unchanged when reader is blocked',
+      setUp: () => when(
+        () => repository.recommendBook(bookId: 'b1', groupId: 'group-1'),
+      ).thenAnswer(
+        (_) async => const Failure(BookRecommendationHostBlockedFailure()),
+      ),
+      seed: () => loaded(_details()).copyWith(
+        recommendationGroups: const [group],
+        recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+      ),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => [
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          isRecommending: true,
+        ),
+        loaded(_details()).copyWith(
+          recommendationGroups: const [group],
+          recommendationGroupsStatus: RecommendationGroupsStatus.loaded,
+          notice: BookDetailsNotice.recommendationHostBlocked,
+        ),
+      ],
+    );
+
+    blocTest<BookDetailsCubit, BookDetailsState>(
+      'ignores concurrent recommendation while submitting',
+      seed: () => loaded(_details()).copyWith(isRecommending: true),
+      build: build,
+      act: (cubit) =>
+          cubit.recommendBook(groupId: 'group-1', groupName: 'Grupo 1'),
+      expect: () => const <BookDetailsState>[],
+      verify: (_) => verifyNever(
+        () => repository.recommendBook(
+          bookId: any(named: 'bookId'),
+          groupId: any(named: 'groupId'),
         ),
       ),
     );

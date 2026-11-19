@@ -7,12 +7,15 @@ import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/books/data/datasources/rated_books_remote_data_source.dart';
 import 'package:mobile/features/books/data/models/book_details_model.dart';
 import 'package:mobile/features/books/data/models/book_page_model.dart';
+import 'package:mobile/features/books/data/models/book_recommendation_group_model.dart';
 import 'package:mobile/features/books/data/models/rated_book_model.dart';
 import 'package:mobile/features/books/data/repositories/book_repository_impl.dart';
 import 'package:mobile/features/books/domain/entities/book_details_entity.dart';
 import 'package:mobile/features/books/domain/entities/book_failure.dart';
 import 'package:mobile/features/books/domain/entities/book_page.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
+import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/rated_book.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mocktail/mocktail.dart';
@@ -239,6 +242,22 @@ void main() {
     expect((result as Failure).failure, isA<BookStatusFailure>());
   });
 
+  test('returns a search failure when the response has no page data', () async {
+    when(
+      () => supabase.invokeFunction<BookPageModel>(
+        functionName: 'search-books',
+        queryParameters: any(named: 'queryParameters'),
+        method: HttpMethod.get,
+        decoder: any(named: 'decoder'),
+      ),
+    ).thenAnswer((_) async => const Success(SupabaseResponse()));
+
+    expect(
+      await repository.searchBooks(page: 1),
+      const Failure<BookPage, BookFailure>(BookSearchFailure()),
+    );
+  });
+
   test('posts upsert-book-review with the review data', () async {
     when(
       () => supabase.invokeFunction<void>(
@@ -436,8 +455,9 @@ void main() {
     );
 
     test('returns mapped RatedBook entities on success', () async {
-      when(() => mockDataSource.getRatedBooks(page: 1, limit: 10))
-          .thenAnswer((_) async => [tModel]);
+      when(
+        () => mockDataSource.getRatedBooks(page: 1, limit: 10),
+      ).thenAnswer((_) async => [tModel]);
 
       final result = await repoWithMock.getRatedBooks(page: 1, limit: 10);
 
@@ -480,15 +500,259 @@ void main() {
     });
 
     test('maps generic exceptions to RatedBooksLoadFailure', () async {
-      when(() => mockDataSource.getRatedBooks(page: 1, limit: 10)).thenThrow(
-        Exception('boom'),
-      );
+      when(
+        () => mockDataSource.getRatedBooks(page: 1, limit: 10),
+      ).thenThrow(Exception('boom'));
 
       final result = await repoWithMock.getRatedBooks(page: 1, limit: 10);
 
       expect(
         result,
         const Failure<List<RatedBook>, BookFailure>(RatedBooksLoadFailure()),
+      );
+    });
+  });
+
+  group('book recommendations', () {
+    test('loads recommendation groups with the book id', () async {
+      when(
+        () => supabase.invokeFunction<List<BookRecommendationGroupModel>>(
+          functionName: 'get-book-recommendation-groups',
+          method: HttpMethod.get,
+          queryParameters: const {'bookId': 'book-1'},
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer((invocation) async {
+        final decoder =
+            invocation.namedArguments[#decoder]
+                as List<BookRecommendationGroupModel> Function(dynamic);
+        return Success(
+          SupabaseResponse(
+            data: decoder({
+              'items': [
+                {
+                  'group_id': 'group-1',
+                  'name': 'Grupo 1',
+                  'number': 1,
+                  'photo_url': null,
+                  'already_recommended': false,
+                },
+              ],
+            }),
+          ),
+        );
+      });
+
+      expect(
+        await repository.getBookRecommendationGroups(bookId: 'book-1'),
+        const Success<List<BookRecommendationGroup>, BookFailure>([
+          BookRecommendationGroup(
+            id: 'group-1',
+            number: 1,
+            name: 'Grupo 1',
+            alreadyRecommended: false,
+          ),
+        ]),
+      );
+    });
+
+    test(
+      'returns BookRecommendationGroupsFailure when payload data is null',
+      () async {
+        when(
+          () => supabase.invokeFunction<List<BookRecommendationGroupModel>>(
+            functionName: 'get-book-recommendation-groups',
+            method: HttpMethod.get,
+            queryParameters: const {'bookId': 'book-1'},
+            decoder: any(named: 'decoder'),
+          ),
+        ).thenAnswer((_) async => const Success(SupabaseResponse()));
+
+        expect(
+          await repository.getBookRecommendationGroups(bookId: 'book-1'),
+          const Failure<List<BookRecommendationGroup>, BookFailure>(
+            BookRecommendationGroupsFailure(),
+          ),
+        );
+      },
+    );
+
+    test('posts the book and group ids to recommend-book', () async {
+      when(
+        () => supabase.invokeFunction<BookRecommendationOutcome>(
+          functionName: 'recommend-book',
+          body: const {'book_id': 'book-1', 'group_id': 'group-1'},
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer((invocation) async {
+        final decoder =
+            invocation.namedArguments[#decoder]
+                as BookRecommendationOutcome Function(dynamic);
+        return Success(
+          SupabaseResponse<BookRecommendationOutcome>(
+            data: decoder({'id': 's1', 'replaced': false}),
+          ),
+        );
+      });
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Success<BookRecommendationOutcome, BookFailure>(
+          BookRecommendationOutcome.created,
+        ),
+      );
+    });
+
+    test('returns replaced outcome when backend replaced active suggestion', () async {
+      when(
+        () => supabase.invokeFunction<BookRecommendationOutcome>(
+          functionName: 'recommend-book',
+          body: const {'book_id': 'book-1', 'group_id': 'group-1'},
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer((invocation) async {
+        final decoder =
+            invocation.namedArguments[#decoder]
+                as BookRecommendationOutcome Function(dynamic);
+        return Success(
+          SupabaseResponse<BookRecommendationOutcome>(
+            data: decoder({'id': 's1', 'replaced': true}),
+          ),
+        );
+      });
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Success<BookRecommendationOutcome, BookFailure>(
+          BookRecommendationOutcome.replaced,
+        ),
+      );
+    });
+
+    test('maps a recommendation conflict to already recommended', () async {
+      when(
+        () => supabase.invokeFunction<BookRecommendationOutcome>(
+          functionName: 'recommend-book',
+          body: any(named: 'body'),
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(
+            message: 'already_recommended',
+            code: '409',
+            kind: SupabaseFailureKind.conflict,
+          ),
+        ),
+      );
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Failure<BookRecommendationOutcome, BookFailure>(
+          BookAlreadyRecommendedFailure(),
+        ),
+      );
+    });
+
+    test('maps host_not_eligible 403 to host blocked failure', () async {
+      when(
+        () => supabase.invokeFunction<BookRecommendationOutcome>(
+          functionName: 'recommend-book',
+          body: any(named: 'body'),
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(
+            message: 'host_not_eligible',
+            code: '403',
+            details: {'error': 'host_not_eligible'},
+            kind: SupabaseFailureKind.forbidden,
+          ),
+        ),
+      );
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Failure<BookRecommendationOutcome, BookFailure>(
+          BookRecommendationHostBlockedFailure(),
+        ),
+      );
+    });
+
+    test('maps other 403 recommendation errors to generic failure', () async {
+      when(
+        () => supabase.invokeFunction<BookRecommendationOutcome>(
+          functionName: 'recommend-book',
+          body: any(named: 'body'),
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(
+            message: 'not_group_member',
+            code: '403',
+            details: {'error': 'not_group_member'},
+            kind: SupabaseFailureKind.forbidden,
+          ),
+        ),
+      );
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Failure<BookRecommendationOutcome, BookFailure>(
+          BookRecommendationFailure(),
+        ),
+      );
+    });
+
+    test('maps recommendation group failures', () async {
+      for (final (kind, expected) in const [
+        (SupabaseFailureKind.network, BookNetworkFailure()),
+        (SupabaseFailureKind.unauthorized, BookSessionExpiredFailure()),
+        (SupabaseFailureKind.server, BookRecommendationGroupsFailure()),
+      ]) {
+        when(
+          () => supabase.invokeFunction<List<BookRecommendationGroupModel>>(
+            functionName: 'get-book-recommendation-groups',
+            method: HttpMethod.get,
+            queryParameters: const {'bookId': 'book-1'},
+            decoder: any(named: 'decoder'),
+          ),
+        ).thenAnswer(
+          (_) async =>
+              Failure(FunctionSupabaseFailure(message: 'failure', kind: kind)),
+        );
+
+        expect(
+          await repository.getBookRecommendationGroups(bookId: 'book-1'),
+          Failure<List<BookRecommendationGroup>, BookFailure>(expected),
+          reason: '$kind',
+        );
+      }
+    });
+
+    test('maps non-conflict recommendation failures', () async {
+      when(
+        () => supabase.invokeFunction<BookRecommendationOutcome>(
+          functionName: 'recommend-book',
+          body: any(named: 'body'),
+          decoder: any(named: 'decoder'),
+        ),
+      ).thenAnswer(
+        (_) async => const Failure(
+          FunctionSupabaseFailure(
+            message: 'offline',
+            kind: SupabaseFailureKind.network,
+          ),
+        ),
+      );
+
+      expect(
+        await repository.recommendBook(bookId: 'book-1', groupId: 'group-1'),
+        const Failure<BookRecommendationOutcome, BookFailure>(
+          BookNetworkFailure(),
+        ),
       );
     });
   });

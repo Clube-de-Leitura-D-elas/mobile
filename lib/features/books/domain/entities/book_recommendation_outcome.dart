@@ -1,0 +1,1 @@
+enum BookRecommendationOutcome { created, replaced }

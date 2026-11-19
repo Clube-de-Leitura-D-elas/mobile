@@ -181,5 +181,18 @@ void main() {
 
       expect(HomeState(groups: [group]).pendingTasksGroups, isEmpty);
     });
+
+    test('Given grupo com pendingRaffle, Then inclui em pendingTasksGroups e hasPendingTasks é true', () {
+      final raffleGroup = _group(8, withMeeting: false).copyWith(
+        pendingRaffle: const PendingRaffle(
+          type: PendingRaffleType.inaugural,
+          groupId: 'g8',
+        ),
+      );
+      final state = HomeState(groups: [raffleGroup]);
+
+      expect(state.pendingTasksGroups, [raffleGroup]);
+      expect(state.hasPendingTasks, isTrue);
+    });
   });
 }

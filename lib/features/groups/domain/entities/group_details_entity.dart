@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mobile/features/groups/domain/entities/pending_raffle.dart';
 
 class GroupDetailsEntity extends Equatable {
   final String name;
@@ -8,6 +9,10 @@ class GroupDetailsEntity extends Equatable {
   final String stateCode;
   final String? coverImageUrl;
   final String? whatsappUrl;
+  final PendingRaffle? pendingRaffle;
+  final bool hasOpenMeeting;
+  final String? openMeetingStatus;
+  final bool canRecommendBook;
 
   const GroupDetailsEntity({
     required this.name,
@@ -17,6 +22,10 @@ class GroupDetailsEntity extends Equatable {
     required this.stateCode,
     this.coverImageUrl,
     this.whatsappUrl,
+    this.pendingRaffle,
+    this.hasOpenMeeting = false,
+    this.openMeetingStatus,
+    this.canRecommendBook = true,
   });
 
   @override
@@ -28,5 +37,9 @@ class GroupDetailsEntity extends Equatable {
     stateCode,
     coverImageUrl,
     whatsappUrl,
+    pendingRaffle,
+    hasOpenMeeting,
+    openMeetingStatus,
+    canRecommendBook,
   ];
 }

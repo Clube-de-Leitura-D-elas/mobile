@@ -55,6 +55,24 @@ class BookDetailsEntity extends Equatable {
     );
   }
 
+  BookDetailsEntity withMyReview(MyBookReviewEntity review) {
+    return BookDetailsEntity(
+      id: id,
+      title: title,
+      author: author,
+      genre: genre,
+      publisher: publisher,
+      synopsis: synopsis,
+      coverUrl: coverUrl,
+      ratingAverage: ratingAverage,
+      ratingsCount: ratingsCount,
+      myStatus: myStatus,
+      myReview: review,
+      reviews: reviews,
+      hasMoreReviews: hasMoreReviews,
+    );
+  }
+
   @override
   List<Object?> get props => [
     id,

@@ -7,6 +7,7 @@ import 'package:mobile/features/books/presentation/cubit/rated_books_cubit.dart'
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
 import 'package:mobile/features/books/presentation/pages/rated_books_screen.dart';
 import 'package:mobile/features/books/presentation/routes/book_route_paths.dart';
+import 'package:mobile/features/books/presentation/routes/book_recommendation_target.dart';
 
 abstract class BookRoutes {
   static const details = BookRoutePaths.details;
@@ -36,15 +37,17 @@ abstract class BookRoutes {
         final bookId = state.pathParameters['bookId'] ?? '';
         // Quem abre a tela pode mandar, no extra, um callback do status.
         final extra = state.extra;
-        final onReadingStatusChanged = extra is ReadingStatusChanged
-            ? extra
-            : null;
+        final routeExtra = extra is BookDetailsRouteExtra ? extra : null;
+        final onReadingStatusChanged =
+            routeExtra?.onReadingStatusChanged ??
+            (extra is ReadingStatusChanged ? extra : null);
         return AppPageTransitions.createPushPage(
           state: state,
           child: BlocProvider(
             create: (_) => serviceLocator<BookDetailsCubit>()..load(bookId),
             child: BookDetailsPage(
               onReadingStatusChanged: onReadingStatusChanged,
+              recommendationTarget: routeExtra?.recommendationTarget,
             ),
           ),
         );

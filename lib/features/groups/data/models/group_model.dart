@@ -1,3 +1,4 @@
+import 'package:mobile/features/groups/data/models/pending_raffle_model.dart';
 import 'package:mobile/features/groups/domain/entities/group_entity.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting.dart';
 import 'package:mobile/features/groups/domain/entities/group_meeting_status.dart';
@@ -13,6 +14,9 @@ class GroupModel extends GroupEntity {
     super.nextMeeting,
     super.pendingMeetings,
     super.hasPendingResponse,
+    super.pendingRaffle,
+    super.hasOpenMeeting,
+    super.openMeetingStatus,
   });
 
   factory GroupModel.fromJson(dynamic json) {
@@ -28,6 +32,9 @@ class GroupModel extends GroupEntity {
     final nextMeeting = _parseNextMeeting(json['next_meeting']);
     final pendingMeetings = _parsePendingMeetings(json['pending_meetings']);
     final hasPendingResponse = json['has_pending_response'];
+    final pendingRaffle = PendingRaffleModel.fromJson(json['pending_raffle']);
+    final hasOpenMeeting = json['has_open_meeting'] as bool? ?? false;
+    final openMeetingStatus = json['open_meeting_status'] as String?;
 
     if (id is! String ||
         number == null ||
@@ -47,6 +54,9 @@ class GroupModel extends GroupEntity {
       nextMeeting: nextMeeting,
       pendingMeetings: pendingMeetings,
       hasPendingResponse: hasPendingResponse as bool? ?? false,
+      pendingRaffle: pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus,
     );
   }
 
@@ -130,6 +140,9 @@ class GroupModel extends GroupEntity {
       nextMeeting: nextMeeting,
       pendingMeetings: pendingMeetings,
       hasPendingResponse: hasPendingResponse,
+      pendingRaffle: pendingRaffle,
+      hasOpenMeeting: hasOpenMeeting,
+      openMeetingStatus: openMeetingStatus,
     );
   }
 

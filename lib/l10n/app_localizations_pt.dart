@@ -796,6 +796,26 @@ class AppLocalizationsPt extends AppLocalizations {
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
 
   @override
+  String get raffleInauguralTitle => 'Sorteio Inaugural';
+
+  @override
+  String get raffleInauguralSubtitle =>
+      'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.';
+
+  @override
+  String get raffleMeetingInPreparation => 'Encontro em preparação';
+
+  @override
+  String get homePendingTasksRaffleInaugural => 'Realizar sorteio inaugural';
+
+  @override
+  String get homePendingTasksRafflePending => 'Realizar sorteio pendente';
+
+  @override
+  String get raffleOpenMeetingAlreadyExistsError =>
+      'O grupo já possui um encontro em andamento.';
+
+  @override
   String groupMeetingMyTasksProgress(int done, int total) {
     return '$done de $total tarefas concluídas';
   }
@@ -1117,6 +1137,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get bookReviewCommentHint => 'Digite sua resposta';
 
   @override
+  String get bookReviewCommentShowMore => 'Ver mais';
+
+  @override
+  String get bookReviewCommentShowLess => 'Ver menos';
+
+  @override
+  String get bookDetailMyReviewFallbackName => 'Você';
+
+  @override
   String get bookReviewCancel => 'Cancelar';
 
   @override
@@ -1130,6 +1159,49 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get bookDetailRecommendButton => 'Indicar';
+
+  @override
+  String get bookRecommendationGroupsTitle => 'Selecione o grupo';
+
+  @override
+  String get bookRecommendationGroupsEmpty =>
+      'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get bookRecommendationGroupsError =>
+      'Não foi possível carregar os grupos.';
+
+  @override
+  String get bookRecommendationError => 'Não foi possível indicar o livro.';
+
+  @override
+  String get bookRecommendationAlreadyExists =>
+      'Este livro já foi indicado para este grupo.';
+
+  @override
+  String bookRecommendationSuccess(Object groupName) {
+    return 'Livro indicado ao $groupName';
+  }
+
+  @override
+  String bookRecommendationReplaced(Object groupName) {
+    return 'Indicação atualizada para o $groupName';
+  }
+
+  @override
+  String get bookRecommendationHostBlocked =>
+      'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.';
+
+  @override
+  String get bookRecommendationHostBlockedTitle => 'Indicação indisponível';
+
+  @override
+  String get bookRecommendationHostBlockedAction => 'Entendi';
+
+  @override
+  String bookRecommendationSearchTitle(Object groupName) {
+    return 'Indicar para $groupName';
+  }
 
   @override
   String get bookDetailSynopsisTitle => 'Sinopse';
@@ -1500,6 +1572,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get searchTabGroups => 'Grupos';
+
+  @override
+  String groupNameLabel(Object number) {
+    return 'Grupo $number';
+  }
 
   @override
   String get groupSearchTitle => 'Encontre seu grupo ideal';
@@ -2706,6 +2783,26 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Sorteio registrado com sucesso! Nova anfitriã definida.';
 
   @override
+  String get raffleInauguralTitle => 'Sorteio Inaugural';
+
+  @override
+  String get raffleInauguralSubtitle =>
+      'Todas as participantes ativas com indicações disponíveis participam do primeiro sorteio.';
+
+  @override
+  String get raffleMeetingInPreparation => 'Encontro em preparação';
+
+  @override
+  String get homePendingTasksRaffleInaugural => 'Realizar sorteio inaugural';
+
+  @override
+  String get homePendingTasksRafflePending => 'Realizar sorteio pendente';
+
+  @override
+  String get raffleOpenMeetingAlreadyExistsError =>
+      'O grupo já possui um encontro em andamento.';
+
+  @override
   String get meetingTasksCoordinatorLabel => 'VOCÊ É COORDENADORA DESTE GRUPO';
 
   @override
@@ -2825,6 +2922,15 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get bookReviewCommentHint => 'Digite sua resposta';
 
   @override
+  String get bookReviewCommentShowMore => 'Ver mais';
+
+  @override
+  String get bookReviewCommentShowLess => 'Ver menos';
+
+  @override
+  String get bookDetailMyReviewFallbackName => 'Você';
+
+  @override
   String get bookReviewCancel => 'Cancelar';
 
   @override
@@ -2838,6 +2944,49 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get bookDetailRecommendButton => 'Indicar';
+
+  @override
+  String get bookRecommendationGroupsTitle => 'Selecione o grupo';
+
+  @override
+  String get bookRecommendationGroupsEmpty =>
+      'Você ainda não participa de nenhum grupo.';
+
+  @override
+  String get bookRecommendationGroupsError =>
+      'Não foi possível carregar os grupos.';
+
+  @override
+  String get bookRecommendationError => 'Não foi possível indicar o livro.';
+
+  @override
+  String get bookRecommendationAlreadyExists =>
+      'Este livro já foi indicado para este grupo.';
+
+  @override
+  String bookRecommendationSuccess(Object groupName) {
+    return 'Livro indicado ao $groupName';
+  }
+
+  @override
+  String bookRecommendationReplaced(Object groupName) {
+    return 'Indicação atualizada para o $groupName';
+  }
+
+  @override
+  String get bookRecommendationHostBlocked =>
+      'Você já foi sorteada como anfitriã neste grupo e não pode indicar livros no momento.';
+
+  @override
+  String get bookRecommendationHostBlockedTitle => 'Indicação indisponível';
+
+  @override
+  String get bookRecommendationHostBlockedAction => 'Entendi';
+
+  @override
+  String bookRecommendationSearchTitle(Object groupName) {
+    return 'Indicar para $groupName';
+  }
 
   @override
   String get bookDetailSynopsisTitle => 'Sinopse';
@@ -3091,6 +3240,11 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get searchTabGroups => 'Grupos';
+
+  @override
+  String groupNameLabel(Object number) {
+    return 'Grupo $number';
+  }
 
   @override
   String get groupSearchTitle => 'Encontre seu grupo ideal';
