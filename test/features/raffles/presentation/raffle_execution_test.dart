@@ -19,6 +19,7 @@ class MockRaffleExecutionCubit extends Cubit<RaffleExecutionState>
   MockRaffleExecutionCubit(super.initialState);
 
   bool drawCalled = false;
+  int drawCount = 0;
   bool confirmResultCalled = false;
   bool retryCalled = false;
 
@@ -30,6 +31,7 @@ class MockRaffleExecutionCubit extends Cubit<RaffleExecutionState>
   @override
   Future<void> draw() async {
     drawCalled = true;
+    drawCount++;
   }
 
   @override
@@ -432,11 +434,67 @@ void main() {
     await tester.pumpWidget(buildWidget(cubit));
 
     cubit.push(ready.copyWith(isDrawing: true));
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Embaralhando as indicações…'), findsOneWidget);
+
     cubit.emitError();
     await tester.pumpAndSettle();
 
     expect(find.text('Embaralhando as indicações…'), findsNothing);
     expect(find.text('Tentar novamente'), findsOneWidget);
+  });
+
+  testWidgets(
+    'ignora toques na tela de resultado enquanto ela sai para a roleta',
+    (tester) async {
+      const loaded = RaffleExecutionResultLoaded(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        result: tResult,
+        eligibleParticipants: [tParticipantsSecond],
+      );
+      final cubit = MockRaffleExecutionCubit(loaded);
+      await tester.pumpWidget(buildWidget(cubit));
+      await tester.pumpAndSettle();
+
+      final drawAgain = tester.getCenter(find.text('Sortear novamente'));
+      final finish = tester.getCenter(find.text('Concluir'));
+
+      await tester.tapAt(drawAgain);
+      cubit.push(loaded.copyWith(isSubmitting: true));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      await tester.tapAt(drawAgain);
+      await tester.tapAt(finish);
+      await tester.pump();
+
+      expect(cubit.drawCount, 1);
+      expect(cubit.confirmResultCalled, isFalse);
+    },
+  );
+
+  testWidgets('mantem o botao de sortear visivel em tela baixa', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 360);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final cubit = MockRaffleExecutionCubit(
+      const RaffleExecutionReady(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        eligibleParticipants: tParticipants,
+      ),
+    );
+    await tester.pumpWidget(buildWidget(cubit));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.text('Sortear livro'));
+    expect(cubit.drawCalled, isTrue);
   });
 }

@@ -148,6 +148,7 @@ class _RaffleExecutionScreenState extends State<RaffleExecutionScreen> {
           body: SafeArea(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 350),
+              layoutBuilder: _outgoingInert,
               child: KeyedSubtree(
                 key: ValueKey(reelWinner != null ? 'reel' : state.runtimeType),
                 child: body,
@@ -158,6 +159,19 @@ class _RaffleExecutionScreenState extends State<RaffleExecutionScreen> {
       },
     );
   }
+}
+
+/// A tela que está saindo não pode receber toque nem seguir girando: um
+/// "Concluir" ali salvaria a vencedora anterior.
+Widget _outgoingInert(Widget? current, List<Widget> previous) {
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      for (final child in previous)
+        IgnorePointer(child: TickerMode(enabled: false, child: child)),
+      ?current,
+    ],
+  );
 }
 
 class _ReadyDrawView extends StatelessWidget {
@@ -207,11 +221,14 @@ class _ReadyDrawView extends StatelessWidget {
               ),
             ],
           ),
-          const Spacer(),
-          Center(
-            child: RaffleCoverFan(participants: state.eligibleParticipants),
+          Expanded(
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: RaffleCoverFan(participants: state.eligibleParticipants),
+              ),
+            ),
           ),
-          const Spacer(),
           Text(
             context.l10n.raffleDisclaimer,
             textAlign: TextAlign.center,
@@ -223,6 +240,7 @@ class _ReadyDrawView extends StatelessWidget {
           const Gap16(),
           AppButton.primary(
             label: context.l10n.raffleDrawButton,
+            size: AppButtonSize.lg,
             isLoading: state.isDrawing,
             onPressed: () {
               HapticFeedback.mediumImpact();

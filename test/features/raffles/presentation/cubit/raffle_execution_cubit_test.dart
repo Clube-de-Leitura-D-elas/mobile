@@ -312,6 +312,31 @@ void main() {
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
+      'ignora novo sorteio enquanto o anterior ainda esta em andamento',
+      build: () => RaffleExecutionCubit(repository: mockRepository),
+      seed: () => const RaffleExecutionResultLoaded(
+        meetingId: tMeetingId,
+        meetingTitle: tMeetingTitle,
+        result: tResult,
+        eligibleParticipants: [tParticipant2],
+        isSubmitting: true,
+      ),
+      act: (cubit) async {
+        await cubit.draw();
+        await cubit.confirmResult();
+      },
+      expect: () => const <RaffleExecutionState>[],
+      verify: (_) {
+        verifyNever(
+          () => mockRepository.drawRaffle(
+            meetingId: any(named: 'meetingId'),
+            eligibleParticipantIds: any(named: 'eligibleParticipantIds'),
+          ),
+        );
+      },
+    );
+
+    blocTest<RaffleExecutionCubit, RaffleExecutionState>(
       'nao sorteia novamente quando nao ha mais ninguem para sortear',
       build: () => RaffleExecutionCubit(repository: mockRepository),
       seed: () => const RaffleExecutionResultLoaded(
@@ -659,12 +684,13 @@ void main() {
           isPersisted: true,
         ),
       ],
-      verify: (_) =>
-          verify(() => mockRepository.saveRaffleResult(
-            tResult,
-            meetingId: any(named: 'meetingId'),
-            groupId: any(named: 'groupId'),
-          )).called(1),
+      verify: (_) => verify(
+        () => mockRepository.saveRaffleResult(
+          tResult,
+          meetingId: any(named: 'meetingId'),
+          groupId: any(named: 'groupId'),
+        ),
+      ).called(1),
     );
 
     blocTest<RaffleExecutionCubit, RaffleExecutionState>(
@@ -740,12 +766,13 @@ void main() {
           isPersisted: true,
         ),
       ],
-      verify: (_) =>
-          verify(() => mockRepository.saveRaffleResult(
-            tResult,
-            meetingId: any(named: 'meetingId'),
-            groupId: any(named: 'groupId'),
-          )).called(1),
+      verify: (_) => verify(
+        () => mockRepository.saveRaffleResult(
+          tResult,
+          meetingId: any(named: 'meetingId'),
+          groupId: any(named: 'groupId'),
+        ),
+      ).called(1),
     );
   });
 }

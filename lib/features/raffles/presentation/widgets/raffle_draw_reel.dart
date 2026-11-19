@@ -89,6 +89,12 @@ class _RaffleDrawReelState extends State<RaffleDrawReel>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!TickerMode.valuesOf(context).enabled) _timer?.cancel();
+  }
+
+  @override
   void didUpdateWidget(RaffleDrawReel oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.winnerId == null && widget.winnerId != null) {
@@ -118,7 +124,7 @@ class _RaffleDrawReelState extends State<RaffleDrawReel>
   }
 
   void _tick(Duration lastDelay) {
-    if (!mounted) return;
+    if (!mounted || !TickerMode.valuesOf(context).enabled) return;
     _spun += lastDelay;
 
     if (widget.winnerId != null && _winnerIndex == null) {
@@ -419,7 +425,6 @@ class RaffleCoverFan extends StatefulWidget {
 
 class _RaffleCoverFanState extends State<RaffleCoverFan> {
   static const _angles = [-0.14, 0.14, 0.0];
-  static const _shifts = [-46.0, 46.0, 0.0];
 
   bool _precached = false;
 
@@ -434,19 +439,21 @@ class _RaffleCoverFanState extends State<RaffleCoverFan> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final spread = context.spacing.s48;
+    final shifts = [-spread, spread, 0.0];
     final shown = widget.participants.take(_angles.length).toList();
     final offset = _angles.length - shown.length;
 
     return ExcludeSemantics(
       child: SizedBox(
-        width: _windowSize.width + 40,
+        width: _windowSize.width + context.spacing.s40,
         height: _windowSize.height,
         child: Stack(
           alignment: Alignment.center,
           children: [
             for (var i = 0; i < shown.length; i++)
               Transform.translate(
-                offset: Offset(_shifts[i + offset], 0),
+                offset: Offset(shifts[i + offset], 0),
                 child: Transform.rotate(
                   angle: _angles[i + offset],
                   child: Container(

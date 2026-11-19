@@ -164,6 +164,8 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
   }
 
   Future<void> draw() async {
+    final current = state;
+    if (current is RaffleExecutionResultLoaded && current.isSubmitting) return;
     String meetingId = '';
     String meetingTitle = '';
     List<RaffleParticipant> eligible = [];
@@ -223,7 +225,8 @@ class RaffleExecutionCubit extends Cubit<RaffleExecutionState> {
   }
 
   Future<void> confirmResult() async {
-    if (state is! RaffleExecutionResultLoaded) return;
+    final current = state;
+    if (current is! RaffleExecutionResultLoaded || current.isSubmitting) return;
 
     final currentState = state as RaffleExecutionResultLoaded;
     emit(currentState.copyWith(isSubmitting: true));
