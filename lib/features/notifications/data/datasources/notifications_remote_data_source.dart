@@ -61,6 +61,18 @@ class NotificationsRemoteDataSourceImpl
   @override
   Future<String?> getDeviceToken() async {
     try {
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        final apnsToken = await _waitForApnsToken();
+        if (apnsToken == null) {
+          if (kDebugMode) {
+            debugPrint(
+              '[NotificationsDataSource] APNs token not available yet',
+            );
+          }
+          return null;
+        }
+      }
+
       final token = await _messaging.getToken();
       if (kDebugMode) {
         debugPrint('[NotificationsDataSource] FCM Token retrieved: $token');
@@ -74,6 +86,20 @@ class NotificationsRemoteDataSourceImpl
       }
       rethrow;
     }
+  }
+
+  Future<String?> _waitForApnsToken() async {
+    const maxAttempts = 10;
+    for (var attempt = 0; attempt < maxAttempts; attempt++) {
+      final apnsToken = await _messaging.getAPNSToken();
+      if (apnsToken != null) {
+        return apnsToken;
+      }
+      if (attempt < maxAttempts - 1) {
+        await Future<void>.delayed(const Duration(milliseconds: 300));
+      }
+    }
+    return null;
   }
 
   @override

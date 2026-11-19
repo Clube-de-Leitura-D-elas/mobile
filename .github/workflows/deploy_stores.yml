@@ -163,7 +163,7 @@ jobs:
           EOF
 
       - name: Instalar Dependências Flutter
-        run: flutter pub get --enforce-lockfile
+        run: flutter pub get
 
       - name: Gerar Arquivos de Localização (ARB / l10n)
         run: flutter gen-l10n
@@ -249,7 +249,7 @@ jobs:
       - name: Instalar Dependências Flutter e Preparar iOS
         run: |
           flutter config --no-enable-swift-package-manager
-          flutter pub get --enforce-lockfile
+          flutter pub get
           flutter gen-l10n
           cd ios && pod install
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cupertino_ui/cupertino_ui.dart'
     show GlobalCupertinoLocalizations;
 import 'package:firebase_core/firebase_core.dart';
@@ -16,6 +18,7 @@ import 'package:mobile/core/serviceLocator/service_locator.dart';
 import 'package:mobile/dependencies.dart';
 import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/presentation/services/notification_navigation_service.dart';
 import 'package:mobile/firebase_options.dart';
@@ -64,6 +67,7 @@ Future<void> mainAsync({
     );
 
     DependenciesContainer();
+    await serviceLocator<NotificationsRemoteDataSource>().requestPermissions();
     await NotificationNavigationService.setupInteractions(
       serviceLocator<NotificationRepository>(),
     );
