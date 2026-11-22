@@ -3,6 +3,7 @@ import 'package:mobile/core/supabase/supabase_failure.dart';
 import 'package:mobile/core/supabase/supabase_service.dart';
 import 'package:mobile/core/tools/result.dart';
 import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
+import 'package:mobile/features/notifications/data/datasources/registered_token_store.dart';
 import 'package:mobile/features/notifications/data/models/notifications_page_model.dart';
 import 'package:mobile/features/notifications/domain/entities/notification_failure.dart';
 import 'package:mobile/features/notifications/domain/entities/notifications_page_entity.dart';
@@ -11,11 +12,18 @@ import 'package:mobile/features/notifications/domain/repository/notification_rep
 class NotificationRepositoryImpl implements NotificationRepository {
   NotificationRepositoryImpl({
     required this.supabaseService,
+    required this.registeredTokenStore,
     this.remoteDataSource,
   });
 
   final SupabaseService supabaseService;
   final NotificationsRemoteDataSource? remoteDataSource;
+
+  /// Último token registrado no backend, guardado em disco. No logout, se o
+  /// FCM não devolver o token atual (ou devolver outro, após uma rotação cujo
+  /// re-sync falhou), é ele que o `unregister-device` também usa; sem isso o
+  /// aparelho continuaria registrado e receberia push da conta que saiu.
+  final RegisteredTokenStore registeredTokenStore;
 
   bool _permissionsRequested = false;
 
@@ -83,13 +91,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
         return const Success(null);
       }
 
-      final result = await dataSource.saveTokenToBackend(token);
-      return switch (result) {
-        Success() => const Success(null),
-        Failure(:final failure) => Failure(
-          _failureFrom(failure, const FcmTokenSyncFailure()),
-        ),
-      };
+      final result = await dataSource.registerDevice(token);
+      switch (result) {
+        case Success():
+          await registeredTokenStore.save(token);
+          return const Success(null);
+        case Failure(:final failure):
+          return Failure(_failureFrom(failure, const FcmTokenSyncFailure()));
+      }
     } catch (e) {
       if (kDebugMode) {
         debugPrint(
@@ -108,17 +117,56 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return const Failure(FcmTokenSyncFailure());
     }
 
-    try {
-      final result = await dataSource.saveTokenToBackend(null);
-      return switch (result) {
-        Success() => const Success(null),
-        Failure(:final failure) => Failure(
-          _failureFrom(failure, const FcmTokenSyncFailure()),
-        ),
-      };
-    } catch (e) {
-      return const Failure(FcmTokenSyncFailure());
+    // Desregistra todo token conhecido: o guardado e o atual do FCM. Se o FCM
+    // rotacionou o token e o re-sync falhou, o que está no backend é o antigo.
+    Failure<void, NotificationFailure>? firstFailure;
+    var attempted = false;
+
+    Future<bool> unregister(String token) async {
+      attempted = true;
+      try {
+        final result = await dataSource.unregisterDevice(token);
+        switch (result) {
+          case Success():
+            return true;
+          case Failure(:final failure):
+            firstFailure ??= Failure(
+              _failureFrom(failure, const FcmTokenSyncFailure()),
+            );
+            return false;
+        }
+      } catch (_) {
+        firstFailure ??= const Failure(FcmTokenSyncFailure());
+        return false;
+      }
     }
+
+    // O guardado vem primeiro: é local e rápido. O `getDeviceToken` pode
+    // esperar o APNs por alguns segundos no iOS, e o logout limita o tempo
+    // desta chamada; depois disso a sessão já se foi e o backend recusaria.
+    final registeredToken = await registeredTokenStore.read();
+    if (registeredToken != null && registeredToken.isNotEmpty) {
+      if (await unregister(registeredToken)) {
+        await registeredTokenStore.clear();
+      }
+    }
+
+    String? currentToken;
+    try {
+      currentToken = await dataSource.getDeviceToken();
+    } catch (_) {
+      currentToken = null;
+    }
+    if (currentToken != null &&
+        currentToken.isNotEmpty &&
+        currentToken != registeredToken) {
+      await unregister(currentToken);
+    }
+
+    // Sem nenhum token (nada guardado e o FCM não devolveu) não dá para
+    // confirmar que o aparelho saiu do backend, então não vale `Success`.
+    if (!attempted) return const Failure(FcmTokenSyncFailure());
+    return firstFailure ?? const Success(null);
   }
 
   @override

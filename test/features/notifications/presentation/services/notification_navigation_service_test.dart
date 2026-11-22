@@ -196,6 +196,119 @@ void main() {
         verify(() => repository.markAsRead('notif-1')).called(1);
       },
     );
+
+    test(
+      'marks as read using notification_target_id sent by the backend push',
+      () async {
+        final repository = MockNotificationRepository();
+        final openedController =
+            StreamController<Map<String, dynamic>>.broadcast();
+        addTearDown(openedController.close);
+
+        when(
+          () => repository.onNotificationOpened,
+        ).thenAnswer((_) => openedController.stream);
+        when(
+          () => repository.getInitialNotificationData(),
+        ).thenAnswer((_) async => null);
+        when(
+          () => repository.markAsRead('target-7'),
+        ).thenAnswer((_) async => const Success(null));
+
+        await NotificationNavigationService.setupInteractions(repository);
+
+        openedController.add({
+          'notification_target_id': 'target-7',
+          'type': 'DRAW_RESULT',
+          'meeting_id': 'm-1',
+          'group_id': '',
+        });
+        await pumpEventQueue();
+
+        verify(() => repository.markAsRead('target-7')).called(1);
+      },
+    );
+
+    Future<StreamController<Map<String, dynamic>>> setupOpened(
+      MockNotificationRepository repository,
+      String expectedId,
+    ) async {
+      final openedController =
+          StreamController<Map<String, dynamic>>.broadcast();
+      when(
+        () => repository.onNotificationOpened,
+      ).thenAnswer((_) => openedController.stream);
+      when(
+        () => repository.getInitialNotificationData(),
+      ).thenAnswer((_) async => null);
+      when(
+        () => repository.markAsRead(expectedId),
+      ).thenAnswer((_) async => const Success(null));
+      await NotificationNavigationService.setupInteractions(repository);
+      return openedController;
+    }
+
+    test('skips a blank notification_target_id and uses the next id', () async {
+      final repository = MockNotificationRepository();
+      final controller = await setupOpened(repository, 'notif-1');
+      addTearDown(controller.close);
+
+      controller.add({
+        'notification_target_id': '   ',
+        'notification_id': 'notif-1',
+      });
+      await pumpEventQueue();
+
+      verify(() => repository.markAsRead('notif-1')).called(1);
+      verifyNever(() => repository.markAsRead(''));
+    });
+
+    test(
+      'prefers notification_target_id over notification_id and id',
+      () async {
+        final repository = MockNotificationRepository();
+        final controller = await setupOpened(repository, 'target-1');
+        addTearDown(controller.close);
+
+        controller.add({
+          'notification_target_id': 'target-1',
+          'notification_id': 'notif-1',
+          'id': 'legacy-1',
+        });
+        await pumpEventQueue();
+
+        verify(() => repository.markAsRead('target-1')).called(1);
+        verifyNever(() => repository.markAsRead('notif-1'));
+        verifyNever(() => repository.markAsRead('legacy-1'));
+      },
+    );
+
+    test(
+      'falls back to id when the push has no other notification id',
+      () async {
+        final repository = MockNotificationRepository();
+        final openedController =
+            StreamController<Map<String, dynamic>>.broadcast();
+        addTearDown(openedController.close);
+
+        when(
+          () => repository.onNotificationOpened,
+        ).thenAnswer((_) => openedController.stream);
+        when(
+          () => repository.getInitialNotificationData(),
+        ).thenAnswer((_) async => null);
+        when(
+          () => repository.markAsRead('legacy-3'),
+        ).thenAnswer((_) async => const Success(null));
+
+        await NotificationNavigationService.setupInteractions(repository);
+
+        openedController.add({'id': 'legacy-3', 'group_id': 'g-1'});
+        await pumpEventQueue();
+
+        verify(() => repository.markAsRead('legacy-3')).called(1);
+      },
+    );
   });
 
   group('openNotificationRoute', () {

@@ -48,6 +48,7 @@ import 'package:mobile/features/meeting_guest_requests/data/repositories/meeting
 import 'package:mobile/features/meeting_guest_requests/domain/repository/meeting_guest_requests_repository.dart';
 import 'package:mobile/features/meeting_guest_requests/presentation/cubit/meeting_guest_requests_cubit.dart';
 import 'package:mobile/features/notifications/data/datasources/notifications_remote_data_source.dart';
+import 'package:mobile/features/notifications/data/datasources/registered_token_store.dart';
 import 'package:mobile/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:mobile/features/notifications/domain/repository/notification_repository.dart';
 import 'package:mobile/features/notifications/domain/usecases/sync_fcm_token_use_case.dart';
@@ -234,9 +235,14 @@ class DependenciesContainer {
       ),
     );
 
+    serviceLocator.registerLazySingleton<RegisteredTokenStore>(
+      SharedPreferencesRegisteredTokenStore.new,
+    );
+
     serviceLocator.registerLazySingleton<NotificationRepository>(
       () => NotificationRepositoryImpl(
         supabaseService: serviceLocator<SupabaseService>(),
+        registeredTokenStore: serviceLocator<RegisteredTokenStore>(),
         remoteDataSource: serviceLocator<NotificationsRemoteDataSource>(),
       ),
     );
