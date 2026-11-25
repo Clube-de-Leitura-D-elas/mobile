@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 
+enum BookSource { catalog, google }
+
 class BookSummary extends Equatable {
   const BookSummary({
     required this.id,
@@ -9,6 +11,7 @@ class BookSummary extends Equatable {
     required this.genre,
     required this.coverUrl,
     required this.myStatus,
+    this.source = BookSource.catalog,
   });
 
   final String id;
@@ -17,6 +20,7 @@ class BookSummary extends Equatable {
   final String genre;
   final String? coverUrl;
   final BookReadingStatus? myStatus;
+  final BookSource source;
 
   BookSummary copyWithStatus(BookReadingStatus? status) {
     return BookSummary(
@@ -26,9 +30,18 @@ class BookSummary extends Equatable {
       genre: genre,
       coverUrl: coverUrl,
       myStatus: status,
+      source: source,
     );
   }
 
   @override
-  List<Object?> get props => [id, title, author, genre, coverUrl, myStatus];
+  List<Object?> get props => [
+    id,
+    title,
+    author,
+    genre,
+    coverUrl,
+    myStatus,
+    source,
+  ];
 }

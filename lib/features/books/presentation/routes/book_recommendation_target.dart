@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
+import 'package:mobile/features/books/domain/entities/book_summary.dart';
 
 /// Avisa quem abriu os detalhes (a busca) sobre o status do livro.
 /// [isWrite] é `true` quando a leitora mudou o status aqui e `false` quando os
@@ -24,8 +25,10 @@ class BookDetailsRouteExtra {
   const BookDetailsRouteExtra({
     this.onReadingStatusChanged,
     this.recommendationTarget,
+    this.bookSource = BookSource.catalog,
   });
 
   final ReadingStatusChanged? onReadingStatusChanged;
   final BookRecommendationTarget? recommendationTarget;
+  final BookSource bookSource;
 }

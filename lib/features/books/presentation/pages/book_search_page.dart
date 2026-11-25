@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/core/extensions/build_context_l10n.dart';
 import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/book_search_state.dart';
 import 'package:mobile/features/books/presentation/pages/book_search_screen.dart';
@@ -38,11 +39,14 @@ class BookSearchPage extends StatelessWidget {
               onRetry: cubit.retry,
               onLoadMore: cubit.loadMore,
               onStatusTap: cubit.toggleStatus,
-              onBookTap: (bookId) => context.push(
-                BookRoutePaths.detailsFor(bookId),
+              onBookTap: (book) => context.push(
+                BookRoutePaths.detailsFor(book.id),
                 extra: BookDetailsRouteExtra(
-                  onReadingStatusChanged: cubit.statusSyncFor(bookId),
+                  onReadingStatusChanged: book.source == BookSource.catalog
+                      ? cubit.statusSyncFor(book.id)
+                      : null,
                   recommendationTarget: recommendationTarget,
+                  bookSource: book.source,
                 ),
               ),
             );
