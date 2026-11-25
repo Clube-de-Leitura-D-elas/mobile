@@ -26,10 +26,20 @@ class BookPageModel {
       throw const FormatException('Invalid book page.');
     }
 
+    final suggestions = json['google_suggestions'];
+    if (suggestions != null && suggestions is! List) {
+      throw const FormatException('Invalid Google suggestions.');
+    }
+
+    final catalogItems = (json['items'] as List).map(
+      BookSummaryModel.fromJson,
+    );
+    final googleItems = (suggestions as List? ?? const []).map(
+      BookSummaryModel.fromGoogleJson,
+    );
+
     return BookPageModel(
-      items: (json['items'] as List)
-          .map(BookSummaryModel.fromJson)
-          .toList(growable: false),
+      items: [...catalogItems, ...googleItems],
       page: page,
       pageSize: pageSize,
       hasMore: hasMore,

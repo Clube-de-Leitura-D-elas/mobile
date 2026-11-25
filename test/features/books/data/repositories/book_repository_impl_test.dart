@@ -17,6 +17,7 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/rated_book.dart';
+import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -81,11 +82,12 @@ void main() {
     expect(
       result,
       isA<Success<BookPage, BookFailure>>().having(
-        (success) => success.data.items.single.myStatus,
+        (success) => success.data.items.first.myStatus,
         'status',
         BookReadingStatus.wantToRead,
       ),
     );
+    expect(result.unwrap().items.last.source, BookSource.google);
   });
 
   test('sends q when the query has at least 2 characters', () async {
@@ -363,6 +365,43 @@ void main() {
         }).title,
         'Outro',
       );
+    });
+
+    test('uses the external ID for Google book details', () async {
+      stubDetails(
+        const Success(
+          SupabaseResponse(
+            data: BookDetailsModel(
+              id: 'b1',
+              title: 'Livro do Google',
+              author: 'Autora',
+              genre: '',
+              publisher: '',
+              ratingsCount: 0,
+              reviews: [],
+              hasMoreReviews: false,
+            ),
+          ),
+        ),
+      );
+
+      await repository.getBookDetails(
+        bookId: 'google-volume-1',
+        source: BookSource.google,
+      );
+
+      verify(
+        () => supabase.invokeFunction<BookDetailsModel>(
+          functionName: 'get-book-details',
+          method: HttpMethod.get,
+          queryParameters: {
+            'externalId': 'google-volume-1',
+            'reviewsPage': '1',
+            'reviewsPageSize': '${BookRepository.reviewsPageSize}',
+          },
+          decoder: any(named: 'decoder'),
+        ),
+      ).called(1);
     });
 
     test('maps 404 and an invalid id (400) to BookNotFoundFailure', () async {

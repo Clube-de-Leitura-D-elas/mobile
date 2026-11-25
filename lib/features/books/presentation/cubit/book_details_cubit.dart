@@ -5,25 +5,34 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/book_review_entity.dart';
+import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_state.dart';
 
 class BookDetailsCubit extends Cubit<BookDetailsState> {
   final BookRepository repository;
   String _bookId = '';
+  BookSource _bookSource = BookSource.catalog;
   int _reviewsRequestGeneration = 0;
   bool _isRefreshingReviews = false;
 
   BookDetailsCubit({required this.repository})
     : super(const BookDetailsState());
 
-  Future<void> load(String bookId) async {
+  Future<void> load(
+    String bookId, {
+    BookSource source = BookSource.catalog,
+  }) async {
     _bookId = bookId;
+    _bookSource = source;
     _reviewsRequestGeneration++;
     _isRefreshingReviews = false;
     emit(const BookDetailsState());
 
-    final result = await repository.getBookDetails(bookId: bookId);
+    final result = await repository.getBookDetails(
+      bookId: bookId,
+      source: source,
+    );
     if (isClosed) return;
 
     switch (result) {
@@ -49,7 +58,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
     }
   }
 
-  Future<void> retry() => load(_bookId);
+  Future<void> retry() => load(_bookId, source: _bookSource);
 
   Future<void> loadMoreReviews() async {
     if (!state.hasMoreReviews ||
@@ -65,6 +74,7 @@ class BookDetailsCubit extends Cubit<BookDetailsState> {
     final nextPage = state.reviewsPage + 1;
     final result = await repository.getBookDetails(
       bookId: _bookId,
+      source: _bookSource,
       reviewsPage: nextPage,
     );
     if (isClosed) return;

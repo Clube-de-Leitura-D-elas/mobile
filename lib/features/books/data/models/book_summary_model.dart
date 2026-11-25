@@ -9,6 +9,7 @@ class BookSummaryModel extends BookSummary {
     required super.genre,
     required super.coverUrl,
     required super.myStatus,
+    super.source,
   });
 
   factory BookSummaryModel.fromJson(dynamic json) {
@@ -40,6 +41,33 @@ class BookSummaryModel extends BookSummary {
     );
   }
 
+  factory BookSummaryModel.fromGoogleJson(dynamic json) {
+    if (json is! Map<String, dynamic>) {
+      throw const FormatException('Invalid Google book.');
+    }
+
+    final externalId = json['external_id'];
+    final title = json['title'];
+    final author = json['author'];
+    final coverUrl = json['cover_url'];
+    if (externalId is! String ||
+        title is! String ||
+        author is! String ||
+        (coverUrl != null && coverUrl is! String)) {
+      throw const FormatException('Invalid Google book.');
+    }
+
+    return BookSummaryModel(
+      id: externalId,
+      title: title,
+      author: author,
+      genre: '',
+      coverUrl: coverUrl as String?,
+      myStatus: null,
+      source: BookSource.google,
+    );
+  }
+
   BookSummary toDomain() => BookSummary(
     id: id,
     title: title,
@@ -47,5 +75,6 @@ class BookSummaryModel extends BookSummary {
     genre: genre,
     coverUrl: coverUrl,
     myStatus: myStatus,
+    source: source,
   );
 }

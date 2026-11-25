@@ -14,6 +14,7 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/rated_book.dart';
+import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/domain/repository/book_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -63,6 +64,7 @@ class BookRepositoryImpl implements BookRepository {
   @override
   Future<Result<BookDetailsEntity, BookFailure>> getBookDetails({
     required String bookId,
+    BookSource source = BookSource.catalog,
     int reviewsPage = 1,
   }) async {
     final result = await supabaseService.invokeFunction<BookDetailsModel>(
@@ -70,7 +72,7 @@ class BookRepositoryImpl implements BookRepository {
       // A function só aceita GET e lê tudo da query string.
       method: HttpMethod.get,
       queryParameters: {
-        'bookId': bookId,
+        if (source == BookSource.google) 'externalId': bookId else 'bookId': bookId,
         'reviewsPage': '$reviewsPage',
         'reviewsPageSize': '${BookRepository.reviewsPageSize}',
       },

@@ -6,6 +6,7 @@ import 'package:mobile/features/books/domain/entities/book_reading_status.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_group.dart';
 import 'package:mobile/features/books/domain/entities/book_recommendation_outcome.dart';
 import 'package:mobile/features/books/domain/entities/rated_book.dart';
+import 'package:mobile/features/books/domain/entities/book_summary.dart';
 
 abstract class BookRepository {
   static const int reviewsPageSize = 10;
@@ -18,6 +19,7 @@ abstract class BookRepository {
   /// [reviewsPage] começa em 1 e pagina só as avaliações das outras leitoras.
   Future<Result<BookDetailsEntity, BookFailure>> getBookDetails({
     required String bookId,
+    BookSource source = BookSource.catalog,
     int reviewsPage = 1,
   });
 

@@ -35,7 +35,7 @@ class BookSearchScreen extends StatelessWidget {
   final VoidCallback onRetry;
   final VoidCallback onLoadMore;
   final ValueChanged<String> onStatusTap;
-  final ValueChanged<String> onBookTap;
+  final ValueChanged<BookSummary> onBookTap;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,7 @@ class _BookSearchBody extends StatelessWidget {
   final VoidCallback onRetry;
   final VoidCallback onLoadMore;
   final ValueChanged<String> onStatusTap;
-  final ValueChanged<String> onBookTap;
+  final ValueChanged<BookSummary> onBookTap;
 
   static const _loadMoreExtent = 400.0;
 
@@ -172,7 +172,7 @@ class _BookSearchBody extends StatelessWidget {
                   final book = state.books[index];
                   return _PopularCell(
                     book: book,
-                    onTap: () => onBookTap(book.id),
+                    onTap: () => onBookTap(book),
                   );
                 }, childCount: state.books.length),
               ),
@@ -195,11 +195,13 @@ class _BookSearchBody extends StatelessWidget {
                       author: book.author,
                       genre: book.genre,
                       imageUrl: book.coverUrl,
-                      status: readingChipFor(book.myStatus),
+                      status: book.source == BookSource.google
+                          ? null
+                          : readingChipFor(book.myStatus),
                       isStatusLoading: state.updatingStatusIds.contains(
                         book.id,
                       ),
-                      onTap: () => onBookTap(book.id),
+                      onTap: () => onBookTap(book),
                       onStatusTap: () => onStatusTap(book.id),
                     ),
                   );

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routes/app_page_transitions.dart';
 import 'package:mobile/core/serviceLocator/service_locator.dart';
+import 'package:mobile/features/books/domain/entities/book_summary.dart';
 import 'package:mobile/features/books/presentation/cubit/book_details_cubit.dart';
 import 'package:mobile/features/books/presentation/cubit/rated_books_cubit.dart';
 import 'package:mobile/features/books/presentation/pages/book_details_page.dart';
@@ -44,7 +45,11 @@ abstract class BookRoutes {
         return AppPageTransitions.createPushPage(
           state: state,
           child: BlocProvider(
-            create: (_) => serviceLocator<BookDetailsCubit>()..load(bookId),
+            create: (_) => serviceLocator<BookDetailsCubit>()
+              ..load(
+                bookId,
+                source: routeExtra?.bookSource ?? BookSource.catalog,
+              ),
             child: BookDetailsPage(
               onReadingStatusChanged: onReadingStatusChanged,
               recommendationTarget: routeExtra?.recommendationTarget,
